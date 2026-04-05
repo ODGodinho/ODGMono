@@ -1,0 +1,170 @@
+/* eslint-disable max-classes-per-file */
+/* eslint-disable sort-class-members/sort-class-members */
+/* eslint-disable @typescript-eslint/no-use-before-define */
+type ParseObjectType = Record<number | string | symbol, unknown>;
+
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+type EmptyType = "" | 0 | false | null | undefined | void;
+
+export type ParserException = (newException: Exception, original: unknown) => Exception;
+
+export class Exception extends Error {
+
+    [Error: string]: unknown;
+
+    public static readonly $parsers = new Set<ParserException>();
+
+    /**
+     * Content original exception
+     *
+     * @type {unknown}
+     * @memberof Exception
+     */
+    public original?: unknown;
+
+    protected readonly $previous?: Exception;
+
+    public constructor(
+        public override message: string,
+        previous?: unknown,
+        public code?: number | string,
+    ) {
+        super(message);
+        this.name = this.constructor.name;
+        this.$previous = Exception.parse(previous);
+        Reflect.apply(Error, this, [ message ]);
+    }
+
+    public static parse<T extends ParseObjectType>(exception?: T): Exception & T;
+
+    public static parse(exception?: EmptyType): undefined;
+
+    public static parse(exception?: unknown): Exception | undefined;
+
+    /**
+     * Parse error to Exception
+     *
+     * @template {any} T Type of exception
+     * @param {T | undefined} exception Possible exception
+     * @returns {Exception | Exception & T | undefined}
+     */
+    public static parse<T>(exception?: T): Exception | Exception & T | undefined {
+        if (!exception) return;
+
+        if (exception instanceof Exception) return exception;
+
+        let newException: Exception | Exception & T | undefined;
+
+        if (typeof exception === "object") newException = this.parseObject(
+            exception as Record<string, unknown>,
+        );
+
+        newException ??= new (this.getExceptionClass(exception))(Exception.messageToString(exception));
+        newException.original = exception;
+
+        for (const callback of this.$parsers) {
+            newException = callback(newException, exception);
+        }
+
+        return newException;
+    }
+
+    /**
+     * Parse error to Exception
+     *
+     * @memberof Exception
+     * @param {unknown} exception Possible exception
+     * @param {string} message Message if exception is empty
+     * @returns {Exception | UnknownException}
+     */
+    public static parseOrDefault(exception: unknown, message: string): Exception | UnknownException {
+        return this.parse(exception) ?? new UnknownException(message, exception);
+    }
+
+    /**
+     * Returns the previous exception, if available.
+     *
+     * This method is useful for exception chaining,
+     * allowing you to trace back to the original exception that caused the current one.
+     *
+     * @returns {Exception | undefined}
+     */
+    public getPrevious(): Exception | undefined {
+        return this.$previous;
+    }
+
+    /**
+     * If Possible exception has prop with code return it
+     *
+     * @memberof Exception
+     * @param {unknown} exception Possible Exception
+     * @returns {number | string | undefined}
+     */
+    private static getIfHasCode(exception: unknown): number | string | undefined {
+        if (!exception || typeof exception !== "object") return undefined;
+
+        if ("code" in exception) {
+            return typeof exception.code === "string" || typeof exception.code === "number"
+                ? exception.code
+                : undefined;
+        }
+
+        return undefined;
+    }
+
+    /**
+     * Convert error message to string
+     *
+     * @memberof Exception
+     * @param {unknown} message Exception message to convert
+     * @returns {string}
+     */
+    private static messageToString(message: unknown): string {
+        if (typeof message === "string") return message;
+
+        return JSON.stringify(message);
+    }
+
+    private static parseObject<T extends Record<string, unknown>>(exception: T): Exception & T {
+        const newException = new (this.getExceptionClass(exception))("");
+
+        for (const key in exception) {
+            if (Object.prototype.hasOwnProperty.call(exception, key)) {
+                newException[key] = exception[key];
+            }
+        }
+
+        newException.message = "message" in exception
+            ? Exception.messageToString(exception.message)
+            : Exception.messageToString(exception);
+        newException.code = this.getIfHasCode(exception);
+        newException.stack = "stack" in exception ? Exception.messageToString(exception.stack) : undefined;
+        newException.original = exception;
+
+        return newException as Exception & T;
+    }
+
+    private static getExceptionClass(exception: unknown): typeof Exception {
+        if (
+            exception
+            && typeof exception === "object"
+            && "name" in exception
+            && exception.name === "AbortError"
+        ) return AbortException;
+
+        return UnknownException;
+    }
+
+}
+
+export class UnknownException extends Exception {
+
+}
+
+export class AbortException extends Exception {
+
+}
+
+export class InvalidArgumentException extends Exception {
+
+}

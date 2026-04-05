@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "./dist",
+        "paths": {
+            "~": [ "./src" ]
+        },
+        "rootDirs": [
+            ".",
+            "./src"
+        ],
+        "types": [
+            "node",
+            "vitest/globals"
+        ]
+    },
+    "exclude": [
+        "node_modules/",
+        "dist/"
+    ],
+    "extends": "@odg/tsconfig/tsconfig.node.json",
+    "include": [ "." ]
+}

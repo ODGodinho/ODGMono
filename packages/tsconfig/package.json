@@ -1,0 +1,30 @@
+{
+    "name": "@odg/tsconfig",
+    "version": "1.1.0",
+    "description": "Only tsconfig file",
+    "scripts": {
+        "tsc": "tsc --noEmit -p tsconfig.typecheck.json"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ODGodinho/ODGMono.git",
+        "directory": "packages/tsconfig"
+    },
+    "author": "Dragons Gamers <https://www.linkedin.com/in/victor-alves-odgodinho>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ODGodinho/ODGMono/issues"
+    },
+    "homepage": "https://github.com/ODGodinho/ODGMono/tree/main/packages/tsconfig",
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "./tsconfig.json",
+        "./tsconfig.node.json",
+        "./README.md"
+    ],
+    "devDependencies": {
+        "typescript": "^5.9.3"
+    }
+}

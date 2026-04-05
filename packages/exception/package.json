@@ -1,0 +1,47 @@
+{
+    "name": "@odg/exception",
+    "version": "0.0.1",
+    "description": "Exception Class with preview for Js",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "homepage": "https://github.com/ODGodinho/ODGMono/tree/main/packages/exception",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ODGodinho/ODGMono.git",
+        "directory": "packages/exception"
+    },
+    "bugs": {
+        "url": "https://github.com/ODGodinho/ODGMono/issues"
+    },
+    "scripts": {
+        "tsc": "tsc --noEmit -p tsconfig.json",
+        "build": "rimraf dist/ && tsc --project ./tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+        "build:watch": "npm run build && (concurrently \"tsc --project ./tsconfig.build.json -w\" \"tsc-alias -p tsconfig.build.json -w\")",
+        "start": "node ./dist/index.ts",
+        "lint": "odg-lint",
+        "lint:fix": "odg-lint --fix",
+        "test": "vitest run",
+        "test:ci": "vitest run --passWithNoTests",
+        "test:watch": "vitest --watch"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "./dist/",
+        "./README.md"
+    ],
+    "author": "Dragons Gamers <https://www.linkedin.com/in/victor-alves-odgodinho>",
+    "license": "MIT",
+    "devDependencies": {
+        "@odg/eslint-config": "workspace:^",
+        "@odg/tsconfig": "workspace:^",
+        "@types/node": ">=24",
+        "@vitest/coverage-istanbul": "^4.1.2",
+        "concurrently": "^9.2.1",
+        "rimraf": "^6.1.3",
+        "tsc-alias": "^1.8.16",
+        "typescript": "^5.9.3",
+        "vitest": "^4.1.2"
+    }
+}

@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+jobs:
+  build-and-test:
+    name: Review / Tests / Publish
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [ 24 ]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.version }}
+          registry-url: "https://npm.pkg.github.com/"
+          cache: yarn
+
+      - name: Setup Yarn
+        run: corepack enable
+
+      - name: Get Yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn install --immutable
+
+      - if: ${{ github.event_name == 'pull_request' }}
+        name: Review Dog Pull Request
+        uses: reviewdog/action-eslint@v1
+        with:
+          reporter: github-pr-review
+          github_token: ${{ secrets.GH_TOKEN }}
+          eslint_flags: .
+          fail_level: error
+
+      - name: Review Dog Pull Request
+        uses: reviewdog/action-eslint@v1
+        with:
+          reporter: github-pr-review
+          github_token: ${{ secrets.GH_TOKEN }}
+          eslint_flags: .
+          fail_level: error
+
+      - name: Build
+        run: yarn build
+
+      - name: Test CI
+        run: yarn test:ci
+
+      - name: Multi Semantic Release
+        run: yarn release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

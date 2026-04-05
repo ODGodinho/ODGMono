@@ -1,0 +1,33 @@
+import type { HttpHeadersInterface } from "@odg/message";
+import type { AxiosResponseHeaders } from "axios";
+
+export class AxiosParser {
+
+    /**
+     * Add support axios 1.0 headers
+     *
+     * @param {unknown | undefined} headers Axios Headers Object
+     * @returns {HttpHeadersInterface}
+     */
+    public static parseHeaders(headers?: unknown): HttpHeadersInterface {
+        if (AxiosParser.isAxiosHeaders(headers) && typeof headers.toJSON === "function") {
+            return (headers.toJSON as (json: boolean) => unknown)(true) as HttpHeadersInterface;
+        }
+
+        return headers as HttpHeadersInterface;
+    }
+
+    /**
+     * Check if headers is Axios Headers
+     *
+     * @param {unknown} headers Objeto com headers do axios
+     * @returns {headers is AxiosResponseHeaders}
+     */
+    protected static isAxiosHeaders(headers: unknown): headers is AxiosResponseHeaders {
+        return !!(
+            headers
+            && typeof headers === "object"
+        );
+    }
+
+}
