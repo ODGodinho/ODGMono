@@ -4,9 +4,8 @@ import type { ResponseInterface } from "@odg/message";
 import { JSONParserException, JSONParserUnknownException } from "../Exceptions";
 import type { LoggerObjectRequestInterface, LoggerRequestStringInterface } from "../Interfaces";
 
+import { JSONLogger } from "./JsonLogger";
 import { JSONLoggerString } from "./JsonLoggerString";
-
-import { JSONLogger } from ".";
 
 export class RequestStringPlugin implements LoggerPluginInterface {
 
