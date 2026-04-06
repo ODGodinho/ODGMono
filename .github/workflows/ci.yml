@@ -45,7 +45,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Playwright Install
-        run: yarn playwright install chromium
+        run: yarn dlx playwright install chromium
 
       - if: ${{ github.event_name == 'pull_request' }}
         name: Review Dog Pull Request
