@@ -22,7 +22,7 @@ export type EventListenerNotation<
 export abstract class EventServiceProvider<Events extends EventObjectType> {
 
     private readonly listenersMap = new Map<
-        string,
+        string | symbol,
         Array<(argument: Events[keyof Events]) => Promise<void> | void>
     >();
 
@@ -36,7 +36,9 @@ export abstract class EventServiceProvider<Events extends EventObjectType> {
      * @memberof EventServiceProvider
      */
     public async boot(): Promise<void> {
-        for (const [ event, listeners ] of Object.entries(this.listeners)) {
+        for (const event of Reflect.ownKeys(this.listeners)) {
+            const listeners = this.listeners[event];
+
             for (const listener of listeners) {
                 const bind = listener.listener.handler.bind(listener.listener);
 

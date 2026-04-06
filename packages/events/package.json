@@ -26,7 +26,8 @@
     },
     "files": [
         "./dist/",
-        "./README.md"
+        "./README.md",
+        "./agents.md"
     ],
     "author": "Dragons Gamers <https://www.linkedin.com/in/victor-alves-odgodinho>",
     "license": "MIT",
@@ -44,8 +45,5 @@
     "dependencies": {
         "@odg/exception": "workspace:^",
         "eventemitter2": "^6.4.9"
-    },
-    "optionalDependencies": {
-        "reflect-metadata": "^0.2.2"
     }
 }
