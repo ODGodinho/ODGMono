@@ -45,8 +45,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      - name: Patch Workspace Versions
+        run: node utility/patch-workspace-versions.js --all
+
       - name: Install Dependencies
-        run: yarn install --immutable
+        run: yarn install
 
       - name: Playwright Install
         run: yarn dlx playwright install chromium
