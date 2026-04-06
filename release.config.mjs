@@ -20,7 +20,6 @@ export default {
   plugins: [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    "@semantic-release/npm",
     [
       "@semantic-release/exec",
       {
@@ -28,6 +27,7 @@ export default {
           "NEXT_RELEASE_VERSION=${nextRelease.version} node ../../utility/patch-workspace-versions.js"
       }
     ],
+    "@semantic-release/npm",
     "@semantic-release/github"
   ]
 };
