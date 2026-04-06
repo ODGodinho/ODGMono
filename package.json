@@ -15,6 +15,7 @@
     "lint:fix": "turbo run lint:fix",
     "tsc": "turbo run tsc",
     "release": "multi-semantic-release",
+    "release:dry": "multi-semantic-release --dry-run --debug",
     "prepare": "husky"
   },
   "devDependencies": {
