@@ -7,6 +7,10 @@
  *
  * Versões nos package.json podem ficar desatualizadas (ex.: 0.1.0) enquanto o último release está nas tags
  * (`@scope/pkg@1.13.0`). Comparamos com `git tag` e usamos o maior semver para não gerar `^0.1.0` no npm (ETARGET).
+ *
+ * Tags podem estar à frente do registo (release só no git) ou o próximo bump ainda não foi publicado.
+ * Nesse caso `npm version` falha ao resolver deps (ETARGET). Limitamos à última versão publicada no npm
+ * quando o candidato for estritamente maior (`npm view`). Desativa: SKIP_NPM_REGISTRY_CLAMP=1.
  */
 const fs = require('fs');
 const path = require('path');
@@ -94,6 +98,40 @@ function enrichVersionMapFromGitTags(versionMap, rootDir) {
   return next;
 }
 
+/**
+ * @param {Record<string, string>} versionMap
+ * @returns {Record<string, string>}
+ */
+function clampVersionMapToPublishedRegistry(versionMap) {
+  if (process.env.SKIP_NPM_REGISTRY_CLAMP === '1') {
+    return versionMap;
+  }
+  const next = { ...versionMap };
+  for (const name of Object.keys(next)) {
+    const candidate = next[name];
+    if (!candidate || !semver.valid(candidate)) continue;
+    try {
+      const out = execFileSync(
+        'npm',
+        ['view', name, 'version', '--json'],
+        {
+          encoding: 'utf8',
+          maxBuffer: 1024 * 1024,
+          env: process.env,
+        },
+      );
+      const published = JSON.parse(out.trim());
+      if (!semver.valid(published)) continue;
+      if (semver.gt(candidate, published)) {
+        next[name] = published;
+      }
+    } catch {
+      // Pacote ainda não publicado, rede, ou registry privado sem credenciais — mantém candidate.
+    }
+  }
+  return next;
+}
+
 function mergeVersionOverrides(versionMap, cwdPackageName) {
   if (process.env.NEXT_RELEASE_VERSION && cwdPackageName) {
     versionMap[cwdPackageName] = process.env.NEXT_RELEASE_VERSION;
@@ -165,9 +203,11 @@ function main() {
     // --all na raiz
   }
 
-  const versionMap = mergeVersionOverrides(
-    enrichVersionMapFromGitTags({ ...baseMap }, rootDir),
-    cwdPackageName,
+  const versionMap = clampVersionMapToPublishedRegistry(
+    mergeVersionOverrides(
+      enrichVersionMapFromGitTags({ ...baseMap }, rootDir),
+      cwdPackageName,
+    ),
   );
 
   const patchFn = (name, spec, resolvedVersion) => {
