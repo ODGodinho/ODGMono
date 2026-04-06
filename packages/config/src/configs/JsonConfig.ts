@@ -21,11 +21,17 @@ export class JsonConfig<
 
     public async get<Config extends keyof ConfigTypes>(
         $key: Config,
-        $default?: () => Promise<ConfigTypes[Config]>,
+        $default?: () => ConfigTypes[Config] | Promise<ConfigTypes[Config]>,
     ): Promise<ConfigTypes[Config]> {
-        return this.configs![$key.toString()] === undefined
-            ? $default?.() ?? this.configs![$key]
-            : this.configs![$key];
+        if (this.configs![$key.toString()] !== undefined) {
+            return this.configs![$key];
+        }
+
+        if ($default !== undefined) {
+            return Promise.resolve($default());
+        }
+
+        return this.configs![$key];
     }
 
     public async all(): Promise<ConfigTypes> {

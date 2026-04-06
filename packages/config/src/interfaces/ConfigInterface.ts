@@ -1,9 +1,9 @@
 /**
  * Configuration of my application
  *
- * @template {Record<string, unknown>} ConfigTypes my Configs types
+ * @template {Record<number | string | symbol, unknown>} ConfigTypes my Configs types
  */
-export interface ConfigInterface<ConfigTypes extends Record<string, unknown>> {
+export interface ConfigInterface<ConfigTypes extends Record<number | string | symbol, unknown>> {
 
     /**
      * Check if exist current config
