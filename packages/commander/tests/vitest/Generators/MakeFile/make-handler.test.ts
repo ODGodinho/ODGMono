@@ -48,4 +48,16 @@ describe("makeHandler Test", () => {
 
         unlink(filePath).catch(() => null);
     });
+
+    test("Generate handler without handler-from or handler-to", async () => {
+        filePath = `${path}/LoginHandler.ts`;
+        await expect(make.makeHandler("Login", { path }))
+            .resolves
+            .toBeUndefined();
+
+        expect(await new File(filePath).exists())
+            .toBeTruthy();
+
+        unlink(filePath).catch(() => null);
+    });
 });

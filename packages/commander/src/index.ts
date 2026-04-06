@@ -37,7 +37,7 @@ program
     .name("make:handler")
     .argument("<handlerName>", "selector of page name")
     .option("--handler-from <handlerFrom>", "handler source page")
-    .option("--handler-to <handlerFrom>", "handle landing page")
+    .option("--handler-to <handlerTo>", "handler destination page")
     .option(pathOption, "Destination Path", "./src/Handlers/")
     .description("Make Handler file")
     .version("0.1.1")

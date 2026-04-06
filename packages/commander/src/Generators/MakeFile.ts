@@ -101,12 +101,13 @@ export default class MakeFile {
      */
     public async makeHandler(handlerName: string, options: MakeHandlerInterface): Promise<void> {
         const stubCreator = new StubCreator();
-        const handlerFrom = options.handlerFrom ?? handlerName;
-        const handlerTo = options.handlerTo ?? handlerName;
+        const isTransition = options.handlerFrom !== undefined || options.handlerTo !== undefined;
+        const handlerClassName = isTransition
+            ? `${new Str(options.handlerFrom ?? handlerName).ucFirst().toString()}To${new Str(options.handlerTo ?? handlerName).ucFirst().toString()}Handler`
+            : `${new Str(handlerName).ucFirst().toString()}Handler`;
 
-        const filePath = await stubCreator.create("handler", `${handlerFrom}To${handlerTo}Handler`, options.path, {
-            "OriginHandler:UCFirst": handlerFrom,
-            "DestinationHandler:UCFirst": handlerTo,
+        const filePath = await stubCreator.create("handler", handlerClassName, options.path, {
+            "HandlerClassName": handlerClassName,
         });
 
         await this.logger.info(`Handler created successfully in : ${filePath}`);

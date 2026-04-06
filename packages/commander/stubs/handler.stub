@@ -10,8 +10,8 @@ import { type Exception } from "@odg/exception";
 import { ConfigName, ContainerName } from "@enums";
 import { BaseHandler } from "@handlers/BaseHandler";
 
-@ODGDecorators.injectablePageOrHandler(ContainerName.{{ OriginHandler:UCFirst }}To{{ DestinationHandler:UCFirst }}HandlerFactory)
-export class {{ OriginHandler:UCFirst }}To{{ DestinationHandler:UCFirst }}Handler extends BaseHandler implements HandlerInterface {
+@ODGDecorators.injectablePageOrHandler(ContainerName.{{ HandlerClassName }}Factory)
+export class {{ HandlerClassName }} extends BaseHandler implements HandlerInterface {
 
     public async waitForHandler(): Promise<HandlerFunction> {
         return Promise.race([
@@ -46,7 +46,7 @@ export class {{ OriginHandler:UCFirst }}To{{ DestinationHandler:UCFirst }}Handle
      * @returns {Promise<RetryAction>}
      */
     public async retrying(exception: Exception, attempt: number): Promise<RetryAction> {
-        await this.log.debug(`Step {{ OriginHandler:UCFirst }}To{{ DestinationHandler:UCFirst }}Handler: Failed Attempt ${attempt}.`);
+        await this.log.debug(`Step {{ HandlerClassName }}: Failed Attempt ${attempt}.`);
         await this.log.warning(exception.message);
 
         return RetryAction.Default;
@@ -58,7 +58,7 @@ export class {{ OriginHandler:UCFirst }}To{{ DestinationHandler:UCFirst }}Handle
      * @returns {Promise<void>}
      */
     public async success(): Promise<void> {
-        await this.log.debug("Step {{ OriginHandler:UCFirst }}To{{ DestinationHandler:UCFirst }}Handler finish with success.");
+        await this.log.debug("Step {{ HandlerClassName }} finish with success.");
     }
 
     /**
