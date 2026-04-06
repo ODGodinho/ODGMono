@@ -1,8 +1,9 @@
 /**
  * Troca `workspace:` por `^versão` nos deps internos.
  *
- * Release: `execCwd` na raiz + `RELEASE_TARGET_CWD=${cwd}`. Manual: dentro de `packages/<nome>` ou essa env.
- * `--all` na raiz altera todos. `NEXT_RELEASE_VERSION`; opcional `WORKSPACE_VERSION_OVERRIDES` JSON.
+ * Release (prepare do exec): corre em `cwd` = pacote; opcional `RELEASE_TARGET_CWD` se precisares de outro dir.
+ * Manual: `cd packages/<nome>` e correr o script, ou `--all` na raiz do monorepo.
+ * `NEXT_RELEASE_VERSION`; opcional `WORKSPACE_VERSION_OVERRIDES` JSON.
  */
 const fs = require('fs');
 const path = require('path');
@@ -69,7 +70,7 @@ function resolvePackageDirsToPatch(rootDir, root) {
   if (patchAll) {
     return [...root.workspaces];
   }
-  /** Definido pelo prepareCmd com ${cwd} quando execCwd é a raiz do repo (CI). */
+  /** Opcional: caminho absoluto do pacote se `process.cwd()` não for o diretório do pacote. */
   const targetFromEnv = process.env.RELEASE_TARGET_CWD;
   const baseForRel = targetFromEnv
     ? path.resolve(targetFromEnv)
