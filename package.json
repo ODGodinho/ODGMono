@@ -5,7 +5,20 @@
   },
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/axios",
+    "packages/cache",
+    "packages/chemicalx",
+    "packages/commander",
+    "packages/config",
+    "packages/eslint-config",
+    "packages/events",
+    "packages/exception",
+    "packages/graylog",
+    "packages/json-log",
+    "packages/log",
+    "packages/message",
+    "packages/tls",
+    "packages/tsconfig"
   ],
   "scripts": {
     "build": "turbo run build",
