@@ -1,8 +1,8 @@
 /**
  * Troca `workspace:` por `^versão` nos deps internos.
  *
- * Edita só o `package.json` do pacote em `cwd` (multi-semantic-release). `--all` na raiz altera todos.
- * `NEXT_RELEASE_VERSION` + `${nextRelease.version}` no prepare; opcional `WORKSPACE_VERSION_OVERRIDES` JSON.
+ * Release: `execCwd` na raiz + `RELEASE_TARGET_CWD=${cwd}`. Manual: dentro de `packages/<nome>` ou essa env.
+ * `--all` na raiz altera todos. `NEXT_RELEASE_VERSION`; opcional `WORKSPACE_VERSION_OVERRIDES` JSON.
  */
 const fs = require('fs');
 const path = require('path');
@@ -69,7 +69,12 @@ function resolvePackageDirsToPatch(rootDir, root) {
   if (patchAll) {
     return [...root.workspaces];
   }
-  const rel = path.relative(rootDir, process.cwd());
+  /** Definido pelo prepareCmd com ${cwd} quando execCwd é a raiz do repo (CI). */
+  const targetFromEnv = process.env.RELEASE_TARGET_CWD;
+  const baseForRel = targetFromEnv
+    ? path.resolve(targetFromEnv)
+    : process.cwd();
+  const rel = path.relative(rootDir, baseForRel);
   const normalized = rel.split(path.sep).join('/');
   if (
     !normalized ||
@@ -77,7 +82,7 @@ function resolvePackageDirsToPatch(rootDir, root) {
     !root.workspaces.includes(normalized)
   ) {
     throw new Error(
-      `Rode de dentro de um pacote em workspaces (ex.: packages/foo), ou use --all na raiz. cwd=${process.cwd()}`,
+      `Pacote alvo inválido (cwd=${process.cwd()} RELEASE_TARGET_CWD=${targetFromEnv || '(não definido)'} rel=${normalized}). Use --all na raiz ou defina RELEASE_TARGET_CWD.`,
     );
   }
   return [normalized];
@@ -100,13 +105,16 @@ function main() {
   const { packages, versionMap: baseMap } = loadWorkspacePackages(rootDir, root);
 
   let cwdPackageName = '';
+  const pkgJsonDir = process.env.RELEASE_TARGET_CWD
+    ? path.resolve(process.env.RELEASE_TARGET_CWD)
+    : process.cwd();
   try {
     const cwdManifest = JSON.parse(
-      fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'),
+      fs.readFileSync(path.join(pkgJsonDir, 'package.json'), 'utf8'),
     );
     cwdPackageName = cwdManifest.name || '';
   } catch {
-    // cwd na raiz com --all
+    // --all na raiz
   }
 
   const versionMap = mergeVersionOverrides({ ...baseMap }, cwdPackageName);

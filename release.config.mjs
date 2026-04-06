@@ -23,8 +23,9 @@ export default {
     [
       "@semantic-release/exec",
       {
+        execCwd: "../..",
         prepareCmd:
-          "NEXT_RELEASE_VERSION=${nextRelease.version} node ../../utility/patch-workspace-versions.js"
+          "NEXT_RELEASE_VERSION=${nextRelease.version} RELEASE_TARGET_CWD=${cwd} node ./utility/patch-workspace-versions.js"
       }
     ],
     "@semantic-release/npm",
