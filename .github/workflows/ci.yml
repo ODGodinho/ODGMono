@@ -45,9 +45,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Patch Workspace Versions
-        run: node utility/patch-workspace-versions.js --all
-
       - name: Install Dependencies
         run: yarn install
 
@@ -68,6 +65,9 @@ jobs:
 
       - name: Test CI
         run: yarn test:ci
+
+      - name: Patch Workspace Versions
+        run: node utility/patch-workspace-versions.js --all
 
       - if: ${{ github.event_name != 'pull_request' }}
         name: Multi Semantic Release
