@@ -27,14 +27,15 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "tsc": "turbo run tsc",
-    "release": "multi-semantic-release --deps.prefix=^ --sequential-init",
-    "release:local": "multi-semantic-release --deps.prefix=^ --sequential-init --no-ci",
+    "release": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --sequential-init",
+    "release:local": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --sequential-init --no-ci",
     "release:debug": "DEBUG=msr:*,semantic-release:* yarn release:local",
-    "release:dry": "multi-semantic-release --deps.prefix=^ --dry-run --debug",
+    "release:dry": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --dry-run --debug",
     "prepare": "husky"
   },
   "devDependencies": {
     "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/exec": "^7.1.0",
     "@semantic-release/github": "^12.0.6",
     "@semantic-release/npm": "^13.1.5",
     "@semantic-release/release-notes-generator": "^14.1.0",

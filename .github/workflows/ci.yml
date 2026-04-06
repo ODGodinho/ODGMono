@@ -67,10 +67,6 @@ jobs:
         run: yarn test:ci
 
       - if: ${{ github.event_name != 'pull_request' }}
-        name: Patch workspace versions
-        run: node utility/patch-workspace-versions.js --all
-
-      - if: ${{ github.event_name != 'pull_request' }}
         name: Multi Semantic Release
         run: yarn release
         env:

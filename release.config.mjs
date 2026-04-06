@@ -20,7 +20,12 @@ export default {
   plugins: [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    "@semantic-release/npm",
+    ["@semantic-release/exec", {
+      // Atualiza apenas a versão do pacote atual sem quebrar a árvore de dependências
+      "prepareCmd": "npm pkg set version=${nextRelease.version}",
+      // Usa o Yarn para publicar, que converte o workspace: internamente
+      "publishCmd": "yarn npm publish --access public"
+    }],
     "@semantic-release/github",
   ],
 };
