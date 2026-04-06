@@ -66,7 +66,8 @@ jobs:
       - name: Test CI
         run: yarn test:ci
 
-      - name: Patch Workspace Versions
+      - if: ${{ github.event_name != 'pull_request' }}
+        name: Patch workspace versions
         run: node utility/patch-workspace-versions.js --all
 
       - if: ${{ github.event_name != 'pull_request' }}

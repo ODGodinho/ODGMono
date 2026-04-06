@@ -1,7 +1,7 @@
 /**
  * Troca `workspace:` por `^versão` nos deps internos.
  *
- * Release (prepare do exec): corre em `cwd` = pacote; opcional `RELEASE_TARGET_CWD` se precisares de outro dir.
+ * Release (CI antes de `yarn release`): na raiz com `--all`; por pacote, `cwd` = pacote; opcional `RELEASE_TARGET_CWD`.
  * Manual: `cd packages/<nome>` e correr o script, ou `--all` na raiz do monorepo.
  * `NEXT_RELEASE_VERSION`; opcional `WORKSPACE_VERSION_OVERRIDES` JSON.
  *
@@ -10,7 +10,11 @@
  *
  * Tags podem estar à frente do registo (release só no git) ou o próximo bump ainda não foi publicado.
  * Nesse caso `npm version` falha ao resolver deps (ETARGET). Limitamos à última versão publicada no npm
- * quando o candidato for estritamente maior (`npm view`). Desativa: SKIP_NPM_REGISTRY_CLAMP=1.
+ * quando o candidato for estritamente maior (`npm view` no registry npmjs). Desativa: SKIP_NPM_REGISTRY_CLAMP=1.
+ *
+ * O multi-semantic-release reescreve deps internos para ^próximoRelease (ex. ^1.1.0) *antes* do plugin npm.
+ * Sem hook no prepare, o patch em CI não corre entre MSR e `npm version`; o script ainda reescreve qualquer
+ * ^x.y.z já presente para o valor do mapa (pós-clamp), não só `workspace:`.
  */
 const fs = require('fs');
 const path = require('path');
@@ -19,6 +23,9 @@ const semver = require('semver');
 
 const argv = process.argv.slice(2);
 const patchAll = argv.includes('--all');
+
+/** Registry público npm (o CI com setup-node + registry-url GitHub faz `npm view` falhar ou mentir). */
+const NPMJS = 'https://registry.npmjs.org/';
 
 function findMonorepoRoot(startDir = process.cwd()) {
   let dir = startDir;
@@ -113,11 +120,17 @@ function clampVersionMapToPublishedRegistry(versionMap) {
     try {
       const out = execFileSync(
         'npm',
-        ['view', name, 'version', '--json'],
+        [
+          'view',
+          name,
+          'version',
+          '--json',
+          `--registry=${process.env.NPMJS_REGISTRY_URL || NPMJS}`,
+        ],
         {
           encoding: 'utf8',
           maxBuffer: 1024 * 1024,
-          env: process.env,
+          env: { ...process.env, npm_config_registry: process.env.NPMJS_REGISTRY_URL || NPMJS },
         },
       );
       const published = JSON.parse(out.trim());
@@ -174,12 +187,18 @@ function resolvePackageDirsToPatch(rootDir, root) {
   return [normalized];
 }
 
-function patchDeps(section, versionMap, patchFn) {
+/**
+ * @param {Record<string, string>|undefined} section
+ * @param {Record<string, string>} versionMap só pacotes do workspace
+ */
+function patchDeps(section, versionMap) {
   if (!section) return;
   for (const name of Object.keys(section)) {
-    if (versionMap[name]) {
-      section[name] = patchFn(name, section[name], versionMap[name]);
-    }
+    if (!versionMap[name]) continue;
+    const spec = section[name];
+    if (typeof spec !== 'string') continue;
+    // workspace:^ | ^1.1.0 (MSR) | ~ | * — alinhar ao mapa pós-clamp
+    section[name] = `^${versionMap[name]}`;
   }
 }
 
@@ -210,21 +229,14 @@ function main() {
     ),
   );
 
-  const patchFn = (name, spec, resolvedVersion) => {
-    if (typeof spec === 'string' && spec.startsWith('workspace:')) {
-      return `^${resolvedVersion}`;
-    }
-    return spec;
-  };
-
   const dirs = resolvePackageDirsToPatch(rootDir, root);
 
   for (const dir of dirs) {
     const packageInfo = packages[dir];
-    patchDeps(packageInfo.dependencies, versionMap, patchFn);
-    patchDeps(packageInfo.devDependencies, versionMap, patchFn);
-    patchDeps(packageInfo.peerDependencies, versionMap, patchFn);
-    patchDeps(packageInfo.optionalDependencies, versionMap, patchFn);
+    patchDeps(packageInfo.dependencies, versionMap);
+    patchDeps(packageInfo.devDependencies, versionMap);
+    patchDeps(packageInfo.peerDependencies, versionMap);
+    patchDeps(packageInfo.optionalDependencies, versionMap);
     fs.writeFileSync(
       path.join(rootDir, dir, 'package.json'),
       JSON.stringify(packageInfo, undefined, 4) + '\n',
