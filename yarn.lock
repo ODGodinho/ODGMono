@@ -1498,7 +1498,6 @@ __metadata:
   resolution: "@odg/monorepo@workspace:."
   dependencies:
     "@semantic-release/commit-analyzer": "npm:^13.0.1"
-    "@semantic-release/exec": "npm:^7.1.0"
     "@semantic-release/github": "npm:^12.0.6"
     "@semantic-release/npm": "npm:^13.1.5"
     "@semantic-release/release-notes-generator": "npm:^14.1.0"
@@ -1758,22 +1757,6 @@ __metadata:
   version: 4.0.0
   resolution: "@semantic-release/error@npm:4.0.0"
   checksum: 10c0/c97fcfbd341765f7c7430bdb32d5f04c61ee15c3eeec374823fbb157640ad03453f24e3a85241bddb29e193b69c6aab480e4d16e76adabb052c01bfbd1698c18
-  languageName: node
-  linkType: hard
-
-"@semantic-release/exec@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@semantic-release/exec@npm:7.1.0"
-  dependencies:
-    "@semantic-release/error": "npm:^4.0.0"
-    aggregate-error: "npm:^3.0.0"
-    debug: "npm:^4.0.0"
-    execa: "npm:^9.0.0"
-    lodash-es: "npm:^4.17.21"
-    parse-json: "npm:^8.0.0"
-  peerDependencies:
-    semantic-release: ">=24.1.0"
-  checksum: 10c0/ee9cbc719d39e669304cd3f9dbd2eb9e4808466581b1815e2a039a5d2fb2d1a02660941bb7ff667c0373cde074a755a48c55daba10191a61e5e7f0020852b8ce
   languageName: node
   linkType: hard
 
@@ -2530,16 +2513,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aggregate-error@npm:^3.0.0":
-  version: 3.1.0
-  resolution: "aggregate-error@npm:3.1.0"
-  dependencies:
-    clean-stack: "npm:^2.0.0"
-    indent-string: "npm:^4.0.0"
-  checksum: 10c0/a42f67faa79e3e6687a4923050e7c9807db3848a037076f791d10e092677d65c1d2d863b7848560699f40fc0502c19f40963fb1cd1fb3d338a7423df8e45e039
-  languageName: node
-  linkType: hard
-
 "aggregate-error@npm:^5.0.0":
   version: 5.0.0
   resolution: "aggregate-error@npm:5.0.0"
@@ -3276,13 +3249,6 @@ __metadata:
   dependencies:
     escape-string-regexp: "npm:^1.0.5"
   checksum: 10c0/fd9c7446551b8fc536f95e8a286d431017cd4ba1ec2e53997ec9159385e9c317672f6dfc4d49fdb97449fdb53b0bacd0a8bab9343b8fdd2e46c7ddf6173d0db7
-  languageName: node
-  linkType: hard
-
-"clean-stack@npm:^2.0.0":
-  version: 2.2.0
-  resolution: "clean-stack@npm:2.2.0"
-  checksum: 10c0/1f90262d5f6230a17e27d0c190b09d47ebe7efdd76a03b5a1127863f7b3c9aec4c3e6c8bb3a7bbf81d553d56a1fd35728f5a8ef4c63f867ac8d690109742a8c1
   languageName: node
   linkType: hard
 
