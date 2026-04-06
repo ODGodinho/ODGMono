@@ -4,9 +4,14 @@
  * Release (prepare do exec): corre em `cwd` = pacote; opcional `RELEASE_TARGET_CWD` se precisares de outro dir.
  * Manual: `cd packages/<nome>` e correr o script, ou `--all` na raiz do monorepo.
  * `NEXT_RELEASE_VERSION`; opcional `WORKSPACE_VERSION_OVERRIDES` JSON.
+ *
+ * Versões nos package.json podem ficar desatualizadas (ex.: 0.1.0) enquanto o último release está nas tags
+ * (`@scope/pkg@1.13.0`). Comparamos com `git tag` e usamos o maior semver para não gerar `^0.1.0` no npm (ETARGET).
  */
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
+const semver = require('semver');
 
 const argv = process.argv.slice(2);
 const patchAll = argv.includes('--all');
@@ -45,6 +50,48 @@ function loadWorkspacePackages(rootDir, root) {
     }),
   );
   return { packages, versionMap };
+}
+
+/**
+ * @param {string} rootDir
+ * @param {string} packageName ex. @odg/message
+ * @returns {string[]}
+ */
+function versionsFromGitTags(rootDir, packageName) {
+  try {
+    const out = execFileSync('git', ['tag', '-l', `${packageName}@*`], {
+      cwd: rootDir,
+      encoding: 'utf8',
+      maxBuffer: 10 * 1024 * 1024,
+    });
+    const prefix = `${packageName}@`;
+    return out
+      .trim()
+      .split('\n')
+      .filter(Boolean)
+      .map((tag) => (tag.startsWith(prefix) ? tag.slice(prefix.length) : ''))
+      .filter((v) => semver.valid(v));
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * @param {Record<string, string>} versionMap
+ * @param {string} rootDir
+ * @returns {Record<string, string>}
+ */
+function enrichVersionMapFromGitTags(versionMap, rootDir) {
+  const next = { ...versionMap };
+  for (const name of Object.keys(next)) {
+    const fromPkg = next[name];
+    const fromTags = versionsFromGitTags(rootDir, name);
+    const candidates = [fromPkg, ...fromTags].filter((v) => v && semver.valid(v));
+    if (candidates.length === 0) continue;
+    const best = semver.maxSatisfying(candidates, '*', { includePrerelease: true });
+    if (best) next[name] = best;
+  }
+  return next;
 }
 
 function mergeVersionOverrides(versionMap, cwdPackageName) {
@@ -118,7 +165,10 @@ function main() {
     // --all na raiz
   }
 
-  const versionMap = mergeVersionOverrides({ ...baseMap }, cwdPackageName);
+  const versionMap = mergeVersionOverrides(
+    enrichVersionMapFromGitTags({ ...baseMap }, rootDir),
+    cwdPackageName,
+  );
 
   const patchFn = (name, spec, resolvedVersion) => {
     if (typeof spec === 'string' && spec.startsWith('workspace:')) {
