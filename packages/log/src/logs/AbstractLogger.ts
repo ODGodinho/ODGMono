@@ -1,4 +1,4 @@
-import { type LoggerInterface, LogLevel } from "../index";
+import { type ContextType, type LoggerInterface, LogLevel } from "../index";
 
 /**
  * Simple logger implementation
@@ -11,10 +11,10 @@ export abstract class AbstractLogger implements LoggerInterface {
      * System is unusable.
      *
      * @param {unknown} message Message Log
-     * @param {Record<string, string> | undefined} context Context Message replace
+     * @param {ContextType | undefined} context Context Message replace
      * @returns {Promise<void>}
      */
-    public async emergency(message: unknown, context?: Record<string, string>): Promise<void> {
+    public async emergency(message: unknown, context?: ContextType): Promise<void> {
         return this.log(LogLevel.EMERGENCY, message, context);
     }
 
@@ -25,10 +25,10 @@ export abstract class AbstractLogger implements LoggerInterface {
      * trigger the SMS alerts and wake you up.
      *
      * @param {unknown} message Message Log
-     * @param {Record<string, string> | undefined} context Context Message replace
+     * @param {ContextType | undefined} context Context Message replace
      * @returns {Promise<void>}
      */
-    public async alert(message: unknown, context?: Record<string, string>): Promise<void> {
+    public async alert(message: unknown, context?: ContextType): Promise<void> {
         return this.log(LogLevel.ALERT, message, context);
     }
 
@@ -38,10 +38,10 @@ export abstract class AbstractLogger implements LoggerInterface {
      * Example: Application component unavailable, unexpected exception.
      *
      * @param {unknown} message Message Log
-     * @param {Record<string, string> | undefined} context Context Message replace
+     * @param {ContextType | undefined} context Context Message replace
      * @returns {Promise<void>}
      */
-    public async critical(message: unknown, context?: Record<string, string>): Promise<void> {
+    public async critical(message: unknown, context?: ContextType): Promise<void> {
         return this.log(LogLevel.CRITICAL, message, context);
     }
 
@@ -50,10 +50,10 @@ export abstract class AbstractLogger implements LoggerInterface {
      * be logged and monitored.
      *
      * @param {unknown} message Message Log
-     * @param {Record<string, string> | undefined} context Context Message replace
+     * @param {ContextType | undefined} context Context Message replace
      * @returns {Promise<void>}
      */
-    public async error(message: unknown, context?: Record<string, string>): Promise<void> {
+    public async error(message: unknown, context?: ContextType): Promise<void> {
         return this.log(LogLevel.ERROR, message, context);
     }
 
@@ -64,10 +64,10 @@ export abstract class AbstractLogger implements LoggerInterface {
      * that are not necessarily wrong.
      *
      * @param {unknown} message Message Log
-     * @param {Record<string, string> | undefined} context Context Message replace
+     * @param {ContextType | undefined} context Context Message replace
      * @returns {Promise<void>}
      */
-    public async warning(message: unknown, context?: Record<string, string>): Promise<void> {
+    public async warning(message: unknown, context?: ContextType): Promise<void> {
         return this.log(LogLevel.WARNING, message, context);
     }
 
@@ -75,10 +75,10 @@ export abstract class AbstractLogger implements LoggerInterface {
      * Normal but significant events.
      *
      * @param {unknown} message Message Log
-     * @param {Record<string, string> | undefined} context Context Message replace
+     * @param {ContextType | undefined} context Context Message replace
      * @returns {Promise<void>}
      */
-    public async notice(message: unknown, context?: Record<string, string>): Promise<void> {
+    public async notice(message: unknown, context?: ContextType): Promise<void> {
         return this.log(LogLevel.NOTICE, message, context);
     }
 
@@ -88,10 +88,10 @@ export abstract class AbstractLogger implements LoggerInterface {
      * Example: User logs in, SQL logs.
      *
      * @param {unknown} message Message Log
-     * @param {Record<string, string> | undefined} context Context Message replace
+     * @param {ContextType | undefined} context Context Message replace
      * @returns {Promise<void>}
      */
-    public async info(message: unknown, context?: Record<string, string>): Promise<void> {
+    public async info(message: unknown, context?: ContextType): Promise<void> {
         return this.log(LogLevel.INFO, message, context);
     }
 
@@ -99,10 +99,10 @@ export abstract class AbstractLogger implements LoggerInterface {
      * Detailed debug information.
      *
      * @param {unknown} message Message Log
-     * @param {Record<string, string> | undefined} context Context Message replace
+     * @param {ContextType | undefined} context Context Message replace
      * @returns {Promise<void>}
      */
-    public async debug(message: unknown, context?: Record<string, string>): Promise<void> {
+    public async debug(message: unknown, context?: ContextType): Promise<void> {
         return this.log(LogLevel.DEBUG, message, context);
     }
 
@@ -111,9 +111,9 @@ export abstract class AbstractLogger implements LoggerInterface {
      *
      * @param {LogLevel} level Log level of this message
      * @param {unknown} message Message of log with all data
-     * @param {Record<string, string> | undefined} context Context Message replace
+     * @param {ContextType | undefined} context Context Message replace
      * @returns {Promise<void>}
      */
-    public abstract log(level: LogLevel, message: unknown, context?: Record<string, string>): Promise<void>;
+    public abstract log(level: LogLevel, message: unknown, context?: ContextType): Promise<void>;
 
 }
