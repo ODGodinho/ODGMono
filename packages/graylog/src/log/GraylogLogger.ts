@@ -54,9 +54,8 @@ export class GraylogLogger extends AbstractLogger implements LoggerInterface {
         const logTitle = `${options?.title ?? ""} ${titleContent}`.trim();
 
         const withResolvers = Promise.withResolvers<undefined>();
-        const messagePlain = structuredClone(message) as unknown as Record<string, unknown>;
         const messageItens: JSONLogger | Record<string, unknown> = {
-            ...messagePlain,
+            ...(message as unknown as Record<string, unknown>),
             ...options,
         };
 
