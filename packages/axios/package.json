@@ -48,7 +48,7 @@
     "dependencies": {
         "@odg/exception": "workspace:^",
         "@odg/message": "workspace:^",
-        "axios": "^1.14.0"
+        "axios": "^1.15.0"
     },
     "peerDependencies": {
         "@odg/exception": "workspace:^",
