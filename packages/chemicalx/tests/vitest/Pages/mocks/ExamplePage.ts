@@ -8,7 +8,7 @@ import {
 } from "../../../../src";
 import type { PageClassEngine } from "../../playwright/engine";
 
-@ODGDecorators.injectablePageOrHandler("ExamplePage")
+@ODGDecorators.injectable("ExamplePage")
 @ODGDecorators.attemptableFlow()
 export class ExamplePage extends BasePage<PageClassEngine & PageEngineInterface> {
 

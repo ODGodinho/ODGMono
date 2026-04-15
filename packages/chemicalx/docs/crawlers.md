@@ -203,7 +203,7 @@ type HandlerFunction = Exception | (() => Promise<HandlerSolutionType>);
 
 ### Container / DI
 
-Chemical-X usa Inversify para DI. `@injectablePageOrHandler(name)` registra metadata; consumer deve chamar `Container.loadModule()`.
+Chemical-X usa Inversify para DI. `@ODGDecorators.injectable(name)` registra metadata; consumer deve chamar `Container.loadModule()`.
 
 **Regras:**
 

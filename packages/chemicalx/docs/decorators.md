@@ -1,4 +1,4 @@
-## Chemical-X Decorators - @attemptableFlow, @getterAccess, @injectablePageOrHandler
+## Chemical-X Decorators - @ODGDecorators.attemptableFlow, @ODGDecorators.getterAccess, @ODGDecorators.injectable
 
 DSL baseada em decorators para retry com lifecycle, interceptação de acesso e DI registration.
 
@@ -8,7 +8,7 @@ import { ODGDecorators } from "@odg/chemical-x";
 
 ---
 
-### `@attemptableFlow()`
+### `@ODGDecorators.attemptableFlow()`
 
 Decorator de classe que adiciona retry com lifecycle hooks completo. Envolve `execute()` com lógica de retentativa baseada em `AttemptableInterface`.
 
@@ -95,7 +95,7 @@ See also: `tests/vitest/Pages/` para exemplos de Pages com `@attemptableFlow`.
 
 ---
 
-### `@getterAccess()`
+### `@ODGDecorators.getterAccess()`
 
 Decorator de classe que cria um Proxy interceptando **todo** acesso a propriedade/método via `__get(key, value)`.
 
@@ -145,14 +145,14 @@ See also: `tests/vitest/puppeteer/` e `tests/vitest/playwright/` para exemplos d
 
 ---
 
-### `@injectablePageOrHandler(name)`
+### `@ODGDecorators.injectable(name, scope?)`
 
 Registra classe no Container (Inversify) com `@injectable()` e `@injectFromHierarchy()`.
 
 **Aplicação:**
 
 ```typescript
-@ODGDecorators.injectablePageOrHandler("LoginPage")
+@ODGDecorators.injectable("LoginPage")
 @ODGDecorators.attemptableFlow()
 class LoginPage extends BasePage<PageEngine> {
     // ...
@@ -165,6 +165,7 @@ class LoginPage extends BasePage<PageEngine> {
 2. Consumer **deve** chamar `Container.loadModule()` para efetivar os bindings
 3. Combinado com `@attemptableFlow` em Pages e Handlers
 4. O `name` é usado como identificador do binding no Container
+5. Deve sempre ficar a cima de todos os outros decorators (ex: `@attemptableFlow`) para garantir que a classe seja registrada apos de ser processada por outros decorators
 
 ---
 
@@ -188,24 +189,24 @@ class PageLoadedListener {
 | Cenário | Ferramenta | Motivo |
 |---|---|---|
 | Retry simples de callback | `retry()` | Função isolada, sem lifecycle, sem estado |
-| Retry de classe inteira com hooks | `@attemptableFlow` | Lifecycle completo: attempt, success, failure, retrying, finish, sleep |
-| Interceptar propriedades | `@getterAccess` | Proxy transparente para delegação/validação |
-| Registrar no Container | `@injectablePageOrHandler` | DI via Inversify com hierarchy |
+| Retry de classe inteira com hooks | `@ODGDecorators.attemptableFlow` | Lifecycle completo: attempt, success, failure, retrying, finish, sleep |
+| Interceptar propriedades | `@ODGDecorators.getterAccess` | Proxy transparente para delegação/validação |
+| Registrar no Container | `@ODGDecorators.injectable` | DI via Inversify com hierarchy |
 | Callback com timeout | `timeout()` | Sem retry, apenas limite de tempo |
-| Classe retriable com timeout | `@attemptableFlow` + `timeout()` no `execute()` | Combine ambos para retry + timeout |
+| Classe retriable com timeout | `@ODGDecorators.attemptableFlow` + `timeout()` no `execute()` | Combine ambos para retry + timeout |
 
 **Regra geral:**
 - Use `retry()` quando quer retentar **uma função**
-- Use `@attemptableFlow` quando quer retentar **um comportamento de classe** com estado e lifecycle
+- Use `@ODGDecorators.attemptableFlow` quando quer retentar **um comportamento de classe** com estado e lifecycle
 
 ---
 
 ### Common Patterns
 
-**@attemptableFlow com handler e solução:**
+**@ODGDecorators.attemptableFlow com handler e solução:**
 
 ```typescript
-@ODGDecorators.injectablePageOrHandler("LoginHandler")
+@ODGDecorators.injectable("LoginHandler")
 @ODGDecorators.attemptableFlow()
 class LoginHandler extends BaseHandler<PuppeteerPage> {
     readonly $$s = {
@@ -237,7 +238,7 @@ class LoginHandler extends BaseHandler<PuppeteerPage> {
 }
 ```
 
-**@getterAccess para wrapper customizado:**
+**@ODGDecorators.getterAccess para wrapper customizado:**
 
 ```typescript
 @ODGDecorators.getterAccess()

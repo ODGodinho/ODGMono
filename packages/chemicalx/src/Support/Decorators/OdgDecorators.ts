@@ -8,6 +8,7 @@ import type {
 } from "@odg/events";
 import { UnknownException } from "@odg/exception";
 import {
+    type BindingScope,
     decorate,
     injectable,
     injectFromHierarchy,
@@ -19,13 +20,13 @@ import type { ContainerMetadataInterface } from "@interfaces/internal/ContainerI
 
 export class ODGDecorators {
 
-    protected static readonly metaDataPageOrHandler: string = "odg:bind-page-metadata";
+    protected static readonly metadataInjectable: string = "odg:bind-page-metadata";
 
     protected static readonly metaDataEvent: string = "odg:bind-events-metadata";
 
-    public static injectablePageOrHandler(name: string): CallableFunction {
+    public static injectable(name: string, scope?: BindingScope): CallableFunction {
         return (target: new (...parameters: unknown[]) => unknown) => {
-            decorate(injectable(), target);
+            decorate(injectable(scope), target);
             decorate(injectFromHierarchy({
                 extendConstructorArguments: true,
                 extendProperties: true,
@@ -36,7 +37,7 @@ export class ODGDecorators {
             }), target);
 
             const previousMetadata = Reflect.getMetadata(
-                ODGDecorators.metaDataPageOrHandler,
+                ODGDecorators.metadataInjectable,
                 Reflect,
             ) as [] | undefined;
 
@@ -45,7 +46,7 @@ export class ODGDecorators {
                 ...previousMetadata ?? [],
             ];
 
-            Reflect.defineMetadata(ODGDecorators.metaDataPageOrHandler, newMetadata, Reflect);
+            Reflect.defineMetadata(ODGDecorators.metadataInjectable, newMetadata, Reflect);
         };
     }
 
@@ -123,7 +124,7 @@ export class ODGDecorators {
 
     public static async loadModule(containerInstance: TypedContainer): Promise<void> {
         const provideMetadata = Reflect.getMetadata(
-            ODGDecorators.metaDataPageOrHandler,
+            ODGDecorators.metadataInjectable,
             Reflect,
         ) as ContainerMetadataInterface[] | undefined ?? [];
 

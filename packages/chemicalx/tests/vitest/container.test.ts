@@ -28,7 +28,7 @@ describe("Container Test", () => {
     test("Test Clear Metadata", async () => {
         const container = new Container();
 
-        Reflect.defineMetadata(ODGDecorators["metaDataPageOrHandler"], undefined, Reflect);
+        Reflect.defineMetadata(ODGDecorators["metadataInjectable"], undefined, Reflect);
 
         await expect((async (): Promise<void> => {
             await ODGDecorators.loadModule(container);

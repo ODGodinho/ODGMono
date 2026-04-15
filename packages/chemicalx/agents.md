@@ -39,10 +39,10 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 
 | Decorator | Propósito |
 |---|---|
-| `@attemptableFlow()` | Retry a nível de classe com lifecycle hooks (`attempt`, `sleep`, `success`, `failure`, `retrying`, `finish`) |
-| `@getterAccess()` | Proxy que intercepta todo acesso a propriedades via `__get(key, value)` |
-| `@injectablePageOrHandler(name)` | Registra classe no Container (Inversify) com `@injectable` + `@injectFromHierarchy` |
-| `@registerListener(event, container, options)` | Registra listener de eventos em Container EventEmitter |
+| `@ODGDecorators.attemptableFlow()` | Retry a nível de classe com lifecycle hooks (`attempt`, `sleep`, `success`, `failure`, `retrying`, `finish`) |
+| `@ODGDecorators.getterAccess()` | Proxy que intercepta todo acesso a propriedades via `__get(key, value)` |
+| `@ODGDecorators.injectable(name, scope?)` | Registra classe no Container (Inversify) |
+| `@ODGDecorators.registerListener(event, container, options)` | Registra listener de eventos em Container EventEmitter |
 
 📖 See also: [docs/decorators.md](docs/decorators.md)
 
@@ -51,7 +51,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 | Classe | Propósito |
 |---|---|
 | `BrowserManager` | Orquestrador: cria instâncias de Browser e Context via factories injetadas |
-| `Browser` | Wrapper com `@getterAccess` sobre engine do browser; gerencia Contexts |
+| `Browser` | Wrapper com `@ODGDecorators.getterAccess()` sobre engine do browser; gerencia Contexts |
 | `Context` | Wrapper sobre contexto do browser; gerencia Pages |
 | `Page` | Wrapper sobre page do browser com acesso ao Context pai |
 | `BasePage` (abstract) | Define uma página por intenção; implementa `execute()` + `attempt()` + seletores `$s`/`$$s` |
@@ -92,7 +92,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 4. **Handler Validation Contract**: Handlers **validam**, não executam. `waitForHandler()` retorna `Exception` ou `() => Promise<HandlerSolutionType>`. O handler declara Solution (próxima Page) ou lança Exception. Nunca falha silenciosamente.
    📖 See also: [docs/crawlers.md](docs/crawlers.md)
 
-5. **Container.loadModule() obrigatório**: Classes com `@injectablePageOrHandler` precisam de `Container.loadModule()` antes da execução. DI binding é responsabilidade do consumidor.
+5. **Container.loadModule() obrigatório**: Classes com `@ODGDecorators.injectable` precisam de `Container.loadModule()` antes da execução. DI binding é responsabilidade do consumidor.
    📖 See also: [docs/crawlers.md](docs/crawlers.md)
 
 6. **`retry()` com `when` callback**: O callback `when(exception, times)` retorna `RetryAction` para decidir por tentativa: `Retry` (forçar), `Throw` (parar), `Resolve` (resolver com `undefined`), `Default` (seguir contagem `times`).
@@ -124,10 +124,11 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 2. **Puppeteer/Playwright NÃO incluído**: Crawler APIs requerem driver de browser, mas o consumidor **deve instalar separadamente**. Helpers e Decorators funcionam sem driver.
 3. **DI é responsabilidade do consumidor**: Chemical-X usa Inversify mas **não auto-wira**. Consumidor deve registrar bindings e chamar `Container.loadModule()`.
 4. **Driver não é auto-selecionado**: Consumer configura qual driver usar via binding no Container ou construtor do `BrowserManager`. Puppeteer e Playwright são intercambiáveis via configuração.
-5. **`Container.loadModule()` antes de executar**: Sem essa chamada, classes registradas com `@injectablePageOrHandler` não estarão disponíveis no container.
+5. **`Container.loadModule()` antes de executar**: Sem essa chamada, classes registradas com `@ODGDecorators.injectable` não estarão disponíveis no container.
 6. **Pages por intenção, não por URL**: Não assuma 1:1 entre URL e Page. Modele Pages pela responsabilidade/ação desejada.
 7. **Handlers não agem — validam**: Handler nunca deve interagir com a page diretamente nem chamar outras Pages. Declara Solution ou lança Exception.
 8. **Dependências de runtime**: `@odg/exception`, `inversify` e `@inversifyjs/binding-decorators` são dependências obrigatórias em runtime.
+9. **Ordem decorators**: `@ODGDecorators.injectable()` deve ser o primeiro decorator, ficando a cima de todos os demais para evitar criar container sem os demais decorators registrados.
 
 ## 📖 Detailed Documentation
 
@@ -135,7 +136,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 |---|---|
 | [docs/helpers.md](docs/helpers.md) | Guia completo de `retry()`, `sleep()`, `timeout()`, `throwIf()` com padrões de uso |
 | [docs/crawlers.md](docs/crawlers.md) | Arquitetura Crawler: BrowserManager, Pages, Handlers, Container/DI, workflow examples |
-| [docs/decorators.md](docs/decorators.md) | `@attemptableFlow`, `@getterAccess`, `@injectablePageOrHandler` com lifecycle e exemplos |
+| [docs/decorators.md](docs/decorators.md) | `@ODGDecorators.attemptableFlow`, `@ODGDecorators.getterAccess`, `@ODGDecorators.injectable` com lifecycle e exemplos |
 | [docs/exceptions.md](docs/exceptions.md) | Referência completa de exceções com trigger, handling e exemplos |
 
 ## 🔗 Interfaces Públicas

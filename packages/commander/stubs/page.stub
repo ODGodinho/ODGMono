@@ -12,7 +12,7 @@ import {
  *
  * @author
  */
-@ODGDecorators.injectablePageOrHandler(ContainerName.{{ PageName:UCFirst }}PageFactory)
+@ODGDecorators.injectable(ContainerName.{{ PageName:UCFirst }}Page)
 @ODGDecorators.attemptableFlow()
 export class {{ PageName:UCFirst }}Page extends BasePage implements PageInterface {
 

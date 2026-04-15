@@ -2,27 +2,25 @@ import { ODGDecorators } from "@odg/chemical-x";
 import { type EventListenerInterface } from "@odg/events";
 import { LoggerInterface } from "@odg/log";
 import { inject } from "inversify";
-import { fluentProvide } from "inversify-binding-decorators";
 
 import { type EventBrowserParameters, type EventTypes } from "#types/EventsInterface";
 import { ContainerName, EventName } from "@enums";
-import { PageOrHandlerFactoryType } from "@factory/PageOrHandlerFactory";
 import { {{ EventName:UCFirst }}Page } from "@pages/{{ EventName:UCFirst }}Page";
 
+@ODGDecorators.injectable(ContainerName.{{ EventName:UCFirst }}EventListener, "Singleton")
 @ODGDecorators.registerListener(EventName.{{ EventName:UCFirst }}Event, ContainerName.{{ EventName:UCFirst }}EventListener, {})
-@(fluentProvide(ContainerName.{{ EventName:UCFirst }}EventListener).inSingletonScope().done())
 export class {{ EventName:UCFirst }}EventListener implements EventListenerInterface<EventTypes, EventName.{{ EventName:UCFirst }}Event> {
 
     public constructor(
         @inject(ContainerName.Logger) public readonly log: LoggerInterface,
-        @inject(ContainerName.{{ EventName:UCFirst }}PageFactory) public readonly {{ EventName:LCFirst }}PageFactory: PageOrHandlerFactoryType<{{ EventName:UCFirst }}Page>,
+        @inject(ContainerName.{{ EventName:UCFirst }}Page) public readonly {{ EventName:LCFirst }}Page: {{ EventName:UCFirst }}Page,
     ) {
     }
 
     public async handler({ page }: EventBrowserParameters): Promise<void> {
         await this.log.debug("{{ EventName:UCFirst }}EventListener is sended");
 
-        await this.{{ EventName:LCFirst }}PageFactory(page).execute();
+        await this.{{ EventName:LCFirst }}Page.setPage(page).execute();
     }
 
 }
