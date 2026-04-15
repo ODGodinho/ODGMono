@@ -53,22 +53,17 @@
         "vitest": "^4.1.2"
     },
     "dependencies": {
-        "@inversifyjs/binding-decorators": "^3.0.0",
         "@inversifyjs/strongly-typed": "^3.0.0",
         "@odg/exception": "workspace:^",
         "inversify": "^8.1.0"
     },
     "peerDependencies": {
-        "@inversifyjs/binding-decorators": "^2.0.0",
         "@inversifyjs/strongly-typed": "^2.2.0",
         "@odg/events": "workspace:^",
         "inversify": "^7.1.0",
         "reflect-metadata": ">=0.2.2"
     },
     "peerDependenciesMeta": {
-        "@inversifyjs/binding-decorators": {
-            "optional": true
-        },
         "@inversifyjs/strongly-typed": {
             "optional": true
         },

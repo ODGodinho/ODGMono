@@ -612,17 +612,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inversifyjs/binding-decorators@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@inversifyjs/binding-decorators@npm:3.0.0"
-  dependencies:
-    "@inversifyjs/reflect-metadata-utils": "npm:1.5.0"
-  peerDependencies:
-    inversify: ^8.0.0
-  checksum: 10c0/933eb3dcd5f6f4599ed2678bc93727989544da176b8961f925986c12bb99c71c55792e100a0eaa4eb513201790d9c5b1ce235d97f01238f0748fbf9511da7962
-  languageName: node
-  linkType: hard
-
 "@inversifyjs/common@npm:2.0.1":
   version: 2.0.1
   resolution: "@inversifyjs/common@npm:2.0.1"
@@ -1220,7 +1209,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@odg/chemical-x@workspace:packages/chemicalx"
   dependencies:
-    "@inversifyjs/binding-decorators": "npm:^3.0.0"
     "@inversifyjs/strongly-typed": "npm:^3.0.0"
     "@odg/eslint-config": "workspace:^"
     "@odg/events": "workspace:^"
@@ -1239,14 +1227,11 @@ __metadata:
     vite: "npm:^8.0.3"
     vitest: "npm:^4.1.2"
   peerDependencies:
-    "@inversifyjs/binding-decorators": ^2.0.0
     "@inversifyjs/strongly-typed": ^2.2.0
     "@odg/events": "workspace:^"
     inversify: ^7.1.0
     reflect-metadata: ">=0.2.2"
   peerDependenciesMeta:
-    "@inversifyjs/binding-decorators":
-      optional: true
     "@inversifyjs/strongly-typed":
       optional: true
     "@odg/events":

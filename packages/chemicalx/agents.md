@@ -127,7 +127,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 5. **`Container.loadModule()` antes de executar**: Sem essa chamada, classes registradas com `@ODGDecorators.injectable` não estarão disponíveis no container.
 6. **Pages por intenção, não por URL**: Não assuma 1:1 entre URL e Page. Modele Pages pela responsabilidade/ação desejada.
 7. **Handlers não agem — validam**: Handler nunca deve interagir com a page diretamente nem chamar outras Pages. Declara Solution ou lança Exception.
-8. **Dependências de runtime**: `@odg/exception`, `inversify` e `@inversifyjs/binding-decorators` são dependências obrigatórias em runtime.
+8. **Dependências de runtime**: `@odg/exception`, `inversify` são dependências obrigatórias em runtime.
 9. **Ordem decorators**: `@ODGDecorators.injectable()` deve ser o primeiro decorator, ficando a cima de todos os demais para evitar criar container sem os demais decorators registrados.
 
 ## 📖 Detailed Documentation
