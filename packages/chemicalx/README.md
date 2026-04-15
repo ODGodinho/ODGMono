@@ -27,6 +27,8 @@
 
 # Table of Contents
 
+> See [agents.md](agents.md) for consumer API reference. Detailed guides in [docs/](docs/).
+
 - [🎇 Benefits](#-benefits)
 - [📗 Libraries](#-libraries)
 - [📁 Dependencies](#-dependencies)

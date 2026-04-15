@@ -30,7 +30,9 @@
     },
     "files": [
         "./dist/",
-        "./README.md"
+        "./README.md",
+        "agents.md",
+        "docs/**"
     ],
     "author": "Dragons Gamers <https://www.linkedin.com/in/victor-alves-odgodinho>",
     "license": "MIT",
