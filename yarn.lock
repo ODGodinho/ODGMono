@@ -1497,6 +1497,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@odg/monorepo@workspace:."
   dependencies:
+    "@odg/eslint-config": "workspace:^"
     "@semantic-release/commit-analyzer": "npm:^13.0.1"
     "@semantic-release/exec": "npm:^7.1.0"
     "@semantic-release/github": "npm:^12.0.6"
