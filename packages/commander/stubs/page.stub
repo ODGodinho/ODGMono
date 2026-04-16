@@ -9,8 +9,6 @@ import {
 
 /**
  * Generated page {{ PageName:UCFirst }}
- *
- * @author
  */
 @ODGDecorators.injectable(ContainerName.{{ PageName:UCFirst }}Page)
 @ODGDecorators.attemptableFlow()
@@ -29,7 +27,7 @@ export class {{ PageName:UCFirst }}Page extends BasePage implements PageInterfac
      * @returns {Promise<void>}
      */
     public async execute(): Promise<void> {
-        await this.preStart();
+        // Create execution command step here and remove this comment
     }
 
     /**

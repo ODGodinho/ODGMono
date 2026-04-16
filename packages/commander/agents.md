@@ -1,32 +1,267 @@
-## @odg/command - Consumer Guide
+# @odg/command - Proposed Agent Guidance
 
-## 🎯 Purpose
-- CLI (`odg`) para gerar arquivos TypeScript a partir de templates em `stubs/` (pages, selectors, handlers, events, exceptions)
-- Uso típico: projeto com dependência `@odg/command` e execução via `yarn odg` ou bin local após instalar
+## Purpose
 
-## 📜 Contracts
-- **Binário**: campo `bin` do pacote → executável `odg` (ponto de entrada: `dist/index.js` via `odg.js`; **não há exports** para `import` a partir do `main`)
-- **Comandos** (subcomando + argumento posicional + flags; `--help` por comando):
-  - `make:page <pageName>` — `-p/--path` (default `./src/Pages/`), `--selectors`, `--selectorPath`, `-e/--event`, `--eventPath`, `--handlerPath`, `--handler-from`, `--handler-to`
-  - `make:selector <selectorName>` — `-p/--path` (default `./src/Selectors/`)
-  - `make:handler <handlerName>` — `--handler-from`, `--handler-to`, `-p/--path` (default `./src/Handlers/`)
-  - `make:event <eventName>` — `-p/--path` (default `./src/app/Listeners`)
-  - `make:exception <exceptionName>` — `-u/--isUnknown`, `-p/--path` (default `./src/Exceptions`)
-- **Nome de classe do handler** (`make:handler`): sem `--handler-from` e sem `--handler-to` → `{UcFirst(handlerName)}Handler`; com qualquer uma das flags → `{UcFirst(from)}To{UcFirst(to)}Handler`, com `from`/`to` defaultando para `<handlerName>` quando omitidos
-- **Stubs publicados**: pasta `stubs/` no pacote; resolução em runtime: `./stubs` relativo ao CWD, senão `node_modules/@odg/command/stubs`
+- `@odg/command` is a CLI-first package.
+- Agents MUST treat it as a scaffolding tool consumed through `yarn odg <command>`.
+- Do not describe or use it as a library-first API.
+
+## Core Rule
+
+- Always reason from the real CLI contract: command, positional input, flags, defaults and generated files.
+- Before proposing manual file creation, check whether `yarn odg` already covers the artifact.
+- If the correct command or naming is still unclear after checking the contract, ask the user.
+
+## Command Reference
+
+### make:page
+
+Purpose:
+
+- Generate a new crawler page scaffold.
+
+Syntax:
+
+```bash
+yarn odg make:page <pageName>
+```
+
+Flags:
+
+- `-p, --path` → output path for the page. Default: `./src/Pages/`
+- `--selectors` → also generate selectors for the page
+- `--selectorPath` → custom selector output path
+- `-e, --event` → also generate the event/listener scaffold for this page
+- `--eventPath` → custom listener output path
+- `--handlerPath` → custom handler output path when generating linked handler
+- `--handler-from` → generate handler using `<from>To<to>Handler` convention
+- `--handler-to` → generate handler using `<from>To<to>Handler` convention
+
+Operational notes:
+
+- `make:page` only triggers handler generation if `handlerPath` exists and at least one of `handler-from` or `handler-to` is provided.
+- The command input is the base page name, not the final class name with `Page` suffix.
+
+Examples:
+
+```bash
+# Generate only page
+# Arquivo gerado: src/Pages/SearchPage.ts
+yarn odg make:page Search
+
+# Generate Page + selector
+# output file: src/Pages/LoginPage.ts  &  src/Selectors/LoginSelector.ts
+yarn odg make:page Login --selectors
+
+# Generate Page + event listener
+# output file: src/Pages/LoginPage.ts  &  src/app/Listeners/LoginEventListener.ts
+yarn odg make:page Login --event
+
+# Generate Page + selector + listener (complete combination)
+# output files: src/Pages/LoginPage.ts  &  src/Selectors/LoginSelector.ts  &  src/app/Listeners/LoginEventListener.ts
+yarn odg make:page Login --selectors --event
+
+# Generate Page + transition handler (requires at least one of --handler-from/--handler-to)
+# output files: src/Pages/LoginPage.ts  &  src/Handlers/Auth/LoginToSearchHandler.ts
+yarn odg make:page Login --handler-to Search --handlerPath src/Handlers/Auth
+
+# Generate Page + transition handler (requires --handler-from/--handler-to)
+# output files: src/Pages/LoginPage.ts  &  src/Handlers/HomeToLoginHandler.ts
+yarn odg make:page Login --handler-from Home --handlerPath src/Handlers
+```
+
+### make:selector
+
+Purpose:
+
+- Generate a selector object HTML scaffold.
+
+Syntax:
+
+```bash
+yarn odg make:selector <selectorName>
+```
+
+Flags:
+
+- `-p, --path` → output path for selectors. Default: `./src/Selectors/`
+
+Operational notes:
+
+- The command input is the base selector name.
+- Preserve the naming convention already used by the selector namespace.
+
+Examples:
+
+```bash
+# Generate selector in default path
+# Output file: src/Selectors/SearchSelector.ts
+yarn odg make:selector Search
+
+# Generate selector in specific subdirectory
+# Output file: src/Selectors/Auth/GoogleLoginSelector.ts
+yarn odg make:selector GoogleLogin -p src/Selectors/Auth
+```
+
+### make:handler
+
+Purpose:
+
+- Generate a handler scaffold.
+
+Syntax:
+
+```bash
+yarn odg make:handler <handlerName>
+```
+
+Flags:
+
+- `--handler-from` → origin name for `FromTo` handler generation
+- `--handler-to` → destination name for `FromTo` handler generation
+- `-p, --path` → output path for handlers. Default: `./src/Handlers/`
+
+Generated naming:
+
+- Without `--handler-from` and `--handler-to` → `<HandlerName>Handler`
+- With either flag → `<From>To<To>Handler`
+
+Operational notes:
+
+- Use `ExampleHandler` when the handler validates a result.
+- Use `ExampleToDestinationHandler` only when the handler validates a specific transition.
+- If the validation responsibility is unclear, ask before choosing the name.
+
+Examples:
+
+```bash
+# Generate handler — check a result (without transition)
+# Output file: src/Handlers/LoginHandler.ts
+yarn odg make:handler Login
+
+# Transition handler — validate transition from Buy to Payment
+# Output file: src/Handlers/BuyToPaymentHandler.ts
+yarn odg make:handler Buy --handler-to Payment
+
+# Transition handler with explicit from and to in custom path
+# The positional argument (Flow) is ignored in the name when --handler-from or --handler-to are used
+# Output file: src/Handlers/Checkout/BuyToPaymentHandler.ts
+yarn odg make:handler Flow --handler-from Buy --handler-to Payment -p src/Handlers/Checkout
+```
+
+### `make:event <eventName>`
+
+Purpose:
+
+- Generate an event/listener scaffold.
+
+Syntax:
+
+```bash
+yarn odg make:event <eventName>
+```
+
+Flags:
+
+- `-p, --path` → output path for listeners. Default: `./src/app/Listeners`
+
+Operational notes:
+
+- The command input is the base resource name, not the final enum name.
+
+Examples:
+
+```bash
+# Correto: usar o nome-base do recurso
+# Arquivo gerado: src/app/Listeners/SearchEventListener.ts
+yarn odg make:event Search
+
+# Correto: path explícito
+# Arquivo gerado: src/app/Listeners/Auth/LoginEventListener.ts
+yarn odg make:event Login -p src/app/Listeners/Auth
+
+# ERRADO: nunca passar o nome final do enum como input
+# yarn odg make:event LoginPageEvent  ← gera LoginPageEventEventListener (nome duplicado)
+```
+
+### make:exception
+
+Purpose:
+
+- Generate an exception scaffold.
+
+Syntax:
+
+```bash
+yarn odg make:exception <exceptionName>
+```
+
+Flags:
+
+- `-u, --isUnknown` → generate unknown exception variant
+- `-p, --path` → output path for exceptions. Default: `./src/Exceptions`
+
+Examples:
+
+```bash
+# Exception padrão
+# Arquivo gerado: src/Exceptions/LoginException.ts
+yarn odg make:exception Login
+
+# Exception do tipo Unknown (para erros não antecipados)
+# Arquivo gerado: src/Exceptions/RequestFailureUnknownException.ts
+yarn odg make:exception RequestFailure --isUnknown
+```
+
+## Naming Rules
+
+### Event input
+
+- Pass the base resource name to `make:event`.
+- The final enum/listener naming is derived later by scaffold convention and project wiring.
+
+### Handler naming
+
+- If the handler validates a result, use `ExampleHandler`.
+- If the handler validates a transition, use `ExampleToDestinationHandler`.
+- Do not name a handler only by the next service step.
+
+### Selector naming
+
+- Follow the naming convention already used in the selector namespace.
+- If the domain already uses a prefix such as `googleSearchSelector`, keep the same pattern for new selectors.
+- Do not mix prefixed and non-prefixed selectors in the same domain without explicit reason.
+
+## Known Pitfalls
+
+- Existing destination file: the command fails if the target file already exists.
+- Existing `index.ts`: scaffold may append exports automatically, which can create duplicates.
+- `make:page` does not always generate a handler; linked handler generation is conditional.
+- Default paths assume a standard `src/...` layout.
+
+## Agent Checklist
+
+- Identify whether a `make:*` command already solves the requested artifact.
+- Use the base resource name as CLI input.
+- Confirm whether the handler validates a result or a transition.
+- Preserve the selector naming convention already used by the domain.
+- Prefer examples derived from `yarn odg --help` and `yarn odg make:* --help`.
 
 ## 🚦 Rules (Usage)
-- Trate como **ferramenta de linha de comando**, não como biblioteca importável pelo `main`
-- Rode a partir da **raiz do app** onde paths default fazem sentido (ou passe `-p`/`--path` explícito)
-- `make:page` só dispara geração de handler extra se existir `handlerPath` **e** (`handlerFrom` **ou** `handlerTo`); caso contrário não chama `make:handler` embutido
+
+- execute in **root app** where default paths and stubs are expected; otherwise, use `-p` to specify custom paths
+- use `--handler-from` and/or `--handler-to` to trigger linked handler generation
+- if generate page, events, sectors and handlers prefer `yarn odg make:page` with flags instead of separate commands to ensure consistent naming and linking
 
 ## 💥 Exceptions
-- `InvalidArgumentException` (`@odg/exception`): ao gerar arquivo cujo `.ts` de destino **já existe** — mensagem do tipo `The {name} already exists.`
-  - Tratamento: não criar de novo com o mesmo nome no mesmo path; apagar/renomear o arquivo existente ou mudar `-p`/nome
-- Falhas de I/O do Node (leitura de stub, escrita, mkdir) podem propagar erro nativo não encapsulado em tipo próprio do pacote
+
+- `InvalidArgumentException` (`@odg/exception`): if file already exists - message error `The {name} already exists.`
+  - Handling: do not create again with the same name in the same path; delete/rename the existing file or change `-p`/name
+- Node I/O failures (reading stub, writing, mkdir) may propagate native error not encapsulated in package-specific type
 
 ## ⚠️ Integration Pitfalls
-- Paths default assumem layout com `src/...`; projetos diferentes exigem `-p` consistente
-- Se existir `index.ts` no diretório de destino, o gerador pode **append** `export * from "./{NomeArquivo}";` — risco de duplicata ou ordem de exports indesejada
-- Stubs em `./stubs` no CWD **substituem** os stubs do pacote para aquele nome de arquivo `.stub`
-- `main`/`types` apontam para `dist/` de runtime CLI; não espere tipos públicos de API programática além do que o pacote exporta em `package.json` (hoje: foco no bin + assets)
+
+- Paths default to `./src/...` structure; if the app has a different structure, the agent must use `-p` to specify correct paths.
+- If `index.ts` exists in the target directory, the generator may **append** `export * from "./{FileName}";` — risk of duplicate or undesired export order
+- Stubs in `./stubs` in the CWD **override** package stubs for that `.stub` file name
+- `main`/`types` point to `dist/` of runtime CLI; do not expect public API types beyond what the package exports in `package.json` (currently: focus on bin + assets)
