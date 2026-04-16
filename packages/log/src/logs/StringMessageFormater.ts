@@ -21,7 +21,7 @@ export class StringMessageFormatter {
         const url = chalk.white(`${requester.baseURL! || ""}${requester.url! || ""}`);
         const statusCode = message.request?.response?.status;
         const status = statusCode
-            ? chalk.bgKeyword(this.getStatusCodeColor(statusCode)).white(statusCode)
+            ? chalk.bgHex(this.getStatusCodeColor(statusCode)).white(statusCode)
             : chalk.bgGrey("XXX");
         const method = (requester.method ?? "GET").toUpperCase();
 
@@ -34,12 +34,12 @@ export class StringMessageFormatter {
         const httpStatus3XX = 300;
         const httpStatus2XX = 200;
 
-        if (statusCode >= httpStatus5XX) return "red";
-        if (statusCode >= httpStatus4XX) return "yellow";
-        if (statusCode >= httpStatus3XX) return "cyan";
-        if (statusCode >= httpStatus2XX) return "green";
+        if (statusCode >= httpStatus5XX) return "#FF0000";
+        if (statusCode >= httpStatus4XX) return "#FFFF00";
+        if (statusCode >= httpStatus3XX) return "#00FFFF";
+        if (statusCode >= httpStatus2XX) return "#00FF00";
 
-        return "orange";
+        return "#FFA500";
     }
 
 }

@@ -88,10 +88,10 @@ describe("Test request message", () => {
     test("Teste status Code", async () => {
         const formatter = new StringMessageFormatter();
 
-        expect(formatter["getStatusCodeColor"](200)).toBe("green");
-        expect(formatter["getStatusCodeColor"](300)).toBe("cyan");
-        expect(formatter["getStatusCodeColor"](400)).toBe("yellow");
-        expect(formatter["getStatusCodeColor"](500)).toBe("red");
-        expect(formatter["getStatusCodeColor"](100)).toBe("orange");
+        expect(formatter["getStatusCodeColor"](200)).toBe("#00FF00");
+        expect(formatter["getStatusCodeColor"](300)).toBe("#00FFFF");
+        expect(formatter["getStatusCodeColor"](400)).toBe("#FFFF00");
+        expect(formatter["getStatusCodeColor"](500)).toBe("#FF0000");
+        expect(formatter["getStatusCodeColor"](100)).toBe("#FFA500");
     });
 });
