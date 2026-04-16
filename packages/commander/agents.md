@@ -229,26 +229,11 @@ yarn odg make:exception RequestFailure --isUnknown
 ### Selector naming
 
 - Follow the naming convention already used in the selector namespace.
-- If the domain already uses a prefix such as `googleSearchSelector`, keep the same pattern for new selectors.
 - Do not mix prefixed and non-prefixed selectors in the same domain without explicit reason.
-
-## Known Pitfalls
-
-- Existing destination file: the command fails if the target file already exists.
-- Existing `index.ts`: scaffold may append exports automatically, which can create duplicates.
-- `make:page` does not always generate a handler; linked handler generation is conditional.
-- Default paths assume a standard `src/...` layout.
-
-## Agent Checklist
-
-- Identify whether a `make:*` command already solves the requested artifact.
-- Use the base resource name as CLI input.
-- Confirm whether the handler validates a result or a transition.
-- Preserve the selector naming convention already used by the domain.
-- Prefer examples derived from `yarn odg --help` and `yarn odg make:* --help`.
 
 ## 🚦 Rules (Usage)
 
+- Prefer examples derived from `yarn odg --help` and `yarn odg make:* --help`.
 - execute in **root app** where default paths and stubs are expected; otherwise, use `-p` to specify custom paths
 - use `--handler-from` and/or `--handler-to` to trigger linked handler generation
 - if generate page, events, sectors and handlers prefer `yarn odg make:page` with flags instead of separate commands to ensure consistent naming and linking
@@ -256,7 +241,7 @@ yarn odg make:exception RequestFailure --isUnknown
 ## 💥 Exceptions
 
 - `InvalidArgumentException` (`@odg/exception`): if file already exists - message error `The {name} already exists.`
-  - Handling: do not create again with the same name in the same path; delete/rename the existing file or change `-p`/name
+- Handling: do not create again with the same name in the same path; delete/rename the existing file or change `-p`/name
 - Node I/O failures (reading stub, writing, mkdir) may propagate native error not encapsulated in package-specific type
 
 ## ⚠️ Integration Pitfalls
