@@ -1,11 +1,11 @@
 import {
-    type HandlerInterface,
     type HandlerFunction,
-    HandlerSolution,
-    RetryAction,
+    type HandlerInterface,
+    type HandlerSolutionType,
     ODGDecorators,
+    RetryAction,
 } from "@odg/chemical-x";
-import { type Exception } from "@odg/exception";
+import type { Exception } from "@odg/exception";
 
 import { ConfigName, ContainerName } from "@enums";
 import { BaseHandler } from "@handlers/BaseHandler";
@@ -20,44 +20,22 @@ export class {{ HandlerClassName }} extends BaseHandler implements HandlerInterf
         ]);
     }
 
-    /**
-     * Return timeout for handler
-     *
-     * @returns {Promise<number>}
-     */
     public async getTimeout(): Promise<number> {
         return this.config.get(ConfigName.HANDLER_TIMEOUT);
     }
 
-    /**
-     * Return number attempt to test this handler
-     *
-     * @returns {Promise<number>}
-     */
     public async attempt(): Promise<number> {
         return this.config.get(ConfigName.HANDLER_ATTEMPT);
     }
 
-    /**
-     * Called Always handler attempt error.
-     *
-     * @param {Exception} exception Exception error
-     * @param {number} attempt Current attempt
-     * @returns {Promise<RetryAction>}
-     */
-    public async retrying(exception: Exception, attempt: number): Promise<RetryAction> {
+    public override async retrying(exception: Exception, attempt: number): Promise<RetryAction> {
         await this.log.debug(`Step {{ HandlerClassName }}: Failed Attempt ${attempt}.`);
         await this.log.warning(exception.message);
 
         return RetryAction.Default;
     }
 
-    /**
-     * Handler finish with success after all attempts
-     *
-     * @returns {Promise<void>}
-     */
-    public async success(): Promise<void> {
+    public override async success(): Promise<void> {
         await this.log.debug("Step {{ HandlerClassName }} finish with success.");
     }
 
@@ -88,9 +66,9 @@ export class {{ HandlerClassName }} extends BaseHandler implements HandlerInterf
     /**
      * Action if example handler
      *
-     * @returns {Promise<HandlerSolution>}
+     * @returns {Promise<HandlerSolutionType>}
      */
-    public async errorSolution(): Promise<HandlerSolution> {
+    public async errorSolution(): Promise<HandlerSolutionType> {
         return HandlerSolution.Resolve;
     }
 

@@ -3,38 +3,20 @@ import { ODGDecorators, type PageInterface } from "@odg/chemical-x";
 import { ConfigName, ContainerName } from "@enums";
 import { BasePage } from "@pages/BasePage";
 import {
-    type {{ PageName:UCFirst }}SelectorType,
     {{ PageName:LCFirst }}Selector,
+    type {{ PageName:UCFirst }}SelectorType,
 } from "@selectors";
 
-/**
- * Generated page {{ PageName:UCFirst }}
- */
 @ODGDecorators.injectable(ContainerName.{{ PageName:UCFirst }}Page)
 @ODGDecorators.attemptableFlow()
 export class {{ PageName:UCFirst }}Page extends BasePage implements PageInterface {
 
-    /**
-     * Selector to {{ PageName:UCFirst }}Page
-     *
-     * @type {{{ PageName:UCFirst }}SelectorType}
-     */
-    public $s: {{ PageName:UCFirst }}SelectorType = {{ PageName:LCFirst }}Selector;
+    public readonly $s: {{ PageName:UCFirst }}SelectorType = {{ PageName:LCFirst }}Selector;
 
-    /**
-     * Execute this step
-     *
-     * @returns {Promise<void>}
-     */
     public async execute(): Promise<void> {
         // Create execution command step here and remove this comment
     }
 
-    /**
-     * Number of attempt this step
-     *
-     * @returns {Promise<number>}
-     */
     public async attempt(): Promise<number> {
         return this.config.get(ConfigName.PAGE_ATTEMPT);
     }
