@@ -158,8 +158,11 @@ import {
 } from "@odg/events";
 import {
     Container,
-    inject, injectable,
+    // inject, prefer inversify strongly typed Container
+    injectable,
 } from "inversify";
+// if use inversify Strongly Typed Container
+import { $inject } from "~/ContainerInject";
 
 import { type EventTypes } from "../../Interfaces/EventsInterface";
 import { ContainerName, EventName } from "../Enums";
@@ -168,8 +171,10 @@ import { type HomeEventListeners } from "../Listeners/HomeEventListeners";
 @injectable()
 export class EventServiceProvider extends EventServiceProviderBase<EventTypes> {
 
-    @inject(ContainerName.EventBus)
-    protected bus!: EventBusInterface<Events>;
+    public constructor(
+        @$inject(ContainerName.EventBus) public readonly bus: EventBusInterface<Events>,
+    ) {
+    }
 
     /**
      * Listeners for events in the application.
@@ -201,19 +206,22 @@ export class EventServiceProvider extends EventServiceProviderBase<EventTypes> {
 ### 🦻 Use Event Listeners
 
 ```typescript
-import { type EventListenerInterface } from "@odg/events";
-import { LoggerInterface } from "@odg/log";
-import { inject, injectable } from "inversify";
+import type { EventListenerInterface } from "@odg/events";
+import type { LoggerInterface } from "@odg/log";
+import { injectable } from "inversify"; // if used inversify
 
 import { type EventExampleType, type EventTypes } from "../../Interfaces/EventsInterface";
 import { ContainerName, type EventName } from "../Enums"; // If use inversify
 import { PageFactoryType } from "../Factory/PageFactory";
+import { $inject } from "~/ContainerInject"; // If use inversify Strongly Typed Container
 
 @injectable()
 export class HomeEventListeners implements EventListenerInterface<EventTypes, EventName.Example> {
 
-    @inject(ContainerName.Logger) // You can use constructor to inject
-    public log!: LoggerInterface;
+    public constructor(
+        @$inject(ContainerName.Logger) public readonly log: LoggerInterface,
+    ) {
+    }
 
     public async handler({ page }: EventExampleType): Promise<void> {
         await this.log.debug("HomeEventListeners is sended");
