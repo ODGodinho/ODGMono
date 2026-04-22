@@ -128,3 +128,6 @@ build/
 
 # SonarLint folder
 .sonarlint/
+
+# Vitest generated fixtures
+tests/vitest/cache/

@@ -101,7 +101,7 @@ describe("Example Teste", () => {
 
     test("PersistentContext", async () => {
         const context2 = await browserManager.newPersistentContext(
-            async () => chromium.launchPersistentContext("./temp/") as Promise<MyContext>,
+            async () => chromium.launchPersistentContext("./temp/"),
         );
 
         expect(context2).not.toBeUndefined();

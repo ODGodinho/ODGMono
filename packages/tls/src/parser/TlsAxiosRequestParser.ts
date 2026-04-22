@@ -63,7 +63,7 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
                         .filter(([ headerName ]) => !headerName.toLowerCase().startsWith("poptls-")),
                 ),
             } as TlsRequestInterface<RequestD>).filter(([ , value ]) => value !== undefined),
-        ) as TlsRequestInterface<RequestD>;
+        );
     }
 
     private static getUrl<RequestD = unknown>(

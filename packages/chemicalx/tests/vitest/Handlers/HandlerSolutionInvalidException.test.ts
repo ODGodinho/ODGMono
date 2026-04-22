@@ -4,8 +4,6 @@ import { type Mock, vi } from "vitest";
 import { RetryAction } from "@enums";
 import type { HandlerFunction, HandlerSolutionType } from "@interfaces";
 
-import type { PageClassEngine } from "../playwright/engine";
-
 import { ExampleFailedAttemptHandler, ExampleHandler } from "./mocks";
 
 describe("Handler Test Invalid Exception", () => {
@@ -14,7 +12,7 @@ describe("Handler Test Invalid Exception", () => {
     let handlerWaitForHandlerMock: Mock<() => Promise<HandlerFunction>>;
 
     beforeEach(() => {
-        handler = new ExampleHandler(undefined as unknown as PageClassEngine, {});
+        handler = new ExampleHandler();
         handlerSolutionMock = vi.spyOn(handler, "testSolution");
         handlerWaitForHandlerMock = vi.spyOn(handler, "waitForHandler");
     });

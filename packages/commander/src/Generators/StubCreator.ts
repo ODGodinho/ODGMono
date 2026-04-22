@@ -1,13 +1,15 @@
-import * as Filesystem from "node:fs";
+import {
+    appendFile,
+    mkdir,
+    readFile,
+    writeFile,
+} from "node:fs/promises";
 import nodePath from "node:path";
-import { promisify } from "node:util";
 
 import { File, Str } from "@odg/chemical-x";
 import { InvalidArgumentException } from "@odg/exception";
 
 export default class StubCreator {
-
-    private readonly filesystem: typeof Filesystem = Filesystem;
 
     public async create(
         stub: string,
@@ -23,14 +25,12 @@ export default class StubCreator {
 
         const content = await this.getStub(stub, variables);
 
-        await promisify(this.filesystem.mkdir)(pathDestination, { recursive: true });
-        await promisify(this.filesystem.writeFile)(destination, content, {});
+        await mkdir(pathDestination, { recursive: true });
+        await writeFile(destination, content);
 
         const indexFile = `${pathDestination}/index.ts`;
 
-        if (await new File(indexFile).exists()) {
-            await promisify(this.filesystem.appendFile)(indexFile, `\nexport * from "./${name}";\n`, {});
-        }
+        await this.appendToIndexIfExists(indexFile, name);
 
         return destination;
     }
@@ -44,7 +44,7 @@ export default class StubCreator {
      */
     public async getStub(name: string, variables: Record<string, number | string>): Promise<string> {
         const pathStub = await this.getStubPath(name);
-        const file = await promisify(this.filesystem.readFile)(`${pathStub}/${name}.stub`);
+        const file = await readFile(`${pathStub}/${name}.stub`);
 
         return new Str(file.toString())
             .formatUnicorn(variables)
@@ -74,6 +74,23 @@ export default class StubCreator {
         }
 
         return nodePath.join(process.cwd(), "node_modules/@odg/command/stubs");
+    }
+
+    private async appendToIndexIfExists(indexFile: string, name: string): Promise<void> {
+        if (!await new File(indexFile).exists()) {
+            return;
+        }
+
+        const exportLine = `export * from "./${name}";`;
+        const existing = await readFile(indexFile, { encoding: "utf8" });
+
+        if (existing.includes(exportLine)) {
+            return;
+        }
+
+        const insert = existing.endsWith("\n") || existing.length === 0 ? "" : "\n";
+
+        await appendFile(indexFile, `${insert}${exportLine}\n`);
     }
 
 }

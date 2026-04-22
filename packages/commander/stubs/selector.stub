@@ -1,5 +1,7 @@
 export const {{ SelectorName:LCFirst }}Selector = {
+    success: "#success",
     example: "#example",
+    example2: "#example2",
 };
 
 export type {{ SelectorName:UCFirst }}SelectorType = typeof {{ SelectorName:LCFirst }}Selector;

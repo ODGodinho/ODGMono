@@ -12,7 +12,6 @@ import axios, {
     type AxiosInterceptorManager,
     type AxiosRequestConfig,
     type AxiosResponse,
-    type RawAxiosResponseHeaders,
 } from "axios";
 
 import { AxiosInterceptorRequest } from "./interceptors/AxiosInterceptorRequest";
@@ -66,7 +65,7 @@ export class AxiosMessage<
 
         return this.requestParser.parseLibraryToMessage<RequestData>({
             ...config,
-            headers: AxiosParser.parseHeaders(config.headers) as unknown as RawAxiosResponseHeaders,
+            headers: AxiosParser.parseHeaders(config.headers),
         });
     }
 

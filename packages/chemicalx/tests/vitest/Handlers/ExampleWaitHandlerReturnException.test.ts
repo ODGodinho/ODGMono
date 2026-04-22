@@ -4,14 +4,13 @@ import { type Mock, vi } from "vitest";
 import { ExampleWaitHandlerReturnException } from "tests/vitest/Handlers/mocks/ExampleWaitHandlerReturnException";
 
 import type { RetryAction } from "../../../src";
-import type { PageClassEngine } from "../playwright/engine";
 
 describe("Handler Retry tests", () => {
     let handler: ExampleWaitHandlerReturnException;
     let handlerRetryingMock: Mock<(_exception: Exception, _times: number) => Promise<RetryAction>>;
 
     beforeEach(() => {
-        handler = new ExampleWaitHandlerReturnException(undefined as unknown as PageClassEngine, {});
+        handler = new ExampleWaitHandlerReturnException();
         handlerRetryingMock = vi.spyOn(handler, "retrying");
     });
 

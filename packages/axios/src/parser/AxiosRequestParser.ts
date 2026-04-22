@@ -84,7 +84,7 @@ export class AxiosRequestParser {
                 extras: options.extras,
                 ...Object.fromEntries(Object.entries(options).filter(([ key ]) => key.startsWith("$"))),
             } as RequestInterface<RequestD>).filter(([ , value ]) => value !== undefined),
-        ) as RequestInterface<RequestD>;
+        );
     }
 
 }

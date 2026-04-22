@@ -3,9 +3,7 @@ import http from "node:http";
 import { MessageResponse } from "@odg/message";
 import type {
     AxiosResponse,
-    AxiosResponseHeaders,
     InternalAxiosRequestConfig,
-    RawAxiosResponseHeaders,
 } from "axios";
 
 import { AxiosParser } from "./AxiosParser";
@@ -30,7 +28,7 @@ export class AxiosResponseParser {
             data: message.response.data,
             status: message.response.status,
             statusText: http.STATUS_CODES[message.response.status] ?? "Unknown Status Code",
-            headers: AxiosParser.parseHeaders(message.response.headers) as unknown as AxiosResponseHeaders,
+            headers: AxiosParser.parseHeaders(message.response.headers),
             config: this.requestParser.parseMessageToLibrary({
                 ...message.request,
                 endTime: Date.now(),
@@ -63,7 +61,7 @@ export class AxiosResponseParser {
                 : this.requestParser.parseLibraryToMessage<RequestD>({
                     ...response.config,
                     endTime: Date.now(),
-                    headers: AxiosParser.parseHeaders(response.config.headers) as unknown as RawAxiosResponseHeaders,
+                    headers: AxiosParser.parseHeaders(response.config.headers),
                 }),
             responseParser,
         );
