@@ -12,6 +12,7 @@ interface RegistrationOptions {
     containerEnumPath?: string;
     eventEnumPath?: string;
     configEnumPath?: string;
+    configValidatorPath?: string;
     containerInterfacePath?: string;
     eventsInterfacePath?: string;
     pagesIndexPath?: string;
@@ -53,6 +54,16 @@ export interface MakeEventOptions extends RegistrationOptions {
 export interface MakeExceptionOptions {
     path: string;
     isUnknown: boolean;
+}
+
+export interface MakeConfigOptions extends RegistrationOptions {
+    path?: string;
+
+    /** Zod validator expression written into configValidator, e.g. `zod.string()` */
+    validator?: string;
+
+    /** Path to the file that exports `configValidator = zod.object({...})`. */
+    configValidatorPath?: string;
 }
 
 export default class MakeFile {
@@ -157,6 +168,20 @@ export default class MakeFile {
         }, this.buildRegistrationTargets(options));
 
         await this.logger.info(`Event created successfully in : ${filePath}`);
+    }
+
+    public async makeConfig(configName: string, options: MakeConfigOptions): Promise<void> {
+        const validator = options.validator ?? "zod.string()";
+
+        await registerArtifact({
+            kind: "config",
+            name: configName,
+            configEnumMembers: [ configName ],
+            envExampleLines: [ `\n# ${configName}`, `${configName}=""` ],
+            configValidatorType: validator,
+        }, this.buildRegistrationTargets(options));
+
+        await this.logger.info(`Config "${configName}" registered successfully`);
     }
 
     public async makeException(exceptionName: string, options: MakeExceptionOptions): Promise<void> {

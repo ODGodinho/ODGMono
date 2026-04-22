@@ -1,4 +1,4 @@
-export type ArtifactKind = "event" | "handler" | "page" | "selector";
+export type ArtifactKind = "config" | "event" | "handler" | "page" | "selector";
 
 export interface RegistrationTargets {
     enabled: boolean;
@@ -20,6 +20,9 @@ export interface RegistrationTargets {
 
     // Non-TS helpers
     envExamplePath?: string;
+
+    /** Path to the file containing `configValidator = zod.object({...})` to mutate. */
+    configValidatorPath?: string;
 
     // Extra explicit metadata (never inferred)
     eventPayloadType?: string;
@@ -49,4 +52,7 @@ export interface ArtifactDescriptor {
     // Optional: keys to register in ConfigName/.env.example
     configEnumMembers?: string[];
     envExampleLines?: string[];
+
+    // Optional: zod validator expression for make:config
+    configValidatorType?: string;
 }

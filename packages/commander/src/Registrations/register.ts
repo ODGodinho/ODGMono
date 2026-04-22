@@ -11,6 +11,7 @@ import {
     ensureTopLevelStatements,
     ensureTypeNamedImport,
     ensureValueNamedImport,
+    ensureZodObjectEntry,
 } from "./ts-mutators";
 import type { ArtifactDescriptor, RegistrationTargets } from "./types";
 
@@ -285,6 +286,24 @@ async function registerEvent(descriptor: ArtifactDescriptor, targets: Registrati
     }
 }
 
+async function registerConfig(descriptor: ArtifactDescriptor, targets: RegistrationTargets): Promise<void> {
+    await registerConfigEnumMembers(descriptor, targets);
+    await registerEnvironmentExampleLines(descriptor, targets);
+
+    if (!descriptor.configEnumMembers?.length || !targets.configValidatorPath) {
+        return;
+    }
+
+    for (const key of descriptor.configEnumMembers) {
+        await ensureZodObjectEntry({
+            filePath: targets.configValidatorPath,
+            constName: "configValidator",
+            propertyName: `[ConfigName.${key}]`,
+            propertyValue: descriptor.configValidatorType ?? "zod.string()",
+        });
+    }
+}
+
 export async function registerArtifact(descriptor: ArtifactDescriptor, targets: RegistrationTargets): Promise<void> {
     if (!targets.enabled) return;
 
@@ -305,6 +324,10 @@ export async function registerArtifact(descriptor: ArtifactDescriptor, targets: 
             break;
         case "event":
             await registerEvent(descriptor, targets);
+
+            break;
+        case "config":
+            await registerConfig(descriptor, targets);
 
             break;
     }

@@ -215,6 +215,58 @@ yarn odg make:event Login -p src/app/Listeners/Auth
 # yarn odg make:event LoginPageEvent  ← gera LoginPageEventEventListener (nome duplicado)
 ```
 
+### make:config
+
+Purpose:
+
+- Register a new config key in the existing config wiring.
+
+Syntax:
+
+```bash
+yarn odg make:config <configName>
+```
+
+Flags:
+
+- `-v, --validator <validator>` → zod validator expression. Default: `zod.string()`
+- `--register` → enable registration. Default: `false`
+- `--configEnumPath` → custom ConfigName enum path. Default: `./src/app/Enums/ConfigName.ts`
+- `--configValidatorPath` → path to the file containing `configValidator = zod.object({...})`. Default: `./src/Configs/index.ts`
+- `--envExamplePath` → custom `.env.example` path. Default: `./.env.example`
+- `--typeImport <statement>` → explicit top-level import statement to inject. Repeatable.
+
+Operational notes:
+
+- `make:config` does not create a new config stub file.
+- It mutates the existing `configValidator = zod.object({...})` file and appends a new property.
+- The command input is normalized to `CONST_CASE` before registration.
+- If the input is already `CONST_CASE`, it is preserved as-is.
+- The `.env.example` block is appended with one blank line above it, then:
+ `# CONFIG_NAME`
+ `CONFIG_NAME=""`
+
+Examples:
+
+```bash
+# PascalCase input → normalized to APP_URL
+# Mutations:
+# - ConfigName.APP_URL = "APP_URL"
+# - configValidator gains [ConfigName.APP_URL]: zod.string()
+# - .env.example gains a blank line, comment and APP_URL=""
+yarn odg make:config APP_URL --register
+
+# CONST_CASE input is preserved as-is
+# Mutations use ZECA_URL, not Z_E_C_A__U_R_L
+yarn odg make:config ZECA_URL --register
+
+# Custom validator expression in existing config validator file
+yarn odg make:config USE_HEADLESS --register --validator "CustomValidator.zodStringToBoolean()"
+
+# Custom config validator path
+yarn odg make:config APP_URL --register --configValidatorPath src/Config/index.ts
+```
+
 ### make:exception
 
 Purpose:

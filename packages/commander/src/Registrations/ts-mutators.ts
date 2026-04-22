@@ -1,6 +1,8 @@
 import { InvalidArgumentException } from "@odg/exception";
 import {
     type ImportDeclaration,
+    Node,
+    type ObjectLiteralExpression,
     Project,
     QuoteKind,
     ScriptKind,
@@ -92,6 +94,43 @@ async function commitNamedImport(parameters: {
     await sourceFile.save();
 
     return true;
+}
+
+function resolveZodObjectLiteral(
+    parameters: {
+        filePath: string;
+        constName: string;
+    },
+    sourceFile: SourceFile,
+): ObjectLiteralExpression {
+    const variableDeclaration = sourceFile
+        .getVariableDeclarations()
+        .find((declaration) => declaration.getName() === parameters.constName);
+
+    if (!variableDeclaration) {
+        throw new InvalidArgumentException(`Const "${parameters.constName}" not found in ${parameters.filePath}`);
+    }
+
+    const initializer = variableDeclaration.getInitializer();
+
+    if (!initializer || !Node.isCallExpression(initializer)) {
+        throw new InvalidArgumentException(`"${parameters.constName}" initializer is not a call expression`);
+    }
+
+    const [ firstArgument ] = initializer.getArguments();
+
+    if (!Node.isObjectLiteralExpression(firstArgument)) {
+        throw new InvalidArgumentException(`"${parameters.constName}" first argument is not an object literal`);
+    }
+
+    return firstArgument;
+}
+
+function hasObjectPropertyByNamePrefix(
+    objectLiteral: ObjectLiteralExpression,
+    propertyName: string,
+): boolean {
+    return objectLiteral.getProperties().some((property) => property.getText().startsWith(propertyName));
 }
 
 export async function ensureEnumMember(parameters: {
@@ -234,6 +273,31 @@ export async function ensureEnvironmentExampleLines(parameters: {
     const insertNewline = existing.endsWith("\n") || existing.length === 0 ? "" : "\n";
 
     sourceFile.replaceWithText(`${existing}${insertNewline}${missing.join("\n")}\n`);
+    await sourceFile.save();
+
+    return true;
+}
+
+export async function ensureZodObjectEntry(parameters: {
+    filePath: string;
+    constName: string;
+    propertyName: string;
+    propertyValue: string;
+}): Promise<boolean> {
+    const project = createProject();
+    const sourceFile = addSourceFile(project, parameters.filePath);
+
+    const zodObjectLiteral = resolveZodObjectLiteral(parameters, sourceFile);
+
+    if (hasObjectPropertyByNamePrefix(zodObjectLiteral, parameters.propertyName)) {
+        return false;
+    }
+
+    zodObjectLiteral.addPropertyAssignment({
+        name: parameters.propertyName,
+        initializer: parameters.propertyValue,
+    });
+
     await sourceFile.save();
 
     return true;

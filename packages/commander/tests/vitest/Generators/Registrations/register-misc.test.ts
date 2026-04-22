@@ -14,6 +14,9 @@ import {
     emptyEventBaseInterfaceWithImport,
 } from "../../helpers/dts-stub-contents";
 
+const configEnumFixture = "export enum ConfigName {\n}\n";
+const defaultConfigValidatorType = "zod.string()";
+
 describe("registerArtifact - misc branches", () => {
     const root = `${process.cwd()}/tests/vitest/cache/register-misc`;
 
@@ -70,7 +73,7 @@ describe("registerArtifact - misc branches", () => {
         const configEnumPath = `${root}/ConfigName.ts`;
         const environmentExamplePath = `${root}/.env.example`;
 
-        await writeFile(configEnumPath, "export enum ConfigName {\n}\n", "utf8");
+        await writeFile(configEnumPath, configEnumFixture, "utf8");
         await writeFile(environmentExamplePath, "A=1\n", "utf8");
 
         await registerArtifact({
@@ -138,5 +141,96 @@ describe("registerArtifact - misc branches", () => {
 
         expect(text.includes("[ContainerName.ExampleEventListener]: ExampleEventListener;")).toBe(true);
         expect(text.includes("import type { ExampleEventListener } from \"@listeners\";")).toBe(true);
+    });
+
+    test("Config registers ConfigName enum member and .env.example line", async () => {
+        await rm(root, { recursive: true, force: true });
+        await mkdir(root, { recursive: true });
+
+        const configEnumPath = `${root}/ConfigName.ts`;
+        const environmentExamplePath = `${root}/.env.example`;
+
+        await writeFile(configEnumPath, configEnumFixture, "utf8");
+        await writeFile(environmentExamplePath, "EXISTING=1\n", "utf8");
+
+        await registerArtifact({
+            kind: "config",
+            name: "AppName",
+            configEnumMembers: [ "APP_NAME" ],
+            envExampleLines: [ "APP_NAME=" ],
+        }, {
+            enabled: true,
+            configEnumPath,
+            envExamplePath: environmentExamplePath,
+        });
+
+        const enumText = await readFile(configEnumPath, "utf8");
+
+        expect(enumText.includes("\"APP_NAME\" = \"APP_NAME\"")).toBe(true);
+
+        const environmentText = await readFile(environmentExamplePath, "utf8");
+
+        expect(environmentText.includes("APP_NAME=")).toBe(true);
+    });
+
+    test("Config registers entry inside configValidator zod.object", async () => {
+        await rm(root, { recursive: true, force: true });
+        await mkdir(root, { recursive: true });
+
+        const configEnumPath = `${root}/ConfigName.ts`;
+        const configValidatorPath = `${root}/index.ts`;
+
+        await writeFile(configEnumPath, configEnumFixture, "utf8");
+        await writeFile(
+            configValidatorPath,
+            "import zod from \"zod\";\n\nexport const configValidator = zod.object({\n});\n",
+            "utf8",
+        );
+
+        await registerArtifact({
+            kind: "config",
+            name: "AppUrl",
+            configEnumMembers: [ "APP_URL" ],
+            configValidatorType: defaultConfigValidatorType,
+        }, {
+            enabled: true,
+            configEnumPath,
+            configValidatorPath,
+        });
+
+        const validatorText = await readFile(configValidatorPath, "utf8");
+
+        expect(validatorText.includes("[ConfigName.APP_URL]")).toBe(true);
+        expect(validatorText.includes(defaultConfigValidatorType)).toBe(true);
+    });
+
+    test("Config uses default validator when configValidatorType is omitted", async () => {
+        await rm(root, { recursive: true, force: true });
+        await mkdir(root, { recursive: true });
+
+        const configEnumPath = `${root}/ConfigName.ts`;
+        const configValidatorPath = `${root}/index.ts`;
+
+        await writeFile(configEnumPath, configEnumFixture, "utf8");
+        await writeFile(
+            configValidatorPath,
+            "import zod from \"zod\";\n\nexport const configValidator = zod.object({\n});\n",
+            "utf8",
+        );
+
+        await registerArtifact({
+            kind: "config",
+            name: "AppName",
+            configEnumMembers: [ "APP_NAME" ],
+        }, {
+            enabled: true,
+            configEnumPath,
+            configValidatorPath,
+        });
+
+        const validatorText = await readFile(configValidatorPath, "utf8");
+
+        expect(validatorText.includes("[ConfigName.APP_NAME]")).toBe(true);
+        expect(validatorText.includes(defaultConfigValidatorType)).toBe(true);
     });
 });

@@ -2,6 +2,7 @@ import { ConsoleLogger } from "@odg/log";
 import { program } from "commander";
 
 import MakeFile, {
+    type MakeConfigOptions,
     type MakeEventOptions,
     type MakeExceptionOptions,
     type MakeHandlerOptions,
@@ -161,6 +162,28 @@ program
     .description("Create EventListener file example")
     .version("0.1.1")
     .action(async (eventName: string, options: MakeEventOptions) => make.makeEvent(eventName, options));
+
+program
+    .command("make:config")
+    .name("make:config")
+    .argument("<configName>", "Config key name (PascalCase, converted to CONST_CASE automatically)")
+    .option("-v, --validator <validator>", "Zod validator expression", "zod.string()")
+    .option(
+        "--register",
+        "Enable post-scaffold registration (ConfigName enum + .env.example)",
+        registrationDefaults.register,
+    )
+    .option("--configEnumPath <configEnumPath>", "ConfigName enum path", registrationDefaults.configEnumPath)
+    .option(
+        "--configValidatorPath <configValidatorPath>",
+        "Path to file with configValidator = zod.object({...})",
+        "./src/Configs/index.ts",
+    )
+    .option("--envExamplePath <envExamplePath>", ".env.example path", registrationDefaults.envExamplePath)
+    .option("--typeImport <statement>", "Explicit import statement to insert (repeatable)", collect, [])
+    .description("Register a new config entry in ConfigName enum, configValidator object and .env.example")
+    .version("0.1.1")
+    .action(async (configName: string, options: MakeConfigOptions) => make.makeConfig(configName, options));
 
 program
     .command("make:exception")

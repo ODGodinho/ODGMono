@@ -15,7 +15,12 @@ import {
     ensureTopLevelStatements,
     ensureTypeNamedImport,
     ensureValueNamedImport,
+    ensureZodObjectEntry,
 } from "src/Registrations/ts-mutators";
+
+const appUrlPropertyName = "[ConfigName.APP_URL]";
+const fooPropertyName = "[ConfigName.FOO]";
+const zodStringPropertyValue = "zod.string()";
 
 describe("ts-mutators", () => {
     const root = `${process.cwd()}/tests/vitest/cache/ts-mutators`;
@@ -269,5 +274,74 @@ describe("ts-mutators", () => {
         const text = await readFile(barrelPath, "utf8");
 
         expect(text.includes("export * from \"./Z\"")).toBe(true);
+    });
+
+    test("ZodObjectEntry adds property to zod.object + idempotency", async () => {
+        const filePath = `${root}/config-validator.ts`;
+
+        await writeFile(
+            filePath,
+            "import { zod } from \"@odg/config\";\n\nexport const configValidator = zod.object({\n});\n",
+            "utf8",
+        );
+
+        await expect(ensureZodObjectEntry({
+            filePath,
+            constName: "configValidator",
+            propertyName: appUrlPropertyName,
+            propertyValue: zodStringPropertyValue,
+        })).resolves.toBe(true);
+
+        const text = await readFile(filePath, "utf8");
+
+        expect(text.includes(appUrlPropertyName)).toBe(true);
+        expect(text.includes(zodStringPropertyValue)).toBe(true);
+
+        // Idempotency
+        await expect(ensureZodObjectEntry({
+            filePath,
+            constName: "configValidator",
+            propertyName: appUrlPropertyName,
+            propertyValue: zodStringPropertyValue,
+        })).resolves.toBe(false);
+    });
+
+    test("ZodObjectEntry throws when const not found", async () => {
+        const filePath = `${root}/config-missing.ts`;
+
+        await writeFile(filePath, "export const other = 1;\n", "utf8");
+
+        await expect(ensureZodObjectEntry({
+            filePath,
+            constName: "configValidator",
+            propertyName: fooPropertyName,
+            propertyValue: zodStringPropertyValue,
+        })).rejects.toThrow("configValidator");
+    });
+
+    test("ZodObjectEntry throws when initializer is not a call expression", async () => {
+        const filePath = `${root}/config-not-call.ts`;
+
+        await writeFile(filePath, "export const configValidator = {};\n", "utf8");
+
+        await expect(ensureZodObjectEntry({
+            filePath,
+            constName: "configValidator",
+            propertyName: fooPropertyName,
+            propertyValue: zodStringPropertyValue,
+        })).rejects.toThrow("call expression");
+    });
+
+    test("ZodObjectEntry throws when first argument is not an object literal", async () => {
+        const filePath = `${root}/config-not-object.ts`;
+
+        await writeFile(filePath, "export const configValidator = zod.object(someRef);\n", "utf8");
+
+        await expect(ensureZodObjectEntry({
+            filePath,
+            constName: "configValidator",
+            propertyName: fooPropertyName,
+            propertyValue: zodStringPropertyValue,
+        })).rejects.toThrow("object literal");
     });
 });
