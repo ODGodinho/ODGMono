@@ -28,6 +28,19 @@ describe("KeyvCacheHandler - Batch Operations", () => {
         handler = new KeyvCacheHandler<TestCacheSchema>(keyv, "test");
     });
 
+    function getStoreKey(key: string): string {
+        if (!keyv.useKeyPrefix || !keyv.namespace) {
+            return key;
+        }
+
+        return `${keyv.namespace}:${key}`;
+    }
+
+    async function writeRawStoreValue(key: string, value: unknown): Promise<void> {
+        await (keyv.store as { set(storeKey: string, storeValue: unknown): Promise<unknown> })
+            .set(getStoreKey(key), value);
+    }
+
     it("should use default handler name when name is not provided", () => {
         const defaultNamedHandler = new KeyvCacheHandler<TestCacheSchema>(new Keyv());
 
@@ -46,6 +59,52 @@ describe("KeyvCacheHandler - Batch Operations", () => {
             const value = await handler.get(cacheKeyUser1);
 
             expect(value).toBeUndefined();
+        });
+
+        it("should read Keyv raw envelope and return only value", async () => {
+            await writeRawStoreValue(cacheKeyUser1, {
+                value: exampleUserId1,
+                expires: undefined,
+            });
+
+            const value = await handler.get(cacheKeyUser1);
+
+            expect(value).toEqual(exampleUserId1);
+        });
+
+        it("should not unwrap value when raw object has extra keys besides value and expires", async () => {
+            const legacyLikeObject = {
+                value: exampleUserId1,
+                expires: undefined,
+                meta: "legacy",
+            };
+
+            await writeRawStoreValue(cacheKeyUser1, legacyLikeObject);
+
+            const value = await handler.get(cacheKeyUser1);
+
+            expect(value).toEqual(legacyLikeObject);
+        });
+
+        it("should return legacy raw value as-is", async () => {
+            await writeRawStoreValue(counterKey, 42);
+
+            const value = await handler.get(counterKey);
+
+            expect(value).toBe(42);
+        });
+
+        it("should return raw object as-is when it does not have value key", async () => {
+            const rawLegacyObject = {
+                expires: undefined,
+                payload: exampleUserId1,
+            };
+
+            await writeRawStoreValue(cacheKeyUser1, rawLegacyObject);
+
+            const value = await handler.get(cacheKeyUser1);
+
+            expect(value).toEqual(rawLegacyObject);
         });
 
         it("should set with TTL", async () => {
@@ -127,6 +186,18 @@ describe("KeyvCacheHandler - Batch Operations", () => {
             const values = await handler.getMany([]);
 
             expect(values).toEqual([]);
+        });
+
+        it("should read mixed Keyv envelope and legacy raw values", async () => {
+            await writeRawStoreValue(cacheKeyUser1, {
+                value: exampleUserId1,
+                expires: undefined,
+            });
+            await writeRawStoreValue(counterKey, 77);
+
+            const values = await handler.getMany([ cacheKeyUser1, counterKey, cacheKeyUser2 ]);
+
+            expect(values).toEqual([ exampleUserId1, 77, undefined ]);
         });
     });
 

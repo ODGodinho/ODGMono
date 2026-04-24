@@ -15,7 +15,9 @@ export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerI
     }
 
     public async get<K extends keyof CacheType>(key: K): Promise<CacheType[K] | undefined> {
-        return this.keyv.get<CacheType[K]>(String(key));
+        const rawValue = await this.keyv.get<unknown>(String(key), { raw: true });
+
+        return this.normalizeRawGetValue(rawValue) as CacheType[K] | undefined;
     }
 
     public async set<K extends keyof CacheType>(key: K, value: CacheType[K], ttl?: number): Promise<boolean> {
@@ -41,7 +43,9 @@ export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerI
     }
 
     public async getMany<K extends keyof CacheType>(keys: K[]): Promise<Array<CacheType[K] | undefined>> {
-        return this.keyv.getMany<CacheType[K]>(keys as string[]);
+        const rawValues = await this.keyv.getMany<unknown>(keys as string[], { raw: true });
+
+        return rawValues.map((value) => this.normalizeRawGetValue(value) as CacheType[K] | undefined);
     }
 
     public async setMany(
@@ -75,6 +79,38 @@ export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerI
         for await (const [ key, value ] of this.keyv.iterator("*")) {
             yield [ key as keyof CacheType, value as CacheType[keyof CacheType] ];
         }
+    }
+
+    private isKeyvEnvelope(value: unknown): value is { value: unknown; expires?: unknown } {
+        if (value === null || typeof value !== "object" || Array.isArray(value)) {
+            return false;
+        }
+
+        const keyvEnvelopeWithExpiresKeys = 2;
+        const keyvEnvelopeWithoutExpiresKeys = 1;
+        const record = value as Record<string, unknown>;
+
+        if (!Object.hasOwn(record, "value")) {
+            return false;
+        }
+
+        if (Object.hasOwn(record, "expires")) {
+            return Object.keys(record).length === keyvEnvelopeWithExpiresKeys;
+        }
+
+        return Object.keys(record).length === keyvEnvelopeWithoutExpiresKeys;
+    }
+
+    private normalizeRawGetValue(value: unknown): unknown {
+        if (value === undefined) {
+            return undefined;
+        }
+
+        if (this.isKeyvEnvelope(value)) {
+            return value.value;
+        }
+
+        return value;
     }
 
 }
