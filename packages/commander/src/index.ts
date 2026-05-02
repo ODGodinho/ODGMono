@@ -53,6 +53,7 @@ program
     .option("--handlerPath <handlerPath>", "Handler Path", commandPathsDefaults.handlers)
     .option("--handler-from <handlerFrom>", "Use If Handler From")
     .option("--handler-to <handlerTo>", "Use if Handler To")
+    .option("--handler", "Create default <PageName>Handler alongside the page", false)
     .option(
         "--register",
         "Enable post-scaffold registration (Container, barrels, events, etc.)",

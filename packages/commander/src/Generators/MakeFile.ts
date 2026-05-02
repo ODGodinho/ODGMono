@@ -33,6 +33,7 @@ export interface MakePageOptions extends RegistrationOptions {
     eventPath?: string;
     selectorPath?: string;
     handlerPath?: string;
+    handler?: boolean;
     handlerFrom?: string;
     handlerTo?: string;
 }
@@ -82,21 +83,21 @@ export default class MakeFile {
      * @returns {Promise<void>}
      */
     public async makePage(pageName: string, options: MakePageOptions): Promise<void> {
-        const pageUcFirst = new Str(pageName).ucFirst().toString();
-        const filePath = await this.stubCreator.create("page", `${pageUcFirst}Page`, options.path, {
-            "PageName:UCFirst": pageUcFirst,
-            "PageName:LCFirst": pageName.charAt(0).toLowerCase() + pageName.slice(1),
+        const pageClassName = new Str(pageName).pascalCase().toString();
+        const filePath = await this.stubCreator.create("page", `${pageClassName}Page`, options.path, {
+            "PageName:UCFirst": pageClassName,
+            "PageName:LCFirst": new Str(pageClassName).camelCase().toString(),
         });
 
         const targets = this.buildRegistrationTargets(options);
 
-        await this.scaffoldPageAddOns(pageName, options);
+        await this.scaffoldPageAddOns(pageClassName, options);
 
         await registerArtifact({
             kind: "page",
-            name: pageName,
-            pageClassName: `${pageUcFirst}Page`,
-            containerEnumMember: `${pageUcFirst}Page`,
+            name: pageClassName,
+            pageClassName: `${pageClassName}Page`,
+            containerEnumMember: `${pageClassName}Page`,
             filePath,
         }, targets);
 
@@ -104,17 +105,17 @@ export default class MakeFile {
     }
 
     public async makeSelectors(selectorName: string, options: MakeSelectorOptions): Promise<void> {
-        const pageUcFirst = new Str(selectorName).ucFirst().toString();
+        const pageName = new Str(selectorName).pascalCase().toString();
 
-        const filePath = await this.stubCreator.create("selector", `${pageUcFirst}Selector`, options.path, {
-            "SelectorName:UCFirst": pageUcFirst,
-            "SelectorName:LCFirst": selectorName.charAt(0).toLowerCase() + selectorName.slice(1),
+        const filePath = await this.stubCreator.create("selector", `${pageName}Selector`, options.path, {
+            "SelectorName:UCFirst": pageName,
+            "SelectorName:LCFirst": new Str(selectorName).camelCase().toString(),
         });
 
         await registerArtifact({
             kind: "selector",
             name: selectorName,
-            selectorClassName: `${pageUcFirst}Selector`,
+            selectorClassName: `${pageName}Selector`,
             filePath,
         }, this.buildRegistrationTargets(options));
 
@@ -124,11 +125,11 @@ export default class MakeFile {
     public async makeHandler(handlerName: string, options: MakeHandlerOptions): Promise<void> {
         const isTransition = options.handlerFrom !== undefined || options.handlerTo !== undefined;
         const handlerClassName = isTransition
-            ? `${new Str(options.handlerFrom ?? handlerName).ucFirst().toString()}To${new Str(options.handlerTo ?? handlerName).ucFirst().toString()}Handler`
-            : `${new Str(handlerName).ucFirst().toString()}Handler`;
+            ? `${new Str(options.handlerFrom ?? handlerName).pascalCase().toString()}To${new Str(options.handlerTo ?? handlerName).pascalCase().toString()}Handler`
+            : `${new Str(handlerName).pascalCase().toString()}Handler`;
 
-        const handlerPageLcFirst = handlerName.charAt(0).toLowerCase() + handlerName.slice(1);
-        const handlerPageSelectorBundle = `${handlerPageLcFirst}Selector`;
+        const selectorName = new Str(handlerName).camelCase().toString();
+        const handlerPageSelectorBundle = `${selectorName}Selector`;
 
         const filePath = await this.stubCreator.create("handler", handlerClassName, options.path, {
             "HandlerClassName": handlerClassName,
@@ -147,15 +148,15 @@ export default class MakeFile {
     }
 
     public async makeEvent(eventName: string, options: MakeEventOptions): Promise<void> {
-        const pageUcFirst = new Str(eventName).ucFirst().toString();
+        const pageClassName = new Str(eventName).pascalCase().toString();
 
-        const listenerClassName = `${pageUcFirst}EventListener`;
-        const eventEnumMember = `${pageUcFirst}Event`;
-        const containerEnumMember = `${pageUcFirst}EventListener`;
+        const listenerClassName = `${pageClassName}EventListener`;
+        const eventEnumMember = `${pageClassName}Event`;
+        const containerEnumMember = `${pageClassName}EventListener`;
 
         const filePath = await this.stubCreator.create("event", listenerClassName, options.path, {
-            "EventName:UCFirst": pageUcFirst,
-            "EventName:LCFirst": eventName.charAt(0).toLowerCase() + eventName.slice(1),
+            "EventName:UCFirst": pageClassName,
+            "EventName:LCFirst": new Str(eventName).camelCase().toString(),
         });
 
         await registerArtifact({
@@ -185,12 +186,12 @@ export default class MakeFile {
     }
 
     public async makeException(exceptionName: string, options: MakeExceptionOptions): Promise<void> {
-        const exceptionUcFirst = new Str(exceptionName).ucFirst().toString();
+        const exceptionClassName = new Str(exceptionName).pascalCase().toString();
         const exceptionType = options.isUnknown ? "UnknownException" : "Exception";
 
-        const filePath = await this.stubCreator.create("exception", `${exceptionUcFirst}${exceptionType}`, options.path, {
+        const filePath = await this.stubCreator.create("exception", `${exceptionClassName}${exceptionType}`, options.path, {
             "ExceptionType": exceptionType,
-            "ExceptionName": exceptionUcFirst,
+            "ExceptionName": exceptionClassName,
         });
 
         await this.logger.info(`Exception created successfully in : ${filePath}`);
@@ -236,7 +237,7 @@ export default class MakeFile {
             });
         }
 
-        if (options.handlerPath && (options.handlerFrom ?? options.handlerTo)) {
+        if (options.handlerPath && (options.handlerFrom ?? options.handlerTo ?? options.handler)) {
             await this.makeHandler(pageName, {
                 ...options,
                 path: options.handlerPath,

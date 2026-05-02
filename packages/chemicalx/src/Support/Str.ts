@@ -121,6 +121,89 @@ export class Str implements CloneableInterface, NativeInterface<string> {
     }
 
     /**
+     * Convert string to PascalCase
+     * `hello world` -> `HelloWorld`
+     * `hello-world` -> `HelloWorld`
+     * `hello_world` -> `HelloWorld`
+     *
+     * @returns {this}
+     */
+    public pascalCase(): this {
+        const words = this.caseWords();
+
+        this.subject = words
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join("");
+
+        return this;
+    }
+
+    /**
+     * Convert string to camelCase
+     * `hello world` -> `helloWorld`
+     * `hello-world` -> `helloWorld`
+     * `hello_world` -> `helloWorld`
+     * `HelloWorld` -> `helloWorld`
+     *
+     * @returns {this}
+     */
+    public camelCase(): this {
+        const words = this.caseWords();
+        const pascal = words
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join("");
+
+        this.subject = pascal.charAt(0).toLowerCase() + pascal.slice(1);
+
+        return this;
+    }
+
+    /**
+     * Convert string to snake_case
+     * `hello world` -> `hello_world`
+     * `helloWorld` -> `hello_world`
+     * `HelloWorld` -> `hello_world`
+     * `hello-world` -> `hello_world`
+     *
+     * @returns {this}
+     */
+    public snakeCase(): this {
+        this.subject = this.caseWords().join("_");
+
+        return this;
+    }
+
+    /**
+     * Convert string to dot.case
+     * `hello world` -> `hello.world`
+     * `helloWorld` -> `hello.world`
+     * `HelloWorld` -> `hello.world`
+     * `hello-world` -> `hello.world`
+     *
+     * @returns {this}
+     */
+    public dotCase(): this {
+        this.subject = this.caseWords().join(".");
+
+        return this;
+    }
+
+    /**
+     * Convert string to CONST_CASE
+     * `hello world` -> `HELLO_WORLD`
+     * `helloWorld` -> `HELLO_WORLD`
+     * `hello-world` -> `HELLO_WORLD`
+     * `hello.world` -> `HELLO_WORLD`
+     *
+     * @returns {this}
+     */
+    public constCase(): this {
+        this.subject = this.caseWords().join("_").toUpperCase();
+
+        return this;
+    }
+
+    /**
      * Make a string's first character uppercase.
      *
      * @returns {boolean}
@@ -168,6 +251,25 @@ export class Str implements CloneableInterface, NativeInterface<string> {
     private moneyAllOccurrences(): never[] | RegExpMatchArray {
         // eslint-disable-next-line security/detect-non-literal-regexp
         return this.subject.match(new RegExp(this.moneyRegex, "g")) ?? [];
+    }
+
+    /**
+     * Normalize words for case converters.
+     *
+     * @returns {string[]}
+     */
+    private caseWords(): string[] {
+        const normalized = this.subject
+            .replaceAll(/(?<lowerOrDigit>[0-9a-z])(?<upper>[A-Z])/g, "$<lowerOrDigit> $<upper>")
+            .replaceAll(/(?<acronym>[A-Z]+)(?<wordStart>[A-Z][a-z])/g, "$<acronym> $<wordStart>")
+            .replaceAll(/[^0-9A-Za-z]+/g, " ")
+            .trim();
+
+        if (!normalized) return [];
+
+        return normalized
+            .toLowerCase()
+            .split(/\s+/);
     }
 
 }

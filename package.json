@@ -1,49 +1,49 @@
 {
-  "name": "@odg/monorepo",
-  "engines": {
-    "node": ">=24.0.0"
-  },
-  "private": true,
-  "workspaces": [
-    "packages/axios",
-    "packages/cache",
-    "packages/chemicalx",
-    "packages/commander",
-    "packages/config",
-    "packages/eslint-config",
-    "packages/events",
-    "packages/exception",
-    "packages/graylog",
-    "packages/json-log",
-    "packages/log",
-    "packages/message",
-    "packages/tls",
-    "packages/tsconfig"
-  ],
-  "scripts": {
-    "build": "turbo run build",
-    "test": "turbo run test",
-    "test:ci": "turbo run test:ci",
-    "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
-    "tsc": "turbo run tsc",
-    "release": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --sequential-init",
-    "release:local": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --sequential-init --no-ci",
-    "release:debug": "DEBUG=msr:*,semantic-release:* yarn release:local",
-    "release:dry": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --dry-run --debug",
-    "prepare": "husky"
-  },
-  "devDependencies": {
-    "@odg/eslint-config": "workspace:^",
-    "@semantic-release/commit-analyzer": "^13.0.1",
-    "@semantic-release/exec": "^7.1.0",
-    "@semantic-release/github": "^12.0.6",
-    "@semantic-release/npm": "^13.1.5",
-    "@semantic-release/release-notes-generator": "^14.1.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "multi-semantic-release": "^3.1.0",
-    "turbo": "^2.9.6"
-  },
-  "packageManager": "yarn@4.13.0"
+    "name": "@odg/monorepo",
+    "engines": {
+        "node": ">=24.0.0"
+    },
+    "private": true,
+    "workspaces": [
+        "packages/axios",
+        "packages/cache",
+        "packages/chemicalx",
+        "packages/commander",
+        "packages/config",
+        "packages/eslint-config",
+        "packages/events",
+        "packages/exception",
+        "packages/graylog",
+        "packages/json-log",
+        "packages/log",
+        "packages/message",
+        "packages/tls",
+        "packages/tsconfig"
+    ],
+    "scripts": {
+        "build": "turbo run build",
+        "test": "turbo run test",
+        "test:ci": "turbo run test:ci",
+        "lint": "turbo run lint",
+        "lint:fix": "turbo run lint:fix",
+        "tsc": "turbo run tsc",
+        "release": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --sequential-init",
+        "release:local": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --sequential-init --no-ci",
+        "release:debug": "DEBUG=msr:*,semantic-release:* yarn release:local",
+        "release:dry": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --dry-run --debug",
+        "prepare": "husky"
+    },
+    "devDependencies": {
+        "@odg/eslint-config": "workspace:^",
+        "@semantic-release/commit-analyzer": "^13.0.1",
+        "@semantic-release/exec": "^7.1.0",
+        "@semantic-release/github": "^12.0.6",
+        "@semantic-release/npm": "^13.1.5",
+        "@semantic-release/release-notes-generator": "^14.1.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.4.0",
+        "multi-semantic-release": "^3.1.0",
+        "turbo": "^2.9.6"
+    },
+    "packageManager": "yarn@4.13.0"
 }

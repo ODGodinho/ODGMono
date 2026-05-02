@@ -1,4 +1,4 @@
-import { unlink } from "node:fs/promises";
+import { readFile, unlink } from "node:fs/promises";
 
 import { File } from "@odg/chemical-x";
 import { NullLogger } from "@odg/log";
@@ -25,6 +25,12 @@ describe("makePage Test", () => {
     });
     afterEach(async () => {
         await unlink(`${path}/ExampleToExampleHandler.ts`).catch(() => null);
+    });
+    afterEach(async () => {
+        await unlink(`${path}/LoginPage.ts`).catch(() => null);
+    });
+    afterEach(async () => {
+        await unlink(`${path}/LoginHandler.ts`).catch(() => null);
     });
 
     test("Generate ExamplePage", async () => {
@@ -87,5 +93,32 @@ describe("makePage Test", () => {
             .toBeTruthy();
         expect(await new File(handlerFile).exists())
             .toBeFalsy();
+    });
+
+    test("creates LoginPage and LoginHandler when --handler flag is set", async () => {
+        const pageFile = `${path}/LoginPage.ts`;
+        const handlerFile = `${path}/LoginHandler.ts`;
+
+        await expect(
+            make.makePage("Login", {
+                path,
+                selectors: false,
+                event: false,
+                handlerPath: path,
+                handler: true,
+            }),
+        )
+            .resolves
+            .toBeUndefined();
+
+        expect(await new File(pageFile).exists())
+            .toBeTruthy();
+        expect(await new File(handlerFile).exists())
+            .toBeTruthy();
+
+        const handlerSource = await readFile(handlerFile, "utf8");
+
+        expect(handlerSource.includes("export class LoginHandler"))
+            .toBe(true);
     });
 });

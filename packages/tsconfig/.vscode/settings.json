@@ -1,0 +1,10 @@
+{
+    "conventionalCommits.scopes": [
+        "Init",
+        "Documentation",
+        "Deploy",
+        "Packages",
+        "Publish",
+        "Typescript"
+    ]
+}
