@@ -25,7 +25,7 @@ export class ExampleFailedAttemptHandler extends BaseHandler<PageClassEngine> {
         return 0;
     }
 
-    public async retrying(_exception: Exception, _times: number): Promise<RetryAction> {
+    public override async retrying(_exception: Exception, _times: number): Promise<RetryAction> {
         return RetryAction.Default;
     }
 

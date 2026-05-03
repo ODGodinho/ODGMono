@@ -229,7 +229,6 @@ async function registerEventContainerInterface(
     if (
         !descriptor.listenerClassName
         || !descriptor.containerEnumMember
-        || !descriptor.eventEnumMember
         || !targets.containerInterfacePath
     ) {
         return;
@@ -259,7 +258,17 @@ async function registerEvent(descriptor: ArtifactDescriptor, targets: Registrati
         });
     }
 
-    if (descriptor.listenerClassName && targets.listenersIndexPath) {
+    if (descriptor.eventEnumMember && targets.eventsInterfacePath) {
+        await registerEventsInterface(descriptor, targets);
+    }
+}
+
+async function registerListener(descriptor: ArtifactDescriptor, targets: RegistrationTargets): Promise<void> {
+    if (!descriptor.listenerClassName || !descriptor.containerEnumMember) {
+        return;
+    }
+
+    if (targets.listenersIndexPath) {
         await registerBarrelExport(
             targets.listenersIndexPath,
             descriptor.filePath,
@@ -280,10 +289,6 @@ async function registerEvent(descriptor: ArtifactDescriptor, targets: Registrati
     }
 
     await registerEventContainerInterface(descriptor, targets);
-
-    if (descriptor.eventEnumMember && targets.eventsInterfacePath) {
-        await registerEventsInterface(descriptor, targets);
-    }
 }
 
 async function registerConfig(descriptor: ArtifactDescriptor, targets: RegistrationTargets): Promise<void> {
@@ -324,6 +329,10 @@ export async function registerArtifact(descriptor: ArtifactDescriptor, targets: 
             break;
         case "event":
             await registerEvent(descriptor, targets);
+
+            break;
+        case "listener":
+            await registerListener(descriptor, targets);
 
             break;
         case "config":

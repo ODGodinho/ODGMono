@@ -12,13 +12,7 @@ describe("registerArtifact - event full", () => {
     test("full event registration: enums, barrels, interfaces, imports", async () => {
         const paths = await prepareEventFullFixture(root);
 
-        await registerArtifact({
-            kind: "event",
-            name: "Example",
-            eventEnumMember: "ExampleEvent",
-            listenerClassName: "ExampleEventListener",
-            containerEnumMember: "ExampleEventListener",
-        }, {
+        const targets = {
             enabled: true,
             containerEnumPath: paths.containerEnumPath,
             eventEnumPath: paths.eventEnumPath,
@@ -30,7 +24,20 @@ describe("registerArtifact - event full", () => {
                 "import type { ContainerName } from \"./ContainerName\";",
                 "import type { EventName } from \"./EventName\";",
             ],
-        });
+        };
+
+        await registerArtifact({
+            kind: "event",
+            name: "Example",
+            eventEnumMember: "ExampleEvent",
+        }, targets);
+
+        await registerArtifact({
+            kind: "listener",
+            name: "Example",
+            listenerClassName: "ExampleEventListener",
+            containerEnumMember: "ExampleEventListener",
+        }, targets);
 
         const enumEventText = await readFile(paths.eventEnumPath, "utf8");
 

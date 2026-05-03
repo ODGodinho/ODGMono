@@ -28,9 +28,10 @@ interface RegistrationOptions {
 
 export interface MakePageOptions extends RegistrationOptions {
     selectors: boolean;
-    event: boolean;
+    event?: string;
+    listeners?: boolean;
     path: string;
-    eventPath?: string;
+    listenersPath?: string;
     selectorPath?: string;
     handlerPath?: string;
     handler?: boolean;
@@ -49,7 +50,12 @@ export interface MakeHandlerOptions extends RegistrationOptions {
 }
 
 export interface MakeEventOptions extends RegistrationOptions {
+    path?: string;
+}
+
+export interface MakeListenerOptions extends RegistrationOptions {
     path: string;
+    event: string;
 }
 
 export interface MakeExceptionOptions {
@@ -149,26 +155,46 @@ export default class MakeFile {
 
     public async makeEvent(eventName: string, options: MakeEventOptions): Promise<void> {
         const pageClassName = new Str(eventName).pascalCase().toString();
-
-        const listenerClassName = `${pageClassName}EventListener`;
         const eventEnumMember = `${pageClassName}Event`;
-        const containerEnumMember = `${pageClassName}EventListener`;
-
-        const filePath = await this.stubCreator.create("event", listenerClassName, options.path, {
-            "EventName:UCFirst": pageClassName,
-            "EventName:LCFirst": new Str(eventName).camelCase().toString(),
-        });
 
         await registerArtifact({
             kind: "event",
             name: eventName,
-            listenerClassName,
             eventEnumMember,
+        }, this.buildRegistrationTargets(options));
+
+        await this.logger.info(`Event "${eventEnumMember}" registered in targets (use make:listener to scaffold a listener class)`);
+    }
+
+    public async makeListener(listenerName: string, options: MakeListenerOptions): Promise<void> {
+        if (options.register) {
+            await this.makeEvent(options.event, {
+                ...options,
+                path: undefined,
+            });
+        }
+
+        const listenerPascal = new Str(listenerName).pascalCase().toString();
+        const eventBindingPascal = new Str(options.event).pascalCase().toString();
+        const listenerClassName = `${listenerPascal}EventListener`;
+        const containerEnumMember = listenerClassName;
+
+        const filePath = await this.stubCreator.create("listener", listenerClassName, options.path, {
+            "ListenerName:UCFirst": listenerPascal,
+            "ListenerName:LCFirst": new Str(listenerName).camelCase().toString(),
+            "EventBinding:UCFirst": eventBindingPascal,
+            "EventBinding:LCFirst": new Str(options.event).camelCase().toString(),
+        });
+
+        await registerArtifact({
+            kind: "listener",
+            name: listenerName,
+            listenerClassName,
             containerEnumMember,
             filePath,
         }, this.buildRegistrationTargets(options));
 
-        await this.logger.info(`Event created successfully in : ${filePath}`);
+        await this.logger.info(`Listener created successfully in : ${filePath}`);
     }
 
     public async makeConfig(configName: string, options: MakeConfigOptions): Promise<void> {
@@ -230,10 +256,19 @@ export default class MakeFile {
             });
         }
 
-        if (options.event && options.eventPath) {
-            await this.makeEvent(pageName, {
+        if (options.event) {
+            await this.makeEvent(options.event, {
                 ...options,
-                path: options.eventPath,
+            });
+        }
+
+        if (options.listeners && options.listenersPath) {
+            const eventBinding = options.event ?? pageName;
+
+            await this.makeListener(pageName, {
+                ...options,
+                path: options.listenersPath,
+                event: eventBinding,
             });
         }
 

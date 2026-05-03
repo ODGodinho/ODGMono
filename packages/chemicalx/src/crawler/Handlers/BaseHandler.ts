@@ -19,7 +19,7 @@ export abstract class BaseHandler<
 
     public page?: PageClassEngine;
 
-    public abstract readonly $$s: Record<number | string | symbol, SelectorType>;
+    public abstract readonly $$s: SelectorType;
 
     public setPage(page: PageClassEngine): this {
         this.page = page;

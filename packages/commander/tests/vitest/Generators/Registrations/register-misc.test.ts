@@ -57,8 +57,6 @@ describe("registerArtifact - misc branches", () => {
             kind: "event",
             name: "Example",
             eventEnumMember: "ExampleEvent",
-            listenerClassName: "ExampleEventListener",
-            containerEnumMember: "ExampleEventListener",
         }, {
             enabled: true,
             eventEnumPath,
@@ -114,6 +112,60 @@ describe("registerArtifact - misc branches", () => {
         })).resolves.toBeUndefined();
     });
 
+    test("Listener registration returns early when listenerClassName missing", async () => {
+        await expect(registerArtifact({
+            kind: "listener",
+            name: "Example",
+        }, {
+            enabled: true,
+        })).resolves.toBeUndefined();
+    });
+
+    test("Event registration only touches EventName when EventsInterface path omitted", async () => {
+        await rm(root, { recursive: true, force: true });
+        await mkdir(root, { recursive: true });
+
+        const eventEnumPath = `${root}/EventName.ts`;
+
+        await writeFile(eventEnumPath, "export enum EventName {\n}\n", "utf8");
+
+        await registerArtifact({
+            kind: "event",
+            name: "Solo",
+            eventEnumMember: "SoloEvent",
+        }, {
+            enabled: true,
+            eventEnumPath,
+        });
+
+        const enumText = await readFile(eventEnumPath, "utf8");
+
+        expect(enumText.includes("\"SoloEvent\" = \"SoloEvent\"")).toBe(true);
+    });
+
+    test("Event registration only touches EventsInterface when EventName path omitted", async () => {
+        await rm(root, { recursive: true, force: true });
+        await mkdir(root, { recursive: true });
+
+        const eventsInterfacePath = `${root}/EventsInterface.d.ts`;
+
+        await writeFile(eventsInterfacePath, emptyEventBaseInterfaceWithImport(), "utf8");
+
+        await registerArtifact({
+            kind: "event",
+            name: "IfaceOnly",
+            eventEnumMember: "IfaceOnlyEvent",
+        }, {
+            enabled: true,
+            eventsInterfacePath,
+            eventPayloadType: "unknown",
+        });
+
+        const ifaceText = await readFile(eventsInterfacePath, "utf8");
+
+        expect(ifaceText.includes("[EventName.IfaceOnlyEvent]: unknown;")).toBe(true);
+    });
+
     test("Event ContainerInterface imports listener type from @listeners when listenersIndexPath omitted", async () => {
         await rm(root, { recursive: true, force: true });
         await mkdir(root, { recursive: true });
@@ -125,9 +177,8 @@ describe("registerArtifact - misc branches", () => {
         await writeFile(eventsInterfacePath, emptyEventBaseInterfaceWithImport(), "utf8");
 
         await registerArtifact({
-            kind: "event",
+            kind: "listener",
             name: "Example",
-            eventEnumMember: "ExampleEvent",
             listenerClassName: "ExampleEventListener",
             containerEnumMember: "ExampleEventListener",
         }, {

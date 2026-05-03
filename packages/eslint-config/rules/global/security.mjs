@@ -19,6 +19,7 @@ export default {
         "import/no-dynamic-require": [ "error", { "esmodule": true } ], // Sem import dinâmicos
         "no-prototype-builtins": [ "error" ], // Object.prototype.hasOwnProperty.call no lugar obj.hasOwnProperty
         "sonarjs/aws-apigateway-public-api": [ "error" ], // Bloqueia API Gateway público
+        "sonarjs/dompurify-unsafe-config": [ "error" ], // Dompurify unsafe config
         "sonarjs/aws-ec2-rds-dms-public": [ "error" ], // Bloqueia rds public
         "sonarjs/aws-ec2-unencrypted-ebs-volume": [ "error" ], // Segurança aws
         "sonarjs/aws-efs-unencrypted": [ "error" ], // Segurança aws

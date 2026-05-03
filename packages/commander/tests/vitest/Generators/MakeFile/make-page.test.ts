@@ -39,8 +39,7 @@ describe("makePage Test", () => {
             {
                 path,
                 selectors: true,
-                event: true,
-                eventPath: path,
+                event: "Example",
                 selectorPath: path,
                 handlerPath: path,
                 handlerFrom: "Example",
@@ -61,7 +60,6 @@ describe("makePage Test", () => {
             {
                 path,
                 selectors: false,
-                event: false,
                 handlerPath: path,
                 handlerTo: "Example",
             },
@@ -82,7 +80,6 @@ describe("makePage Test", () => {
             make.makePage("Example", {
                 path,
                 selectors: false,
-                event: false,
                 handlerPath: path,
             }),
         )
@@ -103,7 +100,6 @@ describe("makePage Test", () => {
             make.makePage("Login", {
                 path,
                 selectors: false,
-                event: false,
                 handlerPath: path,
                 handler: true,
             }),
@@ -120,5 +116,67 @@ describe("makePage Test", () => {
 
         expect(handlerSource.includes("export class LoginHandler"))
             .toBe(true);
+    });
+
+    test("makePage with --listeners and --event scaffolds listener bound to that event", async () => {
+        const listenerFile = `${path}/ExampleEventListener.ts`;
+
+        await expect(
+            make.makePage("Example", {
+                path,
+                selectors: false,
+                event: "Checkout",
+                listeners: true,
+                listenersPath: path,
+            }),
+        )
+            .resolves
+            .toBeUndefined();
+
+        expect(await new File(listenerFile).exists())
+            .toBeTruthy();
+
+        const source = await readFile(listenerFile, "utf8");
+
+        expect(source.includes("EventName.CheckoutEvent")).toBe(true);
+        expect(source.includes("export class ExampleEventListener")).toBe(true);
+    });
+
+    test("makePage skips listener scaffold when listeners is true but no output path", async () => {
+        const listenerFile = `${path}/ExampleEventListener.ts`;
+
+        await expect(
+            make.makePage("Example", {
+                path,
+                selectors: false,
+                listeners: true,
+            }),
+        )
+            .resolves
+            .toBeUndefined();
+
+        expect(await new File(listenerFile).exists())
+            .toBeFalsy();
+    });
+
+    test("makePage listener defaults event binding to page name when --event omitted", async () => {
+        const listenerFile = `${path}/ExampleEventListener.ts`;
+
+        await expect(
+            make.makePage("Example", {
+                path,
+                selectors: false,
+                listeners: true,
+                listenersPath: path,
+            }),
+        )
+            .resolves
+            .toBeUndefined();
+
+        const source = await readFile(listenerFile, "utf8");
+
+        expect(source.includes("EventName.ExampleEvent")).toBe(true);
+
+        await unlink(listenerFile).catch(() => null);
     });
 });

@@ -1,4 +1,4 @@
-export type ArtifactKind = "config" | "event" | "handler" | "page" | "selector";
+export type ArtifactKind = "config" | "event" | "handler" | "listener" | "page" | "selector";
 
 export interface RegistrationTargets {
     enabled: boolean;

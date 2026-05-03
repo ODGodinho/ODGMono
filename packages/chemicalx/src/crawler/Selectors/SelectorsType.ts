@@ -1,4 +1,6 @@
-export type SelectorValuesType = Record<string, SelectorType | string> | string;
+type SelectorValuesType = Record<string, RegExp | SelectorBasedType | string> | RegExp | string;
 
-export interface SelectorType extends Record<string, SelectorValuesType> {
+interface SelectorBasedType extends Record<string, SelectorValuesType> {
 }
+
+export type SelectorType = Record<number | string | symbol, SelectorValuesType>;

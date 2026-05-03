@@ -36,17 +36,18 @@ describe("Registrations - event", () => {
         };
 
         await make.makeEvent("Example", {
-            path: cacheRoot,
             register: true,
             registrationTargets,
         });
 
-        // Rerun idempotency
-        await expect(make.makeEvent("Example", {
-            path: cacheRoot,
-            register: true,
-            registrationTargets,
-        })).rejects.toBeTruthy(); // File already exists, but registration must have been safe on first run
+        await expect(
+            make.makeEvent("Example", {
+                register: true,
+                registrationTargets,
+            }),
+        )
+            .resolves
+            .toBeUndefined();
 
         const enumText = await readFile(eventEnumPath, "utf8");
 
@@ -69,12 +70,10 @@ describe("Registrations - event", () => {
         await mkdir(listenersPath, { recursive: true });
         await writeFile(listenersBarrelPath, "", "utf8");
 
-        // Register event without filePath (fallback to listener class name)
         await registerArtifact({
-            kind: "event",
-            name: "FallbackEvent",
+            kind: "listener",
+            name: "Fallback",
             listenerClassName: "FallbackEventListener",
-            eventEnumMember: "FallbackEvent",
             containerEnumMember: "FallbackEventListener",
         }, {
             enabled: true,
@@ -100,12 +99,10 @@ describe("Registrations - event", () => {
         await mkdir(nestedPath, { recursive: true });
         await writeFile(listenersBarrelPath, "", "utf8");
 
-        // Register event with filePath in nested directory
         await registerArtifact({
-            kind: "event",
-            name: "NestedEvent",
+            kind: "listener",
+            name: "Nested",
             listenerClassName: "NestedEventListener",
-            eventEnumMember: "NestedEvent",
             containerEnumMember: "NestedEventListener",
             filePath: nodePath.join(nestedPath, "NestedEventListener.ts"),
         }, {

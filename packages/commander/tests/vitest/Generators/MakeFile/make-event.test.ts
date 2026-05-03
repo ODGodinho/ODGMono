@@ -12,18 +12,18 @@ describe("makeEvent Test", () => {
     const make = new MakeFile(new NullLogger());
 
     const path = `${process.cwd()}/tests/vitest/cache`;
-    const filePath = `${path}/ExampleEventListener.ts`;
+    const listenerFile = `${path}/ExampleEventListener.ts`;
 
-    afterAll(async () => {
-        await unlink(`${path}/ExampleEventListener.ts`).catch(() => null);
+    afterEach(async () => {
+        await unlink(listenerFile).catch(() => null);
     });
 
-    test("Generate ExampleEventListener", async () => {
-        await expect(make.makeEvent("Example", { path }))
+    test("makeEvent does not create an EventListener file", async () => {
+        await expect(make.makeEvent("Example", {}))
             .resolves
             .toBeUndefined();
 
-        expect(await new File(filePath).exists())
-            .toBeTruthy();
+        expect(await new File(listenerFile).exists())
+            .toBeFalsy();
     });
 });

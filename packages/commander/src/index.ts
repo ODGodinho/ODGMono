@@ -6,6 +6,7 @@ import MakeFile, {
     type MakeEventOptions,
     type MakeExceptionOptions,
     type MakeHandlerOptions,
+    type MakeListenerOptions,
     type MakePageOptions,
     type MakeSelectorOptions,
 } from "./Generators/MakeFile";
@@ -27,7 +28,7 @@ const commandPathsDefaults = {
 };
 
 const registrationDefaults = {
-    register: false,
+    register: true,
     containerEnumPath: "./src/app/Enums/ContainerName.ts",
     eventEnumPath: "./src/app/Enums/EventName.ts",
     configEnumPath: "./src/app/Enums/ConfigName.ts",
@@ -48,8 +49,19 @@ program
     .option(pathOption, "Destination Page Path", commandPathsDefaults.pages)
     .option("-s, --selectors", "Create Selectors", false)
     .option("--selectorPath <selectorPath>", "Selector Path", commandPathsDefaults.selectors)
-    .option("-e, --event", "Create Event", false)
-    .option("--eventPath <eventPath>", "Event Path", commandPathsDefaults.listeners)
+    .option(
+        "-e, --event <eventBaseName>",
+        [
+            "Event base name for this page (EventName.<Name>Event + EventsInterface when --register;",
+            "idempotent if member exists). When set, --listeners subscribes to this event",
+        ].join(" "),
+    )
+    .option(
+        "--listeners",
+        "Scaffold <PageName>EventListener (subscribes to --event or, if omitted, <pageName>Event)",
+        false,
+    )
+    .option("--listeners-path <listenersPath>", "Listener TS output folder", commandPathsDefaults.listeners)
     .option("--handlerPath <handlerPath>", "Handler Path", commandPathsDefaults.handlers)
     .option("--handler-from <handlerFrom>", "Use If Handler From")
     .option("--handler-to <handlerTo>", "Use if Handler To")
@@ -134,15 +146,14 @@ program
 program
     .command("make:event")
     .name("make:event")
-    .argument("<eventName>", "EventName")
-    .option(pathOption, "Destination EventListener Path", commandPathsDefaults.listeners)
-    .option("--register", "Enable post-scaffold registration (Container, barrels, etc.)", registrationDefaults.register)
+    .argument("<eventName>", "Event base name (adds EventName.<Name>Event + EventsInterface entry when --register)")
+    .option(pathOption, "EventName enum file path", registrationDefaults.eventEnumPath)
+    .option("--register", "Enable post-scaffold registration (enums + EventsInterface)", true)
     .option(
         "--containerEnumPath <containerEnumPath>",
         "ContainerName enum path",
         registrationDefaults.containerEnumPath,
     )
-    .option("--eventEnumPath <eventEnumPath>", "EventName enum path", registrationDefaults.eventEnumPath)
     .option(
         "--containerInterfacePath <containerInterfacePath>",
         "ContainerInterface path",
@@ -153,16 +164,50 @@ program
         "EventsInterface path",
         registrationDefaults.eventsInterfacePath,
     )
+    .option("--typeImport <statement>", "Explicit import statement to insert (repeatable)", collect, [])
+    .option("--eventPayloadType <type>", "EventsInterface payload type", registrationDefaults.eventPayloadType)
+    .description("Register a new event (EventName + EventsInterface). Use make:listener to add a listener class.")
+    .version("0.1.1")
+    .action(async (eventName: string, options: MakeEventOptions) => {
+        await make.makeEvent(eventName, {
+            ...options,
+            eventEnumPath: options.eventEnumPath ?? options.path,
+        });
+    });
+
+program
+    .command("make:listener")
+    .name("make:listener")
+    .argument("<listenerName>", "Listener base name (class <Name>EventListener)")
+    .requiredOption("--event <event>", "Existing event base name (e.g. Login → EventName.LoginEvent)")
+    .option(pathOption, "Destination listener folder", commandPathsDefaults.listeners)
+    .option("--register", "Enable post-scaffold registration (Container, barrels, etc.)", registrationDefaults.register)
+    .option(
+        "--containerEnumPath <containerEnumPath>",
+        "ContainerName enum path",
+        registrationDefaults.containerEnumPath,
+    )
+    .option(
+        "--containerInterfacePath <containerInterfacePath>",
+        "ContainerInterface path",
+        registrationDefaults.containerInterfacePath,
+    )
     .option(
         "--listenersIndexPath <listenersIndexPath>",
         "Listeners barrel path",
         registrationDefaults.listenersIndexPath,
     )
-    .option("--typeImport <statement>", "Explicit import statement to insert (repeatable)", collect, [])
+    .option("--eventEnumPath <eventEnumPath>", "EventName enum path", registrationDefaults.eventEnumPath)
+    .option(
+        "--eventsInterfacePath <eventsInterfacePath>",
+        "EventsInterface path",
+        registrationDefaults.eventsInterfacePath,
+    )
     .option("--eventPayloadType <type>", "EventsInterface payload type", registrationDefaults.eventPayloadType)
-    .description("Create EventListener file example")
+    .option("--typeImport <statement>", "Explicit import statement to insert (repeatable)", collect, [])
+    .description("Scaffold an EventListener class; with --register, ensures the event contract exists first")
     .version("0.1.1")
-    .action(async (eventName: string, options: MakeEventOptions) => make.makeEvent(eventName, options));
+    .action(async (listenerName: string, options: MakeListenerOptions) => make.makeListener(listenerName, options));
 
 program
     .command("make:config")
@@ -172,7 +217,7 @@ program
     .option(
         "--register",
         "Enable post-scaffold registration (ConfigName enum + .env.example)",
-        registrationDefaults.register,
+        true,
     )
     .option("--configEnumPath <configEnumPath>", "ConfigName enum path", registrationDefaults.configEnumPath)
     .option(

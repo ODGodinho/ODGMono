@@ -111,7 +111,7 @@ abstract class BasePage<PageClassEngine> implements PageInterface {
     page?: PageClassEngine;
 
     abstract readonly $s?: SelectorType;                              // Seletor principal
-    abstract readonly $$s?: Record<string | number | symbol, SelectorType>; // Mapa de seletores
+    abstract readonly $$s?: SelectorsMapType; // Mapa de seletores (folhas, bundles ou cascata)
 
     setPage(page: PageClassEngine): this;
 
@@ -160,7 +160,7 @@ abstract class BaseHandler<PageClassEngine> implements HandlerInterface {
     currentAttempt: number = 0;
     page?: PageClassEngine;
 
-    abstract readonly $$s: Record<string | number | symbol, SelectorType>;
+    abstract readonly $$s: SelectorType;
 
     setPage(page: PageClassEngine): this;
 

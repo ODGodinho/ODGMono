@@ -1,0 +1,26 @@
+import { ODGDecorators } from "@odg/chemical-x";
+import type { EventListenerInterface } from "@odg/events";
+import type { LoggerInterface } from "@odg/log";
+
+import type { EventBrowserParameters, EventTypes } from "#types/EventsInterface";
+import { ContainerName, EventName } from "@enums";
+import { {{ EventBinding:UCFirst }}Page } from "@pages";
+import { $inject } from "~/ContainerInject";
+
+@ODGDecorators.injectable(ContainerName.{{ ListenerName:UCFirst }}EventListener, "Singleton")
+@ODGDecorators.registerListener(EventName.{{ EventBinding:UCFirst }}Event, ContainerName.{{ ListenerName:UCFirst }}EventListener, {})
+export class {{ ListenerName:UCFirst }}EventListener implements EventListenerInterface<EventTypes, EventName.{{ EventBinding:UCFirst }}Event> {
+
+    public constructor(
+        @$inject(ContainerName.Logger) public readonly log: LoggerInterface,
+        @$inject(ContainerName.{{ EventBinding:UCFirst }}Page) public readonly {{ EventBinding:LCFirst }}Page: {{ EventBinding:UCFirst }}Page,
+    ) {
+    }
+
+    public async handler({ page }: EventBrowserParameters): Promise<void> {
+        await this.log.debug("{{ ListenerName:UCFirst }}EventListener is sended");
+
+        await this.{{ EventBinding:LCFirst }}Page.setPage(page).execute();
+    }
+
+}

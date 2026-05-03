@@ -98,7 +98,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 6. **`retry()` com `when` callback**: O callback `when(exception, times)` retorna `RetryAction` para decidir por tentativa: `Retry` (forçar), `Throw` (parar), `Resolve` (resolver com `undefined`), `Default` (seguir contagem `times`).
    📖 See also: [docs/helpers.md](docs/helpers.md)
 
-7. **Seletores `$s` e `$$s` em Pages/Handlers**: `$s` define seletor único da página; `$$s` define mapa nomeado de seletores (`Record<string, SelectorType>`). Ambos são `abstract readonly` em `BasePage`/`BaseHandler`.
+7. **Seletores `$s` e `$$s` em Pages/Handlers**: `$s` define seletor único da página; `$$s` usa `SelectorType` (`Record<string, SelectorType>`): folha `string`/`RegExp`. Ambos são `abstract readonly` em `BasePage`/`BaseHandler`.
    📖 See also: [docs/crawlers.md](docs/crawlers.md)
 
 8. **`AttemptableInterface` — contrato base**: Tanto `BasePage` quanto `BaseHandler` implementam `AttemptableInterface`. Hooks opcionais: `success()`, `failure(exception)`, `retrying(exception, attempt)`, `finish(exception?)`, `sleep()`. Obrigatórios: `execute()`, `attempt()`.

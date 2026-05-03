@@ -29,7 +29,6 @@ describe("Registrations - page", () => {
         const pageOptions = {
             path: pagesPath,
             selectors: false,
-            event: false,
             register: true,
             registrationTargets,
         };
