@@ -4605,10 +4605,10 @@ Disallow the use of console
 ```typescript
 import { ConsoleLogger, Logger } from "@odg/log"
 
-const log = new Logger();
-log.pushHandler(new ConsoleLogger());
+const logger = new Logger();
+logger.pushHandler(new ConsoleLogger());
 
-log.debug("This is a debug message");
+logger.debug("This is a debug message");
 ```
 
 👎 Examples of incorrect code

@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
 yarn tsc
 yarn lint-staged
-yarn build
 yarn test:ci

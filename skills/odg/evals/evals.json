@@ -1,0 +1,148 @@
+{
+    "skill_name": "odg",
+    "evals": [
+        {
+            "id": 1,
+            "prompt": "Planeje Login com Page, Selector, Listener e validacao Home para Login.",
+            "expected_output": "Usa make:page Login com flags completas e separa scaffold de semantica manual.",
+            "files": [],
+            "expectations": [
+                "A resposta escolhe um comando make:page antes de propor edicoes manuais.",
+                "A resposta separa scaffold de validacao estrutural e semantica manual.",
+                "A resposta cita Page, Selector e Listener como artefatos encadeados, nao como edicoes avulsas."
+            ]
+        },
+        {
+            "id": 2,
+            "prompt": "No repo, preciso de SearchPage em Pages/Google, Selectors/Google e Listeners/Search.",
+            "expected_output": "Usa make:page com path flags; fallback separado so com falha reproduzida.",
+            "files": [],
+            "expectations": [
+                "A resposta prefere um unico make:page com path flags em vez de varios scaffolds manuais.",
+                "A resposta so sugere fallback com comandos separados depois de falha local reproduzida.",
+                "A resposta mantem o fluxo command-first."
+            ]
+        },
+        {
+            "id": 3,
+            "prompt": "Adicione USE_HEADLESS config e liste o que precisa mudar alem do comando.",
+            "expected_output": "Usa make:config com a flag do validator e fecha a cadeia: tests/vitest/init.ts (se required), e leitura via config.get(ConfigName.USE_HEADLESS).",
+            "files": [],
+            "expectations": [
+                "A resposta usa make:config como ponto de partida.",
+                "A resposta inclui a cadeia de wiring de config alem do comando.",
+                "A resposta instrui leitura via config.get(ConfigName.USE_HEADLESS), nao acesso direto a process.env."
+            ]
+        },
+        {
+            "id": 4,
+            "prompt": "No handler LoginToHomeHandler, apos detectar captcha quero re-disparar o LoginPageEvent e tentar novamente. Como implemento o loginBlockedSolution?",
+            "expected_output": "Dispara o evento com bus.dispatch e lanca throw new Exception. NUNCA retornar RetryAction.Retry em um identify — isso cria loop infinito. O framework chama retrying() com o contador de attemptableFlow. você deve garantir que attempt() tenha mais de 1 tentativa para que ele possa retentar.",
+            "files": [],
+            "expectations": [
+                "A resposta proibe RetryAction.Retry apos dispatch interno.",
+                "A resposta manda lancar Exception para cair em retrying().",
+                "A resposta menciona o contador de attemptableFlow ou a necessidade de attempt() consistente."
+            ]
+        },
+        {
+            "id": 5,
+            "prompt": "Preciso de um AcceptCookieComponent reutilizavel que vários Pages vao chamar para fechar o banner de cookies.",
+            "expected_output": "Usa make:page com --path=src/Pages/Components/. renomeie o sufixo Page para Component.",
+            "files": [],
+            "expectations": [
+                "A resposta trata Component como artefato manual ou adaptado, nao como Handler ou Service.",
+                "A resposta separa scaffold de validacao estrutural e semantica manual."
+            ]
+        },
+        {
+            "id": 6,
+            "prompt": "Quero um Service que orquestre 3 etapas: PrepareEvent, HomeEvent e SearchEvent, e depois chame os transaction Handler para validar o resultado.",
+            "expected_output": "Cria manualmente src/app/Services/SearchService.ts com @ODGDecorators.injectable Singleton. O Service cria contexto, dispara os 3 eventos via bus.dispatch, e chama o {{handlerFrom}}To{{handlerTo}}.setPage(page).execute() entre cada 1 dos passos. Nao chama handler dentro de Listener.",
+            "files": [],
+            "expectations": [
+                "A resposta mantem a orquestracao do handler no Service, nao no Listener.",
+                "A resposta usa bus.dispatch para os eventos.",
+                "A resposta deixa claro que transaction handler nao pertence ao listener.",
+                "A resposta roda os comandos de make:events e make:handlers para criar os artefatos necessarios."
+            ]
+        },
+        {
+            "id": 7,
+            "prompt": "Rodei yarn build e recebi: Property 'SearchPage' does not exist on type 'ContainerInterface'. O que esta faltando?",
+            "expected_output": "Falta a entrada em @types/ContainerInterface.d.ts. Adicionar [ContainerName.SearchPage]: SearchPage no ContainerInterface. Isso ocorre sempre que um novo binding e adicionado mas o tipo nao e registrado.",
+            "files": [],
+            "expectations": [
+                "A resposta identifica @types/ContainerInterface.d.ts como causa principal.",
+                "A resposta relaciona o erro a um binding novo sem tipagem registrada.",
+                "A resposta nao desvia para solucao genérica sem citar ContainerInterface."
+            ]
+        },
+        {
+            "id": 8,
+            "prompt": "No handler ExampleHandler pensei em fazer setSuccessSelectors(['.modal', '.continueButton']). Faz sentido?",
+            "expected_output": "Rejeita setter com selector cru. Explica que selectors do crawler devem ser derivados de this.$s ou this.$$s, e que o handler deve receber contexto de dominio em vez de strings hardcoded.",
+            "files": [],
+            "expectations": [
+                "A resposta rejeita passar raw selector strings por setter.",
+                "A resposta orienta uso de this.$s ou this.$$s.",
+                "A resposta sugere passar contexto de dominio em vez de arrays de selector."
+            ]
+        },
+        {
+            "id": 9,
+            "prompt": "Rodei yarn dev e o crawler trava com TimeoutError: waitForSelector .login-btn. Como debugamos?",
+            "expected_output": "Bootar playwright-cli via $SKILL_DIR/scripts/debug-browser.sh exportando CLI_BROWSER_CONNECT_WS, rodar BROWSER_CONNECT=$CLI_BROWSER_CONNECT_WS yarn dev em background e usar a skill playwright-cli para capturar snapshot e validar o seletor contra o DOM vivo ANTES de propor edicao em arquivo.",
+            "files": [],
+            "expectations": [
+                "A resposta inicia bootando playwright-cli e exportando CLI_BROWSER_CONNECT_WS antes do yarn dev.",
+                "A resposta roda o crawler com BROWSER_CONNECT=$CLI_BROWSER_CONNECT_WS yarn dev, nao rodando isolado.",
+                "A resposta exige snapshot ou validacao do seletor no DOM vivo antes de propor qualquer fix em codigo."
+            ]
+        },
+        {
+            "id": 10,
+            "prompt": "No identifySuccess eu tenho dois seletores equivalentes e pensei em usar Promise.race([locator(a).waitFor(), locator(b).waitFor()]). Essa e a melhor forma?",
+            "expected_output": "Rejeita nested Promise.race dentro do identify para o mesmo outcome. Orienta usar locator(a).or(locator(b)) ou um selector union, e deixar a orquestracao de outcomes em waitForHandler().",
+            "files": [],
+            "expectations": [
+                "A resposta rejeita nested Promise.race dentro do identify para o mesmo outcome.",
+                "A resposta sugere locator.or(...) ou uniao equivalente de selectors.",
+                "A resposta preserva waitForHandler() como fronteira de orquestracao."
+            ]
+        },
+        {
+            "id": 11,
+            "prompt": "Rodei debug-browser.sh e o CLI_BROWSER_CONNECT_WS veio vazio. preciso fazer um debug numa porta diferente, O que fazer?",
+            "expected_output": "Copiar $SKILL_DIR/configs/playwright-cli.config.json para um arquivo temporario (ex.: /tmp/new-playwright-cli.config.json), alterar cdpPort e a flag --remote-debugging-port= para uma porta livre, e re-exportar CLI_BROWSER_CONNECT_WS apontando para o config temporario. NUNCA editar o config compartilhado in place.",
+            "files": [],
+            "expectations": [
+                "A resposta proibe editar $SKILL_DIR/configs/playwright-cli.config.json in place.",
+                "A resposta orienta copia para /tmp e troca de cdpPort e --remote-debugging-port=.",
+                "A resposta re-exporta CLI_BROWSER_CONNECT_WS usando o config temporario."
+            ]
+        },
+        {
+            "id": 12,
+            "prompt": "Build falhou com Property 'SearchPage' does not exist on type 'ContainerInterface'. Devo bootar playwright-cli e rodar o debug?",
+            "expected_output": "Nao. Erro de tsc puro (sem runtime) NAO dispara o workflow de debug.md; o caminho correto e diagnostics.md, adicionando [ContainerName.SearchPage]: SearchPage em @types/ContainerInterface.d.ts.",
+            "files": [],
+            "expectations": [
+                "A resposta recusa explicitamente bootar playwright-cli para erro tsc-only.",
+                "A resposta redireciona para diagnostics.md e @types/ContainerInterface.d.ts.",
+                "A resposta nao propoe yarn dev nem inspecao de DOM nesse caso."
+            ]
+        },
+        {
+            "id": 13,
+            "prompt": "O crawler quebra em LoginSelector.ts:14 esperando texto 'Entrar'. Posso trocar para 'Login' direto no codigo?",
+            "expected_output": "Nao. O IA MUST NOT propor fix de selector sem antes confirmar no DOM vivo, via playwright-cli, que o candidato (Login, role-based, CSS, etc.) realmente casa. A causa raiz deve chegar a file+line com evidencia do DOM.",
+            "files": [],
+            "expectations": [
+                "A resposta proibe alterar o selector sem antes validar no DOM vivo via playwright-cli.",
+                "A resposta sugere testar 1 ou 2 candidatos (texto, role ou CSS) no playwright-cli antes da edicao.",
+                "A resposta exige causa raiz em file+line com evidencia da inspecao."
+            ]
+        }
+    ]
+}

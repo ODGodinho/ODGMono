@@ -1,0 +1,24 @@
+{
+    "browser": {
+        "launchOptions": {
+            "args": [ "--remote-debugging-port=9222" ],
+            "assistantMode": true,
+            "cdpPort": 9222
+        },
+        "contextOptions": {
+            "viewport": null
+        }
+    },
+    "timeouts": {
+    },
+    "console": {
+    },
+    "network": {
+    },
+    "server": {
+    },
+    "snapshot": {
+    },
+    "configFile": null,
+    "skillMode": true
+}

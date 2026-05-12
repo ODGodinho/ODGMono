@@ -219,12 +219,12 @@ import { $inject } from "~/ContainerInject"; // If use inversify Strongly Typed 
 export class HomeEventListeners implements EventListenerInterface<EventTypes, EventName.Example> {
 
     public constructor(
-        @$inject(ContainerName.Logger) public readonly log: LoggerInterface,
+        @$inject(ContainerName.Logger) public readonly logger: LoggerInterface,
     ) {
     }
 
     public async handler({ page }: EventExampleType): Promise<void> {
-        await this.log.debug("HomeEventListeners is sended");
+        await this.logger.debug("HomeEventListeners is sended");
     }
 
 }

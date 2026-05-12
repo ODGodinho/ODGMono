@@ -488,4 +488,14 @@ export default [
             ...anyBase.rules,
         },
     },
+
+    {
+        files: [ "**/*.md" ],
+        languageOptions: {
+            parser: anyParser,
+        },
+        rules: {
+            "@stylistic/max-len": [ "off" ],
+        },
+    },
 ];

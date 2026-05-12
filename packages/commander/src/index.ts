@@ -61,7 +61,7 @@ program
         "Scaffold <PageName>EventListener (subscribes to --event or, if omitted, <pageName>Event)",
         false,
     )
-    .option("--listeners-path <listenersPath>", "Listener TS output folder", commandPathsDefaults.listeners)
+    .option("--listenersPath <listenersPath>", "Listener TS output folder", commandPathsDefaults.listeners)
     .option("--handlerPath <handlerPath>", "Handler Path", commandPathsDefaults.handlers)
     .option("--handler-from <handlerFrom>", "Use If Handler From")
     .option("--handler-to <handlerTo>", "Use if Handler To")

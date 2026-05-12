@@ -12,13 +12,13 @@ import { $inject } from "~/ContainerInject";
 export class {{ ListenerName:UCFirst }}EventListener implements EventListenerInterface<EventTypes, EventName.{{ EventBinding:UCFirst }}Event> {
 
     public constructor(
-        @$inject(ContainerName.Logger) public readonly log: LoggerInterface,
+        @$inject(ContainerName.Logger) public readonly logger: LoggerInterface,
         @$inject(ContainerName.{{ EventBinding:UCFirst }}Page) public readonly {{ EventBinding:LCFirst }}Page: {{ EventBinding:UCFirst }}Page,
     ) {
     }
 
     public async handler({ page }: EventBrowserParameters): Promise<void> {
-        await this.log.debug("{{ ListenerName:UCFirst }}EventListener is sended");
+        await this.logger.debug("{{ ListenerName:UCFirst }}EventListener is sended");
 
         await this.{{ EventBinding:LCFirst }}Page.setPage(page).execute();
     }

@@ -128,3 +128,8 @@ out/
 
 # Turbo
 .turbo/
+
+# Playwright folder
+.playwright-cli/
+.playwright-mcp/
+.playwright/
