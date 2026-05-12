@@ -14,7 +14,7 @@ Do not continue to business logic while the generated structure is still broken.
 
 ## Scaffold Priority
 
-1. make:page with --selectors --event --listeners --register when a new page also needs selectors, event contract, and a default listener class.
+1. make:page with --selectors --event --listeners --register when a new page also needs selectors, an event contract, and a default listener class.
 2. make:page --register when the page is the central artifact.
 3. make:handler --register when only a handler is missing.
 4. make:event --register when only the event contract (enum + EventsInterface) is missing; make:listener --register when only a listener class is missing.
@@ -31,11 +31,11 @@ If any of these fail, fix only the minimum structural defect first.
 
 ### Event Wiring Chain
 
-After registering an event contract (`make:event` or `make:page --event` with `--register`), and after scaffolding a listener (`make:listener` or `make:page --listeners`), close the full chain before writing logic:
+After registering an event contract with `make:event` or `make:page` `--event` plus `--register`, and after scaffolding a listener with (`make:listener` or `make:page` `--listeners`), close the full chain before writing logic:
 
 1. `src/app/Enums/EventName.ts` — enum key present
 2. `@types/EventsInterface.d.ts` — payload type added to `EventBaseInterface`
-3. For each listener: `src/app/Enums/ContainerName.ts` — listener entry in `// Events` section with `dot.case` value (via `make:listener --register` or `make:page --listeners --register`)
+3. For each listener: `src/app/Enums/ContainerName.ts` — listener entry in the `// Events` section with a `dot.case` value, via `make:listener` or `make:page --listeners`.
 
 ## Post-Scaffold Per-File Checklist
 
@@ -44,7 +44,7 @@ After registering an event contract (`make:event` or `make:page --event` with `-
 | `src/Pages/<Name>Page.ts` | Write `execute()` interaction logic |
 | `src/Handlers/<Name>Handler.ts` | Write `waitForHandler()`, attemptableFlowInterface and write identify\* and \*Solution functions |
 | `src/Selectors/<Name>Selector.ts` | Replace placeholders with real selectors from page inspection |
-| `src/app/Listeners/<Name>EventListener.ts` | Call `setPage(page).execute()` on page, call `handler.execute()` if handler transaction handler **MUST** call handler in *Service.ts |
+| `src/app/Listeners/<Name>EventListener.ts` | Call `setPage(page).execute()` on the page. If a validation handler exists, call `handler.execute()`. Transaction handlers belong in *Service.ts. |
 | `@types/EventsInterface.d.ts` | Add payload type if an event was generated |
 
 ## Manual Semantics
@@ -55,23 +55,17 @@ Only after structure is stable:
 - write page interaction logic
 - write handler success and failure gates
 - complete listener or service orchestration
-- If config is not optional add new config in `tests/vitest/init.ts` to tests workings
+- If a new config is required, add a dummy value to `tests/vitest/init.ts` so tests keep working.
 
 ## Validation Sequence
 
-Before shell commands, check whether rtk exists with command -v rtk.
+When RTK is available:
 
-When RTK is available, prefer the repo adapters:
-
-- rtk tsc --noEmit
-- rtk lint eslint --fix
-- rtk vitest run
-
-Without RTK, use the project commands:
-
-- tsc or the narrowest real build command used by the repo
-- yarn lint:fix
-- yarn test
+| rtk | Without RTK |
+| --- | --- |
+| rtk tsc --noEmit | tsc --noEmit |
+| rtk lint eslint --fix | yarn eslint --fix |
+| rtk vitest run | yarn test |
 
 ## Build Divergence Rule
 

@@ -1,6 +1,6 @@
 # Handlers
 
-Handlers validate whether a step or transition step really succeeded or **one action can produce 2 or more distinct outcomes** .
+Handlers validate whether a step or transition really succeeded when **one action can produce 2 or more distinct outcomes**.
 
 Prefer strong observable identifiers in this order:
 
@@ -17,15 +17,15 @@ Create a Handler when **one action can produce 2 or more distinct outcomes** tha
 
 ### Scenario 1 — Multi-outcome step (e.g., login)
 
-After submitting a form, the page may show success, captcha, account block, or an error. Each outcome requires a different treatment — use a `??` chain (sequential, mutually exclusive) or `Promise.race` (parallel).
+After submitting a form, the page may show success, captcha, account block, or an error. Each outcome requires a different treatment — use a `??` chain for sequential mutually exclusive checks or `Promise.race` for parallel outcomes.
 
-### Scenario 2 — Page transition validation (e.g., `SearchToSelectionHandler`)
+### Scenario 2 — Page transition validation (e.g., `SearchToSelectionHandler.ts`)
 
-After triggering a search, you must confirm the bot reached the results screen. Use `Promise.race` between the expected results selector, an error modal, a login redirect, or any unexpected state — so the bot never proceeds blindly.
+After triggering a search, you must confirm the bot reached the results screen. Use `Promise.race()` between the expected results selector, an error modal, a login redirect, or any unexpected state so the bot never proceeds blindly.
 
-### Scenario 3 — Conditional/optional UI state (e.g., `ModalErrorHandler`)
+### Scenario 3 — Conditional/optional UI state (e.g., `ModalErrorHandler.ts`)
 
-On a single screen, something *may or may not* appear (an alert modal, an extra field unlocking). Use `Promise.race` between `identifyModalOpened` and `identifyNextFieldsVisible` so the bot reacts instantly to whichever happens first, without waiting for a timeout. However, it is still recommended to use the handler's strong observable identifiers orders
+On a single screen, something *may or may not* appear, such as an alert modal or an extra field unlocking. Use `Promise.race()` between `identifyModalOpened()` and `identifyNextFieldsVisible()` so the bot reacts instantly to whichever happens first, without waiting for a timeout. Still prefer the strong observable order listed above.
 
 ---
 
@@ -43,7 +43,7 @@ On a single screen, something *may or may not* appear (an alert modal, an extra 
 
 ## BaseHandler Injected Properties
 
-`BaseHandler` already provides these — **MUST NOT** re-inject in the subclass:
+`BaseHandler` already provides these — **MUST NOT** re-inject them in the subclass:
 
 - `this.bus` — `EventBusInterface<EventTypes>`
 - `this.logger` — `LoggerInterface`
@@ -56,7 +56,7 @@ On a single screen, something *may or may not* appear (an alert modal, an extra 
 Ask internally or outwardly, as needed:
 
 - Handlers live in `src/Handlers/` by default.
-- Handlers **MUST** extends `BaseHandler`
+- Handlers **MUST** extend `BaseHandler`.
 - All core interaction and business logic within a Handler **MUST** be encapsulated exclusively inside the solution() method.
 - The types `HandlerFunction` and `HandlerSolution` **MUST** only be used within Handler classes or BaseHandler classes. These types **MUST NOT** be exported in other files.
 
@@ -74,26 +74,25 @@ Ask internally or outwardly, as needed:
 - If the same outcome can be recognized by more than one selector, prefer a single locator composed with `locator(a).or(locator(b))` or an equivalent selector union, instead of a nested `Promise.race()` inside `identify*()`.
 - Create multiple identify functions only when the outcomes are behaviorally different and map to different solution functions.
 
-**WHEN** AttemptableFlow function
+**WHEN** defining attemptable flow behavior
 
-- Handlers **RECOMMENDED** own their timeout via `getTimeout()` and project config.
+- It is **RECOMMENDED** that handlers own their timeout via `getTimeout()` and project config.
 
 **WHEN** writing a `*Solution()` that cannot recover and needs to trigger a retry:
 
 - You **MAY** dispatch the page event again (e.g., `await this.bus.dispatch(EventName.MyPageEvent, { page: this.page })`).
-- Is **NOT RECOMMENDED** return `RetryAction.Retry` after dispatching the event internally, as this bypasses the attempt counter and creates an infinite loop.
+- It is **NOT RECOMMENDED** to return `RetryAction.Retry` after dispatching the event internally, as this bypasses the attempt counter and creates an infinite loop.
   - **INSTEAD**, you **MUST** throw an exception (e.g., `throw new Exception("Login failed, because <reason>")`). This forces the flow into the `retrying()` method, which safely relies on the `@attemptableFlow` counter.
 - All solution functions **MUST** have the suffix `*Solution`
 - **RECOMMENDED** derive solution name from the identify name: drop the `identify` prefix
   - `identifyLoginBlocked` → `loginBlockedSolution`
   - `identifyMfaRequest` → `mfaRequestSolution`
   - `identifyCaptchaBlock` → `captchaBlockSolution`
-- If create custom solution, you **MAY** read interface documentation of `@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts`
+- If you create a custom solution, you **MAY** read the interface documentation in [@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts](node_modules/@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts).
 
 ## How to Create a Handler
 
-- If you are creating a page with handler, prefer use `yarn odg make:page PageName --handler`
-to create both page and handler together.
+- If you are creating a page with a handler, prefer `yarn odg make:page PageName --handler` to create both together.
 
 ```bash
 yarn odg make:handler <handlerName>
@@ -135,4 +134,4 @@ public async captchaBlockSolution(): Promise<HandlerSolutionType> {
 
 ## Documentation
 
-Documentation RetryAction, HandlerFunction, HandlerSolutionType read [/node_modules/@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts](/node_modules/@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts)
+For RetryAction, HandlerFunction, and HandlerSolutionType, read [@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts](node_modules/@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts).

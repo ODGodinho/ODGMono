@@ -1,13 +1,13 @@
 ---
 name: odg
-description: "Use this skill whenever the task is in an ODG crawler codebase or @odg ecosystem and involves planning or implementing Pages, Handlers, Selectors, Events, Listeners, configs, container wiring, or any yarn odg make:* command. Use it when the user mentions make:page, make:handler, make:event, make:listener, make:selector, make:config, ContainerName, EventName, ConfigName, or asks how to structure a crawler flow, because the correct answer depends on command-first scaffolding, enum wiring, and post-scaffold validation. Use when the user mentions scaffolding OR when the app fails at runtime — yarn dev error, crawler exception/timeout, handler picks wrong branch, selector wait fails, or phrases like"
+description: "Use this skill whenever the user is working in an ODG crawler codebase or @odg ecosystem (chemical-x, command, events, playwright-cli). Triggers in four scenarios. (1) Scaffolding — any yarn odg make:page, make:handler, make:event, make:listener, make:selector, make:config, or any mention of ContainerName, EventName, ConfigName, Pages, Handlers, Selectors, Events, Listeners, Services, Components, or how to structure a crawler flow. (2) Code review — user says review, revisar, revise o branch, revise o PR, faça um review, or asks to review current changes, commits, staged files, or the diff. (3) Runtime debug — user says rode o debug, estou tendo erro na execução, debug o crawler, corrija o erro do crawler, crawler is failing, fix the runtime error; or symptoms like yarn dev error, TimeoutError, waitForSelector failure, Cannot read properties of undefined (reading execute), crawler stuck on a page, retry loop, handler picks wrong branch. (4) Wiring / tsc errors — Property X does not exist on type ContainerInterface, new container binding without typed entry, edits to src/app/Container.ts or @types/ContainerInterface.d.ts or @types/EventsInterface.d.ts, missing enum entry for EventName/ConfigName/ContainerName. Enforces command-first scaffolding, enum wiring, pre-flight gate before any review, single-source-of-truth review log, and the playwright-cli runtime debug workflow.""
 ---
 
 # ODG
 
-Use this skill to keep ODG changes command-first and low-noise. Load only the reference files needed for the current task.
+Use this skill for cross-project ODG workflow. Project-specific rules belong to the root AGENTS.md or agents.md file. Load only the minimum references needed for the current task.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 RFC 2119, RFC 8174 when, and only when, they appear in all capitals, as shown here. The same words in **lowercase** carry **no** special meaning.
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 RFC 2119, RFC 8174 when, and only when, they appear in all capitals, as shown here. The same words in **UPPERCASE**lowercase** carry**no** special meaning.
 
 ## Start here
 
@@ -16,6 +16,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 3. If a new Page, Handler, Selector, Event, Listeners or Config is needed, decide the canonical yarn odg make:* command before any manual edit.
 4. **MUST** read [references/architecture.md](./references/architecture.md) before read, change or review any file.
 5. If `rtk --version` command exists, you **MUST** read [RTK](./references/rtk.md) before running **any** command. Running commands without reading RTK first is **NOT** allowed.
+6. If the task is a code review, `logs/review.log` is the only change-discovery artifact after the review script runs. If it diverges from disk, the agent **MUST** stop and regenerate or fix the artifact instead of opening extra git diffs.
 
 ## Path convention
 
@@ -25,17 +26,17 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ## Reference map
 
-- [references/pages.md](./references/pages.md): use reference of pages of crawler, or intent of page.
-- [references/configs.md](./references/configs.md): use reference to change, create or update configs or environments
-- [references/handler.md](./references/handler.md): Create a Handler whenever a step or transition can produce 2 or more distinct outcomes that must be identified at runtime (login results, page transitions, conditional modals). use reference of handler and transition validation, validate step success, check page transition, validate page state.
-- [references/selectors.md](./references/selectors.md): use reference of selectors and regex request.
-- [references/events.md](./references/events.md): Use reference of Event and Listeners
+- [references/pages.md](./references/pages.md): page intent and page-level behavior.
+- [references/configs.md](./references/configs.md): config and environment changes.
+- [references/handler.md](./references/handler.md): when to create or use a Handler, plus transition validation and page-state checks.
+- [references/selectors.md](./references/selectors.md): selector conventions and regex request guidance.
+- [references/events.md](./references/events.md): Events and Listeners.
 - [references/services.md](./references/services.md): service lifecycle, orchestration, and transaction handler pattern.
 - [references/plan.md](./references/plan.md): planning rules and output shape.
 - [references/commands.md](./references/commands.md): command selection, flags, naming, and known CLI limits.
 - [references/execution.md](./references/execution.md): scaffold order, structural checks, and validation sequence.
 - [references/architecture.md](./references/architecture.md): responsibilities and wiring boundaries.
-- [references/testing.md](./references/testing.md): vitest setup, test patterns for Pages, Handlers, and Listeners.
-- [references/diagnostics.md](./references/diagnostics.md): common tsc errors, wiring failures, and how to fix them.
-- [references/debug.md](./references/debug.md): runtime debug workflow — MUST follow when user reports execution/runtime errors or asks to debug the crawler. Boots playwright-cli browser, runs `yarn dev` with `BROWSER_CONNECT`, captures errors, classifies (DOM vs DI/TSC), fixes, re-validates. If the user says any of: "rode o debug", "estou tendo erro na execução", "debug o crawler", "run debug", "crawler is failing", "fix the runtime error", or describes a runtime/selector failure they want debugged — you **MUST** read
-- [references/review.md](./references/review.md): If the user requests a review of changes, you **MUST** follow the process in, read references and follow the process.
+- [references/testing.md](./references/testing.md): Vitest patterns for Pages, Handlers, and Listeners.
+- [references/diagnostics.md](./references/diagnostics.md): common TSC and wiring failures.
+- [references/debug.md](./references/debug.md): runtime debug workflow. Read this when the user reports runtime errors, selector failures, or asks to debug execution. Trigger phrases include: rode o debug, estou tendo erro na execução, debug o crawler, run debug, crawler is failing, fix the runtime error.
+- [references/review.md](./references/review.md): code review workflow and findings format, if running code-review **MUST** read this reference.

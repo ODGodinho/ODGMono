@@ -1,6 +1,6 @@
 # Configs
 
-Application configs environments, database or other services configurations.
+Application config, environments, database, and other service settings.
 
 ## Rules
 
@@ -12,14 +12,14 @@ Application configs environments, database or other services configurations.
 - **MUST NOT** be accessed via `process.env.ANYTHING_ENV` use config class.
 - **MUST** use Naming Conventions to create the config name.
 
-## How to usage
+## Usage
 
-- Use `this.config.get(ConfigName.X)` to get the config value.
-- Use `this.config.get(ConfigName.X, () => "default value")` to get the config value with default value if not exists
+- Use `this.config.get(ConfigName.X)` to read the config value.
+- Use `this.config.get(ConfigName.X, () => "default value")` only when a fallback is intentional.
 
 ## Naming Conventions
 
-if create one config, use this convention preffix or suffix to create the config name.
+If you create a config key, use the following prefixes or suffixes.
 
 | Key       | Type   | Description                               |
 | --------- | ------ | ----------------------------------------- |
@@ -32,7 +32,7 @@ if create one config, use this convention preffix or suffix to create the config
 
 ## How to Create a config
 
-- By default configs is validated with Zod schema, with zod.string(), if need other type use command flag to change.
+- By default the generated config uses zod.string(). If another type is required, use the command flags or update the validator after scaffolding.
 
 ```bash
 yarn odg make:config <configName>

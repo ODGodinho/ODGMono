@@ -44,6 +44,275 @@ print_section() {
     printf '\n## %s\n\n' "$1"
 }
 
+list_scopes() {
+    printf '%s\n' "commits" "staged" "worktree"
+}
+
+list_untracked_files() {
+    git ls-files \
+        --others \
+        --exclude-standard
+}
+
+diff_name_only_for_scope() {
+    local scope="$1"
+
+    case "$scope" in
+        worktree)
+            git diff \
+                --name-only \
+                --find-renames \
+                --find-copies
+            ;;
+        staged)
+            git diff \
+                --cached \
+                --name-only \
+                --find-renames \
+                --find-copies
+            ;;
+        commits)
+            git diff \
+                --name-only \
+                --find-renames \
+                --find-copies \
+                "$MERGE_BASE" \
+                "$HEAD_REF"
+            ;;
+    esac
+}
+
+diff_numstat_for_scope() {
+    local scope="$1"
+
+    case "$scope" in
+        worktree)
+            git diff \
+                --numstat \
+                --find-renames \
+                --find-copies
+            ;;
+        staged)
+            git diff \
+                --cached \
+                --numstat \
+                --find-renames \
+                --find-copies
+            ;;
+        commits)
+            git diff \
+                --numstat \
+                --find-renames \
+                --find-copies \
+                "$MERGE_BASE" \
+                "$HEAD_REF"
+            ;;
+    esac
+}
+
+diff_numstat_for_file() {
+    local scope="$1"
+    local file="$2"
+
+    case "$scope" in
+        worktree)
+            git diff \
+                --numstat \
+                --find-renames \
+                --find-copies \
+                -- "$file"
+            ;;
+        staged)
+            git diff \
+                --cached \
+                --numstat \
+                --find-renames \
+                --find-copies \
+                -- "$file"
+            ;;
+        commits)
+            git diff \
+                --numstat \
+                --find-renames \
+                --find-copies \
+                "$MERGE_BASE" \
+                "$HEAD_REF" \
+                -- "$file"
+            ;;
+    esac
+}
+
+diff_name_status_for_file() {
+    local scope="$1"
+    local file="$1"
+
+    file="$2"
+
+    case "$scope" in
+        worktree)
+            git diff \
+                --name-status \
+                --find-renames \
+                --find-copies \
+                -- "$file"
+            ;;
+        staged)
+            git diff \
+                --cached \
+                --name-status \
+                --find-renames \
+                --find-copies \
+                -- "$file"
+            ;;
+        commits)
+            git diff \
+                --name-status \
+                --find-renames \
+                --find-copies \
+                "$MERGE_BASE" \
+                "$HEAD_REF" \
+                -- "$file"
+            ;;
+    esac
+}
+
+diff_patch_for_file() {
+    local scope="$1"
+    local file="$1"
+
+    file="$2"
+
+    case "$scope" in
+        worktree)
+            git diff \
+                --find-renames \
+                --find-copies \
+                --unified="$CONTEXT_LINES" \
+                --no-ext-diff \
+                -- "$file"
+            ;;
+        staged)
+            git diff \
+                --cached \
+                --find-renames \
+                --find-copies \
+                --unified="$CONTEXT_LINES" \
+                --no-ext-diff \
+                -- "$file"
+            ;;
+        commits)
+            git diff \
+                --find-renames \
+                --find-copies \
+                --unified="$CONTEXT_LINES" \
+                --no-ext-diff \
+                "$MERGE_BASE" \
+                "$HEAD_REF" \
+                -- "$file"
+            ;;
+    esac
+}
+
+list_reviewed_files() {
+    while IFS= read -r scope; do
+        diff_name_only_for_scope "$scope"
+    done < <(list_scopes)
+
+    list_untracked_files
+}
+
+list_unique_reviewed_files() {
+    list_reviewed_files | awk 'NF && !seen[$0]++'
+}
+
+is_untracked_file() {
+    local file="$1"
+
+    list_untracked_files | grep -Fqx -- "$file"
+}
+
+add_numstat_value() {
+    local total="$1"
+    local value="$2"
+
+    if [[ ! "$total" =~ ^[0-9]+$ || ! "$value" =~ ^[0-9]+$ ]]; then
+        printf '%s' "-"
+        return
+    fi
+
+    printf '%s' "$((total + value))"
+}
+
+read_numstat_totals_for_file() {
+    local file="$1"
+    local scope
+    local added=0
+    local deleted=0
+    local current_added
+    local current_deleted
+
+    while IFS= read -r scope; do
+        [[ -z "$scope" ]] && continue
+
+        if [[ "$scope" == "untracked" ]]; then
+            read -r current_added current_deleted < <(
+                git diff \
+                    --no-index \
+                    --numstat \
+                    -- /dev/null "$file" \
+                    | awk 'NR==1 {print $1 "\t" $2}' \
+                    || true
+            )
+        else
+            read -r current_added current_deleted < <(
+                diff_numstat_for_file "$scope" "$file" | awk 'NR==1 {print $1 "\t" $2}'
+            )
+        fi
+
+        added="$(add_numstat_value "$added" "${current_added:--}")"
+        deleted="$(add_numstat_value "$deleted" "${current_deleted:--}")"
+    done < <(list_file_scopes "$file")
+
+    printf '%s\t%s\n' "$added" "$deleted"
+}
+
+list_file_scopes() {
+    local file="$1"
+    local scope
+
+    while IFS= read -r scope; do
+        if [[ -n "$(diff_name_status_for_file "$scope" "$file")" ]]; then
+            printf '%s\n' "$scope"
+        fi
+    done < <(list_scopes)
+
+    if is_untracked_file "$file"; then
+        printf '%s\n' "untracked"
+    fi
+}
+
+format_file_details() {
+    local file="$1"
+    local added
+    local deleted
+
+    read -r added deleted < <(read_numstat_totals_for_file "$file")
+
+    printf '+%s/-%s' \
+        "${added:--}" \
+        "${deleted:--}"
+}
+
+print_review_scope() {
+    print_section "Review Scope"
+
+    printf -- '- Source: committed branch delta from `%s` to `%s`\n' "$MERGE_BASE" "$HEAD_REF"
+    printf -- '- Source: staged index only (`git diff --cached`)\n'
+    printf -- '- Source: unstaged tracked local changes (`git diff`)\n'
+    printf -- '- Source: untracked files (`git ls-files --others --exclude-standard`)\n'
+    printf -- '- Layout: one entry per file, with all diff hunks concatenated and no per-scope sub-blocks\n'
+}
+
 is_ignored_file() {
     local file="$1"
 
@@ -57,52 +326,30 @@ is_ignored_file() {
 print_changed_files() {
     print_section "Changed Files"
 
-    printf '| Status | + | - | File |\n'
-    printf '| --- | ---: | ---: | --- |\n'
+    printf '| File | Changes |\n'
+    printf '| --- | --- |\n'
 
     local count=0
+    local file
 
-    while IFS=$'\t' read -r added deleted path; do
-        [[ -z "${path:-}" ]] && continue
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
 
-        if is_ignored_file "$path"; then
+        if is_ignored_file "$file"; then
             continue
         fi
 
-        local status
-
-        status="$(
-            git diff \
-                --name-status \
-                --find-renames \
-                --find-copies \
-                "$MERGE_BASE" \
-                "$HEAD_REF" \
-                -- "$path" \
-            | awk 'NR==1 {print $1}'
-        )"
-
-        printf '| %s | %s | %s | `%s` |\n' \
-            "${status:-?}" \
-            "$added" \
-            "$deleted" \
-            "$path"
+        printf '| `%s` | %s |\n' \
+            "$file" \
+            "$(format_file_details "$file")"
 
         count=$((count + 1))
 
         if (( count >= MAX_FILES )); then
-            printf '| ... | ... | ... | Truncated after %s files |\n' "$MAX_FILES"
+            printf '| ... | Truncated after %s files |\n' "$MAX_FILES"
             break
         fi
-
-    done < <(
-        git diff \
-            --numstat \
-            --find-renames \
-            --find-copies \
-            "$MERGE_BASE" \
-            "$HEAD_REF"
-    )
+    done < <(list_unique_reviewed_files)
 
     if (( count == 0 )); then
         printf '_No changed files._\n'
@@ -116,12 +363,7 @@ print_risk_areas() {
 
     local changed_files
 
-    changed_files="$(
-        git diff \
-            --name-only \
-            "$MERGE_BASE" \
-            "$HEAD_REF"
-    )"
+    changed_files="$(list_reviewed_files | awk 'NF && !seen[$0]++')"
 
     if grep -Eq '(Container|Provider|Kernel)' <<< "$changed_files"; then
         risks="${risks}- Dependency Injection / Container Wiring\n"
@@ -155,16 +397,9 @@ print_risk_areas() {
 print_key_diff_excerpts() {
     print_section "Key Diff Excerpts"
 
-    local files
-
-    files="$(
-        git diff \
-            --name-only \
-            "$MERGE_BASE" \
-            "$HEAD_REF"
-    )"
-
     local count=0
+    local file
+    local scope
 
     while IFS= read -r file; do
         [[ -z "$file" ]] && continue
@@ -174,20 +409,28 @@ print_key_diff_excerpts() {
         fi
 
         printf '### `%s`\n\n' "$file"
-
         printf '```diff\n'
 
-        git diff \
-            --find-renames \
-            --find-copies \
-            --unified="$CONTEXT_LINES" \
-            --no-ext-diff \
-            "$MERGE_BASE" \
-            "$HEAD_REF" \
-            -- "$file" \
-            | sed '1,4d' \
-            | head -n "$MAX_DIFF_LINES_PER_FILE" \
-            || true
+        while IFS= read -r scope; do
+            [[ -z "$scope" ]] && continue
+
+            if [[ "$scope" == "untracked" ]]; then
+                git diff \
+                    --no-index \
+                    --unified="$CONTEXT_LINES" \
+                    -- /dev/null "$file" \
+                    | sed '1,4d' \
+                    | head -n "$MAX_DIFF_LINES_PER_FILE" \
+                    || true
+            else
+                diff_patch_for_file "$scope" "$file" \
+                    | sed '1,4d' \
+                    | head -n "$MAX_DIFF_LINES_PER_FILE" \
+                    || true
+            fi
+
+            printf '\n'
+        done < <(list_file_scopes "$file")
 
         printf '```\n\n'
 
@@ -196,35 +439,7 @@ print_key_diff_excerpts() {
         if (( count >= MAX_FILES )); then
             break
         fi
-
-    done <<< "$files"
-}
-
-print_untracked_files() {
-    print_section "Untracked Files"
-
-    local found=0
-
-    while IFS= read -r path; do
-        [[ -z "$path" ]] && continue
-
-        if is_ignored_file "$path"; then
-            continue
-        fi
-
-        printf -- '- `%s`\n' "$path"
-
-        found=1
-
-    done < <(
-        git ls-files \
-            --others \
-            --exclude-standard
-    )
-
-    if (( found == 0 )); then
-        printf '_No untracked files._\n'
-    fi
+    done < <(list_unique_reviewed_files)
 }
 
 BASE_REF="$(choose_base_ref)"
@@ -249,10 +464,10 @@ GENERATED_AT="$(
     date -u '+%Y-%m-%dT%H:%M:%SZ'
 )"
 
+print_review_scope
+
 print_risk_areas
 
 print_changed_files
 
 print_key_diff_excerpts
-
-print_untracked_files

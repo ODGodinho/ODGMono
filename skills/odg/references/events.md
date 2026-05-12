@@ -1,14 +1,14 @@
 # Events
 
-An event is triggered, but it always needs at least 1+ listener listening to take effect.
+An event only takes effect when at least one listener is registered for it.
 
 ## Rules
 
 - Event names live in `src/app/Enums/EventName.ts` by default.
 - Event payload `EventTypes` live in `@types/EventsInterface.d.ts` by default.
 - Every event **MUST** have a payload type declared in `@types/EventsInterface.d.ts` extending `EventBrowserParameters` (which always carries `page: PageClassEngine` if page is required).
-- Event inject with `@$inject(ContainerName.EventBus) protected bus: EventBusInterface<EventTypes>,`
-- Event dispatch with `await this.bus.dispatch(EventName.CustomEvent, { page, ...extraParams });`
+- Inject the event bus with `@$inject(ContainerName.EventBus) protected bus: EventBusInterface<EventTypes>,`
+- Dispatch events with `await this.bus.dispatch(EventName.CustomEvent, { page, ...extraParams });`
 - Events **MUST NOT** have a transaction handler — only a validation handler. The transaction handler is called inside the Service, not the Listener.
 
 ## Who Can Dispatch Events
@@ -44,9 +44,9 @@ export interface EventBaseInterface extends EventObjectType {
 export type EventTypes<T = EventBaseInterface> = T;
 ```
 
-## Make events
+## Create an Event
 
-- If create event with page, prefer use `yarn odg make:page PageName --event EventName`
+- If you need a page and its event together, prefer `yarn odg make:page PageName --event EventName`.
 
 ```bash
 yarn odg make:event <eventName>
@@ -79,7 +79,7 @@ export class SearchEventListener implements EventListenerInterface<EventTypes, E
 
 ### Make listeners
 
-- If create listener with page, prefer use `yarn odg make:listener ListenerName --event EventName`
+- If you need a listener tied to a page, prefer `yarn odg make:listener ListenerName --event EventName`.
 
 ```bash
 yarn odg make:listener <listenerName> --event <eventName>
@@ -87,11 +87,11 @@ yarn odg make:listener <listenerName> --event <eventName>
 yarn odg make:listener --help
 ```
 
-## Register event Listeners manually
+## Register Event Listeners Manually
 
 Use manual registration only when a listener needs to be added to an event that already has other auto-registered listeners, or when the decorator approach is not viable.
 
-In file `src/app/Provider/EventServiceProvider.ts`:
+In `src/app/Provider/EventServiceProvider.ts`:
 
 ```typescript
 @ODGDecorators.injectable(ContainerName.EventServiceProvider, "Singleton")

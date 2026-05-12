@@ -1,17 +1,17 @@
 # Selectors
 
-Selectors live in `src/Selectors/` as typed constants.
+Selectors live in src/Selectors/ as typed constants.
 
 ## Rules
 
 - Developers **MUST NOT** write inline CSS, XPath, or regex inside Pages or Handlers.
 - Planning selectors **MUST** be treated as placeholders until the real page is inspected.
-- Selectors **MUST** be grouped by semantic meaning: `inputs`, `buttons`, `states`, `alerts`, `elements`, `requests`, etc.
-- If using a selector from another page, reference via `this.$$s`; if from the current page's own selector, use `this.$s`.
+- Selectors **MUST** be grouped by semantic meaning, such as `inputs`, `buttons`, `states`, `alerts`, `elements`, and `requests`.
+- If using a selector from another page, reference it via `this.$$s`; if it belongs to the current page, use `this.$s`.
 - Every selector used **MUST** be accessed exclusively through `this.$s` or `this.$$s`.
 - If one behavior accepts more than one equivalent selector, prefer composing them from the typed selector map instead of hardcoding a new selector string locally.
 - **MUST NOT** import Pages or Handlers in Selectors files.
-- **MUST**: Ensure DOM selectors target a unique occurrence to satisfy framework strict mode requirements, **WHEN**: Selectors intended for list iterations or multi-element interactions is allowed to target multiple occurrences.
+- **MUST** ensure DOM selectors target a unique occurrence to satisfy framework strict mode requirements. **WHEN** the selector is intentionally used for lists or multi-element interactions, multiple matches are allowed.
 
 ## Naming Conventions
 
@@ -23,8 +23,7 @@ Selectors live in `src/Selectors/` as typed constants.
 
 ## How to Create a Selector
 
-- If you creating a page with selector, prefer use `yarn odg make:page PageName --selectors`
-to create both page and selector together.
+- If you are creating a page with selectors, prefer `yarn odg make:page PageName --selectors` to create both together.
 
 ```bash
 yarn odg make:selector <selectorName>

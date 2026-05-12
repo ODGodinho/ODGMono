@@ -130,6 +130,6 @@ await this.myPage.setPage(page).execute();
 
 ### Decorator order violation
 
-**Cause:** `@ODGDecorators.injectable()` is not the first decorator on the class, attemptableFlow don't working.
+**Cause:** `@ODGDecorators.injectable()` is not the first decorator on the class, so `attemptableFlow` does not work.
 
 **Fix:** Move `@ODGDecorators.injectable(...)` to the absolute top of the decorator stack, above all other decorators including `@ODGDecorators.attemptableFlow()`.

@@ -1,4 +1,4 @@
-# Review Selector
+# Selector Review Notes
 
 ## Example selector
 
@@ -8,7 +8,7 @@ export const exampleSelector = {
   input: "input",  // ❌ Generic
   btn: ".btn",  // ❌ Ambiguous
   invalid: "button >> timeout=30000", // ❌ Timeout in Page/Handler
-  dynamic: `.button-${Math.random()}`, // ❌ Dynamic use new Str().unicorn()
+  dynamic: `.button-${Math.random()}`, // ❌ Sse new Str().unicorn() in PAGE or Handler to dynamic selectors
   user: userIsLoggedIn ? "logout-btn" : "login-btn", // ❌ Conditional not allowed here
   cascade: "div > div > div > button", // ❌ Unstable/fragile
 };

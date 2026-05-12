@@ -1,6 +1,6 @@
 # Pages
 
-Pages represent intent, not URL ownership. strictly following the Page Object Pattern.
+Pages represent intent, not URL ownership, and **MUST** follow the Page Object Pattern.
 
 Pages **MUST**:
 
@@ -23,13 +23,13 @@ Pages **MUST NOT**:
 Ask internally or outwardly, as needed:
 
 - Page classes and their corresponding files **MUST** be named using **PascalCase**.
-- If this crawler using browser, the page **RECOMMENDED** use flag `--selectors` to create selectors file.
+- If the crawler uses a browser, it is **RECOMMENDED** to use the --selectors flag when scaffolding the page.
 - If the step crosses domains (e.g. `accounts.google.com` → `youtube.com`) or contains 2+ primary verbs ("login", "search", "checkout"), split it into 3+ Pages and orchestrate them in a Service or Listener.
-- If page use selectors, this Page **SHOULD** use typed selectors and the scaffold **SHOULD** include `--selectors`
-- If need handler, the command **SHOULD** include `--handler` for a default `<pageName>Handler`, or `--handler-from` and/or `--handler-to` for transition handlers
+- If a page uses selectors, it **SHOULD** use typed selectors and the scaffold **SHOULD** include --selectors.
+- If a handler is needed, the command **SHOULD** include --handler for a default `<PageName>Handler`, or --handler-from and/or --handler-to for transition handlers.
 - When flag meaning is unclear, agents **MUST** read `yarn odg make:page --help` and **MUST NOT** guess semantics.
-- **MUST NOT** change page to singleton, because page is a step of the flow, and it should be created for each flow.
-- **MUST NOT** create OneAndOtherPage, because page is one intention
+- **MUST NOT** change a page to singleton, because a page is a per-flow step.
+- **MUST NOT** create OneAndOtherPage-style classes, because each page must represent one intention.
 - **MUST** use **setPage()** in page before use **IF** your crawler using browser.
 
 ## Naming Convention
@@ -51,7 +51,7 @@ yarn odg make:page --help
 
 ## BasePage Injected Properties
 
-`BasePage` already injects these via `@$inject`. **NOT MUST** re-inject in the subclass what `BasePage` already provides.
+`BasePage` already injects these via `@$inject`. You **MUST NOT** re-inject in the subclass what `BasePage` already provides.
 
 - `this.logger` — `LoggerInterface`
 - `this.config` — `ConfigInterface<ConfigType>`
