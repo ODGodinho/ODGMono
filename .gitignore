@@ -133,3 +133,9 @@ out/
 .playwright-cli/
 .playwright-mcp/
 .playwright/
+
+# Claude Code
+.claude/
+.mcp.json
+!.claude/skills/
+!.claude/clauderules.md

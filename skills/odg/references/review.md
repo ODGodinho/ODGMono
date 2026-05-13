@@ -2,18 +2,6 @@
 
 Use this file when the user requests a code review of the current changes, unpushed commits, or staged files.
 
-## Pre-flight Gate (MUST)
-
-`review.sh` (Step 1 of the process below) runs `tsc`, `eslint`, and `vitest run` and writes the result to the **"Pre-flight Validation"** section of `logs/review.log`.
-
-You **MUST** read that section before any other section of the log. If any step is marked 🛑 (non-zero exit), you **MUST**:
-
-1. Stop the review immediately.
-2. Output exactly: `🛑 Review halted — pre-flight failed at: <command>`.
-3. Reproduce the failing tail already captured in the log (no extra commands).
-4. **MUST NOT** produce a "📝 Review Summary" or any GitLab Comments section.
-5. **MUST NOT** rationalize a failure as "out of scope", "pre-existing", or "unrelated to the diff".
-
 ## 🔒 Source of Truth (MUST)
 
 Once `review.sh` has produced `logs/review.log`, that file is the **only** allowed input for diff content during the review.
@@ -25,6 +13,14 @@ If `review.log` lacks surrounding context for a changed line, you **MUST** open 
 ## 🎯 Exhaustiveness (MUST)
 
 You **MUST** report every rule violation you observe, with **no upper cap** and **no severity filtering**. Trivial violations (naming, missing `const` on `export`, unused base-injected field, redundant import, missing comma, wrong icon) **MUST** be reported the same as structural ones. The number of comments in the output **MUST** equal the number of violations — never round down, never "pick the top N", never collapse multiple violations into one comment.
+
+You **MUST** include maintainability issues in the violation count, not only functional defects:
+
+- typo/misspelling in symbol names (method, class, variable, enum member, file name)
+- naming drift or inconsistent terms for the same domain concept
+- duplicate enum/config sources-of-truth that increase ambiguity
+- validator overfitting that tightly couples to volatile upstream payload fields
+- development-only tooling declared under runtime `dependencies` in `package.json`
 
 ## 🕵️‍♂️ Step-by-Step Review Process
 
@@ -68,16 +64,31 @@ Then load additional references based on file paths:
 
 ## Review Checklist (ODG-specific)
 
-Use this checklist when writing comments:
+Each bullet names a **pattern to detect** and the **action** when matched (`→ violation`). Patterns are domain-neutral — `*Base*`, `Foo*`, `Common*`, `Core*`, `.extend(...)`, etc. apply regardless of file or class name. Walk the list per-file, then finish with the **cross-file trace pass** at the end.
 
 - **Event wiring chain completeness**
-  - `EventName` enum updated
-  - `@types/EventsInterface.d.ts` payload added
-  - Listener exists and is registered (decorator path or provider path)
-- **Handler retry safety**
-  - When a handler re-dispatches an event, ensure it does not create infinite loops (follow `references/handler.md` guidance).
-- **Command-first discipline**
-  - No manually created Page/Handler/Selector/Event files; scaffolding must be CLI-first when creating new artifacts.
+  - `EventName` enum updated, `@types/EventsInterface.d.ts` payload added, Listener exists and is registered (decorator path or provider path).
+- **Base + specialization boundary**
+  - Shared artifacts (`*Base*`, `Common*`, `Core*`, or any class extended via subclass / `.extend(...)`) hold only fields and behavior used by **2+** specializations with equivalent semantics. A field in base consumed by only one specialization → violation.
+  - Specialization-specific fields and behavior stay in the specialized artifact. Applies to classes, interfaces, validators, configs, DTOs, schemas, constants, enums.
+- **External payload resilience**
+  - Schemas consuming external or volatile payloads (third-party APIs, scraped responses, upstream service responses) **SHOULD** validate only the fields the consumer actually reads and **SHOULD** permit unknown fields via `.passthrough()` (or the equivalent escape in the schema library) so upstream additions do not break the parser.
+  - This rule applies regardless of the schema library (`zod`, `yup`, `io-ts`, etc.); detect the escape primitive native to the library in use.
+- **Contract fidelity**
+  - For every changed public method or interface, parameters declared in the contract must influence behavior or output. A semantically relevant parameter ignored at the call site → violation.
+  - Trace `signature → implementation → downstream call payload`. A break in argument-flow integrity is a finding even when compilation passes.
+- **Hidden state coupling**
+  - Logic that reads hidden state (injected payload snapshots, singleton mutable fields, ambient globals, process state) where an explicit method argument would suffice → violation, especially when reuse or concurrency can let the state diverge from the call arguments.
+- **Layer ownership**
+  - Each concern stays in its layer: orchestration vs business rules, shared contract vs implementation detail, transport schema vs domain schema, base abstraction vs specialization. Cross-layer leak without explicit justification → violation.
+- **Dependency hygiene**
+  - Development tooling declared under runtime `dependencies` in `package.json` → violation. Common offenders: `eslint`, `typescript`, `prettier`, `vitest`, `jest`, `tsc-alias`, `husky`, `concurrently`, `lint-staged`, `@types/*`, build orchestrators.
+  - When in doubt, ask: *"does the deployed runtime import this at execution time?"* If no, it is `devDependencies`.
+- **Naming coherence**
+  - Patterns: legacy term inside a new abstraction namespace, specialization name mixed into an unrelated namespace, typo in a public symbol propagated to consumers, or two names for the same domain concept (e.g., `offer_id` vs `outbound_offer_id`) → maintainability violation **even when behavior is correct**.
+  - **Procedure for renames**: when `logs/review.log` shows a symbol rename — capture old + new verbatim, search both with `Read` across validators/interfaces/helpers/parsers/config keys; if both coexist with the same semantic meaning emit `competing contract keys`. Removal of the legacy symbol is **REQUIRED** unless it is explicitly kept for a documented migration window.
+- **Cross-file trace pass (do last, MUST)**
+  - After per-file review, run **one** cross-file pass: (1) identify changed shared/base artifacts; (2) map every dependent/specialized artifact touched by the diff; (3) verify boundary, flow, and ownership invariants across files — not only per-file; (4) emit one comment per violation, never collapse.
 
 ## 📝 Output Format
 

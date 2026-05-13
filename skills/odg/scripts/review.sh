@@ -307,10 +307,6 @@ print_review_scope() {
     print_section "Review Scope"
 
     printf -- '- Source: committed branch delta from `%s` to `%s`\n' "$MERGE_BASE" "$HEAD_REF"
-    printf -- '- Source: staged index only (`git diff --cached`)\n'
-    printf -- '- Source: unstaged tracked local changes (`git diff`)\n'
-    printf -- '- Source: untracked files (`git ls-files --others --exclude-standard`)\n'
-    printf -- '- Layout: one entry per file, with all diff hunks concatenated and no per-scope sub-blocks\n'
 }
 
 is_ignored_file() {
@@ -393,52 +389,41 @@ print_risk_areas() {
     printf '%b' "$risks"
 }
 
-
-print_key_diff_excerpts() {
-    print_section "Key Diff Excerpts"
-
-    local count=0
+print_smart_diffs() {
+    print_section "Code Changes (Diffs)"
     local file
-    local scope
 
     while IFS= read -r file; do
         [[ -z "$file" ]] && continue
 
-        if is_ignored_file "$file"; then
+        # Filtros de segurança que já implementamos
+        if is_ignored_file "$file"; then continue; fi
+        if [[ -d "$file" ]]; then continue; fi
+
+        printf '### `%s`\n' "$file"
+
+        # REGRA 1: Se for arquivo novo, NÃO manda o diff (para poupar tokens). Força o READ.
+        if is_untracked_file "$file" || ! git ls-tree -r "$MERGE_BASE" "$file" >/dev/null 2>&1; then
+            printf '> _NEW FILE CREATED_\n\n'
             continue
         fi
 
-        printf '### `%s`\n\n' "$file"
-        printf '```diff\n'
+        # REGRA 2: Se for arquivo modificado, manda o diff unificado padrão (com 3 linhas de contexto)
+        local diff_output
+        # Tenta pegar as mudanças locais primeiro, se falhar/vazio, pega a diferença de commits
+        diff_output=$(git diff -- "$file" 2>/dev/null | sed '1,4d' || true)
 
-        while IFS= read -r scope; do
-            [[ -z "$scope" ]] && continue
-
-            if [[ "$scope" == "untracked" ]]; then
-                git diff \
-                    --no-index \
-                    --unified="$CONTEXT_LINES" \
-                    -- /dev/null "$file" \
-                    | sed '1,4d' \
-                    | head -n "$MAX_DIFF_LINES_PER_FILE" \
-                    || true
-            else
-                diff_patch_for_file "$scope" "$file" \
-                    | sed '1,4d' \
-                    | head -n "$MAX_DIFF_LINES_PER_FILE" \
-                    || true
-            fi
-
-            printf '\n'
-        done < <(list_file_scopes "$file")
-
-        printf '```\n\n'
-
-        count=$((count + 1))
-
-        if (( count >= MAX_FILES )); then
-            break
+        if [[ -z "$diff_output" ]]; then
+            diff_output=$(git diff "$MERGE_BASE" "$HEAD_REF" -- "$file" 2>/dev/null | sed '1,4d' || true)
         fi
+
+        if [[ -z "$diff_output" ]]; then
+            printf '> _Only metadata changes_\n\n'
+        else
+            # Imprime o diff envelopado para a IA entender que é um código de comparação
+            printf '```diff\n%s\n```\n\n' "$diff_output"
+        fi
+
     done < <(list_unique_reviewed_files)
 }
 
@@ -470,4 +455,4 @@ print_risk_areas
 
 print_changed_files
 
-print_key_diff_excerpts
+print_smart_diffs
