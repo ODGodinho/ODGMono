@@ -42,20 +42,26 @@ describe("Tls Message", () => {
         ]);
     });
 
-    test.concurrent("Teste request with url and BaseUrl request", async () => {
+    test.concurrent("Test add default Headers", async () => {
         const messageTls = new TlsMessage({
             tls: {
                 url: tlsUrl,
+            },
+            headers: {
+                "test1": "test1",
             },
         });
         const tlsResponse = messageTls.request({
             baseURL: cloudFlareIp,
             url: "/dns",
+            headers: {
+                "test2": "test2",
+            },
         });
 
         await Promise.all([
-            expect(tlsResponse).resolves.toHaveProperty(tlsHeader),
-            expect(tlsResponse).resolves.toHaveProperty(tlsHeader, 200),
+            expect(tlsResponse).resolves.toHaveProperty("request.headers.test1", "test1"),
+            expect(tlsResponse).resolves.toHaveProperty("request.headers.test2", "test2"),
         ]);
     });
 

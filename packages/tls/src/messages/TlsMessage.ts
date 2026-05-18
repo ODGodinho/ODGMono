@@ -95,6 +95,10 @@ export class TlsMessage<RequestData, ResponseData> extends AxiosMessage<RequestD
         return {
             ...this.config as TlsRequestInterface<RequestD>,
             ...options,
+            headers: {
+                ...this.config.headers,
+                ...options.headers,
+            },
         };
     }
 
