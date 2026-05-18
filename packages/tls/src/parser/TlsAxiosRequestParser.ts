@@ -8,6 +8,13 @@ import type { TlsAxiosRequestConfigExtra, TlsRequestInterface } from "../interfa
 
 export class TlsAxiosRequestParser extends AxiosRequestParser {
 
+    private static readonly removeTlsHeaders = [
+        "poptls-url",
+        "poptls-proxy",
+        "poptls-allowredirect",
+        "poptls-timeout",
+    ];
+
     /**
      * Parse MessageInterface to Axios
      *
@@ -59,8 +66,7 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
                 tls: config.$tlsOptions?.tls,
                 headers: Object.fromEntries(
                     Object.entries(config.headers ?? {})
-
-                        .filter(([ headerName ]) => !headerName.toLowerCase().startsWith("poptls-")),
+                        .filter(([ headerName ]) => !this.removeTlsHeaders.includes(headerName.toLowerCase())),
                 ),
             } as TlsRequestInterface<RequestD>).filter(([ , value ]) => value !== undefined),
         );
