@@ -8,6 +8,9 @@ import type { TlsAxiosRequestConfigExtra, TlsRequestInterface } from "../interfa
 
 export class TlsAxiosRequestParser extends AxiosRequestParser {
 
+    /**
+     * Headers to remove from the request
+     */
     private static readonly removeTlsHeaders = [
         "poptls-url",
         "poptls-proxy",
