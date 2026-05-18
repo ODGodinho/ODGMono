@@ -49,7 +49,7 @@ jobs:
         run: yarn install
 
       - name: Playwright Install
-        run: yarn dlx playwright install chromium
+        run: yarn workspace @odg/chemical-x playwright install chromium
 
       - if: ${{ github.event_name == 'pull_request' }}
         name: Review Dog Pull Request
