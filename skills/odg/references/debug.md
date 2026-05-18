@@ -2,26 +2,11 @@
 
 Imperative playbook. When the user reports an execution failure or asks to debug the crawler, the agent **MUST** follow Phases 1 -> 3 in order. Each phase has an **Exit criterion** — do not advance until it is satisfied.
 
-## Trigger
-
-Run this workflow when **any** of the following is true:
-
-- User says (pt or en): "rode o debug", "estou tendo erro na execução", "debug o crawler", "corrija o erro do crawler", "run debug", "crawler is failing", "fix the runtime error", "the crawler is stuck on X".
-- Crawler raised a `TimeoutError`, `waitForSelector` failure, or `Cannot read properties of undefined (reading 'execute')` at runtime.
-- Crawler is hanging on a page with no progress and no fatal error.
-- Crawler is stuck in a retry loop on the same page.
-
-**MUST NOT** use this workflow when the symptom is a `tsc` error only (no runtime) — read [diagnostics.md](./diagnostics.md) directly.
-
-The agent **MUST** use the `playwright-cli` skill for all browser inspection commands during Phase 3.
-
----
-
 ## Phase 1 — Boot playwright-cli browser (MUST)
 
-1. Run `command -v playwright-cli`. If it is missing, stop and tell the user to install `@odg/playwright-cli`.
+1. Run `command -v playwright-cli`. If it is missing, stop and tell the user to install `playwright-cli`.
 
-Run the boot script. `$SKILL_DIR` **MUST** be expanded to the absolute skill directory per the "Path convention" in `SKILL.md` — **MUST NOT** be left literal. The script opens `playwright-cli` headed and prints the CDP WebSocket endpoint to stdout:
+The script opens `playwright-cli` headed and prints the CDP WebSocket endpoint to stdout, after this not need to attach the browser.
 
 ```bash
 export CLI_BROWSER_CONNECT_WS=$($SKILL_DIR/scripts/debug-browser.sh $SKILL_DIR/configs/playwright-cli.config.json)
@@ -35,10 +20,6 @@ Validate the output:
 - If empty, recovery: run lsof -i :9222 to check if the CDP port is already taken by a stale browser;
   - Copy `$SKILL_DIR/configs/playwright-cli.config.json` to a temp file such as `/tmp/new-playwright-cli.config.json`, change the `cdpPort` field and the `--remote-debugging-port=` argument to a free port, then execute `export CLI_BROWSER_CONNECT_WS=$($SKILL_DIR/scripts/debug-browser.sh /tmp/new-playwright-cli.config.json)`.
 
-**MUST NOT** run `debug-browser.sh` twice in the same session without first closing the previous instance — port 9222 will stay bound and Phase 1 will fail silently.
-
-**MUST NOT** touch `$SKILL_DIR/configs/playwright-cli.config.json` in place; copy it to a temp file if you must alter viewport or headers.
-
 **Exit criterion:** `CLI_BROWSER_CONNECT_WS` is exported and looks like `ws://localhost:9222/devtools/browser/<uuid>`.
 
 ---
@@ -49,6 +30,9 @@ Start attached to the shared browser **in the background** so logs can be read w
 
 ```bash
 BROWSER_CONNECT=$CLI_BROWSER_CONNECT_WS yarn dev
+
+# Or start playwright-cli commands if manual debugger
+playwright-cli goto https://www.google.com
 ```
 
 ---
