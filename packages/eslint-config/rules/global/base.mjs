@@ -12,6 +12,7 @@ const IMPORTS = [ "import", "cjs-import" ];
 const TYPES = [ "interface", "type", "enum", "class" ];
 const FLOW_CONTROL = [ "if", "switch", "try", "for", "do", "while" ];
 const BLOCK_LIKE = [ "block-like", multiLineBlock ];
+const PARENS_ONLY_NEW_LINE = "parens-new-line";
 
 export default {
     rules: {
@@ -261,7 +262,13 @@ export default {
             "always-multiline",
         ], // Força múltiplas linhas em ternários múltiplos
         "@stylistic/new-parens": [ "error" ], // New Sempre precisa ter parenteses
-        "@stylistic/no-extra-parens": [ "error" ], // Não permite parênteses extra
+        "@stylistic/no-extra-parens": [
+            "error",
+            "all",
+            {
+                "ignoreJSX": "multi-line",
+            },
+        ], // Não permite parênteses extra
         "@stylistic/no-extra-semi": [ "error" ], // Não permite ;, duplicadas ou desnecessárias
         "@stylistic/no-floating-decimal": [ "error" ], // Não permite decimais flutuantes sem zero a esquerda.
         "@stylistic/no-mixed-operators": [
@@ -500,6 +507,18 @@ export default {
             },
         ],
         "@stylistic/jsx-tag-spacing": [ "error", { "afterOpening": "never", "beforeSelfClosing": "always" } ],
-        "@stylistic/jsx-wrap-multilines": [ "error" ],
+        "@stylistic/jsx-wrap-multilines": [
+            "error",
+            {
+                "declaration": PARENS_ONLY_NEW_LINE,
+                "assignment": PARENS_ONLY_NEW_LINE,
+                "return": PARENS_ONLY_NEW_LINE,
+                "arrow": PARENS_ONLY_NEW_LINE,
+                "condition": "ignore",
+                "logical": "ignore",
+                "prop": "ignore",
+                "propertyValue": "ignore",
+            },
+        ],
     },
 };
