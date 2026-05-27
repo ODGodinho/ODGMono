@@ -15,6 +15,8 @@
             "DOM",
             "ES2024"
         ],
+        "isolatedModules": true,
+        "verbatimModuleSyntax": false,
         "module": "nodenext",
         "moduleResolution": "nodenext",
         "newLine": "lf",

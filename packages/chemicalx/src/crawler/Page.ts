@@ -1,6 +1,6 @@
 import {
-    ContextChemicalXInterface,
-    ContextEngineInterface,
+    type ContextChemicalXInterface,
+    type ContextEngineInterface,
     type GetterAccessInterface,
     ODGDecorators,
     type PageChemicalXInterface,

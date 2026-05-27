@@ -1,15 +1,15 @@
 import type { GetterAccessInterface } from "@interfaces";
 import { ODGDecorators } from "@support/Decorators";
 
-import {
-    type BrowserChemicalXInterface,
-    type BrowserEngineInterface,
-    type ContextChemicalXInterface,
-    type ContextEngineInterface,
-    type ContextOptionsLibraryInterface,
+import type {
+    BrowserChemicalXInterface,
+    BrowserEngineInterface,
+    ContextChemicalXInterface,
+    ContextEngineInterface,
+    ContextOptionsLibraryInterface,
     CreateContextFactoryType,
     CreatePageFactoryType,
-    type PageEngineInterface,
+    PageEngineInterface,
 } from ".";
 
 @ODGDecorators.getterAccess()
