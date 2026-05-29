@@ -1,6 +1,6 @@
 import { LogLevel } from "@odg/log";
 
-import { JSONLoggerPlugin } from "src";
+import { JSONLoggerPlugin } from "#app";
 
 describe("Test anything log", () => {
     const logger = new JSONLoggerPlugin("");

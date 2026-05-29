@@ -1,4 +1,4 @@
-import { JSONLoggerPlugin } from "src";
+import { JSONLoggerPlugin } from "#app";
 
 import exceptionsCascade from "../../Helpers/exceptions-cascade";
 

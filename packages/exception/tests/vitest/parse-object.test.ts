@@ -1,4 +1,4 @@
-import { Exception } from "~";
+import { Exception } from "#app";
 
 describe("Teste Parse", () => {
     test("Test Parse Object Functions", async () => {

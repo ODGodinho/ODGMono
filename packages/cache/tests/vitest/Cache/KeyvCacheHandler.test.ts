@@ -6,8 +6,8 @@ import {
     it,
 } from "vitest";
 
-import { KeyvCacheHandler } from "~/Cache/Handlers/KeyvCacheHandler";
-import { CacheIteratorException } from "~/Exceptions";
+import { KeyvCacheHandler } from "#app/Cache/Handlers/KeyvCacheHandler";
+import { CacheIteratorException } from "#app/Exceptions";
 
 import {
     cacheKeyUser1,

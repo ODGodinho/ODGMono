@@ -1,4 +1,4 @@
-import { InvalidArgumentException } from "@exceptions";
+import { InvalidArgumentException } from "#exceptions";
 
 import { Arr } from "../../../../src";
 

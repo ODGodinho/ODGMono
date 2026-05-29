@@ -5,7 +5,7 @@ import { type LoggerParserInterface, LogLevel } from "@odg/log";
 import { MessageException, MessageResponse, type RequestInterface } from "@odg/message";
 import { vi } from "vitest";
 
-import { JSONLogger, JSONLoggerPlugin, JSONParserUnknownException } from "src";
+import { JSONLogger, JSONLoggerPlugin, JSONParserUnknownException } from "#app";
 
 type ExecCallback = (error: Error | null, stdout: Buffer | string, stderr: Buffer | string) => void;
 

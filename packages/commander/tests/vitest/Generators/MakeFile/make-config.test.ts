@@ -8,14 +8,14 @@ import {
 import { NullLogger } from "@odg/log";
 import { describe, expect, test } from "vitest";
 
-import MakeFile from "src/Generators/MakeFile";
+import MakeFile from "#app/Generators/MakeFile";
 
 const configEnumFixture = "export enum ConfigName {\n}\n";
 
 function emptyConfigValidator(): string {
     return [
         "import zod from \"zod\";",
-        "import { ConfigName } from \"@enums\";",
+        "import { ConfigName } from \"#enums\";",
         "",
         "export const configValidator = zod.object({",
         "});",

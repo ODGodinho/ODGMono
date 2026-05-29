@@ -1,7 +1,7 @@
 import { LogLevel } from "@odg/log";
 import { vi } from "vitest";
 
-import { JSONLoggerPlugin } from "src";
+import { JSONLoggerPlugin } from "#app";
 
 describe("Test InstanceId", () => {
     test("Test Filled InstanceId", async () => {

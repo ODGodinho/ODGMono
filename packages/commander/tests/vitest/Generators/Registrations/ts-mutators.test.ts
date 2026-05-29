@@ -16,7 +16,7 @@ import {
     ensureTypeNamedImport,
     ensureValueNamedImport,
     ensureZodObjectEntry,
-} from "src/Registrations/ts-mutators";
+} from "#app/Registrations/ts-mutators";
 
 const appUrlPropertyName = "[ConfigName.APP_URL]";
 const fooPropertyName = "[ConfigName.FOO]";

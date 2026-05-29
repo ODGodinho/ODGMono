@@ -9,8 +9,8 @@ import nodePath from "node:path";
 import { NullLogger } from "@odg/log";
 import { describe, expect, test } from "vitest";
 
-import MakeFile from "src/Generators/MakeFile";
-import { registerArtifact } from "src/Registrations/register";
+import MakeFile from "#app/Generators/MakeFile";
+import { registerArtifact } from "#app/Registrations/register";
 
 import { emptyEventBaseInterfaceWithImport } from "../../helpers/dts-stub-contents";
 

@@ -1,6 +1,6 @@
 import type { HttpHeadersInterface } from "@odg/message";
 
-import { AxiosMessage } from "src/AxiosMessage";
+import { AxiosMessage } from "#app/AxiosMessage";
 
 describe("AxiosMessage", () => {
     test("Teste Request Intercept", async () => {

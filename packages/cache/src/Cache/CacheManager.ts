@@ -1,5 +1,5 @@
-import { CacheHandlerException } from "~/Exceptions/CacheHandlerException";
-import type { CacheHandlerInterface } from "~/Interfaces/CacheHandlerInterface";
+import { CacheHandlerException } from "#exceptions/CacheHandlerException";
+import type { CacheHandlerInterface } from "#interfaces/CacheHandlerInterface";
 
 export class CacheManager<CacheType extends object> {
 

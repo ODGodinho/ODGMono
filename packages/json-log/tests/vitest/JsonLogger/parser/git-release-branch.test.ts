@@ -2,7 +2,7 @@ import { UnknownException } from "@odg/exception";
 import { LogLevel } from "@odg/log";
 import { vi } from "vitest";
 
-import { JSONLoggerPlugin } from "src";
+import { JSONLoggerPlugin } from "#app";
 
 interface LoggerGithubType {
     getGitRelease(): Promise<string>;

@@ -1,8 +1,8 @@
-import { InvalidArgumentException } from "@exceptions";
-import { TimeoutException } from "@exceptions/TimeoutException";
+import { InvalidArgumentException } from "#exceptions";
+import { TimeoutException } from "#exceptions/TimeoutException";
 import type {
     TimeoutOptionsInterface,
-} from "@interfaces";
+} from "#interfaces";
 
 import { sleep } from ".";
 

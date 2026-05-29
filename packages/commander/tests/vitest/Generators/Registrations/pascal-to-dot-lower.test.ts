@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import {
     pascalCaseToDotLower,
     resolveContainerEnumMemberValue,
-} from "src/Registrations/pascal-to-dot-lower";
+} from "#app/Registrations/pascal-to-dot-lower";
 
 describe("pascal-to-dot-lower", () => {
     test("pascalCaseToDotLower splits PascalCase into dot.lower", () => {

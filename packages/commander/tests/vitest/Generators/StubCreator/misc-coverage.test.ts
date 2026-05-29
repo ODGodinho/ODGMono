@@ -3,7 +3,7 @@ import { mkdir, rm, writeFile } from "node:fs/promises";
 import { InvalidArgumentException } from "@odg/exception";
 import { describe, expect, test } from "vitest";
 
-import StubCreator from "src/Generators/StubCreator";
+import StubCreator from "#app/Generators/StubCreator";
 
 describe("StubCreator - misc coverage", () => {
     const root = `${process.cwd()}/tests/vitest/cache/stubcreator-misc`;

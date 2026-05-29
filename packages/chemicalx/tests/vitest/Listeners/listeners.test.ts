@@ -1,6 +1,6 @@
 import { TypedContainer } from "@inversifyjs/strongly-typed";
 
-import { ODGDecorators } from "src";
+import { ODGDecorators } from "#app";
 
 import { ExampleEventListeners } from "./ExampleEventListeners";
 

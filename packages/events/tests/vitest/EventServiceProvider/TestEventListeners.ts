@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 
-import type { EventListenerInterface } from "src/index";
+import type { EventListenerInterface } from "#app/index";
 
 export class TestEventListeners implements EventListenerInterface<Record<string, unknown>, string> {
 

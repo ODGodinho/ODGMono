@@ -5,8 +5,8 @@ import {
     type JSONLogFormattable,
     Logger,
     LogLevel,
-} from "src";
-import { StringMessageFormatter } from "src/logs/StringMessageFormater";
+} from "#app";
+import { StringMessageFormatter } from "#app/logs/StringMessageFormater";
 
 function jsonLog(overrides: Partial<JSONLogFormattable> = {}): JSONLogFormattable {
     return {

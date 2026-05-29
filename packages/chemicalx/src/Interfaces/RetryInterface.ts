@@ -1,7 +1,7 @@
 import type { Exception } from "@odg/exception";
 
-import type { PromiseOrSyncType } from "#types/index";
-import type { RetryAction } from "@enums";
+import type { RetryAction } from "#enums";
+import type { PromiseOrSyncType } from "#types";
 
 /**
  * Defines the options for a retry operation.

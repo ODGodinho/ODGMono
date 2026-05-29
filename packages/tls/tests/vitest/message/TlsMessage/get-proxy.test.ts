@@ -1,4 +1,4 @@
-import { TlsAxiosRequestParser } from "src/parser/TlsAxiosRequestParser";
+import { TlsAxiosRequestParser } from "#app/parser/TlsAxiosRequestParser";
 
 describe("Tls Message", () => {
     test.concurrent("Proxy without login", async () => {

@@ -1,4 +1,4 @@
-import { Exception } from "~";
+import { Exception } from "#app";
 
 function myParse(exception: Exception): Exception {
     exception.test = 123;

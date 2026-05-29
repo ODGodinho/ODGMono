@@ -1,4 +1,4 @@
-import { Arr, Str } from "src";
+import { Arr, Str } from "#app";
 
 const values = [
     {

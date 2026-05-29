@@ -1,4 +1,4 @@
-import { JSONParserUnknownException } from "src";
+import { JSONParserUnknownException } from "#app";
 
 import type { ExceptionType } from "../../../@types/Exceptions";
 

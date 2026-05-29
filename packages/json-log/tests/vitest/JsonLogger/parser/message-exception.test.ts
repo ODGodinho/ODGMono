@@ -1,6 +1,6 @@
 import { MessageException } from "@odg/message";
 
-import { JSONLoggerPlugin } from "src";
+import { JSONLoggerPlugin } from "#app";
 
 describe("Test Message Exception", () => {
     const logger = new JSONLoggerPlugin("");

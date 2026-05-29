@@ -3,9 +3,9 @@ import type { EventListenerInterface } from "@odg/events";
 import type { LoggerInterface } from "@odg/log";
 
 import type { EventBrowserParameters, EventTypes } from "#types/EventsInterface";
-import { ContainerName, EventName } from "@enums";
+import { ContainerName, EventName } from "#enums";
 import { {{ EventBinding:UCFirst }}Page } from "@pages";
-import { $inject } from "~/ContainerInject";
+import { $inject } from "#app/ContainerInject";
 
 @ODGDecorators.injectable(ContainerName.{{ ListenerName:UCFirst }}EventListener, "Singleton")
 @ODGDecorators.registerListener(EventName.{{ EventBinding:UCFirst }}Event, ContainerName.{{ ListenerName:UCFirst }}EventListener, {})

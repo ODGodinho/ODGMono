@@ -1,5 +1,5 @@
-export * from "./exceptions/GraylogException";
+export * from "./Exceptions/GraylogException";
 
-export type * from "./interfaces/GraylogOptionsInterface";
+export type * from "./Interfaces/GraylogOptionsInterface";
 
 export * from "./log/GraylogLogger";

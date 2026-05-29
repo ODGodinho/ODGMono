@@ -1,5 +1,5 @@
-import { TlsMessage } from "src";
-import { TlsAxiosRequestParser } from "src/parser/TlsAxiosRequestParser";
+import { TlsMessage } from "#app";
+import { TlsAxiosRequestParser } from "#app/parser/TlsAxiosRequestParser";
 
 describe("Tls Message", () => {
     let messageTls: TlsMessage<unknown, unknown>;

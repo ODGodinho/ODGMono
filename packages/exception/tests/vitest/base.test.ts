@@ -3,7 +3,7 @@ import {
     Exception,
     InvalidArgumentException,
     UnknownException,
-} from "~";
+} from "#app";
 
 describe("Exception Tests", () => {
     test("Instance exception Teste", () => {

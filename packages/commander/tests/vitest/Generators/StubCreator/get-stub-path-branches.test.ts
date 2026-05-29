@@ -2,7 +2,7 @@ import { mkdir, rm, writeFile } from "node:fs/promises";
 
 import { describe, expect, test } from "vitest";
 
-import StubCreator from "src/Generators/StubCreator";
+import StubCreator from "#app/Generators/StubCreator";
 
 describe("StubCreator - getStubPath branches", () => {
     const root = `${process.cwd()}/tests/vitest/cache/stubcreator-stubpath`;

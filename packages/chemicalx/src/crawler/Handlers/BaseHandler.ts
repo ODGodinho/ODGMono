@@ -1,12 +1,12 @@
 import { Exception, UnknownException } from "@odg/exception";
 
-import { RetryAction } from "@enums";
-import { retry } from "@helpers";
+import { RetryAction } from "#enums";
+import { retry } from "#helpers";
 import type {
     HandlerFunction,
     HandlerInterface,
     HandlerSolutionType,
-} from "@interfaces";
+} from "#interfaces";
 
 import type { PageEngineInterface } from "../@types";
 import type { SelectorType } from "../Selectors/SelectorsType";

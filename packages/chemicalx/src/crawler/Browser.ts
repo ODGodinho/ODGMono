@@ -1,5 +1,5 @@
-import type { GetterAccessInterface } from "@interfaces";
-import { ODGDecorators } from "@support/Decorators";
+import type { GetterAccessInterface } from "#interfaces";
+import { ODGDecorators } from "#support/Decorators";
 
 import type {
     BrowserChemicalXInterface,

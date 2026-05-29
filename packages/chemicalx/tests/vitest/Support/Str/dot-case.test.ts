@@ -1,4 +1,4 @@
-import { Str } from "src";
+import { Str } from "#app";
 
 describe("dotCase", () => {
     const dotResult = "hello.world";

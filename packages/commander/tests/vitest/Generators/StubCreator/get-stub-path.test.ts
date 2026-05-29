@@ -1,4 +1,4 @@
-import StubCreator from "src/Generators/StubCreator";
+import StubCreator from "#app/Generators/StubCreator";
 
 describe("Get stub path tests", () => {
     const stubCreator = new StubCreator();

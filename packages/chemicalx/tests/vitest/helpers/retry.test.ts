@@ -1,9 +1,9 @@
 import { AbortException, Exception, UnknownException } from "@odg/exception";
 import { vi } from "vitest";
 
-import { RetryAction } from "@enums";
-import { RetryException } from "@exceptions/RetryException";
-import { retry } from "@helpers";
+import { RetryAction } from "#enums";
+import { RetryException } from "#exceptions/RetryException";
+import { retry } from "#helpers";
 
 describe("Retry Test", () => {
     test("Retry 0 times test", async () => {

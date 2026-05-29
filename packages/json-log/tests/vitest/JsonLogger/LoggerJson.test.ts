@@ -3,7 +3,7 @@ import { LogLevel } from "@odg/log";
 import { MessageException, type RequestInterface } from "@odg/message";
 import { vi } from "vitest";
 
-import { JSONLoggerPlugin } from "src";
+import { JSONLoggerPlugin } from "#app";
 
 describe("Test Log Json", () => {
     const logger = new JSONLoggerPlugin("");

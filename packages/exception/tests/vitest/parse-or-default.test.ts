@@ -1,4 +1,4 @@
-import { UnknownException } from "~";
+import { UnknownException } from "#app";
 
 describe("Test Default Exception", () => {
     test("Test UnknownException", async () => {

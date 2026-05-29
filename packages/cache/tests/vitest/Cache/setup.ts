@@ -1,7 +1,7 @@
 import Keyv from "keyv";
 
-import type { CacheHandlerInterface } from "@interfaces";
-import { KeyvCacheHandler } from "~/Cache/Handlers/KeyvCacheHandler";
+import { KeyvCacheHandler } from "#app/Cache/Handlers/KeyvCacheHandler";
+import type { CacheHandlerInterface } from "#interfaces";
 
 export const memoryHandlerName = "memory";
 

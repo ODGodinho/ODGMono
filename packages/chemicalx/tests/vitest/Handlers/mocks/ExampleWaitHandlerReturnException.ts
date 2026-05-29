@@ -4,7 +4,7 @@ import {
     BaseHandler,
     type HandlerFunction,
     RetryAction,
-} from "src";
+} from "#app";
 
 import type { PageClassEngine } from "../../playwright/engine";
 

@@ -1,7 +1,7 @@
 import { Exception, UnknownException } from "@odg/exception";
 import { vi } from "vitest";
 
-import { throwIf } from "@helpers";
+import { throwIf } from "#helpers";
 
 describe("throwIf Test", () => {
     test("Test condition true", async () => {

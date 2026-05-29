@@ -1,7 +1,7 @@
 import { Exception } from "@odg/exception";
 import { describe, expect, test } from "vitest";
 
-import { GraylogException, GraylogLogger } from "~/index";
+import { GraylogException, GraylogLogger } from "#app/index";
 
 describe("GrayLog logger instance", () => {
     test("Test not init", async () => {

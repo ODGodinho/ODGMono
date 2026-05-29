@@ -1,4 +1,4 @@
-import type * as ContainerMetadata from "@interfaces/internal/ContainerInterface";
+import type * as ContainerMetadata from "#interfaces/internal/ContainerInterface";
 
 export class ContainerMetadataClass implements ContainerMetadata.ContainerMetadataInterface {
 

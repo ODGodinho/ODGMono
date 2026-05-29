@@ -7,7 +7,7 @@ import {
 
 import { describe, expect, test } from "vitest";
 
-import StubCreator from "src/Generators/StubCreator";
+import StubCreator from "#app/Generators/StubCreator";
 
 const selectorStubBody = "export const ok = true;\n";
 

@@ -7,7 +7,7 @@ import {
 
 import { describe, expect, test } from "vitest";
 
-import { registerArtifact } from "src/Registrations/register";
+import { registerArtifact } from "#app/Registrations/register";
 
 import { emptyContainerInterfaceWithImport } from "../../helpers/dts-stub-contents";
 

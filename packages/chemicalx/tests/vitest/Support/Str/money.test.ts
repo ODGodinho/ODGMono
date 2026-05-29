@@ -3,7 +3,7 @@ import {
     MoneyNotFoundException,
     Num,
     Str,
-} from "src";
+} from "#app";
 
 const values = [
     {

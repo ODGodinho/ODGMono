@@ -1,7 +1,7 @@
 import type Keyv from "keyv";
 
-import { CacheIteratorException } from "~/Exceptions";
-import type { CacheHandlerInterface } from "~/Interfaces/CacheHandlerInterface";
+import { CacheIteratorException } from "#exceptions";
+import type { CacheHandlerInterface } from "#interfaces/CacheHandlerInterface";
 
 export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerInterface<CacheType> {
 

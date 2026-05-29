@@ -1,4 +1,4 @@
-import type { ConfigInterface, ValidatorInterface } from "@interfaces";
+import type { ConfigInterface, ValidatorInterface } from "#interfaces";
 
 export class JsonConfig<
     ConfigTypes extends Record<number | string | symbol, unknown>,

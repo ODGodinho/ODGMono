@@ -1,8 +1,9 @@
 import { vi } from "vitest";
 
-import { ConsoleLogger, LogLevel } from "src";
-import { Logger } from "src/logs/Logger";
-import { TestPluginLogger } from "tests/vitest/TestPluginLogger";
+import { ConsoleLogger, LogLevel } from "#app";
+import { Logger } from "#app/logs/Logger";
+
+import { TestPluginLogger } from "./TestPluginLogger";
 
 describe("Logger class test", () => {
     const logger = new Logger();

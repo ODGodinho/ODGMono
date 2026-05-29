@@ -1,6 +1,5 @@
-import type { CacheInterface } from "@interfaces";
-import { CacheHandlerException } from "~/Exceptions/CacheHandlerException";
-import type { CacheHandlerInterface } from "~/Interfaces/CacheHandlerInterface";
+import { CacheHandlerException } from "#exceptions/CacheHandlerException";
+import type { CacheHandlerInterface, CacheInterface } from "#interfaces";
 
 import { CacheManager } from "./CacheManager";
 

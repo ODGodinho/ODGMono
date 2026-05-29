@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/type-formatting */
 import { randomInt } from "node:crypto";
 
-import { InvalidArgumentException } from "@exceptions";
+import { InvalidArgumentException } from "#exceptions";
 
 import type { CloneableInterface } from "../Interfaces";
 

@@ -1,6 +1,6 @@
 import { MessageException, MessageResponse } from "@odg/message";
 
-import { JSONLoggerPlugin } from "src";
+import { JSONLoggerPlugin } from "#app";
 
 const headers = {
     "Content-Type": "application/html",

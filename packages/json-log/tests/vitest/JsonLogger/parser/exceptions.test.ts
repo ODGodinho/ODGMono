@@ -1,6 +1,6 @@
 import { Exception } from "@odg/exception";
 
-import { JSONLoggerPlugin } from "src";
+import { JSONLoggerPlugin } from "#app";
 
 import type { ExceptionType } from "../../../../@types/Exceptions";
 import exceptionsCascade from "../../Helpers/exceptions-cascade";

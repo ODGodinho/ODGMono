@@ -5,7 +5,7 @@ import {
     it,
 } from "vitest";
 
-import { Cache } from "~/Cache/Cache";
+import { Cache } from "#app/Cache/Cache";
 
 import { createMemoryHandler, type TestCacheSchema } from "./setup";
 

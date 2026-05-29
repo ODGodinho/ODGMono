@@ -1,6 +1,6 @@
 import { MessageException } from "@odg/message";
 
-import { AxiosMessage } from "src";
+import { AxiosMessage } from "#app";
 
 describe("Test abort signal", () => {
     test("abort request", async () => {

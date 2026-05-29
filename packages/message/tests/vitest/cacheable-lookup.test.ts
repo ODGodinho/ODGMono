@@ -3,7 +3,7 @@ import type { LookupAddress } from "node:dns";
 import type { CacheInterface } from "@odg/cache";
 import { Exception } from "@odg/exception";
 
-import type { LookupCacheType, LookupKeyType } from "src";
+import type { LookupCacheType, LookupKeyType } from "#app";
 
 import { CacheableLookup } from "../../src/messages/CacheableLookup";
 

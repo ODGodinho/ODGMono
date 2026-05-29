@@ -162,7 +162,7 @@ import {
     injectable,
 } from "inversify";
 // if use inversify Strongly Typed Container
-import { $inject } from "~/ContainerInject";
+import { $inject } from "#app/ContainerInject";
 
 import { type EventTypes } from "../../Interfaces/EventsInterface";
 import { ContainerName, EventName } from "../Enums";
@@ -213,7 +213,7 @@ import { injectable } from "inversify"; // if used inversify
 import { type EventExampleType, type EventTypes } from "../../Interfaces/EventsInterface";
 import { ContainerName, type EventName } from "../Enums"; // If use inversify
 import { PageFactoryType } from "../Factory/PageFactory";
-import { $inject } from "~/ContainerInject"; // If use inversify Strongly Typed Container
+import { $inject } from "#app/ContainerInject"; // If use inversify Strongly Typed Container
 
 @injectable()
 export class HomeEventListeners implements EventListenerInterface<EventTypes, EventName.Example> {

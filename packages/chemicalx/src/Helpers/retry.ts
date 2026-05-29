@@ -1,12 +1,12 @@
 import { AbortException } from "@odg/exception";
 
-import { RetryAction } from "@enums";
-import { RetryException } from "@exceptions/RetryException";
+import { RetryAction } from "#enums";
+import { RetryException } from "#exceptions/RetryException";
 import type {
     RetryOptionsInterface,
     RetryWhenDefaultInterface,
     RetryWhenResolveInterface,
-} from "@interfaces";
+} from "#interfaces";
 
 import { sleep, throwIf } from ".";
 

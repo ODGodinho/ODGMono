@@ -14,9 +14,9 @@ import {
     injectFromHierarchy,
 } from "inversify";
 
-import { retry } from "@helpers";
-import type { AttemptableInterface, GetterAccessInterface } from "@interfaces";
-import type { ContainerMetadataInterface } from "@interfaces/internal/ContainerInterface";
+import { retry } from "#helpers";
+import type { AttemptableInterface, GetterAccessInterface } from "#interfaces";
+import type { ContainerMetadataInterface } from "#interfaces/internal/ContainerInterface";
 
 export class ODGDecorators {
 

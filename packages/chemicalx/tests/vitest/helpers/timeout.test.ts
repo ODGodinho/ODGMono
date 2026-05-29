@@ -1,7 +1,7 @@
 import { vi } from "vitest";
 
-import { InvalidArgumentException, TimeoutException } from "@exceptions";
-import { timeout } from "@helpers";
+import { InvalidArgumentException, TimeoutException } from "#exceptions";
+import { timeout } from "#helpers";
 
 describe("Timeout Test", () => {
     test("Timeout Without name", async () => {

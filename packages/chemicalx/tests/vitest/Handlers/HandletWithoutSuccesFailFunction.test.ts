@@ -1,8 +1,8 @@
 import { Exception } from "@odg/exception";
 import { type Mock, vi } from "vitest";
 
-import { RetryAction } from "@enums";
-import type { HandlerSolutionType } from "@interfaces";
+import { RetryAction } from "#enums";
+import type { HandlerSolutionType } from "#interfaces";
 
 import { WithoutFunctionHandler } from "./mocks/WithoutFunctionHandler";
 

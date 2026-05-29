@@ -3,7 +3,7 @@ import { Exception } from "@odg/exception";
 import {
     BaseHandler,
     type HandlerFunction,
-} from "src";
+} from "#app";
 
 import type { PageClassEngine } from "../../playwright/engine";
 

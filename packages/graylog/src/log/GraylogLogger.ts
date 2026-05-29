@@ -5,9 +5,9 @@ import type { JSONLogger, JSONLoggerString } from "@odg/json-log";
 import { AbstractLogger, type LoggerInterface, type LogLevel } from "@odg/log";
 import Gelf from "gelf-pro";
 
-import { GelfLogLevels } from "@enums/GelfLogLevels";
-import { GraylogException } from "~/exceptions/GraylogException";
-import type { GraylogOptionsInterface } from "~/interfaces/GraylogOptionsInterface";
+import { GelfLogLevels } from "#enums/GelfLogLevels";
+import { GraylogException } from "#exceptions/GraylogException";
+import type { GraylogOptionsInterface } from "#interfaces/GraylogOptionsInterface";
 
 type flattenType<T, R> = (target: T, options?: { delimiter: string; maxDepth: number }) => R;
 

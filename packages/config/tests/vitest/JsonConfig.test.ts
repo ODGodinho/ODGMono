@@ -1,6 +1,6 @@
 import zod from "zod";
 
-import type { ConfigInterface } from "@interfaces";
+import type { ConfigInterface } from "#interfaces";
 
 import { JsonConfig } from "../../src";
 

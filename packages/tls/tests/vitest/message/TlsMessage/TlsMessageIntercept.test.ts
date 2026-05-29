@@ -1,4 +1,4 @@
-import { TlsMessage } from "src";
+import { TlsMessage } from "#app";
 
 describe("Tls Message", () => {
     const tlsUrl = "https://1.1.1.1/";

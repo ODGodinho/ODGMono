@@ -5,8 +5,8 @@ import {
     it,
 } from "vitest";
 
-import { CacheManager } from "~/Cache/CacheManager";
-import { CacheHandlerException } from "~/Exceptions/CacheHandlerException";
+import { CacheManager } from "#app/Cache/CacheManager";
+import { CacheHandlerException } from "#app/Exceptions/CacheHandlerException";
 
 import { createMemoryHandler, type TestCacheSchema } from "./setup";
 

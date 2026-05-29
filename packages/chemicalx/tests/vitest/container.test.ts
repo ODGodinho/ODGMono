@@ -1,5 +1,5 @@
-import { type BasePage, ODGDecorators, type PageEngineInterface } from "src";
-import { Container } from "src/Container";
+import { type BasePage, ODGDecorators, type PageEngineInterface } from "#app";
+import { Container } from "#app/Container";
 import "./Pages/mocks/ExamplePage";
 
 describe("Container Test", () => {

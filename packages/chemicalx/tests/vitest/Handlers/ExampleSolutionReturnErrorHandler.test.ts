@@ -1,8 +1,9 @@
 import { Exception } from "@odg/exception";
 import { type Mock, vi } from "vitest";
 
-import type { HandlerSolutionType } from "@interfaces";
-import { ExampleSolutionReturnErrorHandler } from "tests/vitest/Handlers/mocks/ExampleSolutionReturnErrorHandler";
+import type { HandlerSolutionType } from "#interfaces";
+
+import { ExampleSolutionReturnErrorHandler } from "./mocks/ExampleSolutionReturnErrorHandler";
 
 describe("Handler Retry tests", () => {
     let handler: ExampleSolutionReturnErrorHandler;

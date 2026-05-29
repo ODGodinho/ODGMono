@@ -1,4 +1,4 @@
-import { TlsAxiosRequestParser } from "src/parser/TlsAxiosRequestParser";
+import { TlsAxiosRequestParser } from "#app/parser/TlsAxiosRequestParser";
 
 describe("Tls Message - parser headers", () => {
     test.concurrent("Remove headers com prefixo poptls-", () => {

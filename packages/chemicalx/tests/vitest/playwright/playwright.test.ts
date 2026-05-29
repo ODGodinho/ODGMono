@@ -8,7 +8,7 @@ import {
     type ContextChemicalXInterface,
     type CreateContextFactoryType,
     type CreatePageFactoryType,
-} from "src";
+} from "#app";
 
 import { ExamplePage } from "../Pages/mocks/ExamplePage";
 import { ExamplePageTwoAttempt } from "../Pages/mocks/ExamplePageTwoAttempt";

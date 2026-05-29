@@ -3,7 +3,7 @@ import { mkdir, rm, unlink } from "node:fs/promises";
 import { File } from "@odg/chemical-x";
 import { InvalidArgumentException } from "@odg/exception";
 
-import StubCreator from "src/Generators/StubCreator";
+import StubCreator from "#app/Generators/StubCreator";
 
 describe("Create Page StubTest", () => {
     const stubCreator = new StubCreator();

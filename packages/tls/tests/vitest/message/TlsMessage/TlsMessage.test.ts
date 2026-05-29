@@ -2,7 +2,7 @@ import { Exception, UnknownException } from "@odg/exception";
 import { MessageException } from "@odg/message";
 import { AxiosError, AxiosHeaders, type InternalAxiosRequestConfig } from "axios";
 
-import { TlsMessage, TlsMessageException } from "src";
+import { TlsMessage, TlsMessageException } from "#app";
 
 describe("Tls Message", () => {
     const tlsHeader = "response.status";

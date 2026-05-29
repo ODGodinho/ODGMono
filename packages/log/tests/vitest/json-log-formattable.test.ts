@@ -1,4 +1,4 @@
-import { isJSONLogFormattable, LogLevel } from "src";
+import { isJSONLogFormattable, LogLevel } from "#app";
 
 describe("isJSONLogFormattable", () => {
     const base = {

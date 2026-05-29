@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 import { describe, expect, test } from "vitest";
 
-import { registerArtifact } from "src/Registrations/register";
+import { registerArtifact } from "#app/Registrations/register";
 
 import { prepareEventFullFixture } from "../../helpers/prepare-event-full-fixture";
 

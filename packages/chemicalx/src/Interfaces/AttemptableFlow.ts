@@ -1,7 +1,7 @@
 import type { Exception } from "@odg/exception";
 
-import type { RetryAction } from "@enums";
-import type { RetryOptionsInterface } from "@interfaces";
+import type { RetryAction } from "#enums";
+import type { RetryOptionsInterface } from "#interfaces";
 
 export interface AttemptableInterface {
 

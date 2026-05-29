@@ -4,7 +4,7 @@ import { File } from "@odg/chemical-x";
 import { NullLogger } from "@odg/log";
 import { vi } from "vitest";
 
-import MakeFile from "src/Generators/MakeFile";
+import MakeFile from "#app/Generators/MakeFile";
 
 describe("makeSelectors Test", () => {
     vi.spyOn(console, "log").mockImplementation(() => void 0);

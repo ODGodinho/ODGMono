@@ -7,9 +7,9 @@ import {
     JSONParserException,
     JSONParserUnknownException,
     type LoggerStringInterface,
-} from "src";
-import { JSONLoggerString } from "src/Packages/JsonLoggerString";
-import { RequestStringPlugin } from "src/Packages/RequestStringPlugin";
+} from "#app";
+import { JSONLoggerString } from "#app/Packages/JsonLoggerString";
+import { RequestStringPlugin } from "#app/Packages/RequestStringPlugin";
 
 describe("Test parse request", async () => {
     const headers = {

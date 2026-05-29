@@ -7,8 +7,8 @@ import {
     vi,
 } from "vitest";
 
-import { Cache } from "~/Cache/Cache";
-import { CacheHandlerException } from "~/Exceptions/CacheHandlerException";
+import { Cache } from "#app/Cache/Cache";
+import { CacheHandlerException } from "#app/Exceptions/CacheHandlerException";
 
 import {
     cacheKeyUser1,
