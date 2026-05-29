@@ -34,6 +34,7 @@ import globals from "globals";
 import * as tomlParser from "toml-eslint-parser";
 import * as yamlParser from "yaml-eslint-parser";
 
+import { frontmatterProcessor } from "./processors/frontmatter.mjs";
 import anyBase from "./rules/any/base.mjs";
 import globalBase from "./rules/global/base.mjs";
 import globalErrors from "./rules/global/errors.mjs";
@@ -53,14 +54,20 @@ import typescriptTests from "./rules/typescript/tests.mjs";
 import yamlBase from "./rules/yaml/base.mjs";
 import yamlGithub from "./rules/yaml/github.mjs";
 
-// Import plugins (most are CommonJS)
-
 const require = createRequire(import.meta.url);
 
 const odgPlugin = require("@odg/eslint-plugin");
 const espree = require("espree");
 // eslint-disable-next-line import/no-unresolved
 const jsoncParser = require("jsonc-eslint-parser");
+
+let odgTsconfig;
+
+try {
+    odgTsconfig = require.resolve("@odg/tsconfig/tsconfig.json");
+} catch {
+    // Only ignore optional tsconfig by default
+}
 
 export default [
 
@@ -224,7 +231,10 @@ export default [
                 warnOnUnsupportedTypeScriptVersion: false,
                 ecmaVersion: 2022,
                 sourceType: "module",
-                project: [ "tsconfig.json", "@odg/tsconfig/tsconfig.json" ],
+                project: [
+                    "./tsconfig.json",
+                    ...odgTsconfig ? [ odgTsconfig ] : [],
+                ],
             },
             globals: {
                 ...globals.node,
@@ -481,7 +491,6 @@ export default [
             ".gitignore",
             ".npmignore",
             "**/*ignore",
-            "**/*.md",
             "**/*.bash",
             "**/*.sh",
             "**/*.ps1",
@@ -500,12 +509,35 @@ export default [
     },
 
     {
-        files: [ "**/*.md" ],
-        languageOptions: {
-            parser: anyParser,
-        },
+        files: [ "**/*.md", "**/*.mdx" ],
+        processor: frontmatterProcessor,
         rules: {
             "@stylistic/max-len": [ "off" ],
+        },
+    },
+
+    {
+        files: [
+            "**/*.md/*.yaml",
+            "**/*.md/*.yml",
+            "**/*.mdx/*.yaml",
+            "**/*.mdx/*.yml",
+        ],
+        rules: {
+            "@stylistic/max-len": "off",
+            "@stylistic/eol-last": [ "error", "never" ],
+        },
+    },
+
+    {
+        files: [
+            "**/SKILL.md/*.yaml",
+            "**/SKILL.md/*.yml",
+            "**/SKILL.mdx/*.yaml",
+            "**/SKILL.mdx/*.yml",
+        ],
+        rules: {
+            "yml/sort-keys": "off",
         },
     },
 ];

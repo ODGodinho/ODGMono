@@ -567,7 +567,7 @@ Add script in your `package.json` file
 {
     "scripts": {
         "lint": "eslint",
-        "lint:fix": "eslint --fix",
+        "lint:fix": "eslint --fix"
     },
     "engines": {
         "node": ">=24"
@@ -955,9 +955,9 @@ force empty line in blocks
 
 ```json
 {
-  "classes": "always",
-  "blocks": "never",
-  "switches": "never",
+    "classes": "always",
+    "blocks": "never",
+    "switches": "never"
 }
 ```
 
