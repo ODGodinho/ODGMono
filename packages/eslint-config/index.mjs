@@ -55,6 +55,9 @@ import yamlBase from "./rules/yaml/base.mjs";
 import yamlGithub from "./rules/yaml/github.mjs";
 
 const require = createRequire(import.meta.url);
+const isAutomation = !process.stdout.isTTY
+    || process.env.CI === "true"
+    || process.env.TERM === "dumb";
 
 const odgPlugin = require("@odg/eslint-plugin");
 const espree = require("espree");
@@ -179,7 +182,7 @@ export default [
             ...globalErrors.rules,
             ...globalPossibleErrors.rules,
             ...globalSecurity.rules,
-            "progress/activate": 1,
+            "progress/activate": isAutomation ? 0 : 1,
         },
     },
 
