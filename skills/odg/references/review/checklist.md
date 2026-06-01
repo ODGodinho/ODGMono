@@ -1,25 +1,13 @@
 # Review Checklist
 
-- **Event wiring chain completeness**
-  [ ] `EventName` enum updated, `@types/EventsInterface.d.ts` payload added, Listener exists and is registered (decorator path or provider path).
-- **Base + specialization boundary**
-  [ ] Shared artifacts (`*Base*`, `Common*`, `Core*`, or any class extended via subclass / `.extend(...)`) hold only fields and behavior used by **2+** specializations with equivalent semantics. A field in base consumed by only one specialization → violation.
-  [ ] Specialization-specific fields and behavior stay in the specialized artifact. Applies to classes, interfaces, validators, configs, DTOs, schemas, constants, enums.
-- **External payload resilience**
-  [ ] Schemas consuming external or volatile payloads (third-party APIs, scraped responses, upstream service responses) **SHOULD** validate only the fields the consumer actually reads and **SHOULD** permit unknown fields via `.passthrough()` (or the equivalent escape in the schema library) so upstream additions do not break the parser.
-  [ ] This rule applies regardless of the schema library (`zod`, `yup`, `io-ts`, etc.); detect the escape primitive native to the library in use.
-- **Contract fidelity**
-  [ ] For every changed public method or interface, parameters declared in the contract **MUST** influence behavior or output. A semantically relevant parameter ignored at the call site → violation.
-  [ ] Trace `signature → implementation → downstream call payload`. A break in argument-flow integrity is a finding even when compilation passes.
-- **Hidden state coupling**
-  [ ] Logic that reads hidden state (injected payload snapshots, singleton mutable fields, ambient globals, process state) where an explicit method argument would suffice → violation, especially when reuse or concurrency can let the state diverge from the call arguments.
-- **Layer ownership**
-  [ ] Each concern stays in its layer: orchestration vs business rules, shared contract vs implementation detail, transport schema vs domain schema, base abstraction vs specialization. Cross-layer leak without explicit justification → violation.
-- **Dependency hygiene**
-  [ ] Development tooling declared under runtime `dependencies` in `package.json` → violation. Common offenders: `eslint`, `typescript`, `prettier`, `vitest`, `jest`, `tsc-alias`, `husky`, `concurrently`, `lint-staged`, `@types/*`, build orchestrators.
-  [ ] When in doubt, ask: *"does the deployed runtime import this at execution time?"* If no, it is `devDependencies`.
-- **Naming coherence**
-  [ ] Patterns: legacy term inside a new abstraction namespace, specialization name mixed into an unrelated namespace, typo in a public symbol propagated to consumers, or two names for the same domain concept (e.g., `offer_id` vs `outbound_offer_id`) → maintainability violation **even when behavior is correct**.
+- [ ] **Event wiring chain completeness** `EventName` enum updated, `@types/EventsInterface.d.ts` payload added, Listener exists and is registered (decorator path or provider path).
+- [ ] **Base + specialization boundary** Shared artifacts (`*Base*`, `Common*`, `Core*`, or any class extended via subclass / `.extend(...)`) hold only fields and behavior used by **2+** specializations with equivalent semantics. A field in base consumed by only one specialization → violation, Specialization-specific fields and behavior stay in the specialized artifact. Applies to classes, interfaces, validators, configs, DTOs, schemas, constants, enums.
+- [ ] **External Validators Schema** Schemas consuming external or volatile payloads (third-party APIs, scraped responses, upstream service responses) **SHOULD** validate only the fields the consumer actually reads and **SHOULD** permit unknown fields via `.passthrough()` (or the equivalent escape in the schema library) so upstream additions do not break the parser, This rule applies regardless of the schema library (`zod`, `yup`, `io-ts`, etc.); detect the escape primitive native to the library in use.
+- [ ] **Contract fidelity** For every changed public method or interface, parameters declared in the contract **MUST** influence behavior or output. A semantically relevant parameter ignored at the call site → violation. Trace `signature → implementation → downstream call payload`. A break in argument-flow integrity is a finding even when compilation passes.
+- [ ] **Hidden state coupling** Logic that reads hidden state (injected payload snapshots, singleton mutable fields, ambient globals, process state) where an explicit method argument would suffice → violation, especially when reuse or concurrency can let the state diverge from the call arguments.
+- [ ] **Layer ownership** Each concern stays in its layer: orchestration vs business rules, shared contract vs implementation detail, transport schema vs domain schema, base abstraction vs specialization. Cross-layer leak without explicit justification → violation.
+- [ ] **Dependency hygiene** Development tooling declared under runtime `dependencies` in `package.json` → violation. Common offenders: `eslint`, `typescript`, `prettier`, `vitest`, `jest`, `tsc-alias`, `husky`, `concurrently`, `lint-staged`, `@types/*`, build orchestrators, *"does the deployed runtime import this at execution time?"* If no, it is `devDependencies`
+- [ ] **Naming coherence** Patterns: legacy term inside a new abstraction namespace, specialization name mixed into an unrelated namespace, typo in a public symbol propagated to consumers, or two names for the same domain concept (e.g., `offer_id` vs `outbound_offer_id`) → maintainability violation **even when behavior is correct**.
 - [ ] **Procedure for renames**: when `.review/$$GIT_BRANCH.md` shows a symbol rename — capture old + new verbatim, search both with the host's search primitive  across validators/interfaces/helpers/parsers/config keys; if both coexist with the same semantic meaning emit `competing contract keys`. Removal of the legacy symbol is **REQUIRED** unless it is explicitly kept for a documented migration window.
 - [ ] **Cross-file trace pass (do last, MUST)** After per-file review, run **one** cross-file pass: (1) identify changed shared/base artifacts; (2) map every dependent/specialized artifact touched by the diff; (3) verify boundary, flow, and ownership invariants across files — not only per-file; (4) emit one comment per violation, never collapse.
 - [ ] **typo/misspelling** in symbol names (method, class, variable, enum member, file name)
