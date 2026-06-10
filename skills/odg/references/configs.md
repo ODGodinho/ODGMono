@@ -11,6 +11,7 @@ Application config, environments, database, and other service settings.
 - **NOT RECOMMENDED** Using `.default()` in configurations zod, as it masks missing required values and complicates debugging of flaky environments.
 - **MUST NOT** be accessed via `process.env.ANYTHING_ENV` use config class.
 - **MUST** use Naming Conventions to create the config name.
+- **MUST NOT** weaken configuration validation (e.g. changing from required to `.nullish()` or `.optional()`) without tracing and verifying that all runtime consumers of the configuration handle undefined/null values safely.
 
 ## Usage
 

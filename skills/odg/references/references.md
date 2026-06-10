@@ -1,6 +1,6 @@
 # Skill References Map
 
-Load the **minimum** references required by the touched surfaces
+Load the **MINIMUM** references required by the touched surfaces
 The reference **MUST** always be there whenever you start a plan, edit one of these files.
 
 Then load additional references based on file paths:
@@ -35,6 +35,14 @@ Then load additional references based on file paths:
   - **MUST** read [references/execution.md](./execution.md)
   - **MUST** read [references/diagnostics.md](./diagnostics.md)
   - **SHOULD** read [references/configs.md](./configs.md) (if ConfigName/env keys are involved)
+
+## Packages references
+
+You **MUST** read a package's `agents.md` whenever you **touch, edit, OR review** code that imports it.
+
+| Package Name | Agents.md | Description |
+| --- | --- | --- |
+| `@odg/message` | [agents.md](./node_modules/@odg/message/agents.md) | All request/http or message of this packageß |
 
 ## Others references
 

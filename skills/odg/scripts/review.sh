@@ -11,7 +11,7 @@ CONTEXT_LINES="${REVIEW_CONTEXT_LINES:-1}"
 MAX_DIFF_LINES_PER_FILE="${REVIEW_MAX_DIFF_LINES_PER_FILE:-1200}"
 MAX_FILES="${REVIEW_MAX_FILES:-200}"
 
-IGNORE_REGEX='(^yarn.lock$|^pnpm-lock.yaml$|^package-lock.json$|^.review/|^dist/|^.next/|^coverage/|^.turbo/|^.git/|^.yarn/|\.snap$|\.min\.)'
+IGNORE_REGEX='(^yarn.lock$|^pnpm-lock.yaml$|^package-lock.json$|^.review/|^dist/|^.next/|^coverage/|^.turbo/|^.git/|^.yarn/|\.snap$|\.min\.|bun.lock$|bun.lockb$|.yarn|.claude)'
 
 choose_base_ref() {
     if [[ -n "$BASE_REF" ]]; then
@@ -389,6 +389,96 @@ print_risk_areas() {
     printf '%b' "$risks"
 }
 
+parse_scoped_imports() {
+    local file="$1"
+
+    perl -0777 -ne '
+        while (/import\s+(.+?)\s+from\s+["\x27](@[a-z0-9_-]+\/[a-z0-9_-]+)["\x27]/sg) {
+            my ($body, $pkg) = ($1, $2);
+            $body =~ s/\*\s+as\s+(\w+)/$1/g;
+            $body =~ s/\b\w+\s+as\s+(\w+)\b/$1/g;
+            $body =~ s/\btype\b//g;
+            $body =~ s/[\{\}*]/ /g;
+            for my $tok (split /[,\s]+/, $body) {
+                next unless $tok =~ /^[A-Za-z_]\w*$/;
+                print "$tok\t$pkg\n";
+            }
+        }
+    ' "$file" 2>/dev/null || true
+}
+
+extract_diff_tokens() {
+    local file="$1"
+    local diff_text
+
+    diff_text=$(git diff -- "$file" 2>/dev/null || true)
+
+    if [[ -z "$diff_text" ]]; then
+        diff_text=$(git diff "$MERGE_BASE" "$HEAD_REF" -- "$file" 2>/dev/null || true)
+    fi
+
+    [[ -z "$diff_text" ]] && return
+
+    printf '%s' "$diff_text" \
+        | grep -E '^[+-]' \
+        | grep -vE '^(\+\+\+|---)' \
+        | grep -oE '[A-Za-z_][A-Za-z0-9_]*' \
+        | sort -u \
+        || true
+}
+
+detect_packages_in_file() {
+    local file="$1"
+    local imports_map
+    local tokens
+    local sym
+    local pkg
+
+    imports_map="$(parse_scoped_imports "$file")"
+    [[ -z "$imports_map" ]] && return
+
+    tokens="$(extract_diff_tokens "$file")"
+    [[ -z "$tokens" ]] && return
+
+    while IFS=$'\t' read -r sym pkg; do
+        [[ -z "$sym" || -z "$pkg" ]] && continue
+        [[ -f "node_modules/$pkg/agents.md" ]] || continue
+        if grep -qxF "$sym" <<< "$tokens"; then
+            printf '%s\n' "$pkg"
+        fi
+    done <<< "$imports_map"
+}
+
+print_package_references_required() {
+    print_section "Package References Required"
+
+    local packages
+    local file
+    local pkg
+
+    packages="$(
+        while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+            if is_ignored_file "$file"; then continue; fi
+            [[ "$file" =~ \.(ts|tsx|js|jsx|mjs|cjs)$ ]] || continue
+            [[ -f "$file" ]] || continue
+            detect_packages_in_file "$file"
+        done < <(list_unique_reviewed_files) | sort -u
+    )"
+
+    if [[ -z "$packages" ]]; then
+        printf '_No registered packages touched by the diff._\n'
+        return
+    fi
+
+    printf 'The agent **MUST** read each `agents.md` below before emitting findings:\n\n'
+
+    while IFS= read -r pkg; do
+        [[ -z "$pkg" ]] && continue
+        printf -- '- `%s` — [agents.md](node_modules/%s/agents.md)\n' "$pkg" "$pkg"
+    done <<< "$packages"
+}
+
 print_smart_diffs() {
     print_section "Code Changes (Diffs)"
     local file
@@ -454,5 +544,7 @@ print_review_scope
 print_risk_areas
 
 print_changed_files
+
+print_package_references_required
 
 print_smart_diffs

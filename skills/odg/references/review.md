@@ -20,7 +20,7 @@ The agent **MUST** include maintainability issues in the violation count, not on
 2. **MUST** read `.review/$$GIT_BRANCH.md` end-to-end.
 3. **Forgiveness Rule:** If a file is modified but the surrounding legacy code is out of standard, DO NOT propagate the error to your review unless the user's specific change caused it. Focus on the impact of the new code.
 4. **Validation:** Check if the changes follow the mandatory "Command-First" workflow (scaffolded correctly) and if all wiring (Container, Enums, Types) is complete.
-5. **Knowledge Indexing:** Before start review read all needs references in [References to review](./references.md)
+5. **Knowledge Indexing (MUST):** Before start review all **touch, edit** references in [References to review](./references.md)
 6. **Review Checklist** read review checklist in [Review Checklist](./review/checklist.md) and check inconsistency
 7. **Execute Output** Start print all outputs [Output Format](#output-format)
 
