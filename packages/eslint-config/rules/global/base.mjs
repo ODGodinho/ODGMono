@@ -520,5 +520,6 @@ export default {
                 "propertyValue": "ignore",
             },
         ],
+        "unicorn/expiring-todo-comments": [ "error" ], // Alertas em docs com TO-D + data
     },
 };

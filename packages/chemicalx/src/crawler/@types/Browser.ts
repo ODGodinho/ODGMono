@@ -8,7 +8,7 @@ export interface BrowserOptionsLibraryInterface {
 
     /**
      * Additional arguments to pass to the browser instance. The list of Chromium flags can be found
-     * [here](http://peter.sh/experiments/chromium-command-line-switches/).
+     * [here](https://peter.sh/experiments/chromium-command-line-switches/).
      */
     args?: string[];
 

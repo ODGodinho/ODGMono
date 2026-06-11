@@ -91,5 +91,7 @@ export default {
                 ],
             },
         ], // Ao usar Docblock isolate n permite usar variáveis de fora
+        "unicorn/no-late-current-target-access": [ "error" ], // Acesse event.currentTarget antes de operação assíncrona
+        "unicorn/no-unused-array-method-return": [ "error" ], // Use retorno de array.map, filter sem salvar em variável
     },
 };

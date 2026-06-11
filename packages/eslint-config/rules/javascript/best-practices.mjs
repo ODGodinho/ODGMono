@@ -113,6 +113,26 @@ export default {
                 ignore: [ String.raw`^error\w*$`, "^error$", String.raw`^exception\w*$` ],
             },
         ], // Chame todos os catch erros de exception
+        "unicorn/better-dom-traversing": [ "error" ], // Forca usar children First ou usar um selector inteligente
+        "unicorn/consistent-compound-words": [ "error" ], // Palavras consistent passWord -> password
+        "unicorn/consistent-json-file-read": [ "error" ], // Forca encode json.parse em files
+        "unicorn/no-blob-to-file": [ "error" ], // Não faca blob em arquivos
+        "unicorn/no-canvas-to-image": [ "error" ], // Não faca canvas em imagens
+        "unicorn/no-confusing-array-splice": [ "error" ], // Não use array.splice se tiver forma mais simples
+        "unicorn/no-incorrect-query-selector": [ "error" ], // Não use querySelectorAll se pegar posição zero sempre
+        "unicorn/no-invalid-file-input-accept": [ "error" ], // Não coloque type incorreto no input
+        "unicorn/no-manually-wrapped-comments": [ "error" ], // Não quebre cometários sem ponto final
+        "unicorn/no-this-outside-of-class": [ "error" ], // Não use this fora de classes
+        "unicorn/no-unnecessary-nested-ternary": [ "error" ], // Ternários mais inteligentes
+        "unicorn/prefer-get-or-insert-computed": [ "error" ], // Use Map insert computed
+        "unicorn/prefer-includes-over-repeated-comparisons": [ "error" ], // Use includes ao invés de várias comparações
+        // "unicorn/prefer-iterator-to-array-at-end": [ "error" ], // Use toArray no final depois de manipular o array ! Classe odg Arr com conflito
+        "unicorn/prefer-math-abs": [ "error" ], // Use Math.abs ao invés de ternário
+        "unicorn/prefer-queue-microtask": [ "error" ], // Use queueMicrotask ao invés de setTimeout(..., 0) browser/node
+        "unicorn/prefer-string-match-all": [ "error" ], // Use String.matchAll ao invés de String.match
+        "unicorn/prefer-string-pad-start-end": [ "error" ], // Use padStart ao invés de repeat(10 - length)
+        "unicorn/prefer-string-repeat": [ "error" ], // Use String.repeat ao invés de repetir manualmente
+        "unicorn/require-css-escape": [ "error" ], // Use CSS.escape para escapar seletor CSS
         "unicorn/consistent-destructuring": [ "error" ], // Usa destructuring ou usa acesso direto sem alternar
         "unicorn/prefer-simple-condition-first": [ "error" ], // Organize as condições mais simples primeiro
         "unicorn/consistent-function-scoping": [ "error" ], // Remova sub função quando possível
@@ -182,7 +202,6 @@ export default {
         "unicorn/no-immediate-mutation": [ "error" ], // Não edite array logo em sequencia
         "unicorn/no-useless-collection-argument": [ "error" ], // Não passe parâmetro array vazio no set
         "unicorn/prefer-response-static-json": [ "error" ], // Prefira Response.Json ao invés de stringify
-        "unicorn/expiring-todo-comments": [ "error" ], // Alertas em docs com TO-D + data
         "unicorn/no-array-reverse": [ "error" ], // Prefira toReversed ao invés array.reverse() ao salvar em variável
         "unicorn/no-array-sort": [ "error" ], // Prefira toSort ao invés array.sort() ao salvar em variável
         "unicorn/no-named-default": [ "error" ], // Não import com name default
