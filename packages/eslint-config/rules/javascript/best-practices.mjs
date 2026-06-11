@@ -353,7 +353,7 @@ export default {
         "unicorn/prefer-native-coercion-functions": [ "error" ], // Prefira função cast nativa
         "unicorn/prefer-logical-operator-over-ternary": [ "error" ], // Mude "a ? a : b" para "a || b"
         "unicorn/prefer-event-target": [ "error" ], // Use EventTarget no Lugar de EventEmitter
-        "unicorn/prefer-export-from": [ "error", { ignoreUsedVariables: true } ], // Prefira Export From
+        "unicorn/prefer-export-from": [ "error", { checkUsedVariables: true } ], // Prefira Export From
         "unicorn/prefer-string-raw": [ "error" ], // Use String.raw`` ao invés de scape no código
         "array-func/from-map": [ "error" ], // Use .map invés do segundo parâmetro do From
         "array-func/no-unnecessary-this-arg": [ "error" ], // Não passe parâmetro desnecessário

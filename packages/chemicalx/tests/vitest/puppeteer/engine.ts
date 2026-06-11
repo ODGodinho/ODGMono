@@ -1,9 +1,9 @@
-import puppeteer, {
-    type Browser,
-    type BrowserContext,
-    type LaunchOptions,
-    type Page,
-    type PuppeteerNode,
+import type {
+    Browser,
+    BrowserContext,
+    LaunchOptions,
+    Page,
+    PuppeteerNode,
 } from "puppeteer";
 
 import type { Browser as BrowserClass } from "./Browser";
@@ -20,10 +20,10 @@ export type PageClassEngine = Page;
 
 export type BrowserOptionsEngine = LaunchOptions;
 
-export const browserEngine = puppeteer;
-
 export type MyBrowser = BrowserClass & BrowserClassEngine;
 
 export type MyPage = PageClass & PageClassEngine;
 
 export type MyContext = ContextClass & ContextClassEngine;
+
+export { default as browserEngine } from "puppeteer";

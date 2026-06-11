@@ -1,11 +1,10 @@
-import {
-    type Browser,
-    type BrowserContext,
-    type BrowserContextOptions,
-    type BrowserType,
-    chromium,
-    type LaunchOptions,
-    type Page,
+import type {
+    Browser,
+    BrowserContext,
+    BrowserContextOptions,
+    BrowserType,
+    LaunchOptions,
+    Page,
 } from "playwright";
 
 import type { Browser as BrowserClass } from "./Browser";
@@ -24,10 +23,10 @@ export type ContextClassEngine = BrowserContext;
 
 export type PageClassEngine = Page;
 
-export const browserEngine = chromium;
-
 export type MyBrowser = BrowserClass & BrowserClassEngine;
 
 export type MyPage = PageClass & PageClassEngine;
 
 export type MyContext = ContextClass & ContextClassEngine;
+
+export { chromium as browserEngine } from "playwright";

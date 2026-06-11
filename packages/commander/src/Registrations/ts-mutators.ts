@@ -149,7 +149,7 @@ export async function ensureEnumMember(parameters: {
     }
 
     const existing = enumDeclaration.getMembers().some((member) => {
-        const memberName = member.getName().split("\"").join("");
+        const memberName = member.getName().replaceAll("\"", "");
 
         return memberName === parameters.memberName;
     });
