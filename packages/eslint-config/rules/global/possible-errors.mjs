@@ -15,8 +15,9 @@ export default {
         "no-empty-static-block": [ "error" ], // Não faça static{ } vazio
         "no-fallthrough": [ "error" ], // Se misturar 2 cases no switch coloque comentário // falls through
         "no-useless-concat": [ "error" ], // Desabilita concatenação de strings desnecessárias ex: "a" + "b"
+        "unicorn/no-useless-concat": [ "error" ], // Desabilita concatenação de strings desnecessárias ex: "a" + "b"
         "no-octal-escape": [ "error" ], // Não use 071
-        "no-octal": [ "error" ], // Use \ em unicode e hexadecimal
+        "no-octal": [ "error" ], // Use \ em Unicode e hexadecimal
         "no-case-declarations": [ "error" ], // Use chaves em caso de declaração em switch case
         "regex/invalid": [
             "error",
@@ -68,8 +69,8 @@ export default {
         // "sonarjs/non-number-in-arithmetic-expression": [ "error" ], // Valida Matemática dado errado ! Faso positivo
         "sonarjs/reduce-initial-value": [ "error" ], // Reduce tem q ter o segundo parâmetro
         "sonarjs/stateful-regex": [ "error" ], // Valida regex podem ser sempre false
-        "sonarjs/table-header": [ "error" ], // Table html deve ter header
-        "sonarjs/table-header-reference": [ "error" ], // Table html deve ter header
+        "sonarjs/table-header": [ "error" ], // Table HTML deve ter header
+        "sonarjs/table-header-reference": [ "error" ], // Table HTML deve ter header
         "unicorn/consistent-existence-index-check": [ "error" ], // Valide o indexOf() de forma correta
         "unicorn/consistent-date-clone": [ "error" ], // Se clonar uma data clone o objeto completo
         "unicorn/consistent-assert": [ "error" ], // Use assert.ok ao invés de assert(value)
@@ -93,5 +94,14 @@ export default {
         ], // Ao usar Docblock isolate n permite usar variáveis de fora
         "unicorn/no-late-current-target-access": [ "error" ], // Acesse event.currentTarget antes de operação assíncrona
         "unicorn/no-unused-array-method-return": [ "error" ], // Use retorno de array.map, filter sem salvar em variável
+        "unicorn/no-break-in-nested-loop": [ "error" ], // Não use break em loops dentro de outros loops
+        "unicorn/no-confusing-array-with": [ "error" ], // Concatenar array com spread ao invés de with
+        // "unicorn/no-declarations-before-early-exit": [ "error" ], // Early return é a primeira coisa // ? Código complexo d+ const em cima fica mais facil
+        "unicorn/no-incorrect-template-string-interpolation": [ "error" ], // Valida interpolação de template string
+        "unicorn/no-mismatched-map-key": [ "error" ], // Não use chave diferente para map.has e map.get
+        "unicorn/no-optional-chaining-on-undeclared-variable": [ "error" ], // Não use ?. em variável não declarada
+        "unicorn/no-redundant-comparison": [ "error" ], // Não faça comparação redundante
+        "unicorn/prefer-direct-iteration": [ "error" ], // Nao use .values ou entries sem efeitos
+        "unicorn/prefer-scoped-selector": [ "error" ], // Use seletor de escopo ao invés de universal
     },
 };

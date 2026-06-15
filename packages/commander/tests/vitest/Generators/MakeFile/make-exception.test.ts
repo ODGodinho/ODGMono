@@ -27,7 +27,9 @@ describe("makeEvent Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(filePath1).exists())
+        const fileInstance1 = new File(filePath1);
+
+        expect(await fileInstance1.exists())
             .toBeTruthy();
     });
 
@@ -36,7 +38,9 @@ describe("makeEvent Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(filePath2).exists())
+        const fileInstance2 = new File(filePath2);
+
+        expect(await fileInstance2.exists())
             .toBeTruthy();
     });
 });

@@ -21,7 +21,7 @@ import type { TlsMessageException } from "./TlsMessageException";
 import type { TlsMessageResponse } from "./TlsMessageResponse";
 
 /**
- * Tls Message class
+ * TLS Message class
  *
  * @template {any} RequestData Request body to send in the request
  * @template {any} ResponseData Response body of the request

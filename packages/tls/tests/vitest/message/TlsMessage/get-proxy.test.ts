@@ -25,7 +25,7 @@ describe("Tls Message", () => {
         expect(TlsAxiosRequestParser["getProxyUrl"]({
             host: "localhost",
             protocol: "http",
-            port: Number.NaN,
+            port: NaN,
             auth: {
                 username: "user",
                 password: "pass",

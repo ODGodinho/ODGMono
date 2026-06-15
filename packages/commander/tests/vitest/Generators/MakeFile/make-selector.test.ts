@@ -23,7 +23,9 @@ describe("makeSelectors Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(filePath).exists())
+        const fileInstance = new File(filePath);
+
+        expect(await fileInstance.exists())
             .toBeTruthy();
     });
 });

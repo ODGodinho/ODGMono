@@ -50,7 +50,9 @@ describe("makePage Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(filePath).exists())
+        const fileInstance = new File(filePath);
+
+        expect(await fileInstance.exists())
             .toBeTruthy();
     });
 
@@ -69,7 +71,9 @@ describe("makePage Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(filePath).exists())
+        const fileInstance = new File(filePath);
+
+        expect(await fileInstance.exists())
             .toBeTruthy();
     });
 
@@ -86,9 +90,12 @@ describe("makePage Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(filePath).exists())
+        const pageFileInstance = new File(filePath);
+        const handlerFileInstance = new File(handlerFile);
+
+        expect(await pageFileInstance.exists())
             .toBeTruthy();
-        expect(await new File(handlerFile).exists())
+        expect(await handlerFileInstance.exists())
             .toBeFalsy();
     });
 
@@ -107,9 +114,12 @@ describe("makePage Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(pageFile).exists())
+        const pageFileInstance = new File(pageFile);
+        const handlerFileInstance = new File(handlerFile);
+
+        expect(await pageFileInstance.exists())
             .toBeTruthy();
-        expect(await new File(handlerFile).exists())
+        expect(await handlerFileInstance.exists())
             .toBeTruthy();
 
         const handlerSource = await readFile(handlerFile, "utf8");
@@ -133,7 +143,9 @@ describe("makePage Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(listenerFile).exists())
+        const listenerFileInstance = new File(listenerFile);
+
+        expect(await listenerFileInstance.exists())
             .toBeTruthy();
 
         const source = await readFile(listenerFile, "utf8");
@@ -155,7 +167,9 @@ describe("makePage Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(listenerFile).exists())
+        const listenerFileInstance2 = new File(listenerFile);
+
+        expect(await listenerFileInstance2.exists())
             .toBeFalsy();
     });
 

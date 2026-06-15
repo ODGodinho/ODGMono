@@ -48,7 +48,7 @@ describe("Timeout Test", () => {
 
     test("Timeout NaN", async () => {
         await expect(timeout({
-            "timeout": Number.NaN,
+            "timeout": NaN,
             "callback": () => null,
         })).rejects.toThrow(InvalidArgumentException);
     });

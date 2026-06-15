@@ -492,6 +492,7 @@ export default [
     {
         files: [
             ".gitignore",
+            ".editorconfig",
             ".npmignore",
             "**/*ignore",
             "**/*.bash",

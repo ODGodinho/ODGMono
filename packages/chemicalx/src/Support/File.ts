@@ -8,7 +8,7 @@ import { access } from "node:fs/promises";
 export class File {
 
     public constructor(
-        private readonly subject: string,
+        public readonly subject: string,
     ) {
     }
 

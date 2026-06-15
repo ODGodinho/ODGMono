@@ -11,12 +11,7 @@ export default {
         "@typescript-eslint/no-magic-numbers": [ "off" ], // Desliga magic number em test
         "max-statements": [ "error", MAX_STATEMENTS ],
         "max-nested-callbacks": [ "error", maxHadoukenDepth ], // Tamanho máximo do Hadouken callback
-        "unicorn/consistent-function-scoping": [
-            "error",
-            {
-                checkArrowFunctions: false,
-            },
-        ], // Remova sub função quando possível
+        "unicorn/consistent-function-scoping": [ "error" ], // Remova sub função quando possível
         "sonarjs/assertions-in-tests": [ "error" ], // Teste tem q ter assert
         "sonarjs/chai-determinate-assertion": [ "error" ], // Use assert adequado
         "sonarjs/disabled-timeout": [ "error" ], // Impede numero além do limite de tempo timeout
@@ -29,6 +24,7 @@ export default {
         "sonarjs/prefer-type-guard": [ "error" ], // Use is no return boolean type
         "sonarjs/stable-tests": [ "error" ], // Testes devem funcionar de primeira tentativa
         "sonarjs/test-check-exception": [ "error" ], // Testes devem testar exceção
+        "unicorn/max-nested-calls": [ "error", { max: 4 } ], // Tamanho máximo chamada em cadeia
         "@typescript-eslint/unbound-method": [ "off" ], // Preserve bind class
         "no-restricted-syntax": [
             "error",

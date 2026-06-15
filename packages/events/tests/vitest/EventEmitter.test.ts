@@ -8,8 +8,10 @@ describe("Test EventEmitterBus", () => {
     const eventSend = "SendMessage";
 
     test("Test Event EventEmitter Instance", async () => {
-        expect(new EventEmitterBus()).toBeInstanceOf(EventEmitterBus);
-        expect(new EventEmitterBus()["eventEmitter"]).toBeInstanceOf(EventEmitter2);
+        const eventEmitterBus = new EventEmitterBus();
+
+        expect(eventEmitterBus).toBeInstanceOf(EventEmitterBus);
+        expect(eventEmitterBus["eventEmitter"]).toBeInstanceOf(EventEmitter2);
     });
 
     test("Test Event Dispatch", async () => {

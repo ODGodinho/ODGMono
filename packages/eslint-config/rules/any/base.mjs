@@ -1,6 +1,7 @@
 export default {
     rules: {
         "filenames/match-regex": [ "off" ],
+        "unicorn/no-empty-file": [ "off" ],
         "@stylistic/max-len": [
             "warn",
             {

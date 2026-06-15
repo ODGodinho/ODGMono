@@ -18,14 +18,15 @@ describe("Test Previous Exception Parser", () => {
 
     test.each(exceptionsCascade)("Test Base Exception Limit 10", async (exceptionCascade) => {
         ++currentException;
-        const logger = new JSONLoggerPlugin("", 10);
-        const exceptionObjects = await logger["parseExceptionPrevious"](exceptionCascade.exception);
 
         if (currentException === 0) {
             expect(exceptionCascade.exception.getPrevious()).toBeUndefined();
 
             return;
         }
+
+        const logger = new JSONLoggerPlugin("", 10);
+        const exceptionObjects = await logger["parseExceptionPrevious"](exceptionCascade.exception);
 
         expect(exceptionObjects).toBeDefined();
         expect(exceptionObjects?.length).toEqual(currentException);

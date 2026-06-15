@@ -1,5 +1,5 @@
 /**
- * Http Status Methods
+ * HTTP Status Methods
  *
  * @enum {string}
  */

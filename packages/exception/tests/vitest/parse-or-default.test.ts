@@ -6,7 +6,7 @@ describe("Test Default Exception", () => {
 
         await expect((async (): Promise<never> => {
             throw UnknownException.parseOrDefault(undefined, message);
-        })()).rejects.toThrowError(new UnknownException(message));
+        })()).rejects.toThrow(new UnknownException(message));
     });
 
     test("Test Error", async () => {
@@ -20,6 +20,6 @@ describe("Test Default Exception", () => {
 
         await expect((async (): Promise<never> => {
             throw UnknownException.parseOrDefault(baseError, "anything");
-        })()).rejects.toThrowError(newError);
+        })()).rejects.toThrow(newError);
     });
 });

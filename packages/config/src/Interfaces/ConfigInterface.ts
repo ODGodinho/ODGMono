@@ -1,5 +1,5 @@
 /**
- * Configuration of my application
+ * Configuration of my app
  *
  * @template {Record<number | string | symbol, unknown>} ConfigTypes my Configs types
  */

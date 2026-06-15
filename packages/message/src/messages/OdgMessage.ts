@@ -39,8 +39,8 @@ export abstract class ODGMessage {
     public static isMessage(
         message: unknown,
     ): message is MessageException<unknown> | MessageResponse | MessageUnknownException<unknown> {
-        return ODGMessage.isMessageError(message)
-            || ODGMessage.isMessageResponse(message);
+        return this.isMessageError(message)
+            || this.isMessageResponse(message);
     }
 
 }

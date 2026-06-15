@@ -93,7 +93,7 @@ export default {
         "n/prefer-global/timers": [ "error", "always" ], // Prefira usar setTimeout, setInterval ... globais
         "new-cap": [ "error", { newIsCap: true } ], // New require first Letter uppercase
         "no-caller": [ "error" ], // Não permite usar callee
-        "no-script-url": [ "error" ], // Não permite usar script url
+        "no-script-url": [ "error" ], // Não permite usar script URL
         "func-names": [ "error", "as-needed" ], // Nome de funções somente quando necessário
         "no-param-reassign": [ "error" ], // Não permite reatribuição de parâmetros
         "block-scoped-var": [ "error" ], // INFO: Bloqueia Vars for escopo, mas ainda sim prefira Lets
@@ -128,6 +128,19 @@ export default {
         "unicorn/prefer-includes-over-repeated-comparisons": [ "error" ], // Use includes ao invés de várias comparações
         // "unicorn/prefer-iterator-to-array-at-end": [ "error" ], // Use toArray no final depois de manipular o array ! Classe odg Arr com conflito
         "unicorn/prefer-math-abs": [ "error" ], // Use Math.abs ao invés de ternário
+        "unicorn/string-content": [ "error" ], // Previne scape em string desnecessário
+        "unicorn/no-negated-array-predicate": [ "error" ], // Não inverta filtro apos filtrar
+        "unicorn/no-negated-comparison": [
+            "error",
+            {
+                checkLogicalExpressions: true,
+            },
+        ],
+        "unicorn/no-object-methods-with-collections": [ "error" ], // Prefira map.keys() ao invés de Object.keys(map)
+        "unicorn/no-return-array-push": [ "error" ], // Não retorne array.push() return array.length
+        "unicorn/no-unnecessary-global-this": [ "error" ], // Não use this globalThis desnecessário
+        "unicorn/no-unsafe-buffer-conversion": [ "error" ], // Preserve os bytes do buffer apenas para visibilidade
+        "unicorn/no-useless-boolean-cast": [ "error" ], // Não use cast de boolean desnecessário em array filter...
         "unicorn/prefer-queue-microtask": [ "error" ], // Use queueMicrotask ao invés de setTimeout(..., 0) browser/node
         "unicorn/prefer-string-match-all": [ "error" ], // Use String.matchAll ao invés de String.match
         "unicorn/prefer-string-pad-start-end": [ "error" ], // Use padStart ao invés de repeat(10 - length)
@@ -139,8 +152,10 @@ export default {
         "unicorn/error-message": [ "error" ], // Exception tem q ter mensagem
         "unicorn/escape-case": [ "error" ], // Ao escapar use letra maiúscula hexadecimal
         "unicorn/new-for-builtins": [ "error" ], // Use new sempre em Promise, Array, Error, RegExp
-        "unicorn/no-abusive-eslint-disable": [ "error" ], // Não desabilite todas as regras ESLInt
-        "unicorn/no-array-for-each": [ "error" ], // Prefira forOf ao invés Foreach
+        "unicorn/no-abusive-eslint-disable": [ "error" ], // Não desabilite todas as regras ESLint
+        "unicorn/no-for-each": [ "error" ], // Prefira forOf ao invés Foreach
+        "unicorn/prefer-unicode-code-point-escapes": [ "error" ], // Prefer Unicode code point escapes over legacy
+        "unicorn/comment-content": [ "error" ], // Comentários com texto valido
         "unicorn/no-array-method-this-argument": [ "error" ], // Evita this array que pode falhar
         "unicorn/no-array-push-push": [ "error" ], // Faça apenas 1 push ao invés de vários
         "unicorn/no-await-expression-member": [ "error" ], // Não use (await getObject()).property;
@@ -212,7 +227,7 @@ export default {
         "unicorn/prefer-bigint-literals": [ "error" ], // Prefira BigInt literal ao invés de BigInt function
         "unicorn/prefer-date-now": [ "error" ], // Prefira usar date.now() ao invés dos outros
         "unicorn/prefer-dom-node-dataset": [ "error" ], // Prefira .dataset ao invés de .getAttribute(data-*)
-        "unicorn/prefer-modern-math-apis": [ "error" ], // Prefira Math api modernas
+        "unicorn/prefer-modern-math-apis": [ "error" ], // Prefira Math API modernas
         "unicorn/prefer-object-from-entries": [ "error" ], // Prefira Object entries ao invés de loop
         "unicorn/prefer-reflect-apply": [ "error" ], // Prefira Reflect ao invés Function.prototype.apply
         "unicorn/prefer-set-has": [ "error" ], // Prefira Set.has ao invés array.includes
@@ -261,8 +276,51 @@ export default {
         "complexity": [ "error", { "max": 15 } ], // Complexidade código
         "func-style": [ "error", "declaration" ], // Declare function name() em vez de var = function()
         "no-else-return": [ "error" ], // Não use else se tem retorno
+        "unicorn/no-useless-else": [ "error" ], // Não use else desnecessário
+        "unicorn/prefer-array-from-map": [ "error" ], // Prefira Array.from ao invés de map() em sequencia
+        "unicorn/prefer-add-event-listener-options": [ "error" ], // Prefira usar opções em addEventListener
+        "unicorn/prefer-early-return": [ "error" ], // Prefira retornar cedo para evitar if aninhados
+        "unicorn/prefer-global-number-constants": [ "error" ], // Prefira usar constantes NaN do que Number.NaN
+        "unicorn/prefer-identifier-import-export-specifiers": [ "error" ], // Import com nome sem aspas
+        "unicorn/prefer-iterable-in-constructor": [ "error" ], // Prefira usar iterável em vez de array loops
+        "unicorn/prefer-iterator-to-array": [ "error" ], // Prefira usar [...map.values()] -> map.values().toArray()
+        "unicorn/prefer-location-assign": [ "error" ], // Prefira location.assign/replace ao invés de location.href
+        "unicorn/prefer-minimal-ternary": [ "error" ], // Prefira ternário minimalista
+        "unicorn/prefer-object-define-properties": [ "error" ], // Prefira Object.defineProperties no lugar de 1 a 1
+        "unicorn/prefer-object-destructuring-defaults": [ "error" ], // Prefira desestruturar com valor padrão
+        "unicorn/prefer-object-iterable-methods": [ "error" ], // Prefira Object.values
+        "unicorn/prefer-path2d": [ "error" ], // Prefira usar Path2D para formas complexas
+        "unicorn/prefer-private-class-fields": [ "error" ], // Prefira usar campos privados em classes
+        "unicorn/prefer-short-arrow-method": [ "error" ], // Prefira métodos arrow em objeto se possível
+        "unicorn/prefer-simple-sort-comparator": [ "error" ], // Prefira comparadores de sort simples
+        "unicorn/prefer-single-array-predicate": [ "error" ], // Prefira simples every,some ...
+        "unicorn/prefer-smaller-scope": [ "error" ], // Prefira escopo menor const dentro do if
+        /*
+         * ! Desligado pois falha com abstract
+         * "unicorn/consistent-class-member-order": [
+         *     "error",
+         *     {
+         *         order: [
+         *             "static-field",
+         *             "static-block",
+         *             "static-method",
+         *             "public-field",
+         *             "private-field",
+         *             "constructor",
+         *             "public-method",
+         *             "private-method",
+         *         ],
+         *     },
+         * ], // Prefira ordem consistente de membros da classe
+         */
+        "unicorn/consistent-optional-chaining": [ "error" ], // Opcional consistent
+        "unicorn/consistent-export-decorator-position": [ "error" ], // Colocar decorator no lugar certo
+        "unicorn/consistent-function-style": [ "error" ], // Colocar decorator no lugar certo
+        "unicorn/explicit-timer-delay": [ "error" ], // Use delay explícito em setTimeout/setInterval
+        "unicorn/prefer-uint8array-base64": [ "error" ], // Prefira Uint8Array ao invés atob ou buffer.From
+        "unicorn/require-proxy-trap-boolean-return": [ "error" ], // Proxy set deve retornar boolean
         "use-isnan": [ "error", { enforceForSwitchCase: true, enforceForIndexOf: true } ], // Use a função isNan
-        "n/no-deprecated-api": [ "error" ], // Não use API depreciada do NodeJS
+        "n/no-deprecated-api": [ "error" ], // Não use API depreciada do Node.js
         "prefer-regex-literals": [ "error", { disallowRedundantWrapping: true } ], // Use a função isNan
         "import/no-absolute-path": [ "error" ], // Não informa caminho absoluto
         "import/no-webpack-loader-syntax": [ "error" ], // Bloqueia syntax webpack import
@@ -378,9 +436,9 @@ export default {
         "array-func/no-unnecessary-this-arg": [ "error" ], // Não passe parâmetro desnecessário
         "array-func/avoid-reverse": [ "error" ], // Não passe parâmetro desnecessário
         "func-call-spacing": [ "error", "never" ],
-        "jsx-quotes": [ "error", "prefer-double" ], // Aspas duplas em jsx html
+        "jsx-quotes": [ "error", "prefer-double" ], // Aspas duplas em JSX HTML
         "vars-on-top": [ "error" ], // Caso a regra de var seja desativa elas devem ficar no topo
-        "strict": [ "error" ], // Strict javascript top file
+        "strict": [ "error" ], // Strict JavaScript top file
         "no-shadow-restricted-names": [ "error" ], // Sem variável com palavra reservada
         "id-denylist": [
             "error",
@@ -468,7 +526,15 @@ export default {
         ],
         "logical-assignment-operators": [ "error", "always" ], // Faça ||= ao invés a = a || b
         "no-with": [ "error" ], // Não use with
-
+        "unicorn/max-nested-calls": [ "error", { max: 3 } ], // Tamanho máximo chamada em cadeia
+        "unicorn/no-global-object-property-assignment": [ "error" ], // Não atribua propriedades em objetos globais
+        "unicorn/class-reference-in-static-methods": [
+            "error",
+            {
+                preferThis: true,
+                preferSuper: true,
+            },
+        ], // Não use this,super em static
         "func-name-matching": [
             "error",
             {

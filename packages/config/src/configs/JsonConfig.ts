@@ -16,7 +16,7 @@ export class JsonConfig<
     }
 
     public async has($key: keyof ConfigTypes): Promise<boolean> {
-        return $key in this.configs!;
+        return Object.hasOwn(this.configs!, $key);
     }
 
     public async get<Config extends keyof ConfigTypes>(

@@ -4,6 +4,7 @@ describe("formatUnicorn", () => {
     const words = {
         "message {{ test }}": "message replaced",
         "message {{test}}": "message replaced",
+        "message {{test}} {{abc}} {{test}}": "message replaced {{abc}} replaced",
     };
 
     test.each(Object.keys(words))("Message replace", async (word) => {

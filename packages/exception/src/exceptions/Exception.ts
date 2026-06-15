@@ -59,7 +59,10 @@ export class Exception extends Error {
             exception as Record<string, unknown>,
         );
 
-        newException ??= new (this.getExceptionClass(exception))(Exception.messageToString(exception));
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Class need PascalCase
+        const ExceptionClass = this.getExceptionClass(exception);
+
+        newException ??= new ExceptionClass(Exception.messageToString(exception));
         newException.original = exception;
 
         for (const callback of this.$parsers) {
@@ -126,7 +129,9 @@ export class Exception extends Error {
     }
 
     private static parseObject<T extends Record<string, unknown>>(exception: T): Exception & T {
-        const newException = new (this.getExceptionClass(exception))("");
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Class need PascalCase
+        const ExceptionClass = this.getExceptionClass(exception);
+        const newException = new ExceptionClass("");
 
         for (const key in exception) {
             if (Object.prototype.hasOwnProperty.call(exception, key)) {

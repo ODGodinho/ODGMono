@@ -62,11 +62,12 @@ describe("Test request message", () => {
     });
 
     test("Teste exception", async () => {
+        const exception = new Exception("example");
         const message = jsonLog({
             exception: {
                 type: "Exception",
                 message: "Message",
-                stack: new Exception("example").stack,
+                stack: exception.stack,
             },
         });
 

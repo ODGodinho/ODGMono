@@ -216,7 +216,7 @@ describe("Arr.random", () => {
             const array = new Arr([ 1, 2, 3 ]);
 
             expect(() => {
-                array.random(Number.NaN);
+                array.random(NaN);
             }).toThrow(InvalidArgumentException);
         });
 

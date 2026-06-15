@@ -23,9 +23,9 @@ function orderMember(propertyTypes, tag, accessibilityList) {
     return [
         ...accessibilityList.flatMap((accessibility) => propertyTypes.map(
             (propertyType) => {
-                const accessibilityName = accessibility ? `${accessibility}-` : "";
-
                 if (accessibility === "private" && propertyType === "abstract") return "";
+
+                const accessibilityName = accessibility ? `${accessibility}-` : "";
 
                 return `${accessibilityName}${propertyType}-${tag}`;
             },
@@ -36,7 +36,7 @@ function orderMember(propertyTypes, tag, accessibilityList) {
 
 export default {
     rules: {
-        "strict": [ "off" ], // Strict javascript disable
+        "strict": [ "off" ], // Strict JavaScript disable
         "no-throw-literal": "off", // Não permite throw "string" ou diferente de classe
         "@typescript-eslint/unified-signatures": [ "error" ], // Unir tipos de overload method se possível
         "@typescript-eslint/unbound-method": [ "error" ], // Preserve bind class
@@ -74,7 +74,7 @@ export default {
         "@typescript-eslint/default-param-last": [ "error" ], // Parâmetros default devem ficar no final
         "no-array-constructor": [ "off" ], // Não permite usar new Array()
         "@typescript-eslint/no-array-constructor": [ "error" ], // Não permite usar new Array()
-        "no-useless-constructor": [ "off" ], // Desliga Javascript rule
+        "no-useless-constructor": [ "off" ], // Desliga JavaScript rule
         "@typescript-eslint/no-useless-constructor": [ "error" ], // Não permite construtores desnecessários
         "@typescript-eslint/no-unsafe-assignment": [ "error" ], // Não permite atribuição de tipos inválidos
         "dot-notation": [ "off" ], // Força usar ponto em objeto JS
@@ -325,7 +325,7 @@ export default {
         ], // Prefira declaração param props
         "@typescript-eslint/prefer-enum-initializers": [ "error" ], // Inicie as enums com valores
         "@typescript-eslint/prefer-function-type": [ "error" ], // Prefira Type function ao invés de object
-        "@typescript-eslint/prefer-includes": [ "error" ], // Prefira Includes no typescript
+        "@typescript-eslint/prefer-includes": [ "error" ], // Prefira Includes no TypeScript
         "@typescript-eslint/prefer-namespace-keyword": [ "error" ], // Prefira namespace ao invés de module
         "@typescript-eslint/prefer-nullish-coalescing": [
             "error",

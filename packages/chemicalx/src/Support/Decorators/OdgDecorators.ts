@@ -37,7 +37,7 @@ export class ODGDecorators {
             }), target);
 
             const previousMetadata = Reflect.getMetadata(
-                ODGDecorators.metadataInjectable,
+                this.metadataInjectable,
                 Reflect,
             ) as [] | undefined;
 
@@ -46,7 +46,7 @@ export class ODGDecorators {
                 ...previousMetadata ?? [],
             ];
 
-            Reflect.defineMetadata(ODGDecorators.metadataInjectable, newMetadata, Reflect);
+            Reflect.defineMetadata(this.metadataInjectable, newMetadata, Reflect);
         };
     }
 
@@ -104,7 +104,7 @@ export class ODGDecorators {
                 options,
             });
 
-            Reflect.defineMetadata(ODGDecorators.metaDataEvent, previousMetadata, Reflect);
+            Reflect.defineMetadata(this.metaDataEvent, previousMetadata, Reflect);
         };
     }
 
@@ -113,7 +113,7 @@ export class ODGDecorators {
     ): EventListener<Events, keyof Events> {
         const allEvents = this.getReflectEvents();
 
-        for (const [ , listeners ] of Object.entries(allEvents)) {
+        for (const listeners of Object.values(allEvents)) {
             for (const listener of listeners) {
                 listener.listener = containerInstance.get(listener.containerName);
             }
@@ -124,7 +124,7 @@ export class ODGDecorators {
 
     public static async loadModule(containerInstance: TypedContainer): Promise<void> {
         const provideMetadata = Reflect.getMetadata(
-            ODGDecorators.metadataInjectable,
+            this.metadataInjectable,
             Reflect,
         ) as ContainerMetadataInterface[] | undefined ?? [];
 
@@ -142,7 +142,7 @@ export class ODGDecorators {
             keyof Events
         >;
 
-        return Reflect.getMetadata(ODGDecorators.metaDataEvent, Reflect) as EventListenerNotation<
+        return Reflect.getMetadata(this.metaDataEvent, Reflect) as EventListenerNotation<
             Events,
             keyof Events
         > | undefined ?? defaultItens;

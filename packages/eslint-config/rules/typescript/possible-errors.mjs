@@ -32,7 +32,7 @@ export default {
                 considerDefaultExhaustiveForUnions: true,
             },
         ], // Switch com typo coloque default ou todos os casos
-        "sonarjs/no-extra-arguments": [ "off" ], // Argumentos extra ja é tratado por typescript
+        "sonarjs/no-extra-arguments": [ "off" ], // Argumentos extra ja é tratado por TypeScript
         "sonarjs/no-use-of-empty-return-value": [ "off" ], // Não atribua void em uma variável
         "sonarjs/argument-type": [ "off" ], // Não passa typo errado
         "sonarjs/no-implicit-global": [ "off" ], // Não acesse variável global inexistente no arquivo

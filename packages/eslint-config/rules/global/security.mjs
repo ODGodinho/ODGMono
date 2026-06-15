@@ -16,33 +16,37 @@ export default {
         "security/detect-non-literal-require": [ "error" ], // Require Protect
         "security/detect-possible-timing-attacks": [ "error" ], // Previne Tokens no código
         "security/detect-bidi-characters": [ "error" ], // Anti Trojan code program
-        "unicorn/prefer-https": [ "error" ], // Use links https
+        "unicorn/prefer-https": [ "error" ], // Use links HTTPS
+        "unicorn/no-unsafe-dom-html": [ "error" ], // Bloqueia innerHTML, outerHTML, prefira setHtml e outros evita XSS
+        "unicorn/no-unsafe-string-replacement": [ "error" ], // Replace inseguros com variáveis
+        "unicorn/prefer-number-is-safe-integer": [ "error" ], // Prefira Number.isSafeInteger para verificar se é safe
+        "unicorn/prefer-dom-node-html-methods": [ "error" ], // Prefira métodos de HTML seguros
         "import/no-dynamic-require": [ "error", { "esmodule": true } ], // Sem import dinâmicos
         "no-prototype-builtins": [ "error" ], // Object.prototype.hasOwnProperty.call no lugar obj.hasOwnProperty
         "sonarjs/aws-apigateway-public-api": [ "error" ], // Bloqueia API Gateway público
         "sonarjs/dompurify-unsafe-config": [ "error" ], // Dompurify unsafe config
         "sonarjs/aws-ec2-rds-dms-public": [ "error" ], // Bloqueia rds public
-        "sonarjs/aws-ec2-unencrypted-ebs-volume": [ "error" ], // Segurança aws
-        "sonarjs/aws-efs-unencrypted": [ "error" ], // Segurança aws
-        "sonarjs/aws-iam-all-privileges": [ "error" ], // Segurança aws
-        "sonarjs/aws-iam-privilege-escalation": [ "error" ], // Segurança aws
-        "sonarjs/aws-iam-public-access": [ "error" ], // Segurança aws
-        "sonarjs/aws-opensearchservice-domain": [ "error" ], // Segurança aws
-        "sonarjs/aws-rds-unencrypted-databases": [ "error" ], // Segurança aws
-        "sonarjs/aws-restricted-ip-admin-access": [ "error" ], // Segurança aws
-        "sonarjs/aws-s3-bucket-granted-access": [ "error" ], // Segurança aws
-        "sonarjs/aws-s3-bucket-insecure-http": [ "error" ], // Segurança aws
-        "sonarjs/aws-s3-bucket-public-access": [ "error" ], // Segurança aws
-        "sonarjs/aws-s3-bucket-versioning": [ "error" ], // Segurança aws
-        "sonarjs/aws-sagemaker-unencrypted-notebook": [ "error" ], // Segurança aws
-        "sonarjs/aws-sns-unencrypted-topics": [ "error" ], // Segurança aws
-        "sonarjs/aws-sqs-unencrypted-queue": [ "error" ], // Segurança aws
+        "sonarjs/aws-ec2-unencrypted-ebs-volume": [ "error" ], // Segurança AWS
+        "sonarjs/aws-efs-unencrypted": [ "error" ], // Segurança AWS
+        "sonarjs/aws-iam-all-privileges": [ "error" ], // Segurança AWS
+        "sonarjs/aws-iam-privilege-escalation": [ "error" ], // Segurança AWS
+        "sonarjs/aws-iam-public-access": [ "error" ], // Segurança AWS
+        "sonarjs/aws-opensearchservice-domain": [ "error" ], // Segurança AWS
+        "sonarjs/aws-rds-unencrypted-databases": [ "error" ], // Segurança AWS
+        "sonarjs/aws-restricted-ip-admin-access": [ "error" ], // Segurança AWS
+        "sonarjs/aws-s3-bucket-granted-access": [ "error" ], // Segurança AWS
+        "sonarjs/aws-s3-bucket-insecure-http": [ "error" ], // Segurança AWS
+        "sonarjs/aws-s3-bucket-public-access": [ "error" ], // Segurança AWS
+        "sonarjs/aws-s3-bucket-versioning": [ "error" ], // Segurança AWS
+        "sonarjs/aws-sagemaker-unencrypted-notebook": [ "error" ], // Segurança AWS
+        "sonarjs/aws-sns-unencrypted-topics": [ "error" ], // Segurança AWS
+        "sonarjs/aws-sqs-unencrypted-queue": [ "error" ], // Segurança AWS
         "sonarjs/content-length": [ "error" ], // Request body limit
         "sonarjs/content-security-policy": [ "error" ], // Dado seguro express
-        "sonarjs/cookie-no-httponly": [ "error" ], // Use cookies http Only
-        "sonarjs/cors": [ "error" ], // Configure cors de maneira segura
+        "sonarjs/cookie-no-httponly": [ "error" ], // Use cookies HTTP Only
+        "sonarjs/cors": [ "error" ], // Configure CORS de maneira segura
         "sonarjs/csrf": [ "error" ], // Configure CSRF seguro
-        "sonarjs/disabled-auto-escaping": [ "error" ], // Não desligue scaping de html por segurança
+        "sonarjs/disabled-auto-escaping": [ "error" ], // Não desligue scaping de HTML por segurança
         "sonarjs/disabled-resource-integrity": [ "error" ], // Verifique integridade script
         // "sonarjs/dynamically-constructed-templates": [ "error" ], // Templates dinâmicos são inseguros com pug lib
         "sonarjs/encryption-secure-mode": [ "error" ], // Crypto de forma segura
@@ -59,7 +63,7 @@ export default {
         "sonarjs/no-hardcoded-ip": [ "error" ], // Não coloque ip dentro do código
         "sonarjs/no-hardcoded-passwords": [ "error" ], // Não coloque senha dentro do código
         "sonarjs/no-hardcoded-secrets": [ "error" ], // Não coloque token dentro do código
-        "sonarjs/no-mime-sniff": [ "error" ], // Segurança sniff mime
+        "sonarjs/no-mime-sniff": [ "error" ], // Segurança sniff MIME
         "sonarjs/no-mixed-content": [ "error" ], // Mixed-content is security-sensitive
         "sonarjs/no-os-command-from-path": [ "error" ], // Execute arquivo com caminho completo
         "sonarjs/no-reference-error": [ "error" ], // Referer security
@@ -79,6 +83,6 @@ export default {
         "sonarjs/unverified-hostname": [ "error" ], // Validar host SSL
         "sonarjs/weak-ssl": [ "error" ], // Validar fraco SSL
         "sonarjs/x-powered-by": [ "error" ], // Oculta info do node
-        "sonarjs/xml-parser-xxe": [ "error" ], // Xml proteção de venerabilidade
+        "sonarjs/xml-parser-xxe": [ "error" ], // XML proteção de venerabilidade
     },
 };

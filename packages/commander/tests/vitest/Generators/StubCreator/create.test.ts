@@ -15,7 +15,7 @@ describe("Create Page StubTest", () => {
     });
 
     test("Generate ExamplePage", async () => {
-        const filePath = `${path}/ExamplePage1.ts`;
+        const file = new File(`${path}/ExamplePage1.ts`);
 
         await expect(stubCreator.create("page", "ExamplePage1", path, {
             "PageName:UCFirst": "Payment",
@@ -24,14 +24,14 @@ describe("Create Page StubTest", () => {
             .resolves
             .toBeDefined();
 
-        expect(await new File(filePath).exists())
+        expect(await file.exists())
             .toBeTruthy();
     });
 
     test("Generate ExamplePage2 Exists", async () => {
-        const filePath = `${path}/ExamplePage2.ts`;
+        const fileClass = new File(`${path}/ExamplePage2.ts`);
 
-        expect(await new File(filePath).exists())
+        expect(await fileClass.exists())
             .toBeFalsy();
 
         await stubCreator.create("page", "ExamplePage2", path, {
@@ -39,7 +39,7 @@ describe("Create Page StubTest", () => {
             "PageName": "payment",
         });
 
-        expect(await new File(filePath).exists())
+        expect(await fileClass.exists())
             .toBeTruthy();
 
         const file = stubCreator.create("page", "ExamplePage2", path, {
@@ -54,9 +54,11 @@ describe("Create Page StubTest", () => {
 
     test("Generate when destination has no index.ts skips append", async () => {
         const directoryWithoutIndex = `${path}/no-index-dir`;
+        const indexFilePath = `${directoryWithoutIndex}/index.ts`;
 
         await mkdir(directoryWithoutIndex, { recursive: true });
-        const filePathNoIndex = `${directoryWithoutIndex}/ExamplePageNoIndex.ts`;
+        const fileNoIndex = new File(`${directoryWithoutIndex}/ExamplePageNoIndex.ts`);
+        const indexFile = new File(indexFilePath);
 
         try {
             await expect(stubCreator.create("page", "ExamplePageNoIndex", directoryWithoutIndex, {
@@ -64,14 +66,14 @@ describe("Create Page StubTest", () => {
                 "PageName": "payment",
             }))
                 .resolves
-                .toBe(filePathNoIndex);
+                .toBe(fileNoIndex.subject);
 
-            expect(await new File(filePathNoIndex).exists())
+            expect(await fileNoIndex.exists())
                 .toBeTruthy();
-            expect(await new File(`${directoryWithoutIndex}/index.ts`).exists())
+            expect(await indexFile.exists())
                 .toBeFalsy();
         } finally {
-            await unlink(filePathNoIndex).catch(() => null);
+            await unlink(indexFilePath).catch(() => null);
             await rm(directoryWithoutIndex, { recursive: true }).catch(() => null);
         }
     });

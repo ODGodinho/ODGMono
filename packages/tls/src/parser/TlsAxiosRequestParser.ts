@@ -29,6 +29,8 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
     public static override parseMessageToLibrary<RequestD>(
         options: Partial<TlsRequestInterface<RequestD>>,
     ): AxiosRequestConfig<RequestD> {
+        const allowRedirect = String(this.getAllowRedirect(options));
+
         return Object.fromEntries(Object.entries({
             ...super.parseMessageToLibrary(options),
             url: options.tls!.url,
@@ -38,7 +40,7 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
                 ...options.headers,
                 "poptls-url": this.getUrl<RequestD>(options),
                 "poptls-proxy": this.getProxyUrl(options.proxy),
-                "poptls-allowredirect": String(this.getAllowRedirect(options)),
+                "poptls-allowredirect": allowRedirect,
                 "poptls-timeout": this.getTimeInSeconds(options),
             },
             $tlsOptions: {
@@ -60,6 +62,9 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
     public static override parseLibraryToMessage<RequestD>(
         config: TlsAxiosRequestConfigExtra<RequestD>,
     ): TlsRequestInterface<RequestD> {
+        const allHeadersWhiteoutTls = Object.entries(config.headers ?? {})
+            .filter(([ headerName ]) => !this.removeTlsHeaders.includes(headerName.toLowerCase()));
+
         return Object.fromEntries(
             Object.entries({
                 ...super.parseLibraryToMessage(config),
@@ -67,10 +72,7 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
                 baseURL: config.$tlsOptions?.baseUrl,
                 proxy: config.$tlsOptions?.proxy,
                 tls: config.$tlsOptions?.tls,
-                headers: Object.fromEntries(
-                    Object.entries(config.headers ?? {})
-                        .filter(([ headerName ]) => !this.removeTlsHeaders.includes(headerName.toLowerCase())),
-                ),
+                headers: Object.fromEntries(allHeadersWhiteoutTls),
             } as TlsRequestInterface<RequestD>).filter(([ , value ]) => value !== undefined),
         );
     }

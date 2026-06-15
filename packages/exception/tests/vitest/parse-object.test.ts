@@ -6,9 +6,7 @@ describe("Teste Parse", () => {
 
         const exception = Exception.parse({
             message,
-            test() {
-                return "ok";
-            },
+            test: () => "ok",
         });
 
         expect(exception).toHaveProperty("test");

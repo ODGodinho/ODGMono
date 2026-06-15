@@ -33,23 +33,23 @@ export default {
         "jsonc/object-property-newline": [ "error" ], // Força quebra de linha em propriedades do objeto
         "jsonc/no-useless-escape": [ "error" ], // Evite scape desnecessário na string
         "jsonc/no-sparse-arrays": [ "error" ], // N crie array com itens vazio no maio
-        "jsonc/no-octal": [ "error" ], // N use number unicode ex: 0XX
+        "jsonc/no-octal": [ "error" ], // N use number Unicode ex: 0XX
         "jsonc/no-multi-str": [ "error" ], // N faça string em varias linhas
         "jsonc/no-floating-decimal": [ "error" ], // N faça casa decimal flutuante EX: 10.
         "jsonc/no-dupe-keys": [ "error" ], // N faça keys duplicadas
-        "jsonc/key-spacing": [ "error" ], // Formate o Json corretamente
-        "jsonc/indent": [ "error", indentSize ], // Formate o Json corretamente
-        "jsonc/comma-style": [ "error" ], // Formate o Json corretamente
-        "jsonc/comma-dangle": [ "error" ], // Não coloca , final do json
+        "jsonc/key-spacing": [ "error" ], // Formate o JSON corretamente
+        "jsonc/indent": [ "error", indentSize ], // Formate o JSON corretamente
+        "jsonc/comma-style": [ "error" ], // Formate o JSON corretamente
+        "jsonc/comma-dangle": [ "error" ], // Não coloca , final do JSON
         "jsonc/array-bracket-newline": [ "error" ], // Força o array estar em múltiplas linhas se quebrado
-        "jsonc/valid-json-number": [ "error" ], // Validar number no json
-        "jsonc/no-unicode-codepoint-escapes": [ "error" ], // Desabilitar unicode
+        "jsonc/valid-json-number": [ "error" ], // Validar number no JSON
+        "jsonc/no-unicode-codepoint-escapes": [ "error" ], // Desabilitar Unicode
         "jsonc/no-undefined-value": [ "error" ], // No Undefined
         "jsonc/no-template-literals": [ "error" ], // Não use `` template literals
-        "jsonc/no-regexp-literals": [ "error" ], // Não faça regex em json
-        "jsonc/no-plus-sign": [ "error" ], // Bloqueia Numero com + no json
+        "jsonc/no-regexp-literals": [ "error" ], // Não faça regex em JSON
+        "jsonc/no-plus-sign": [ "error" ], // Bloqueia Numero com + no JSON
         "jsonc/no-parenthesized": [ "error" ], // Não coloca () desnecessário
-        "jsonc/no-octal-numeric-literals": [ "error" ], // Não adicione octal no json
+        "jsonc/no-octal-numeric-literals": [ "error" ], // Não adicione octal no JSON
         "jsonc/no-number-props": [ "error" ], // Não crie props numéricas
         "jsonc/no-nan": [ "error" ], // Não crie valor NaN
         "jsonc/no-infinity": [ "error" ], // Não crie numero infinito

@@ -18,8 +18,9 @@ export default class StubCreator {
         variables: Record<string, number | string>,
     ): Promise<string> {
         const destination = await this.getPath(name, pathDestination);
+        const fileInstance = new File(destination);
 
-        if (await new File(destination).exists()) {
+        if (await fileInstance.exists()) {
             throw new InvalidArgumentException(`The ${name} already exists.`);
         }
 
@@ -45,8 +46,9 @@ export default class StubCreator {
     public async getStub(name: string, variables: Record<string, number | string>): Promise<string> {
         const pathStub = await this.getStubPath(name);
         const file = await readFile(`${pathStub}/${name}.stub`);
+        const stringInstance = new Str(file.toString());
 
-        return new Str(file.toString())
+        return stringInstance
             .formatUnicorn(variables)
             .toString();
     }
@@ -69,7 +71,10 @@ export default class StubCreator {
      * @returns {Promise<string>}
      */
     public async getStubPath(name: string): Promise<string> {
-        if (await new File(`${nodePath.resolve("./stubs")}/${name}.stub`).exists()) {
+        const stubPathLocal = `${nodePath.resolve("./stubs")}/${name}.stub`;
+        const fileInstance = new File(stubPathLocal);
+
+        if (await fileInstance.exists()) {
             return nodePath.resolve("./stubs");
         }
 
@@ -77,7 +82,9 @@ export default class StubCreator {
     }
 
     private async appendToIndexIfExists(indexFile: string, name: string): Promise<void> {
-        if (!await new File(indexFile).exists()) {
+        const fileInstance = new File(indexFile);
+
+        if (!await fileInstance.exists()) {
             return;
         }
 

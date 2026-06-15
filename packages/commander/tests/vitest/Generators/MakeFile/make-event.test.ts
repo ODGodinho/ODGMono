@@ -23,7 +23,9 @@ describe("makeEvent Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(listenerFile).exists())
+        const fileInstance = new File(listenerFile);
+
+        expect(await fileInstance.exists())
             .toBeFalsy();
     });
 });

@@ -19,11 +19,9 @@ export const frontmatterProcessor = {
 
         return [];
     },
-    postprocess(messages) {
-        return messages.flatMap((fileMessages) => fileMessages.map((message) => ({
-            ...message,
-            line: message.line + 1,
-        })));
-    },
+    postprocess: (messages) => messages.flatMap((fileMessages) => fileMessages.map((message) => ({
+        ...message,
+        line: message.line + 1,
+    }))),
     supportsAutofix: true,
 };

@@ -11,5 +11,7 @@ export default {
         "unicorn/prefer-iterator-concat": [ "error" ], // Use iteradores ao invés de concat
         "unicorn/prefer-split-limit": [ "error" ], // Use split com limit para evitar memory leak
         "unicorn/require-passive-events": [ "error" ], // Use eventos passivos para scroll e touch
+        "unicorn/no-duplicate-loops": [ "error" ], // Não faça loops duplicados desnecessários
+        // "unicorn/prefer-disposed": [ "error" ], // Use objetos descartados para evitar memory leak // ? don't working
     },
 };

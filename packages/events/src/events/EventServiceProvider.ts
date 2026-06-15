@@ -64,7 +64,7 @@ export abstract class EventServiceProvider<Events extends EventObjectType> {
      * @memberof EventServiceProvider
      */
     public async shutdown(): Promise<void> {
-        for (const [ event, listeners ] of this.listenersMap.entries()) {
+        for (const [ event, listeners ] of this.listenersMap) {
             for (const listener of listeners) {
                 await this.bus.unsubscribe(
                     event,

@@ -23,11 +23,12 @@ describe("Example Teste", () => {
         const invalidValidator = zod.object({
             example: zod.string(),
         });
-
-        await expect(new JsonConfig<zod.infer<typeof invalidValidator>>(
+        const jsonConfig = new JsonConfig<zod.infer<typeof invalidValidator>>(
             { example: 123 },
             invalidValidator,
-        ).init()).rejects.toThrow();
+        );
+
+        await expect(jsonConfig.init()).rejects.toThrow();
     });
 
     test.concurrent("Test has Key", async () => {

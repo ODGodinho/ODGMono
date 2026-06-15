@@ -33,7 +33,9 @@ export class ConsoleLogger extends AbstractLogger {
         let newMessage = util.format(message);
 
         if (isJSONLogFormattable(message)) {
-            newMessage = new StringMessageFormatter().format(message);
+            const formatter = new StringMessageFormatter();
+
+            newMessage = formatter.format(message);
         }
 
         // eslint-disable-next-line no-console, no-restricted-syntax

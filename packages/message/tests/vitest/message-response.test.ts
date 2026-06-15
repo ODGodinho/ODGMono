@@ -50,17 +50,19 @@ describe("Teste MessageResponse class", () => {
     });
 
     test("isMessage Response instanceof", () => {
+        const message = new MessageResponse({}, { data: {}, headers: {}, status: 200 });
+
         expect(
-            ODGMessage.isMessageResponse(new MessageResponse({}, { data: {}, headers: {}, status: 200 })),
+            ODGMessage.isMessageResponse(message),
         ).toBeTruthy();
         expect(
             ODGMessage.isMessageResponse({
-                ...Object.fromEntries(Object.entries(new MessageResponse({}, { data: {}, headers: {}, status: 200 }))),
+                ...Object.fromEntries(Object.entries(message)),
             }),
         ).toBeTruthy();
         expect(
             ODGMessage.isMessage({
-                ...Object.fromEntries(Object.entries(new MessageResponse({}, { data: {}, headers: {}, status: 200 }))),
+                ...Object.fromEntries(Object.entries(message)),
             }),
         ).toBeTruthy();
         expect(

@@ -82,7 +82,9 @@ describe("makeListener Test", () => {
             .resolves
             .toBeUndefined();
 
-        expect(await new File(loginSaveListener).exists())
+        const listenerFileInstance = new File(loginSaveListener);
+
+        expect(await listenerFileInstance.exists())
             .toBeTruthy();
 
         const source = await readFile(loginSaveListener, "utf8");
@@ -119,7 +121,9 @@ describe("makeListener Test", () => {
         const enumText = await readFile(fixture.eventEnumPath, "utf8");
 
         expect(enumText.includes("NotifyEvent")).toBe(true);
-        expect(await new File(fixture.listenerFile).exists()).toBeTruthy();
+        const listenerFileInstance = new File(fixture.listenerFile);
+
+        expect(await listenerFileInstance.exists()).toBeTruthy();
 
         await rm(root, { recursive: true, force: true });
     });

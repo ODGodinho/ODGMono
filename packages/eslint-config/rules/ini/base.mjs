@@ -24,7 +24,7 @@ export default {
         "toml/precision-of-integer": [ "error" ], // Evite int gigantes
         "toml/quoted-keys": [ "error" ], // Não Coloque aspas em key
         "toml/tables-order": [ "error" ], // Ordene dentro de uma tabela
-        "toml/vue-custom-block/no-parsing-error": [ "error" ], // Valide toml em vue file
+        "toml/vue-custom-block/no-parsing-error": [ "error" ], // Valide toml em Vue.js file
         "toml/array-bracket-newline": [ "error" ], // Faça array em quebra de linhas
         "toml/array-bracket-spacing": [ "error" ], // Espaço declarar array
         "toml/array-element-newline": [ "error", "consistent" ], // Array múltipla linhas

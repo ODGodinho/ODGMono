@@ -21,6 +21,8 @@ export class AxiosRequestParser {
     public static parseMessageToLibrary<RequestD, ExtraData extends Record<string, unknown> = Record<string, unknown>>(
         options: Partial<RequestInterface<RequestD, ExtraData>>,
     ): AxiosRequestConfigExtra<RequestD> {
+        const requestOptionsFiltered = Object.entries(options).filter(([ key ]) => key.startsWith("$"));
+
         return Object.fromEntries(Object.entries({
             url: options.url,
             baseURL: options.baseURL,
@@ -44,7 +46,7 @@ export class AxiosRequestParser {
             endTime: options.endTime,
             timestamps: options.endTime && options.startTime ? options.endTime - options.startTime : undefined,
             extras: options.extras,
-            ...Object.fromEntries(Object.entries(options).filter(([ key ]) => key.startsWith("$"))),
+            ...Object.fromEntries(requestOptionsFiltered),
         } as AxiosRequestConfigExtra<RequestD>).filter(([ , value ]) => value !== undefined));
     }
 
@@ -58,6 +60,8 @@ export class AxiosRequestParser {
     public static parseLibraryToMessage<RequestD>(
         options: AxiosRequestConfigExtra<RequestD>,
     ): RequestInterface<RequestD> {
+        const requestOptionsFiltered = Object.entries(options).filter(([ key ]) => key.startsWith("$"));
+
         return Object.fromEntries(
             Object.entries({
                 url: options.url,
@@ -82,7 +86,7 @@ export class AxiosRequestParser {
                 endTime: options.endTime,
                 timestamps: options.endTime && options.startTime ? options.endTime - options.startTime : undefined,
                 extras: options.extras,
-                ...Object.fromEntries(Object.entries(options).filter(([ key ]) => key.startsWith("$"))),
+                ...Object.fromEntries(requestOptionsFiltered),
             } as RequestInterface<RequestD>).filter(([ , value ]) => value !== undefined),
         );
     }

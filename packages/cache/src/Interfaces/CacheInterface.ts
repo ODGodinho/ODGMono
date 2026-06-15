@@ -1,7 +1,7 @@
 import type { CacheHandlerInterface } from "./CacheHandlerInterface";
 
 /**
- * High-level cache contract used by application code.
+ * High-level cache contract used by app code.
  *
  * This interface describes a typed cache API where keys and values are inferred from
  * the provided `CacheType` schema.

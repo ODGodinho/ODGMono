@@ -1,5 +1,5 @@
 export default {
     rules: {
-        "yml/sort-keys": [ "off" ], // Key yaml no actions
+        "yml/sort-keys": [ "off" ], // Key YAML no actions
     },
 };

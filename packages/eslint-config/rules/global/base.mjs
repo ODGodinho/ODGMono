@@ -132,7 +132,7 @@ export default {
         "sonarjs/cognitive-complexity": [ "error", complexity ], // Complexidade do código
         "sonarjs/no-selector-parameter": [ "error" ], // Não faça if com parâmetro boolean (resp única)
         "sonarjs/no-small-switch": [ "error" ], // Switch Pequeno pode ser if-else ou 2 if
-        "sonarjs/no-table-as-layout": [ "error" ], // Não Coloque presentation em table html
+        "sonarjs/no-table-as-layout": [ "error" ], // Não Coloque presentation em table HTML
         "sonarjs/object-alt-content": [ "error" ], // Tag Object tem q ter conteúdo
         "sonarjs/prefer-read-only-props": [ "error" ], // Props react Readonly
         "@stylistic/array-bracket-newline": [ "error", { "multiline": true } ],
@@ -485,14 +485,14 @@ export default {
         "@stylistic/wrap-iife": [ "error", "inside" ], // Coloque parentese em função auto excetuável
         "@stylistic/yield-star-spacing": [ "error", "before" ], // Espaço a esquerda yield
 
-        "@stylistic/jsx-closing-bracket-location": [ "error", "line-aligned" ], // Formata fechamento html
-        "@stylistic/jsx-closing-tag-location": [ "error", "line-aligned" ], // Formata fechamento html
+        "@stylistic/jsx-closing-bracket-location": [ "error", "line-aligned" ], // Formata fechamento HTML
+        "@stylistic/jsx-closing-tag-location": [ "error", "line-aligned" ], // Formata fechamento HTML
         "@stylistic/jsx-curly-brace-presence": [ "error" ], // Parâmetro JSX
         "@stylistic/jsx-curly-newline": [ "error" ], // Parâmetro JSX
         "@stylistic/jsx-curly-spacing": [ "error" ], // Parâmetro JSX
         "@stylistic/jsx-equals-spacing": [ "error", "never" ], // Parâmetro JSX
-        "@stylistic/jsx-first-prop-new-line": [ "error", "multiline" ], // Formata props html
-        "@stylistic/jsx-function-call-newline": [ "error", "multiline" ], // Formata props html
+        "@stylistic/jsx-first-prop-new-line": [ "error", "multiline" ], // Formata props HTML
+        "@stylistic/jsx-function-call-newline": [ "error", "multiline" ], // Formata props HTML
         "@stylistic/jsx-indent-props": [ "error", indentSize ], // Formata props indent
         "@stylistic/jsx-max-props-per-line": [ "error", { "when": "multiline" } ], // Máximo 1 por linha se multilinha
         "@stylistic/jsx-newline": [ "error", { "prevent": true, "allowMultilines": true } ],

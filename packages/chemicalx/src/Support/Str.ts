@@ -102,7 +102,7 @@ export class Str implements CloneableInterface, NativeInterface<string> {
             this.subject = this.subject.replaceAll(
                 // eslint-disable-next-line security/detect-non-literal-regexp
                 new RegExp(String.raw`\{\{\s*${key}\s*\}\}`, "gi"),
-                String(objectVariable[key]),
+                () => String(objectVariable[key]),
             );
         }
 

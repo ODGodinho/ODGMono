@@ -89,10 +89,11 @@ export default class MakeFile {
      * @returns {Promise<void>}
      */
     public async makePage(pageName: string, options: MakePageOptions): Promise<void> {
-        const pageClassName = new Str(pageName).pascalCase().toString();
+        const pageNameString = new Str(pageName);
+        const pageClassName = pageNameString.pascalCase().toString();
         const filePath = await this.stubCreator.create("page", `${pageClassName}Page`, options.path, {
             "PageName:UCFirst": pageClassName,
-            "PageName:LCFirst": new Str(pageClassName).camelCase().toString(),
+            "PageName:LCFirst": pageNameString.camelCase().toString(),
         });
 
         const targets = this.buildRegistrationTargets(options);
@@ -111,11 +112,11 @@ export default class MakeFile {
     }
 
     public async makeSelectors(selectorName: string, options: MakeSelectorOptions): Promise<void> {
-        const pageName = new Str(selectorName).pascalCase().toString();
-
+        const selectorNameString = new Str(selectorName);
+        const pageName = selectorNameString.pascalCase().toString();
         const filePath = await this.stubCreator.create("selector", `${pageName}Selector`, options.path, {
             "SelectorName:UCFirst": pageName,
-            "SelectorName:LCFirst": new Str(selectorName).camelCase().toString(),
+            "SelectorName:LCFirst": selectorNameString.camelCase().toString(),
         });
 
         await registerArtifact({
@@ -130,11 +131,15 @@ export default class MakeFile {
 
     public async makeHandler(handlerName: string, options: MakeHandlerOptions): Promise<void> {
         const isTransition = options.handlerFrom !== undefined || options.handlerTo !== undefined;
+        const handlerFromString = new Str(options.handlerFrom ?? handlerName);
+        const handlerToString = new Str(options.handlerTo ?? handlerName);
+        const handlerNameString = new Str(handlerName);
         const handlerClassName = isTransition
-            ? `${new Str(options.handlerFrom ?? handlerName).pascalCase().toString()}To${new Str(options.handlerTo ?? handlerName).pascalCase().toString()}Handler`
-            : `${new Str(handlerName).pascalCase().toString()}Handler`;
+            ? `${handlerFromString.pascalCase().toString()}To${handlerToString.pascalCase().toString()}Handler`
+            : `${handlerNameString.pascalCase().toString()}Handler`;
 
-        const selectorName = new Str(handlerName).camelCase().toString();
+        const selectorNameString = new Str(handlerName);
+        const selectorName = selectorNameString.camelCase().toString();
         const handlerPageSelectorBundle = `${selectorName}Selector`;
 
         const filePath = await this.stubCreator.create("handler", handlerClassName, options.path, {
@@ -154,7 +159,8 @@ export default class MakeFile {
     }
 
     public async makeEvent(eventName: string, options: MakeEventOptions): Promise<void> {
-        const pageClassName = new Str(eventName).pascalCase().toString();
+        const eventNameString = new Str(eventName);
+        const pageClassName = eventNameString.pascalCase().toString();
         const eventEnumMember = `${pageClassName}Event`;
 
         await registerArtifact({
@@ -174,23 +180,23 @@ export default class MakeFile {
             });
         }
 
-        const listenerPascal = new Str(listenerName).pascalCase().toString();
-        const eventBindingPascal = new Str(options.event).pascalCase().toString();
+        const listenerNameString = new Str(listenerName);
+        const eventNameString = new Str(options.event);
+        const listenerPascal = listenerNameString.pascalCase().toString();
+        const eventBindingPascal = eventNameString.pascalCase().toString();
         const listenerClassName = `${listenerPascal}EventListener`;
-        const containerEnumMember = listenerClassName;
-
         const filePath = await this.stubCreator.create("listener", listenerClassName, options.path, {
             "ListenerName:UCFirst": listenerPascal,
-            "ListenerName:LCFirst": new Str(listenerName).camelCase().toString(),
+            "ListenerName:LCFirst": listenerNameString.camelCase().toString(),
             "EventBinding:UCFirst": eventBindingPascal,
-            "EventBinding:LCFirst": new Str(options.event).camelCase().toString(),
+            "EventBinding:LCFirst": eventNameString.camelCase().toString(),
         });
 
         await registerArtifact({
             kind: "listener",
             name: listenerName,
             listenerClassName,
-            containerEnumMember,
+            containerEnumMember: listenerClassName,
             filePath,
         }, this.buildRegistrationTargets(options));
 
@@ -212,7 +218,8 @@ export default class MakeFile {
     }
 
     public async makeException(exceptionName: string, options: MakeExceptionOptions): Promise<void> {
-        const exceptionClassName = new Str(exceptionName).pascalCase().toString();
+        const exceptionNameString = new Str(exceptionName);
+        const exceptionClassName = exceptionNameString.pascalCase().toString();
         const exceptionType = options.isUnknown ? "UnknownException" : "Exception";
 
         const filePath = await this.stubCreator.create("exception", `${exceptionClassName}${exceptionType}`, options.path, {

@@ -106,7 +106,7 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
     }
 
     /**
-     * Define current git Release
+     * Define current Git Release
      *
      * @param {string} release name of instance
      */
@@ -115,7 +115,7 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
     }
 
     /**
-     * Define current git Branch
+     * Define current Git Branch
      *
      * @param {string} branch name of instance
      */
@@ -143,7 +143,7 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
     }
 
     /**
-     * Return git tag name
+     * Return Git tag name
      *
      * @returns {Promise<string>}
      */
@@ -158,7 +158,7 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
     }
 
     /**
-     * Return git tag name
+     * Return Git tag name
      *
      * @returns {Promise<string>}
      */
