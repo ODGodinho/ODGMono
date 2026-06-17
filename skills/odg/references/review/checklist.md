@@ -1,5 +1,8 @@
 # Review Checklist
 
+- [ ] **Correctness**
+  - [ ] No obvious bugs or functional defects.
+  - [ ] Error handling in place **WHEN** needed.
 - [ ] **Event wiring chain completeness** `EventName` enum updated, `@types/EventsInterface.d.ts` payload added, Listener exists and is registered (decorator path or provider path).
 - [ ] **Base + specialization boundary** Shared artifacts (`*Base*`, `Common*`, `Core*`, or any class extended via subclass / `.extend(...)`) hold only fields and behavior used by **2+** specializations with equivalent semantics. A field in base consumed by only one specialization → violation, Specialization-specific fields and behavior stay in the specialized artifact. Applies to classes, interfaces, validators, configs, DTOs, schemas, constants, enums.
 - [ ] **External Validators Schema** Schemas consuming external or volatile payloads (third-party APIs, scraped responses, upstream service responses) **SHOULD** validate only the fields the consumer actually reads and **SHOULD** permit unknown fields via `.passthrough()` (or the equivalent escape in the schema library) so upstream additions do not break the parser, This rule applies regardless of the schema library (`zod`, `yup`, `io-ts`, etc.); detect the escape primitive native to the library in use.
@@ -20,3 +23,25 @@
 - [ ] naming drift or inconsistent terms for the same domain concept
 - [ ] **duplicate** enum/config sources-of-truth that increase ambiguity
 - [ ] validator overfitting that tightly couples to volatile upstream payload fields
+- [ ] **Library-first / No duplicate conventions** Do not hand-roll logic that standard libraries solve (e.g., database/Prisma, JWT, transport/@odg). Do not introduce competing packages (e.g., adding `yup` when `zod` is present) unless the value added outweighs the migration cost; otherwise, adhere to existing project packages.
+- [ ] **Security hygiene**
+  - [ ] **Untrusted input validation** Values crossing a trust boundary — HTTP/RPC responses, JWT claims, IPC payloads, query strings, env vars, file contents, websocket frames, scraped HTML — **MUST** be parsed through the project's schema library (`zod`, `yup`, `io-ts`) before any branching, coercion, persistence, or comparison. Truthy coercion (`Boolean(x)`, `!!x`, `if (x)`) on an unvalidated field is a violation: a producer returning `"false"`, `0`, `null`, or `{}` is coerced silently as "permitted". **WHEN** schema parsing is not feasible at the call site, strict-type comparison (`=== true`, `=== "value"`, `typeof x === "number"`) is **REQUIRED** at every read.
+  - [ ] Package hygiene and security Any newly added package **MUST** be secure, widely adopted, and actively supported. Introducing obscure, vulnerable, or inferior packages when better-established alternatives exist is a violation.
+  - [ ] No SQL/NoSQL injection vulnerabilities
+  - [ ] No XSS or CSRF vulnerabilities
+  - [ ] No hardcoded secrets or sensitive credentials
+  - [ ] AI-Specific: Protection against Prompt Injection (if applicable)
+  - [ ] AI-Specific: Outputs are sanitized before being used in critical sinks
+- [ ] **Performance optimization**
+  - [ ] **Promise.all Independent** WHEN any action involves multiple asynchronous operations, ensure they are independent and can be executed concurrently using `Promise.all` or equivalent. Example: `const [user, posts, comments] = await Promise.all([fetchUser(), fetchPosts(), fetchComments()]);`
+  - [ ] No N+1 complexity **WHEN** not need
+  - [ ] No unnecessary loops
+  - [ ] Appropriate caching
+  - [ ] Bundle size impact considered
+- [ ] **Directory artifact ownership** Each conventional folder owns ONE artifact kind, regardless of language affordances that allow co-location, A derived type declared inside a validator file (`export type X = z.infer<typeof validatorX>` next to its source schema) → violation; the type MUST move to its matching interface namespace and import the validator. The same rule applies to: interfaces inside `enums/`, enums inside `services/`, schemas inside `interfaces/`, etc. The diagnostic question: *"would a cold reader expect to find this artifact in this folder?"* — if no, it is in the wrong place.
+  - `validators/**` → schema definitions only (`z.object`, `yup.object`, `joi.object`, etc.).
+  - `interfaces/**` or `types/**` → type aliases and interfaces only, including derived ones (`z.infer<typeof X>`, `Awaited<...>`, `ReturnType<...>`).
+  - `enums/**` → `enum` declarations only.
+  - `services/**` → service classes only, or local typed not exported helpers used exclusively by the service.
+  - `handlers/**`, `pages/**`, `selectors/**`, `listeners/**`, `configs/**` → matching artifact only.
+
