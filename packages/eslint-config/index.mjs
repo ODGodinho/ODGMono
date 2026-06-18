@@ -283,6 +283,104 @@ export default [
             "import/no-anonymous-default-export": [ "off" ],
             "@typescript-eslint/naming-convention": [
                 "error",
+
+                // Boolean com prefixo camelCase válido (isReady, hasName) → ok
+                {
+                    selector: [
+                        "variable",
+                        "parameter",
+                        "parameterProperty",
+                        "classProperty",
+                        "classicAccessor",
+                    ],
+                    types: [ "boolean" ],
+                    filter: { regex: "^(is|has|can|should|will|did|does|are|do)[A-Z]", match: true },
+                    format: [ "strictCamelCase", "camelCase" ],
+                },
+
+                // Boolean com prefixo UPPER_CASE válido (IS_READY, HAS_NAME) → ok para constantes
+                {
+                    selector: [
+                        "variable",
+                        "parameter",
+                        "parameterProperty",
+                        "classProperty",
+                        "classicAccessor",
+                    ],
+                    types: [ "boolean" ],
+                    filter: { regex: "^(IS|HAS|CAN|SHOULD|WILL|DID|DOES|ARE|DO)_", match: true },
+                    format: [ "UPPER_CASE" ],
+                },
+
+                // Identificador com prefixo camelCase boolean (is/has/...) mas que NÃO é boolean → erro
+                {
+                    selector: [
+                        "variable",
+                        "parameter",
+                        "parameterProperty",
+                        "classProperty",
+                        "classicAccessor",
+                    ],
+                    filter: { regex: "^(is|has|can|should|will|did|does|are|do)[A-Z]", match: true },
+                    format: null,
+                    custom: {
+
+                        // Regex auto-explicativa: aparece literal na mensagem de erro do ESLint
+                        regex: "Type Must Be Boolean To Use is|has|can|should|will|did|does|are|do Prefix",
+                        match: true,
+                    },
+                },
+
+                // Identificador com prefixo UPPER_CASE boolean (IS_/HAS_/...) mas que NÃO é boolean → erro
+                {
+                    selector: [
+                        "variable",
+                        "parameter",
+                        "parameterProperty",
+                        "classProperty",
+                        "classicAccessor",
+                    ],
+                    filter: { regex: "^(IS|HAS|CAN|SHOULD|WILL|DID|DOES|ARE|DO)_", match: true },
+                    format: null,
+                    custom: {
+                        regex: "Type Must Be Boolean To Use IS_|HAS_|CAN_|SHOULD_|WILL_|DID_|DOES_|ARE_|DO_ Prefix",
+                        match: true,
+                    },
+                },
+
+                // Boolean sem prefixo boolean válido → erro (aceita camelCase E UPPER_CASE)
+                {
+                    selector: [
+                        "variable",
+                        "parameter",
+                        "parameterProperty",
+                        "classProperty",
+                        "classicAccessor",
+                    ],
+                    types: [ "boolean" ],
+                    filter: { regex: ".+", match: true },
+                    format: [ "strictCamelCase", "camelCase", "UPPER_CASE" ],
+                    prefix: [
+                        "is",
+                        "has",
+                        "can",
+                        "should",
+                        "will",
+                        "did",
+                        "does",
+                        "are",
+                        "do",
+                        "IS_",
+                        "HAS_",
+                        "CAN_",
+                        "SHOULD_",
+                        "WILL_",
+                        "DID_",
+                        "DOES_",
+                        "ARE_",
+                        "DO_",
+                    ],
+                },
                 {
                     selector: [ "function" ],
                     format: [ "PascalCase", "camelCase" ],
@@ -293,6 +391,30 @@ export default [
                         match: false,
                     },
                 },
+                {
+                    selector: "classProperty",
+                    format: [ "strictCamelCase", "camelCase", "UPPER_CASE" ],
+                },
+                {
+                    selector: "typeLike",
+                    format: [ "PascalCase", "camelCase" ],
+                },
+                {
+                    selector: "interface",
+                    format: [ "PascalCase" ],
+                },
+                {
+                    selector: "typeParameter",
+                    filter: /^T$|^[A-Z][A-Za-z]+$/.source,
+                    format: [ "StrictPascalCase" ],
+                },
+                {
+                    selector: [ "classProperty", "objectLiteralProperty" ],
+                    format: null,
+                    modifiers: [ "requiresQuotes" ],
+                },
+
+                // Regra genérica (catch-all) — fica por último para não capturar antes das específicas
                 {
                     selector: [
                         "variable",
@@ -310,34 +432,6 @@ export default [
                         regex: "[- ]",
                         match: false,
                     },
-                },
-                {
-                    selector: "classProperty",
-                    format: [ "strictCamelCase", "camelCase", "UPPER_CASE" ],
-                },
-                {
-                    selector: "typeLike",
-                    format: [ "PascalCase", "camelCase" ],
-                },
-                {
-                    selector: "variable",
-                    types: [ "boolean" ],
-                    format: [ "StrictPascalCase" ],
-                    prefix: [ "is", "has", "can", "should", "will", "did", "does", "are", "do" ],
-                },
-                {
-                    selector: "interface",
-                    format: [ "PascalCase" ],
-                },
-                {
-                    selector: "typeParameter",
-                    filter: /^T$|^[A-Z][A-Za-z]+$/.source,
-                    format: [ "StrictPascalCase" ],
-                },
-                {
-                    selector: [ "classProperty", "objectLiteralProperty" ],
-                    format: null,
-                    modifiers: [ "requiresQuotes" ],
                 },
             ],
         },

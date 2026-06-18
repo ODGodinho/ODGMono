@@ -263,9 +263,9 @@ describe("Cache - Edge Cases & Special Scenarios", () => {
 
             await cache.add(cacheKeyUser1, original);
 
-            const result = await cache.add(cacheKeyUser1, user2Data);
+            const didCreate = await cache.add(cacheKeyUser1, user2Data);
 
-            expect(result).toBe(false);
+            expect(didCreate).toBe(false);
             expect(await cache.get(cacheKeyUser1)).toEqual(original);
         });
 
@@ -274,9 +274,9 @@ describe("Cache - Edge Cases & Special Scenarios", () => {
 
             await sleepTest(100);
 
-            const result = await cache.add(cacheKeyUser1, user2Data);
+            const didCreate = await cache.add(cacheKeyUser1, user2Data);
 
-            expect(result).toBe(true);
+            expect(didCreate).toBe(true);
 
             const value = await cache.get(cacheKeyUser1);
 
@@ -357,15 +357,15 @@ describe("Cache - Edge Cases & Special Scenarios", () => {
 
     describe("has() & missing() Edge Cases", () => {
         it("should return false for has() on missing key", async () => {
-            const result = await cache.has(cacheKeyUser1);
+            const hasKey = await cache.has(cacheKeyUser1);
 
-            expect(result).toBe(false);
+            expect(hasKey).toBe(false);
         });
 
         it("should return true for missing() on missing key", async () => {
-            const result = await cache.missing(cacheKeyUser1);
+            const isMissing = await cache.missing(cacheKeyUser1);
 
-            expect(result).toBe(true);
+            expect(isMissing).toBe(true);
         });
 
         it("should reflect state changes", async () => {

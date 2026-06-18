@@ -11,13 +11,13 @@ export abstract class ODGMessage {
 
         if (message instanceof MessageResponse) return true;
 
-        const isMessageResponseField = "IS_ODG_MESSAGE_RESPONSE";
+        const keyIsMessageResponse = "IS_ODG_MESSAGE_RESPONSE";
 
         return typeof message === "object"
-            && isMessageResponseField in message
+            && keyIsMessageResponse in message
             && "request" in message
             && "response" in message
-            && !!message[isMessageResponseField];
+            && !!message[keyIsMessageResponse];
     }
 
     public static isMessageError(

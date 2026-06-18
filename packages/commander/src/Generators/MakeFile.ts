@@ -232,7 +232,7 @@ export default class MakeFile {
 
     private buildRegistrationTargets(options: RegistrationOptions): RegistrationTargets {
         const {
-            register = false,
+            register: shouldRegister = false,
             registrationTargets,
             typeImport,
             typeImports,
@@ -240,7 +240,7 @@ export default class MakeFile {
         } = options;
 
         return {
-            enabled: register,
+            enabled: shouldRegister,
             ...registrationTargets,
             ...targets,
             typeImports: typeImports ?? typeImport ?? registrationTargets?.typeImports,

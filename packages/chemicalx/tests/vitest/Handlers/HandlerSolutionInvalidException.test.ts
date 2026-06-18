@@ -19,8 +19,7 @@ describe("Handler Test Invalid Exception", () => {
 
     test("Test solution exception code", async () => {
         handlerSolutionMock.mockImplementation(async () => {
-            // Force teste unknown error
-            // eslint-disable-next-line @typescript-eslint/only-throw-error
+            // eslint-disable-next-line @typescript-eslint/only-throw-error -- Force teste unknown error
             throw undefined;
         });
 

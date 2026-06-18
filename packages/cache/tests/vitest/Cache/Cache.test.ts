@@ -60,13 +60,13 @@ describe("Cache - Basic Operations", () => {
     });
 
     it("should add value only if not exists", async () => {
-        const result1 = await cache.add(cacheKeyUser1, user1Data);
+        const didAdd1 = await cache.add(cacheKeyUser1, user1Data);
 
-        expect(result1).toBe(true);
+        expect(didAdd1).toBe(true);
 
-        const result2 = await cache.add(cacheKeyUser1, user2Data);
+        const didAdd2 = await cache.add(cacheKeyUser1, user2Data);
 
-        expect(result2).toBe(false);
+        expect(didAdd2).toBe(false);
 
         const user = await cache.get(cacheKeyUser1);
 

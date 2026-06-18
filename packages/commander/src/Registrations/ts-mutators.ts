@@ -148,13 +148,13 @@ export async function ensureEnumMember(parameters: {
         throw new InvalidArgumentException(`Enum "${parameters.enumName}" not found in ${parameters.filePath}`);
     }
 
-    const existing = enumDeclaration.getMembers().some((member) => {
+    const hasMember = enumDeclaration.getMembers().some((member) => {
         const memberName = member.getName().replaceAll("\"", "");
 
         return memberName === parameters.memberName;
     });
 
-    if (existing) {
+    if (hasMember) {
         return false;
     }
 
@@ -180,10 +180,10 @@ export async function ensureBarrelExport(parameters: {
         ? parameters.relativeExportPath
         : `./${parameters.relativeExportPath}`;
 
-    // eslint-disable-next-line @stylistic/max-len
-    const already = sourceFile.getExportDeclarations().some((declaration) => declaration.getModuleSpecifierValue() === normalized);
+    const hasExport = sourceFile.getExportDeclarations()
+        .some((declaration) => declaration.getModuleSpecifierValue() === normalized);
 
-    if (already) {
+    if (hasExport) {
         return false;
     }
 
@@ -236,9 +236,9 @@ export async function ensureInterfaceProperty(parameters: {
         throw new InvalidArgumentException(`Interface "${parameters.interfaceName}" not found in ${parameters.filePath}`);
     }
 
-    const exists = iface.getProperties().some((property) => property.getName() === parameters.propertyName);
+    const hasProperties = iface.getProperties().some((property) => property.getName() === parameters.propertyName);
 
-    if (exists) {
+    if (hasProperties) {
         return false;
     }
 

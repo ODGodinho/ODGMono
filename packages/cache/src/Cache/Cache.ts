@@ -78,9 +78,9 @@ export class Cache<CacheType extends object> implements CacheInterface<CacheType
         value: CacheType[K],
         ttl?: number,
     ): Promise<boolean> {
-        const exists = await this.has(key);
+        const hasKey = await this.has(key);
 
-        if (exists) {
+        if (hasKey) {
             return false;
         }
 

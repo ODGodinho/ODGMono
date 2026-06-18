@@ -13,8 +13,8 @@ export type LookupCacheType = Record<
 >;
 
 export interface CacheableLookupConfig {
-    setCache?: boolean;
-    useCache?: boolean;
+    shouldWriteCache?: boolean;
+    shouldReadCache?: boolean;
     maxTTL?: number;
     lookup?(hostname: string, options: LookupOptions): Promise<LookupPromiseResult>;
 }

@@ -266,17 +266,17 @@ describe("Cache - Exceptions & Error Handling", () => {
 
             const callback = vi.fn(async () => user1Data);
 
-            let setCalled = false;
+            let didCallSet = false;
 
             handler.set = vi.fn(async () => {
-                setCalled = true;
+                didCallSet = true;
 
                 throw error;
             });
 
             await expect(cache.remember(cacheKeyUser1, callback)).rejects.toThrow(error);
 
-            expect(setCalled).toBe(true);
+            expect(didCallSet).toBe(true);
         });
     });
 

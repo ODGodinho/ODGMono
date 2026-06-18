@@ -130,9 +130,9 @@ describe("Cache - drive() & Handler Selection", () => {
         it("should add value in specific handler", async () => {
             const cache1 = cache.drive(handler1Name);
 
-            const result = await cache1.add(cacheKeyUser1, user1Data);
+            const didCreate = await cache1.add(cacheKeyUser1, user1Data);
 
-            expect(result).toBe(true);
+            expect(didCreate).toBe(true);
 
             const value = await cache1.get(cacheKeyUser1);
 

@@ -124,7 +124,7 @@ describe("CacheableLookup", () => {
             lookup: resolver,
         });
 
-        lookup.setUseCache(false).setSetCache(false);
+        lookup.setReadCache(false).setWriteCache(false);
         await lookup.lookupAsync("no-cache.test", { family: 4 });
 
         expect(cache.get).not.toHaveBeenCalled();

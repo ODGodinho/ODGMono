@@ -85,17 +85,17 @@ describe("CacheManager - Handler Management", () => {
             manager.addHandler(handler1);
             manager.addHandler(handler2);
 
-            const removed = manager.removeHandler("handler1");
+            const didRemoved = manager.removeHandler("handler1");
 
-            expect(removed).toBe(true);
+            expect(didRemoved).toBe(true);
             expect(manager.getHandlers()).toHaveLength(1);
             expect(manager.getHandlers()[0].name).toBe("handler2");
         });
 
         it("should return false when removing non-existent handler", () => {
-            const removed = manager.removeHandler(nonExistentHandlerName);
+            const didRemoved = manager.removeHandler(nonExistentHandlerName);
 
-            expect(removed).toBe(false);
+            expect(didRemoved).toBe(false);
         });
 
         it("should remove handler from order list", () => {

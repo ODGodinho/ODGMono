@@ -52,7 +52,7 @@ export class CacheManager<CacheType extends object> {
      * @returns {boolean} true se foi removido, false caso contrário
      */
     public removeHandler(name: string): boolean {
-        const removed = this.handlers.delete(name);
+        const didRemove = this.handlers.delete(name);
 
         const index = this.handlerOrder.indexOf(name);
 
@@ -60,7 +60,7 @@ export class CacheManager<CacheType extends object> {
             this.handlerOrder.splice(index, 1);
         }
 
-        return removed;
+        return didRemove;
     }
 
     /**

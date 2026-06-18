@@ -21,9 +21,9 @@ export class CacheableLookup {
 
     private readonly maxTTL: number;
 
-    private setCache: boolean;
+    private shouldWriteCache: boolean;
 
-    private useCache: boolean;
+    private shouldReadCache: boolean;
 
     public constructor(
         private readonly cache: CacheInterface<LookupCacheType>,
@@ -31,19 +31,19 @@ export class CacheableLookup {
     ) {
         this.resolver = config?.lookup?.bind(this) ?? dnsLookup;
 
-        this.useCache = config?.useCache ?? true;
-        this.setCache = config?.setCache ?? true;
+        this.shouldReadCache = config?.shouldReadCache ?? true;
+        this.shouldWriteCache = config?.shouldWriteCache ?? true;
         this.maxTTL = config?.maxTTL ?? Infinity;
     }
 
-    public setUseCache(useCache: boolean): this {
-        this.useCache = useCache;
+    public setReadCache(shouldReadCache: boolean): this {
+        this.shouldReadCache = shouldReadCache;
 
         return this;
     }
 
-    public setSetCache(setCache: boolean): this {
-        this.setCache = setCache;
+    public setWriteCache(shouldWriteCache: boolean): this {
+        this.shouldWriteCache = shouldWriteCache;
 
         return this;
     }
@@ -68,7 +68,7 @@ export class CacheableLookup {
     ): Promise<LookupPromiseResult> {
         const cacheKey = this.makeCacheKey(hostname, options);
 
-        if (this.useCache) {
+        if (this.shouldReadCache) {
             const cached = await this.cache.get(cacheKey).catch(() => undefined);
 
             if (cached) return cached;
@@ -76,7 +76,7 @@ export class CacheableLookup {
 
         const resolved = await this.resolver(hostname, options);
 
-        if (this.setCache) {
+        if (this.shouldWriteCache) {
             void this.cache.set(cacheKey, resolved, this.maxTTL).catch(() => false);
         }
 

@@ -127,16 +127,16 @@ describe("KeyvCacheHandler - Batch Operations", () => {
             await handler.set(cacheKeyUser1, exampleUserId1);
             expect(await handler.has(cacheKeyUser1)).toBe(true);
 
-            const deleted = await handler.delete(cacheKeyUser1);
+            const didDeleted = await handler.delete(cacheKeyUser1);
 
-            expect(deleted).toBe(true);
+            expect(didDeleted).toBe(true);
             expect(await handler.has(cacheKeyUser1)).toBe(false);
         });
 
         it("should return false when deleting non-existent key", async () => {
-            const deleted = await handler.delete(cacheKeyUser1);
+            const didDeleted = await handler.delete(cacheKeyUser1);
 
-            expect(deleted).toBe(false);
+            expect(didDeleted).toBe(false);
         });
 
         it("should check if key exists", async () => {

@@ -218,9 +218,9 @@ describe("Cache - Multiple Handlers & Fallback", () => {
             cache.pushHandler(handler1);
             cache.pushHandler(handler2);
 
-            const result = await cache.set(cacheKeyUser1, user1Data);
+            const didCreate = await cache.set(cacheKeyUser1, user1Data);
 
-            expect(result).toBe(true);
+            expect(didCreate).toBe(true);
         });
     });
 
@@ -234,9 +234,9 @@ describe("Cache - Multiple Handlers & Fallback", () => {
 
             await cache.set(cacheKeyUser1, user1Data);
 
-            const result = await cache.delete(cacheKeyUser1);
+            const didDeleted = await cache.delete(cacheKeyUser1);
 
-            expect(result).toBe(true);
+            expect(didDeleted).toBe(true);
             expect(await handler1.has(cacheKeyUser1)).toBe(false);
             expect(await handler2.has(cacheKeyUser1)).toBe(false);
         });
@@ -251,9 +251,9 @@ describe("Cache - Multiple Handlers & Fallback", () => {
             // Set only in handler1
             await handler1.set(cacheKeyUser1, user1Data);
 
-            const result = await cache.delete(cacheKeyUser1);
+            const didDeleted = await cache.delete(cacheKeyUser1);
 
-            expect(result).toBe(true);
+            expect(didDeleted).toBe(true);
             expect(await handler1.has(cacheKeyUser1)).toBe(false);
         });
 
@@ -262,9 +262,9 @@ describe("Cache - Multiple Handlers & Fallback", () => {
 
             cache.pushHandler(handler);
 
-            const result = await cache.delete(cacheKeyUser1);
+            const didDeleted = await cache.delete(cacheKeyUser1);
 
-            expect(result).toBe(false);
+            expect(didDeleted).toBe(false);
         });
     });
 
