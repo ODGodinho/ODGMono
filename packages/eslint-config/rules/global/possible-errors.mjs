@@ -103,5 +103,8 @@ export default {
         "unicorn/no-redundant-comparison": [ "error" ], // Não faça comparação redundante
         "unicorn/prefer-direct-iteration": [ "error" ], // Nao use .values ou entries sem efeitos
         "unicorn/prefer-scoped-selector": [ "error" ], // Use seletor de escopo ao invés de universal
+        "unicorn/no-invalid-argument-count": [ "error" ], // Nao passe parametros a + em Js
+        "unicorn/no-useless-coercion": [ "error" ], // Não faça coerção de tipo desnecessária
+        "unicorn/no-useless-continue": [ "error" ], // Não faça continue desnecessário
     },
 };

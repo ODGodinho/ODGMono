@@ -24,7 +24,6 @@ export default {
         "sonarjs/prefer-type-guard": [ "error" ], // Use is no return boolean type
         "sonarjs/stable-tests": [ "error" ], // Testes devem funcionar de primeira tentativa
         "sonarjs/test-check-exception": [ "error" ], // Testes devem testar exceção
-        "unicorn/max-nested-calls": [ "error", { max: 4 } ], // Tamanho máximo chamada em cadeia
         "@typescript-eslint/unbound-method": [ "off" ], // Preserve bind class
         "no-restricted-syntax": [
             "error",

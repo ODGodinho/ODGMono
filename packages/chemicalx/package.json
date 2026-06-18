@@ -55,7 +55,7 @@
     "dependencies": {
         "@inversifyjs/strongly-typed": "^3.0.0",
         "@odg/exception": "workspace:^",
-        "inversify": "^8.1.0"
+        "inversify": "^8.1.1"
     },
     "peerDependencies": {
         "@inversifyjs/strongly-typed": ">=2.2.0",

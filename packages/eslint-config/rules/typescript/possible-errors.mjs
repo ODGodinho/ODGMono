@@ -38,5 +38,7 @@ export default {
         "sonarjs/no-implicit-global": [ "off" ], // Não acesse variável global inexistente no arquivo
         "sonarjs/no-redundant-assignments": [ "off" ], // Variáveis com mesmo valores
         "@odg/no-inconsistent-docblock": [ "error" ], // Valida Docblock @param e @return com tipagem
+        "unicorn/no-invalid-argument-count": [ "off" ], // TypeScript not need
+        "unicorn/no-useless-coercion": [ "off" ], // TypeScript rule already handle this
     },
 };

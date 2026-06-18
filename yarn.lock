@@ -835,28 +835,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inversifyjs/container@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@inversifyjs/container@npm:2.0.1"
+"@inversifyjs/container@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@inversifyjs/container@npm:2.0.2"
   dependencies:
     "@inversifyjs/common": "npm:2.0.1"
-    "@inversifyjs/core": "npm:10.0.1"
+    "@inversifyjs/core": "npm:11.0.0"
     "@inversifyjs/plugin": "npm:0.3.1"
     "@inversifyjs/reflect-metadata-utils": "npm:1.5.0"
   peerDependencies:
     reflect-metadata: ~0.2.2
-  checksum: 10c0/40683cc9484f2360b2f72090dadba8fe244f89b5e538c000da00ab96d26c352a30b06d21f4e7ac29e3a8d4c7196f016e04ab3f0c642d7509b5fe6ee53237035d
+  checksum: 10c0/5e3043025039b20280b12a6e5ec176d8049091856b368192398c53d918b5a1bb96ff3eb8dc50440df2cb71fa4a71608a05b45f82a7cda1a279fdb60e27cd23d0
   languageName: node
   linkType: hard
 
-"@inversifyjs/core@npm:10.0.1":
-  version: 10.0.1
-  resolution: "@inversifyjs/core@npm:10.0.1"
+"@inversifyjs/core@npm:11.0.0":
+  version: 11.0.0
+  resolution: "@inversifyjs/core@npm:11.0.0"
   dependencies:
     "@inversifyjs/common": "npm:2.0.1"
     "@inversifyjs/prototype-utils": "npm:0.2.1"
     "@inversifyjs/reflect-metadata-utils": "npm:1.5.0"
-  checksum: 10c0/be0f88908dfa6dd62a85f64d1e67de88d41aaf0870627ee9dd2d19252f0e8dc15519b7c1b08650b9c4e5f551b22973b9d3b797dd2a072dbb8628a5e362465153
+  checksum: 10c0/61e6343ea100f2dbe8b01bd44c9abbecaf1e2dd927dec2574741b5c36610520e3f03f0d4173891c07e2c98232ece0eaac72b4dbc20dd53b1955ab71438d69964
   languageName: node
   linkType: hard
 
@@ -1445,7 +1445,7 @@ __metadata:
     "@types/node": "npm:>=24"
     "@vitest/coverage-istanbul": "npm:^4.1.9"
     concurrently: "npm:^10.0.3"
-    inversify: "npm:^8.1.0"
+    inversify: "npm:^8.1.1"
     playwright: "npm:^1.61.0"
     puppeteer: "npm:^25.1.0"
     reflect-metadata: "npm:^0.2.2"
@@ -1535,7 +1535,7 @@ __metadata:
     eslint-plugin-filenames: "npm:^1.3.2"
     eslint-plugin-html: "npm:^8.1.4"
     eslint-plugin-import: "npm:^2.32.0"
-    eslint-plugin-jsdoc: "npm:^63.0.2"
+    eslint-plugin-jsdoc: "npm:^63.0.5"
     eslint-plugin-json-schema-validator: "npm:^6.2.0"
     eslint-plugin-jsonc: "npm:3.2.0"
     eslint-plugin-n: "npm:^18.1.0"
@@ -1548,7 +1548,7 @@ __metadata:
     eslint-plugin-sonarjs: "npm:^4.0.3"
     eslint-plugin-sort-class-members: "npm:^1.22.1"
     eslint-plugin-toml: "npm:^1.4.0"
-    eslint-plugin-unicorn: "npm:^66.0.0"
+    eslint-plugin-unicorn: "npm:^67.0.0"
     eslint-plugin-yml: "npm:^3.4.0"
     espree: "npm:^11.2.0"
     globals: "npm:^17.6.0"
@@ -4798,9 +4798,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jsdoc@npm:^63.0.2":
-  version: 63.0.2
-  resolution: "eslint-plugin-jsdoc@npm:63.0.2"
+"eslint-plugin-jsdoc@npm:^63.0.5":
+  version: 63.0.5
+  resolution: "eslint-plugin-jsdoc@npm:63.0.5"
   dependencies:
     "@es-joy/jsdoccomment": "npm:~0.87.0"
     "@es-joy/resolve.exports": "npm:1.2.0"
@@ -4818,7 +4818,7 @@ __metadata:
     to-valid-identifier: "npm:^1.0.0"
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
-  checksum: 10c0/66252ae3fcba03d3c1e438d8b653c873064e8e59b78f8984df64c645681db156db3899ecba058a473cdd158d7a56d8b5ededfddab1a5fc37942d92c1d33a41b6
+  checksum: 10c0/b11fcb7b871df6ccb5651e893ff7c43fd0762368517b44a06f73f3735503deabfa9e7ad3096fc815a3232ce3cf435aee469e362d87187527144621b50ee2a980
   languageName: node
   linkType: hard
 
@@ -4995,9 +4995,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-unicorn@npm:^66.0.0":
-  version: 66.0.0
-  resolution: "eslint-plugin-unicorn@npm:66.0.0"
+"eslint-plugin-unicorn@npm:^67.0.0":
+  version: 67.0.0
+  resolution: "eslint-plugin-unicorn@npm:67.0.0"
   dependencies:
     "@babel/helper-validator-identifier": "npm:^7.29.7"
     "@eslint-community/eslint-utils": "npm:^4.9.1"
@@ -5017,7 +5017,7 @@ __metadata:
     strip-indent: "npm:^4.1.1"
   peerDependencies:
     eslint: ">=10.4"
-  checksum: 10c0/f8e98caf8d9e85ee31c250c39bcdd039d17eb55f8a05c1a0a100f904f0d9fa21389b00136c6105603f9bb0d5c5b49051e5a277351bed625c28d90d588e92a7dd
+  checksum: 10c0/2b8aabf9bf376757f6ee11bc33830c8c6ef8c8f35860dbdf9f63b4cbd409b2ae6d5fd904f3f47e48eb0cdcecec21817fbc6edbb17a4e96f4cf77a426d5e0ca43
   languageName: node
   linkType: hard
 
@@ -6268,14 +6268,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inversify@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "inversify@npm:8.1.0"
+"inversify@npm:^8.1.1":
+  version: 8.1.1
+  resolution: "inversify@npm:8.1.1"
   dependencies:
     "@inversifyjs/common": "npm:2.0.1"
-    "@inversifyjs/container": "npm:2.0.1"
-    "@inversifyjs/core": "npm:10.0.1"
-  checksum: 10c0/9e834df9534d4f09de5a1f4359c593f7cda18332a8c5dc8bb95ae953d00a4b506ce61efc60735b9d4aa67e38ac43ea0a93be38ddd947713ee7419ab2c4d40c86
+    "@inversifyjs/container": "npm:2.0.2"
+    "@inversifyjs/core": "npm:11.0.0"
+  checksum: 10c0/8447a1cb30bcb5449312266c75cbf1841bf1ddc64cb2f64ef5c6030e337f4f997678b7bec16370fdfaf1c02616f4f2b823a315ff9bf9a7e2253292087bc1717c
   languageName: node
   linkType: hard
 

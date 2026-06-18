@@ -12,6 +12,9 @@ export default {
         "unicorn/prefer-split-limit": [ "error" ], // Use split com limit para evitar memory leak
         "unicorn/require-passive-events": [ "error" ], // Use eventos passivos para scroll e touch
         "unicorn/no-duplicate-loops": [ "error" ], // Não faça loops duplicados desnecessários
+        "unicorn/no-unreadable-for-of-expression": [ "error" ], // Não faca com múltiplas funções no fo of func1(func2))
+        "unicorn/prefer-array-slice": [ "error" ], // Use slice ao invés de splice ao acessar diretamente
+        "unicorn/prefer-has-check": [ "error" ], // Use has(key) ao invés !!get(key)
         // "unicorn/prefer-disposed": [ "error" ], // Use objetos descartados para evitar memory leak // ? don't working
     },
 };

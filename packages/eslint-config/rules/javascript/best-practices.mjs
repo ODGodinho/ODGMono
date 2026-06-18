@@ -260,6 +260,7 @@ export default {
         ],
         "max-statements": [ "error", maxStatements ], // Máximo atribuição em função
         "operator-assignment": [ "error", "always" ], // Prefira atribuição curtas +=
+        "unicorn/operator-assignment": [ "error", "always" ], // Prefira atribuição curtas += para strings tb
         "prefer-rest-params": [ "error" ], // Prefira ..args em vez de arguments
         "symbol-description": [ "error" ], // Symbol deve ter descrição
         "no-return-await": [ "error" ], // Não coloque await no return
@@ -285,7 +286,10 @@ export default {
         "unicorn/prefer-iterable-in-constructor": [ "error" ], // Prefira usar iterável em vez de array loops
         "unicorn/prefer-iterator-to-array": [ "error" ], // Prefira usar [...map.values()] -> map.values().toArray()
         "unicorn/prefer-location-assign": [ "error" ], // Prefira location.assign/replace ao invés de location.href
-        "unicorn/prefer-minimal-ternary": [ "error" ], // Prefira ternário minimalista
+        "unicorn/prefer-minimal-ternary": [
+            "error",
+            { "checkComputedMemberAccess": true },
+        ], // Prefira ternário minimalista
         "unicorn/prefer-object-define-properties": [ "error" ], // Prefira Object.defineProperties no lugar de 1 a 1
         "unicorn/prefer-object-destructuring-defaults": [ "error" ], // Prefira desestruturar com valor padrão
         "unicorn/prefer-object-iterable-methods": [ "error" ], // Prefira Object.values
@@ -413,6 +417,7 @@ export default {
         "import/no-empty-named-blocks": [ "error" ], // Não import bloco vazio
         "import/first": [ "error" ], // Import por primeiro
         "import/no-named-default": [ "error" ], // Não faça { default as NomeModulo }
+        "unicorn/no-array-splice": [ "error" ], // Não use array.splice() use toSpliced
         "unicorn/no-console-spaces": [ "error" ], // Separe por virgula em vez de colocar espaço no console
         "unicorn/prefer-array-flat-map": [ "error" ], // Prefira FlatMap in vez de map().flat().
         "unicorn/prefer-array-flat": [ "error" ], // Prefira usar array Flat
@@ -525,8 +530,15 @@ export default {
             },
         ],
         "logical-assignment-operators": [ "error", "always" ], // Faça ||= ao invés a = a || b
+        "unicorn/logical-assignment-operators": [
+            "error",
+            "always",
+            { "enforceForIfStatements": true },
+        ], // Faça ||= ao invés a = a || b refactor de ifs
+        "unicorn/no-top-level-assignment-in-function": [ "error" ], // Não faça atribuição dentro para fora função
+        "unicorn/no-useless-override": [ "error" ], // Não faça override sem necessidade
         "no-with": [ "error" ], // Não use with
-        "unicorn/max-nested-calls": [ "error", { max: 3 } ], // Tamanho máximo chamada em cadeia
+        "unicorn/max-nested-calls": [ "error", { max: 4 } ], // Tamanho máximo chamada em cadeia
         "unicorn/no-global-object-property-assignment": [ "error" ], // Não atribua propriedades em objetos globais
         "unicorn/class-reference-in-static-methods": [
             "error",
