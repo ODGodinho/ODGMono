@@ -2,25 +2,16 @@
 
 Use this file when the user requests a code review of current changes, unpushed commits, or staged files, get all changes and compare with `main` / `master` or `develop` branch.
 
-## 🔒 Source of Truth (MUST)
+## Review Process
 
-Once has produced output with review git information and files change, that file is the **only** allowed input for diff content during the review.
-
-During a review, the agent **MUST NOT** run any of: `git diff`, `git show`, `git log -p`, `git blame`, or any optimizer / proxy wrapper of these (e.g., `rtk git diff` if such a proxy is available).
-
-## Exhaustiveness (MUST)
-
-The agent **MUST** report every rule violation it observes, with **no upper cap** and **no severity filtering**. Trivial violations (naming, missing `const` on `export`, unused base-injected field, redundant import, missing comma, wrong icon) **MUST** be reported the same as structural ones. The number of comments in the output **MUST** equal the number of violations — never round down, never "pick the top N", never collapse multiple violations into one comment.
-
+**MANDATORY** The agent **MUST** report every rule violation it observes, with **no upper cap** and **no severity filtering**. Trivial violations, **MUST** be reported the same as structural ones. The number of comments in the output **MUST** equal the number of violations.
 The agent **MUST** include maintainability issues in the violation count, not only functional defects:
 
-## 🕵️‍♂️ Step-by-Step Review Process
-
-1. **Identify Changes:** Run the script from the project root. `$$SKILL_DIR/scripts/review.sh > .review/$GIT_BRANCH.md`
-2. **MUST** read `.review/$$GIT_BRANCH.md` end-to-end.
+1. **Identify Changes:** Run the script from the project root. `$$SKILL_DIR/scripts/review.sh > .review/$GIT_BRANCH.md`. This file **MUST** be your **only** input for diff content. You **MUST NOT** run `git diff`, `git show`, `git log -p`, `git blame`, or any command wrappers.
+2. **Index References** Read `.review/$$GIT_BRANCH.md` end-to-end.
 3. **Forgiveness Rule:** If a file is modified but the surrounding legacy code is out of standard, DO NOT propagate the error to your review unless the user's specific change caused it. Focus on the impact of the new code.
-4. **Validation:** Check if the changes follow the mandatory "Command-First" workflow (scaffolded correctly) and if all wiring (Container, Enums, Types) is complete.
-5. **Knowledge Indexing (MUST):** Before start review all **touch, edit** references in [References to review](./references.md)
+4. **Mindset**: You **MUST** act as a Senior Tech Leader and Specialist. You **MUST NOT** limit your analysis to syntax or static checklist compliance. You **MUST** proactively investigate the operational context of the diff, challenge design choices, analyze surrounding legacy code for side effects, read all referenced documentation and utilize relevant agent skills to uncover logical bugs (such as inverted conditions), regressions (such as lost toggles/kill-switches), and design flaws that extend beyond the literal checklist.
+5. **Knowledge Indexing:** Before start review all **touch, edit** references in [References to review](./references.md)
 6. **Review Checklist** read review checklist in [Review Checklist](./review/checklist.md) and check inconsistency
 7. **Execute Output** Start print all outputs [Output Format](#output-format)
 

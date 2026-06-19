@@ -1,8 +1,11 @@
 # Review Checklist
 
+> **MANDATORY:** Every item below **MUST** be fully evaluated and resolved. Skipped items **MUST NOT** occur.
+
 - [ ] **Correctness**
   - [ ] No obvious bugs or functional defects.
   - [ ] Error handling in place **WHEN** needed.
+  - [ ] **WHEN** behavior moves between configs, tables, enums, seeds, validators, services, or schemas, the reviewer **MUST** search the old symbol, new symbol, persisted key, and domain term. Legacy artifacts **MUST** be removed or covered by a documented migration window.
 - [ ] **Event wiring chain completeness** `EventName` enum updated, `@types/EventsInterface.d.ts` payload added, Listener exists and is registered (decorator path or provider path).
 - [ ] **Base + specialization boundary** Shared artifacts (`*Base*`, `Common*`, `Core*`, or any class extended via subclass / `.extend(...)`) hold only fields and behavior used by **2+** specializations with equivalent semantics. A field in base consumed by only one specialization → violation, Specialization-specific fields and behavior stay in the specialized artifact. Applies to classes, interfaces, validators, configs, DTOs, schemas, constants, enums.
 - [ ] **External Validators Schema** Schemas consuming external or volatile payloads (third-party APIs, scraped responses, upstream service responses) **SHOULD** validate only the fields the consumer actually reads and **SHOULD** permit unknown fields via `.passthrough()` (or the equivalent escape in the schema library) so upstream additions do not break the parser, This rule applies regardless of the schema library (`zod`, `yup`, `io-ts`, etc.); detect the escape primitive native to the library in use.
@@ -10,6 +13,7 @@
 - [ ] **Hidden state coupling** Logic that reads hidden state (injected payload snapshots, singleton mutable fields, ambient globals, process state) where an explicit method argument would suffice → violation, especially when reuse or concurrency can let the state diverge from the call arguments.
 - [ ] **Layer ownership** Each concern stays in its layer: orchestration vs business rules, shared contract vs implementation detail, transport schema vs domain schema, base abstraction vs specialization. Cross-layer leak without explicit justification → violation.
 - [ ] **Dependency hygiene** Development tooling declared under runtime `dependencies` in `package.json` → violation. Common offenders: `eslint`, `typescript`, `prettier`, `vitest`, `jest`, `tsc-alias`, `husky`, `concurrently`, `lint-staged`, `@types/*`, build orchestrators, *"does the deployed runtime import this at execution time?"* If no, it is `devDependencies`
+- [ ] **Suppression revisit deadline** Any linter or type-checker suppression — `eslint-disable*`, `@ts-expect-error`, `@ts-ignore`, `@ts-nocheck`, `skipLibCheck`, or equivalent build-flag workaround — **MUST** carry `TODO [YYYY-MM-DD]: <upstream-condition>` **MUST NOT** Missing date, past date, vague reason, or symptom-only reason → violation.
 - [ ] **Naming coherence** Patterns: legacy term inside a new abstraction namespace, specialization name mixed into an unrelated namespace, typo in a public symbol propagated to consumers, or two names for the same domain concept (e.g., `offer_id` vs `outbound_offer_id`) → maintainability violation **even when behavior is correct**.
 - [ ] **Procedure for renames**: when `.review/$$GIT_BRANCH.md` shows a symbol rename — capture old + new verbatim, search both with the host's search primitive  across validators/interfaces/helpers/parsers/config keys; if both coexist with the same semantic meaning emit `competing contract keys`. Removal of the legacy symbol is **REQUIRED** unless it is explicitly kept for a documented migration window.
 - [ ] **Duplicated literal/structural definitions (MUST)** When the **same** value, type, or composite expression appears **2+ times** within a single file scope or across files in the diff, it is a violation. The diagnostic question: *"if I add or remove one member here, do I have to edit N places to keep them in sync?"* — if yes, duplication. Applies (non-exhaustive) to: array/tuple literals, object shape literals, set/enum-member groupings, regex patterns, header/route dicts, retry/policy configs, type aliases, generic instantiations (`Foo<A, B, C>` repeated verbatim), discriminated-union variants, validator/schema compositions in **any** library. Exception: skip only when each occurrence is genuinely unrelated (same shape, different domain meaning) — and that fact **MUST** be explained inline at each site.
@@ -44,4 +48,3 @@
   - `enums/**` → `enum` declarations only.
   - `services/**` → service classes only, or local typed not exported helpers used exclusively by the service.
   - `handlers/**`, `pages/**`, `selectors/**`, `listeners/**`, `configs/**` → matching artifact only.
-
