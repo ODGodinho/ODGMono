@@ -126,6 +126,7 @@ export default {
         "sonarjs/no-nested-template-literals": [ "error" ], // Não faça string Template dentro de outra
         "sonarjs/no-redundant-boolean": [ "error" ], // Não faça !false ou `boolReturnFunc() || false`
         "sonarjs/prefer-immediate-return": [ "error" ], // Prefira retornar imediatamente a variável
+        "sonarjs/function-inside-loop": [ "error" ], // Não faça função dentro de loop
         "sonarjs/prefer-object-literal": [ "error" ], // Prefira declarar dentro do objeto inicial ao invés de injetar
         "sonarjs/prefer-single-boolean-return": [ "error" ], // Retorne a boolean em vez de fazer if e else
         "sonarjs/cognitive-complexity": [ "error", complexity ], // Complexidade do código
@@ -519,6 +520,6 @@ export default {
                 "propertyValue": "ignore",
             },
         ],
-        "unicorn/expiring-todo-comments": [ "error" ], // Alertas em docs com TO-D + data
+        "unicorn/expiring-todo-comments": [ "error" ], // Alertas em docs com TOD0 + data
     },
 };

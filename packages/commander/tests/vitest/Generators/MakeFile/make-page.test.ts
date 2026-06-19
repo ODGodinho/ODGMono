@@ -34,7 +34,7 @@ describe("makePage Test", () => {
     });
 
     test("Generate ExamplePage", async () => {
-        const makePage = make.makePage(
+        const makePage = make.generatePage(
             "Example",
             {
                 path,
@@ -57,7 +57,7 @@ describe("makePage Test", () => {
     });
 
     test("Generate With To Handler", async () => {
-        const makePage = make.makePage(
+        const makePage = make.generatePage(
             "Example",
             {
                 path,
@@ -81,7 +81,7 @@ describe("makePage Test", () => {
         const handlerFile = `${path}/ExampleToExampleHandler.ts`;
 
         await expect(
-            make.makePage("Example", {
+            make.generatePage("Example", {
                 path,
                 selectors: false,
                 handlerPath: path,
@@ -104,7 +104,7 @@ describe("makePage Test", () => {
         const handlerFile = `${path}/LoginHandler.ts`;
 
         await expect(
-            make.makePage("Login", {
+            make.generatePage("Login", {
                 path,
                 selectors: false,
                 handlerPath: path,
@@ -132,7 +132,7 @@ describe("makePage Test", () => {
         const listenerFile = `${path}/ExampleEventListener.ts`;
 
         await expect(
-            make.makePage("Example", {
+            make.generatePage("Example", {
                 path,
                 selectors: false,
                 event: "Checkout",
@@ -158,7 +158,7 @@ describe("makePage Test", () => {
         const listenerFile = `${path}/ExampleEventListener.ts`;
 
         await expect(
-            make.makePage("Example", {
+            make.generatePage("Example", {
                 path,
                 selectors: false,
                 listeners: true,
@@ -177,7 +177,7 @@ describe("makePage Test", () => {
         const listenerFile = `${path}/ExampleEventListener.ts`;
 
         await expect(
-            make.makePage("Example", {
+            make.generatePage("Example", {
                 path,
                 selectors: false,
                 listeners: true,

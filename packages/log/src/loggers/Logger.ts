@@ -1,9 +1,9 @@
+import type { LogLevel } from "../Enums/LogLevel";
 import type {
     ContextType,
     LoggerInterface,
     LoggerParserInterface,
     LoggerPluginInterface,
-    LogLevel,
 } from "../Interfaces";
 
 import { AbstractLogger } from "./AbstractLogger";

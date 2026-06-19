@@ -40,7 +40,7 @@ describe("registerArtifact - misc branches", () => {
 
         const text = await readFile(containerEnumPath, "utf8");
 
-        expect(text.includes("ExampleHandler")).toBe(false);
+        expect(text).not.toContain("ExampleHandler");
     });
 
     test("Event registration throws if EventsInterface target set but payload type missing", async () => {
@@ -89,13 +89,13 @@ describe("registerArtifact - misc branches", () => {
 
         const configText = await readFile(configEnumPath, "utf8");
 
-        expect(configText.includes("\"FOO\" = \"FOO\"")).toBe(true);
-        expect(configText.includes("\"BAR\" = \"BAR\"")).toBe(true);
+        expect(configText).toContain("\"FOO\" = \"FOO\"");
+        expect(configText).toContain("\"BAR\" = \"BAR\"");
 
         const environmentText = await readFile(environmentExamplePath, "utf8");
 
-        expect(environmentText.includes("FOO=1")).toBe(true);
-        expect(environmentText.includes("BAR=2")).toBe(true);
+        expect(environmentText).toContain("FOO=1");
+        expect(environmentText).toContain("BAR=2");
     });
 
     test("Unknown kind is a no-op", async () => {
@@ -140,7 +140,7 @@ describe("registerArtifact - misc branches", () => {
 
         const enumText = await readFile(eventEnumPath, "utf8");
 
-        expect(enumText.includes("\"SoloEvent\" = \"SoloEvent\"")).toBe(true);
+        expect(enumText).toContain("\"SoloEvent\" = \"SoloEvent\"");
     });
 
     test("Event registration only touches EventsInterface when EventName path omitted", async () => {
@@ -163,7 +163,7 @@ describe("registerArtifact - misc branches", () => {
 
         const ifaceText = await readFile(eventsInterfacePath, "utf8");
 
-        expect(ifaceText.includes("[EventName.IfaceOnlyEvent]: unknown;")).toBe(true);
+        expect(ifaceText).toContain("[EventName.IfaceOnlyEvent]: unknown;");
     });
 
     test("Event ContainerInterface imports listener type from @listeners when listenersIndexPath omitted", async () => {
@@ -190,8 +190,8 @@ describe("registerArtifact - misc branches", () => {
 
         const text = await readFile(containerInterfacePath, "utf8");
 
-        expect(text.includes("[ContainerName.ExampleEventListener]: ExampleEventListener;")).toBe(true);
-        expect(text.includes("import type { ExampleEventListener } from \"@listeners\";")).toBe(true);
+        expect(text).toContain("[ContainerName.ExampleEventListener]: ExampleEventListener;");
+        expect(text).toContain("import type { ExampleEventListener } from \"@listeners\";");
     });
 
     test("Config registers ConfigName enum member and .env.example line", async () => {
@@ -217,11 +217,11 @@ describe("registerArtifact - misc branches", () => {
 
         const enumText = await readFile(configEnumPath, "utf8");
 
-        expect(enumText.includes("\"APP_NAME\" = \"APP_NAME\"")).toBe(true);
+        expect(enumText).toContain("\"APP_NAME\" = \"APP_NAME\"");
 
         const environmentText = await readFile(environmentExamplePath, "utf8");
 
-        expect(environmentText.includes("APP_NAME=")).toBe(true);
+        expect(environmentText).toContain("APP_NAME=");
     });
 
     test("Config registers entry inside configValidator zod.object", async () => {
@@ -251,8 +251,8 @@ describe("registerArtifact - misc branches", () => {
 
         const validatorText = await readFile(configValidatorPath, "utf8");
 
-        expect(validatorText.includes("[ConfigName.APP_URL]")).toBe(true);
-        expect(validatorText.includes(defaultConfigValidatorType)).toBe(true);
+        expect(validatorText).toContain("[ConfigName.APP_URL]");
+        expect(validatorText).toContain(defaultConfigValidatorType);
     });
 
     test("Config uses default validator when configValidatorType is omitted", async () => {
@@ -281,7 +281,7 @@ describe("registerArtifact - misc branches", () => {
 
         const validatorText = await readFile(configValidatorPath, "utf8");
 
-        expect(validatorText.includes("[ConfigName.APP_NAME]")).toBe(true);
-        expect(validatorText.includes(defaultConfigValidatorType)).toBe(true);
+        expect(validatorText).toContain("[ConfigName.APP_NAME]");
+        expect(validatorText).toContain(defaultConfigValidatorType);
     });
 });

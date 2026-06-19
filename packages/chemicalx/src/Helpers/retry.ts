@@ -1,6 +1,6 @@
 import { AbortException } from "@odg/exception";
 
-import { RetryAction } from "#enums";
+import { RetryAction } from "#enums/RetryAction";
 import { RetryException } from "#exceptions/RetryException";
 import type {
     RetryOptionsInterface,
@@ -8,7 +8,8 @@ import type {
     RetryWhenResolveInterface,
 } from "#interfaces";
 
-import { sleep, throwIf } from ".";
+import { sleep } from "./sleep";
+import { throwIf } from "./throw-if";
 
 interface RetryHelperOptions<ReturnType> extends RetryOptionsInterface<ReturnType> {
     attempt: number;

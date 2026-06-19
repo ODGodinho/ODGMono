@@ -1,11 +1,11 @@
-import {
-    type ContextChemicalXInterface,
-    type ContextEngineInterface,
-    type GetterAccessInterface,
-    ODGDecorators,
-    type PageChemicalXInterface,
-    type PageEngineInterface,
+import type {
+    ContextChemicalXInterface,
+    ContextEngineInterface,
+    GetterAccessInterface,
+    PageChemicalXInterface,
+    PageEngineInterface,
 } from "..";
+import { ODGDecorators } from "../Support/Decorators/OdgDecorators";
 
 @ODGDecorators.getterAccess()
 export class Page<

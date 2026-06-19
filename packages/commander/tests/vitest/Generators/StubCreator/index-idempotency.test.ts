@@ -72,6 +72,6 @@ describe("StubCreator - index.ts append idempotency", () => {
 
         const text = await readFile(`${root}/out/index.ts`, "utf8");
 
-        expect(text.includes("export const x = 1;\nexport * from \"./Bar\";\n")).toBe(true);
+        expect(text).toContain("export const x = 1;\nexport * from \"./Bar\";\n");
     });
 });

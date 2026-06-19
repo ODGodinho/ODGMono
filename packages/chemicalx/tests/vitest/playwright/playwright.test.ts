@@ -69,15 +69,15 @@ describe("Example Teste", () => {
     test("Page Empty", async () => {
         const newContext = await browser.newContext();
 
-        expect(newContext.pages().length).toEqual(0);
+        expect(newContext.pages()).toHaveLength(0);
     });
 
     test("Page Count", async () => {
         const newPage = await context.newPage();
 
-        expect(context.pages().length).toEqual(2);
+        expect(context.pages()).toHaveLength(2);
         await newPage.close();
-        expect(context.pages().length).toEqual(1);
+        expect(context.pages()).toHaveLength(1);
     });
 
     test("Page Options", async () => {
@@ -150,8 +150,8 @@ describe("Example Teste", () => {
             .toHaveBeenCalledTimes(2);
     });
 
-    test("Close browser", async () => {
-        await page.context().close();
-        await page.context().browser()?.close();
+    test("Close context and browser", async () => {
+        await expect(page.context().close()).resolves.toBeUndefined();
+        await expect(page.context().browser()?.close()).resolves.toBeUndefined();
     });
 });

@@ -62,6 +62,7 @@ export class CacheableLookup {
             });
     }
 
+    // eslint-disable-next-line no-restricted-syntax -- Lookup default with callback already exists
     public async lookupAsync(
         hostname: string,
         options: LookupOptions,

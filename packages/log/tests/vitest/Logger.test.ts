@@ -1,7 +1,7 @@
 import { vi } from "vitest";
 
 import { ConsoleLogger, LogLevel } from "#app";
-import { Logger } from "#app/logs/Logger";
+import { Logger } from "#app/loggers/Logger";
 
 import { TestPluginLogger } from "./TestPluginLogger";
 

@@ -19,7 +19,7 @@ describe("Handler success Function", () => {
         handlerSolutionMock.mockImplementation(async () => RetryAction.Resolve);
 
         await expect(handler.execute()).resolves.toBeUndefined();
-        expect(handlerSolutionMock.mock.calls.length).toBe(1);
+        expect(handlerSolutionMock.mock.calls).toHaveLength(1);
     });
 
     test("Test fail without optional functions", async () => {
@@ -28,6 +28,6 @@ describe("Handler success Function", () => {
         });
 
         await expect(handler.execute()).rejects.toThrow(Exception);
-        expect(handlerSolutionMock.mock.calls.length).toBe(1);
+        expect(handlerSolutionMock.mock.calls).toHaveLength(1);
     });
 });

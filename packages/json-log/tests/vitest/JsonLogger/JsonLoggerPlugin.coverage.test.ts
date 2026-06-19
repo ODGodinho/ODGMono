@@ -28,7 +28,7 @@ vi.mock("node:child_process", async (importOriginal) => {
         execContext: unknown,
         ...arguments_: Parameters<typeof origExec>
     ): ReturnType<typeof origExec> {
-        const [ cmd ] = arguments_;
+        const [ command ] = arguments_;
         const last = arguments_.at(-1);
         const previous = arguments_.at(-2);
         let callback: ExecCallback | undefined;
@@ -39,13 +39,13 @@ vi.mock("node:child_process", async (importOriginal) => {
             callback = previous as ExecCallback;
         }
 
-        if (callback && cmd.includes(gitDescribeTagsSnippet)) {
+        if (callback && command.includes(gitDescribeTagsSnippet)) {
             callback(null, mockGitReleaseStdout, emptyExecStderr);
 
             return undefined as unknown as ReturnType<typeof origExec>;
         }
 
-        if (callback && cmd.includes(gitRevParseBranchSnippet)) {
+        if (callback && command.includes(gitRevParseBranchSnippet)) {
             callback(null, mockGitBranchStdout, emptyExecStderr);
 
             return undefined as unknown as ReturnType<typeof origExec>;

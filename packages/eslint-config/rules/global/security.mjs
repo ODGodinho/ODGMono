@@ -84,5 +84,6 @@ export default {
         "sonarjs/weak-ssl": [ "error" ], // Validar fraco SSL
         "sonarjs/x-powered-by": [ "error" ], // Oculta info do node
         "sonarjs/xml-parser-xxe": [ "error" ], // XML proteção de venerabilidade
+        "sonarjs/aws-iam-all-resources-accessible": [ "error" ], // Segurança AWS nao use * resources de acesso
     },
 };

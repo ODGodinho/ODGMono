@@ -88,7 +88,7 @@ export default class MakeFile {
      * @param {MakePageOptions} options Options command
      * @returns {Promise<void>}
      */
-    public async makePage(pageName: string, options: MakePageOptions): Promise<void> {
+    public async generatePage(pageName: string, options: MakePageOptions): Promise<void> {
         const pageNameString = new Str(pageName);
         const pageClassName = pageNameString.pascalCase().toString();
         const filePath = await this.stubCreator.create("page", `${pageClassName}Page`, options.path, {
@@ -111,7 +111,7 @@ export default class MakeFile {
         await this.logger.info(`Page created successfully in : ${filePath}`);
     }
 
-    public async makeSelectors(selectorName: string, options: MakeSelectorOptions): Promise<void> {
+    public async generateSelectors(selectorName: string, options: MakeSelectorOptions): Promise<void> {
         const selectorNameString = new Str(selectorName);
         const pageName = selectorNameString.pascalCase().toString();
         const filePath = await this.stubCreator.create("selector", `${pageName}Selector`, options.path, {
@@ -129,7 +129,7 @@ export default class MakeFile {
         await this.logger.info(`Selector created successfully in : ${filePath}`);
     }
 
-    public async makeHandler(handlerName: string, options: MakeHandlerOptions): Promise<void> {
+    public async generateHandler(handlerName: string, options: MakeHandlerOptions): Promise<void> {
         const isTransition = options.handlerFrom !== undefined || options.handlerTo !== undefined;
         const handlerFromString = new Str(options.handlerFrom ?? handlerName);
         const handlerToString = new Str(options.handlerTo ?? handlerName);
@@ -158,7 +158,7 @@ export default class MakeFile {
         await this.logger.info(`Handler created successfully in : ${filePath}`);
     }
 
-    public async makeEvent(eventName: string, options: MakeEventOptions): Promise<void> {
+    public async generateEvent(eventName: string, options: MakeEventOptions): Promise<void> {
         const eventNameString = new Str(eventName);
         const pageClassName = eventNameString.pascalCase().toString();
         const eventEnumMember = `${pageClassName}Event`;
@@ -172,9 +172,9 @@ export default class MakeFile {
         await this.logger.info(`Event "${eventEnumMember}" registered in targets (use make:listener to scaffold a listener class)`);
     }
 
-    public async makeListener(listenerName: string, options: MakeListenerOptions): Promise<void> {
+    public async generateListener(listenerName: string, options: MakeListenerOptions): Promise<void> {
         if (options.register) {
-            await this.makeEvent(options.event, {
+            await this.generateEvent(options.event, {
                 ...options,
                 path: undefined,
             });
@@ -203,7 +203,7 @@ export default class MakeFile {
         await this.logger.info(`Listener created successfully in : ${filePath}`);
     }
 
-    public async makeConfig(configName: string, options: MakeConfigOptions): Promise<void> {
+    public async generateConfig(configName: string, options: MakeConfigOptions): Promise<void> {
         const validator = options.validator ?? "zod.string()";
 
         await registerArtifact({
@@ -217,7 +217,7 @@ export default class MakeFile {
         await this.logger.info(`Config "${configName}" registered successfully`);
     }
 
-    public async makeException(exceptionName: string, options: MakeExceptionOptions): Promise<void> {
+    public async generateException(exceptionName: string, options: MakeExceptionOptions): Promise<void> {
         const exceptionNameString = new Str(exceptionName);
         const exceptionClassName = exceptionNameString.pascalCase().toString();
         const exceptionType = options.isUnknown ? "UnknownException" : "Exception";
@@ -257,14 +257,14 @@ export default class MakeFile {
      */
     private async scaffoldPageAddOns(pageName: string, options: MakePageOptions): Promise<void> {
         if (options.selectors && options.selectorPath) {
-            await this.makeSelectors(pageName, {
+            await this.generateSelectors(pageName, {
                 ...options,
                 path: options.selectorPath,
             });
         }
 
         if (options.event) {
-            await this.makeEvent(options.event, {
+            await this.generateEvent(options.event, {
                 ...options,
             });
         }
@@ -272,7 +272,7 @@ export default class MakeFile {
         if (options.listeners && options.listenersPath) {
             const eventBinding = options.event ?? pageName;
 
-            await this.makeListener(pageName, {
+            await this.generateListener(pageName, {
                 ...options,
                 path: options.listenersPath,
                 event: eventBinding,
@@ -280,7 +280,7 @@ export default class MakeFile {
         }
 
         if (options.handlerPath && (options.handlerFrom ?? options.handlerTo ?? options.handler)) {
-            await this.makeHandler(pageName, {
+            await this.generateHandler(pageName, {
                 ...options,
                 path: options.handlerPath,
                 handlerFrom: options.handlerFrom,

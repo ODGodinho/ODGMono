@@ -41,28 +41,28 @@ describe("registerArtifact - event full", () => {
 
         const enumEventText = await readFile(paths.eventEnumPath, "utf8");
 
-        expect(enumEventText.includes("\"ExampleEvent\" = \"ExampleEvent\"")).toBe(true);
+        expect(enumEventText).toContain("\"ExampleEvent\" = \"ExampleEvent\"");
 
         const enumContainerText = await readFile(paths.containerEnumPath, "utf8");
 
-        expect(enumContainerText.includes("\"ExampleEventListener\" = \"example.event.listener\"")).toBe(true);
+        expect(enumContainerText).toContain("\"ExampleEventListener\" = \"example.event.listener\"");
 
         const barrelText = await readFile(paths.listenersIndexPath, "utf8");
 
-        expect(barrelText.includes("export * from \"./ExampleEventListener\"")).toBe(true);
+        expect(barrelText).toContain("export * from \"./ExampleEventListener\"");
 
         const containerIface = await readFile(paths.containerInterfacePath, "utf8");
 
-        expect(containerIface.includes("[ContainerName.ExampleEventListener]: ExampleEventListener;")).toBe(true);
-        expect(
-            containerIface.includes("import type { ExampleEventListener } from \"@listeners\";"),
-        ).toBe(true);
+        expect(containerIface).toContain("[ContainerName.ExampleEventListener]: ExampleEventListener;");
+        expect(containerIface).toContain(
+            "import type { ExampleEventListener } from \"@listeners\";",
+        );
 
         const eventsIface = await readFile(paths.eventsInterfacePath, "utf8");
 
-        expect(eventsIface.includes("[EventName.ExampleEvent]: unknown;")).toBe(true);
+        expect(eventsIface).toContain("[EventName.ExampleEvent]: unknown;");
 
-        expect(containerIface.includes("import type { EventName }")).toBe(true);
-        expect(eventsIface.includes("import type { ContainerName }")).toBe(true);
+        expect(containerIface).toContain("import type { EventName }");
+        expect(eventsIface).toContain("import type { ContainerName }");
     });
 });

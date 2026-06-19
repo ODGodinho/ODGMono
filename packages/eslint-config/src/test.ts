@@ -1,5 +1,4 @@
 // Test File example
-
 export class TestClass {
 
     public constructor(

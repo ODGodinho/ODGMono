@@ -33,10 +33,10 @@ describe("Registrations - page", () => {
             registrationTargets,
         };
 
-        await make.makePage("Example", pageOptions);
-        await make.makePage("Example2", pageOptions);
+        await make.generatePage("Example", pageOptions);
+        await make.generatePage("Example2", pageOptions);
 
-        await make.makeSelectors("Example", { path: pagesPath, register: false });
+        await make.generateSelectors("Example", { path: pagesPath, register: false });
 
         const enumText = await readFile(paths.containerEnumPath, "utf8");
 
@@ -45,14 +45,14 @@ describe("Registrations - page", () => {
 
         const ifaceText = await readFile(paths.containerInterfacePath, "utf8");
 
-        expect(ifaceText.includes("import { ExamplePage, Example2Page } from \"@pages\";")).toBe(true);
-        expect(ifaceText.includes("[ContainerName.ExamplePage]: ExamplePage;")).toBe(true);
-        expect(ifaceText.includes("[ContainerName.Example2Page]: Example2Page;")).toBe(true);
+        expect(ifaceText).toContain("import { ExamplePage, Example2Page } from \"@pages\";");
+        expect(ifaceText).toContain("[ContainerName.ExamplePage]: ExamplePage;");
+        expect(ifaceText).toContain("[ContainerName.Example2Page]: Example2Page;");
 
         const barrelText = await readFile(paths.pagesIndexPath, "utf8");
 
-        expect(barrelText.includes("export * from \"./ExamplePage\";")).toBe(true);
-        expect(barrelText.includes("export * from \"./Example2Page\";")).toBe(true);
+        expect(barrelText).toContain("export * from \"./ExamplePage\";");
+        expect(barrelText).toContain("export * from \"./Example2Page\";");
     });
 
     test("Registers page without filePath (fallback mode)", async () => {
@@ -76,7 +76,7 @@ describe("Registrations - page", () => {
         const barrelText = await readFile(paths.pagesIndexPath, "utf8");
 
         // Should use fallback: ./FallbackTestPage
-        expect(barrelText.includes("export * from \"./FallbackTestPage\";")).toBe(true);
+        expect(barrelText).toContain("export * from \"./FallbackTestPage\";");
     });
 
     test("Registers selector and handler with custom paths", async () => {

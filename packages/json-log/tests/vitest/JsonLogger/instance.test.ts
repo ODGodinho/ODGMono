@@ -11,7 +11,7 @@ describe("Test InstanceId", () => {
         expect(logData.instance).toBe("instanceTest");
     });
 
-    test("Test Filled InstanceId", async () => {
+    test("Test setInstanceId change", async () => {
         const logger = new JSONLoggerPlugin("", 10, "instanceTest");
 
         logger.setInstance("Change");

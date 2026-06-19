@@ -23,7 +23,7 @@ describe("makeEvent Test", () => {
     });
 
     test("Generate LoginException", async () => {
-        await expect(make.makeException("Login", { path, isUnknown: false }))
+        await expect(make.generateException("Login", { path, isUnknown: false }))
             .resolves
             .toBeUndefined();
 
@@ -34,7 +34,7 @@ describe("makeEvent Test", () => {
     });
 
     test("Generate LoginUnknownException", async () => {
-        await expect(make.makeException("Login", { path, isUnknown: true }))
+        await expect(make.generateException("Login", { path, isUnknown: true }))
             .resolves
             .toBeUndefined();
 

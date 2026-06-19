@@ -1,11 +1,11 @@
-import type { LogLevel } from "./LogLevel";
+import type { LogLevel } from "../Enums/LogLevel";
 
 /**
  * Content type in context
  *
  * @author Dragons Gamers <https://github.com/ODGodinho>
  */
-type ContextType = Record<string, unknown> | undefined;
+type ContextType = Record<string, unknown>;
 
 /**
  * Describes a logger instance.

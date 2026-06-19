@@ -42,7 +42,7 @@ describe("registerArtifact - handler and selector branches", () => {
 
         const text = await readFile(selectorsIndexPath, "utf8");
 
-        expect(text.includes("export * from \"./ExampleSelector\"")).toBe(true);
+        expect(text).toContain("export * from \"./ExampleSelector\"");
     });
 
     test("Handler registers container enum + handlers barrel + container interface", async () => {
@@ -71,16 +71,16 @@ describe("registerArtifact - handler and selector branches", () => {
 
         const enumText = await readFile(containerEnumPath, "utf8");
 
-        expect(enumText.includes("\"ExampleHandler\" = \"example.handler\"")).toBe(true);
+        expect(enumText).toContain("\"ExampleHandler\" = \"example.handler\"");
 
         const barrelText = await readFile(handlersIndexPath, "utf8");
 
-        expect(barrelText.includes("export * from \"./ExampleHandler\"")).toBe(true);
+        expect(barrelText).toContain("export * from \"./ExampleHandler\"");
 
         const ifaceText = await readFile(containerInterfacePath, "utf8");
 
-        expect(ifaceText.includes("import { ExampleHandler } from \"@handlers\";")).toBe(true);
-        expect(ifaceText.includes("[ContainerName.ExampleHandler]: ExampleHandler;")).toBe(true);
+        expect(ifaceText).toContain("import { ExampleHandler } from \"@handlers\";");
+        expect(ifaceText).toContain("[ContainerName.ExampleHandler]: ExampleHandler;");
     });
 
     test("Handler no-op when enum and barrel targets are missing", async () => {

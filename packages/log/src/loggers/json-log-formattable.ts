@@ -1,4 +1,4 @@
-import type { LogLevel } from "../Interfaces/LogLevel";
+import type { LogLevel } from "../Enums/LogLevel";
 
 export interface JSONLogFormattable {
     "type": LogLevel;
@@ -22,7 +22,6 @@ export function isJSONLogFormattable(message: unknown): message is JSONLogFormat
 
     if (typeof messageTyped.index !== "string") return false;
     if (typeof messageTyped.message !== "string") return false;
-    if (typeof messageTyped.request !== "object" && messageTyped.request) return false;
 
-    return true;
+    return !(typeof messageTyped.request !== "object" && messageTyped.request);
 }

@@ -101,7 +101,7 @@ program
     .option("--eventPayloadType <type>", "EventsInterface payload type", registrationDefaults.eventPayloadType)
     .description("Test command description")
     .version("0.1.1")
-    .action(async (pageName: string, options: MakePageOptions) => make.makePage(pageName, options));
+    .action(async (pageName: string, options: MakePageOptions) => make.generatePage(pageName, options));
 
 program
     .command("make:selector")
@@ -117,7 +117,10 @@ program
     .option("--typeImport <statement>", "Explicit import statement to insert (repeatable)", collect, [])
     .description("Test command description")
     .version("0.1.1")
-    .action(async (selectorName: string, options: MakeSelectorOptions) => make.makeSelectors(selectorName, options));
+    .action(async (
+        selectorName: string,
+        options: MakeSelectorOptions,
+    ) => make.generateSelectors(selectorName, options));
 
 program
     .command("make:handler")
@@ -141,7 +144,7 @@ program
     .option("--typeImport <statement>", "Explicit import statement to insert (repeatable)", collect, [])
     .description("Make Handler file")
     .version("0.1.1")
-    .action(async (handlerName: string, options: MakeHandlerOptions) => make.makeHandler(handlerName, options));
+    .action(async (handlerName: string, options: MakeHandlerOptions) => make.generateHandler(handlerName, options));
 
 program
     .command("make:event")
@@ -169,7 +172,7 @@ program
     .description("Register a new event (EventName + EventsInterface). Use make:listener to add a listener class.")
     .version("0.1.1")
     .action(async (eventName: string, options: MakeEventOptions) => {
-        await make.makeEvent(eventName, {
+        await make.generateEvent(eventName, {
             ...options,
             eventEnumPath: options.eventEnumPath ?? options.path,
         });
@@ -207,7 +210,7 @@ program
     .option("--typeImport <statement>", "Explicit import statement to insert (repeatable)", collect, [])
     .description("Scaffold an EventListener class; with --register, ensures the event contract exists first")
     .version("0.1.1")
-    .action(async (listenerName: string, options: MakeListenerOptions) => make.makeListener(listenerName, options));
+    .action(async (listenerName: string, options: MakeListenerOptions) => make.generateListener(listenerName, options));
 
 program
     .command("make:config")
@@ -229,7 +232,7 @@ program
     .option("--typeImport <statement>", "Explicit import statement to insert (repeatable)", collect, [])
     .description("Register a new config entry in ConfigName enum, configValidator object and .env.example")
     .version("0.1.1")
-    .action(async (configName: string, options: MakeConfigOptions) => make.makeConfig(configName, options));
+    .action(async (configName: string, options: MakeConfigOptions) => make.generateConfig(configName, options));
 
 program
     .command("make:exception")
@@ -240,7 +243,7 @@ program
     .description("Create Exception file example")
     .version("0.1.1")
     .action(
-        async (exceptionName: string, options: MakeExceptionOptions) => make.makeException(exceptionName, options),
+        async (exceptionName: string, options: MakeExceptionOptions) => make.generateException(exceptionName, options),
     );
 
 program.parse();

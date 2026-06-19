@@ -85,7 +85,7 @@ describe("Retry Test", () => {
         })).rejects.toThrow(Exception);
     });
 
-    test("Retry Unknown Exception", async () => {
+    test("Retry error in first execution", async () => {
         const testCallback = vi.fn((times) => {
             if (times === 1) {
                 throw new Exception("error");

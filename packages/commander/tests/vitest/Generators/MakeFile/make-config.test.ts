@@ -31,7 +31,7 @@ describe("makeConfig Test", () => {
         await rm(cacheRoot, { recursive: true, force: true });
         await mkdir(cacheRoot, { recursive: true });
 
-        await expect(make.makeConfig("AppName", {})).resolves.toBeUndefined();
+        await expect(make.generateConfig("AppName", {})).resolves.toBeUndefined();
     });
 
     test("Registers ConfigName enum member and .env.example with comment and empty default value", async () => {
@@ -44,7 +44,7 @@ describe("makeConfig Test", () => {
         await writeFile(configEnumPath, configEnumFixture, "utf8");
         await writeFile(environmentExamplePath, "EXISTING=1\n", "utf8");
 
-        await make.makeConfig("HANDLER_TIMEOUT", {
+        await make.generateConfig("HANDLER_TIMEOUT", {
             register: true,
             configEnumPath,
             envExamplePath: environmentExamplePath,
@@ -71,7 +71,7 @@ describe("makeConfig Test", () => {
         await writeFile(configEnumPath, configEnumFixture, "utf8");
         await writeFile(configValidatorPath, emptyConfigValidator(), "utf8");
 
-        await make.makeConfig("APP_URL", {
+        await make.generateConfig("APP_URL", {
             register: true,
             configEnumPath,
             configValidatorPath,
@@ -93,7 +93,7 @@ describe("makeConfig Test", () => {
         await writeFile(configEnumPath, configEnumFixture, "utf8");
         await writeFile(configValidatorPath, emptyConfigValidator(), "utf8");
 
-        await make.makeConfig("USE_HEADLESS", {
+        await make.generateConfig("USE_HEADLESS", {
             register: true,
             configEnumPath,
             configValidatorPath,
@@ -116,7 +116,7 @@ describe("makeConfig Test", () => {
         await writeFile(configEnumPath, configEnumFixture, "utf8");
         await writeFile(configValidatorPath, emptyConfigValidator(), "utf8");
 
-        await make.makeConfig("ZECA_URL", {
+        await make.generateConfig("ZECA_URL", {
             register: true,
             configEnumPath,
             configValidatorPath,

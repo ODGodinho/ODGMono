@@ -1,3 +1,5 @@
-export * from "./logs/index";
+export * from "./Enums/LogLevel";
 
-export * from "./Interfaces/index";
+export type * from "./Interfaces/index";
+
+export * from "./loggers/index";

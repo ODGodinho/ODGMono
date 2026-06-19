@@ -33,7 +33,7 @@ describe("Handler Attempt", () => {
         handlerAttemptMock.mockImplementation(async () => Promise.resolve(2));
 
         await expect(handler.execute()).rejects.toThrow(message);
-        expect(handlerWaitMock.mock.calls.length).toBe(2);
+        expect(handlerWaitMock.mock.calls).toHaveLength(2);
     });
 
     test("Test execute exception one time", async () => {
@@ -45,6 +45,6 @@ describe("Handler Attempt", () => {
         handlerAttemptMock.mockImplementation(async () => Promise.resolve(1));
 
         await expect(handler.execute()).rejects.toThrow(message);
-        expect(handlerWaitMock.mock.calls.length).toBe(1);
+        expect(handlerWaitMock.mock.calls).toHaveLength(1);
     });
 });

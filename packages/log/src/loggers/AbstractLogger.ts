@@ -1,4 +1,5 @@
-import { type ContextType, type LoggerInterface, LogLevel } from "../index";
+import { LogLevel } from "../Enums/LogLevel";
+import type { ContextType, LoggerInterface } from "../Interfaces";
 
 /**
  * Simple logger implementation

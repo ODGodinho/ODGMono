@@ -19,7 +19,7 @@ describe("makeSelectors Test", () => {
     });
 
     test("Generate Example1Selectors", async () => {
-        await expect(make.makeSelectors("Example1", { path }))
+        await expect(make.generateSelectors("Example1", { path }))
             .resolves
             .toBeUndefined();
 

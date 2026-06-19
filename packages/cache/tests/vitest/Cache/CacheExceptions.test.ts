@@ -74,7 +74,7 @@ describe("Cache - Exceptions & Error Handling", () => {
             expect(value).toBeUndefined();
         });
 
-        it("should throw when no handlers available for get without drive", async () => {
+        it("should check key not found in empty cache", async () => {
             const emptyCache = new Cache<TestCacheSchema>();
 
             // Empty cache should return undefined, not throw
@@ -414,13 +414,6 @@ describe("Cache - Exceptions & Error Handling", () => {
             });
 
             await expect(cache.pull(cacheKeyUser1)).rejects.toThrow(error);
-        });
-    });
-
-    describe("CacheIteratorException", () => {
-        it("should throw when iterator not supported in KeyvCacheHandler", async () => {
-            // This is already tested in KeyvCacheHandler.test.ts
-            expect(true).toBe(true);
         });
     });
 });

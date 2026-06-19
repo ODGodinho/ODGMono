@@ -12,6 +12,9 @@ export default {
         "max-statements": [ "error", MAX_STATEMENTS ],
         "max-nested-callbacks": [ "error", maxHadoukenDepth ], // Tamanho máximo do Hadouken callback
         "unicorn/consistent-function-scoping": [ "error" ], // Remova sub função quando possível
+        "sonarjs/no-duplicate-test-title": [ "error" ], // Não permita testes com mesmo nome
+        "sonarjs/prefer-specific-assertions": [ "error" ], // Assertion valido
+        "sonarjs/no-trivial-assertions": [ "error" ], // Assertion sem segundo campo
         "sonarjs/assertions-in-tests": [ "error" ], // Teste tem q ter assert
         "sonarjs/chai-determinate-assertion": [ "error" ], // Use assert adequado
         "sonarjs/disabled-timeout": [ "error" ], // Impede numero além do limite de tempo timeout

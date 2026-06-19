@@ -1,4 +1,4 @@
-import { ConsoleLogger, LogLevel, type LogLevelType } from "../../src/index";
+import { ConsoleLogger, LogLevel, type LogLevelType } from "#app";
 
 describe("ConsoleLogger.test.ts", () => {
     const consoleLogger = new ConsoleLogger();

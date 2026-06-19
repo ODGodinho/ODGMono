@@ -16,6 +16,6 @@ describe("Handler Retry tests", () => {
 
     test("Test Handler Solution return Exception", async () => {
         await expect(handler.execute()).rejects.toThrow(new Exception("stop process"));
-        expect(handlerRetryingMock.mock.calls.length).toBe(0);
+        expect(handlerRetryingMock.mock.calls).toHaveLength(0);
     });
 });

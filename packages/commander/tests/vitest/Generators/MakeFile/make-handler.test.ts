@@ -15,7 +15,7 @@ describe("makeHandler Test", () => {
 
     test("Generate HomeToLoginHandler", async () => {
         filePath = `${path}/HomeToLoginHandler.ts`;
-        await expect(make.makeHandler("Home", { path, handlerTo: "Login" }))
+        await expect(make.generateHandler("Home", { path, handlerTo: "Login" }))
             .resolves
             .toBeUndefined();
 
@@ -29,7 +29,7 @@ describe("makeHandler Test", () => {
 
     test("Generate LoginToHomeHandler", async () => {
         filePath = `${path}/LoginToHomeHandler.ts`;
-        await expect(make.makeHandler("Home", { path, handlerFrom: "Login" }))
+        await expect(make.generateHandler("Home", { path, handlerFrom: "Login" }))
             .resolves
             .toBeUndefined();
 
@@ -43,7 +43,7 @@ describe("makeHandler Test", () => {
 
     test("Generate From and To Handler", async () => {
         filePath = `${path}/LoginToHomeHandler.ts`;
-        await expect(make.makeHandler("Home", { path, handlerFrom: "Login", handlerTo: "Home" }))
+        await expect(make.generateHandler("Home", { path, handlerFrom: "Login", handlerTo: "Home" }))
             .resolves
             .toBeUndefined();
 
@@ -57,7 +57,7 @@ describe("makeHandler Test", () => {
 
     test("Generate handler without handler-from or handler-to", async () => {
         filePath = `${path}/LoginHandler.ts`;
-        await expect(make.makeHandler("Login", { path }))
+        await expect(make.generateHandler("Login", { path }))
             .resolves
             .toBeUndefined();
 

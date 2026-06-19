@@ -40,7 +40,7 @@ describe("AxiosMessage", () => {
         })).not.toThrow();
     });
 
-    test("Response without config", async () => {
+    test("Axios Erro check if not error on Exception.parse", async () => {
         expect(() => Exception.parse(new AxiosError(
             "test",
             "TEST",

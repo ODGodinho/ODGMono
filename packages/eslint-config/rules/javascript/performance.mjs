@@ -15,6 +15,13 @@ export default {
         "unicorn/no-unreadable-for-of-expression": [ "error" ], // Não faca com múltiplas funções no fo of func1(func2))
         "unicorn/prefer-array-slice": [ "error" ], // Use slice ao invés de splice ao acessar diretamente
         "unicorn/prefer-has-check": [ "error" ], // Use has(key) ao invés !!get(key)
+        "unicorn/no-array-sort-for-min-max": [ "error" ], // Use Math.min e Math.max ao invés de sort[0]]
+        "unicorn/no-boolean-sort-comparator": [ "error" ], // Não use sort com booleans
+        "unicorn/no-chained-comparison": [ "error" ], // Não use comparações encadeadas
+        "unicorn/no-loop-iterable-mutation": [ "error" ], // Não modifique iteráveis em loops prefira do-while
+        "unicorn/prefer-single-replace": [ "error" ], // Use replaceAll ao invés de vários replace
+        "unicorn/prefer-unary-minus": [ "error" ], // Nao use * -1 para deixar negativo use apenas - na frente do número
+        "unicorn/prefer-url-can-parse": [ "error" ], // Use URL.canParse para validar URLs
         // "unicorn/prefer-disposed": [ "error" ], // Use objetos descartados para evitar memory leak // ? don't working
     },
 };

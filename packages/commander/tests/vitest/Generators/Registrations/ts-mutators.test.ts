@@ -83,8 +83,8 @@ describe("ts-mutators", () => {
 
         const text = await readFile(filePath, "utf8");
 
-        expect(text.includes(",,")).toBe(false);
-        expect(text.includes("\"ExamplePage\" = \"ExamplePage\"")).toBe(true);
+        expect(text).not.toContain(",,");
+        expect(text).toContain("\"ExamplePage\" = \"ExamplePage\"");
     });
 
     test("Barrel export + idempotency", async () => {
@@ -195,8 +195,8 @@ describe("ts-mutators", () => {
 
         const text = await readFile(filePath, "utf8");
 
-        expect(text.includes("Alpha")).toBe(true);
-        expect(text.includes("Beta")).toBe(true);
+        expect(text).toContain("Alpha");
+        expect(text).toContain("Beta");
     });
 
     test("Value named import + idempotency", async () => {
@@ -238,8 +238,8 @@ describe("ts-mutators", () => {
 
         const text = await readFile(filePath, "utf8");
 
-        expect(text.includes("A=1")).toBe(true);
-        expect(text.includes("B=2")).toBe(true);
+        expect(text).toContain("A=1");
+        expect(text).toContain("B=2");
     });
 
     test("Environment example lines handles empty file and missing trailing newline", async () => {
@@ -254,7 +254,7 @@ describe("ts-mutators", () => {
 
         const text = await readFile(filePath, "utf8");
 
-        expect(text.includes("A=1\nB=2\n")).toBe(true);
+        expect(text).toContain("A=1\nB=2\n");
 
         const emptyPath = `${root}/.env.example.empty`;
 
@@ -273,7 +273,7 @@ describe("ts-mutators", () => {
         await expect(ensureBarrelExport({ barrelPath, relativeExportPath: "Z" })).resolves.toBe(true);
         const text = await readFile(barrelPath, "utf8");
 
-        expect(text.includes("export * from \"./Z\"")).toBe(true);
+        expect(text).toContain("export * from \"./Z\";");
     });
 
     test("ZodObjectEntry adds property to zod.object + idempotency", async () => {
@@ -294,8 +294,8 @@ describe("ts-mutators", () => {
 
         const text = await readFile(filePath, "utf8");
 
-        expect(text.includes(appUrlPropertyName)).toBe(true);
-        expect(text.includes(zodStringPropertyValue)).toBe(true);
+        expect(text).toContain(appUrlPropertyName);
+        expect(text).toContain(zodStringPropertyValue);
 
         // Idempotency
         await expect(ensureZodObjectEntry({

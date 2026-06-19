@@ -14,7 +14,7 @@ import {
     injectFromHierarchy,
 } from "inversify";
 
-import { retry } from "#helpers";
+import { retry } from "#helpers/retry";
 import type { AttemptableInterface, GetterAccessInterface } from "#interfaces";
 import type { ContainerMetadataInterface } from "#interfaces/internal/ContainerInterface";
 

@@ -19,7 +19,7 @@ describe("makeEvent Test", () => {
     });
 
     test("makeEvent does not create an EventListener file", async () => {
-        await expect(make.makeEvent("Example", {}))
+        await expect(make.generateEvent("Example", {}))
             .resolves
             .toBeUndefined();
 

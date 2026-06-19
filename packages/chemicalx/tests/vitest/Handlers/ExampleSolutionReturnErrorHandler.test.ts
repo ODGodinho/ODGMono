@@ -18,7 +18,7 @@ describe("Handler Retry tests", () => {
         const handlerRetrying = vi.spyOn(handler, "retrying");
 
         await expect(handler.execute()).rejects.toThrow(new Exception("force stop"));
-        expect(handlerRetrying.mock.calls.length).toBe(0);
+        expect(handlerRetrying.mock.calls).toHaveLength(0);
     });
 
     test("Test Handler Solution return Exception after 2 times", async () => {
@@ -33,6 +33,6 @@ describe("Handler Retry tests", () => {
         });
 
         await expect(handler.execute()).rejects.toThrow(new Exception("mock error"));
-        expect(handlerRetrying.mock.calls.length).toBe(2);
+        expect(handlerRetrying.mock.calls).toHaveLength(2);
     });
 });

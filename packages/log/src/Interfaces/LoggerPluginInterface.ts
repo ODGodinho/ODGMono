@@ -1,4 +1,6 @@
-import type { ContextType, LogLevel } from ".";
+import type { LogLevel } from "../Enums/LogLevel";
+
+import type { ContextType } from "./LoggerInterface";
 
 /**
  * Logger Plugin return parser

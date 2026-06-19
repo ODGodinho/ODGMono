@@ -198,7 +198,7 @@ export default {
         "unicorn/consistent-empty-array-spread": [ "error" ], // ... no ternário deve ser 2 dados tipos iguais
         "unicorn/no-negation-in-equality-check": [ "error" ], // Evite if(!a !== b) evite isso
         "unicorn/no-length-as-slice-end": [ "error" ], // Não coloque fim no slice igual ao length
-        "unicorn/prevent-abbreviations": [
+        "unicorn/name-replacements": [
             "error",
             {
                 ignore: [ String.raw`\.env$`, ".env.*", "^Arr$", "^Num$", "^Str$" ],
@@ -235,6 +235,18 @@ export default {
         "unicorn/prefer-single-call": [ "error" ], // Prefira class
         "unicorn/require-module-specifiers": [ "error" ], // Não faça import vazio
         "unicorn/throw-new-error": [ "error" ], // Faça um new na hora do throw
+        "unicorn/no-constant-zero-expression": [ "error" ], // Não * 0 prefira = 0
+        "unicorn/no-double-comparison": [ "error" ], // Não faça comparação dupla x === x
+        "unicorn/no-duplicate-if-branches": [ "error" ], // Não faça if com mesma condição
+        "unicorn/no-useless-delete-check": [ "error" ], // Não faça delete dentro map.has() ? map.delete() : null
+        "unicorn/prefer-array-iterable-methods": [ "error" ], // Prefira usar keys() ou values(), entries()
+        "unicorn/prefer-boolean-return": [ "error" ], // Prefira retornar
+        "unicorn/prefer-continue": [ "error" ], // Prefira continue
+        "unicorn/prefer-flat-math-min-max": [ "error" ], // Prefira Math.min(...array)
+        "unicorn/prefer-hoisting-branch-code": [ "error" ], // Coloque código repetido if-else fora
+        "unicorn/prefer-math-constants": [ "error" ], // Use Math.PI nao 3.14
+        "unicorn/prefer-promise-with-resolvers": [ "error" ], // Use Promise.withResolvers ao invés de new Promise
+        "unicorn/prefer-while-loop-condition": [ "error" ], // Prefira while com condição ao invés de if break
         "no-shadow": [ "error" ], // Erro caso ja esteja declarado escopo a cima
         "no-delete-var": [ "error" ], // Não delete variáveis
         "no-lone-blocks": [ "error" ], // Não crie bloco desnecessários
@@ -321,8 +333,11 @@ export default {
         "unicorn/consistent-export-decorator-position": [ "error" ], // Colocar decorator no lugar certo
         "unicorn/consistent-function-style": [ "error" ], // Colocar decorator no lugar certo
         "unicorn/explicit-timer-delay": [ "error" ], // Use delay explícito em setTimeout/setInterval
-        "unicorn/prefer-uint8array-base64": [ "error" ], // Prefira Uint8Array ao invés atob ou buffer.From
+        // "unicorn/prefer-uint8array-base64": [ "error" ], // Prefira Uint8Array ao invés atob ou buffer.From // ? Apenas 24
         "unicorn/require-proxy-trap-boolean-return": [ "error" ], // Proxy set deve retornar boolean
+        "unicorn/default-export-style": [ "error" ], // Export default direto sem usar variável
+        "unicorn/no-accidental-bitwise-operator": [ "error" ], // Evite usar operadores bitwise acidentalmente
+        "unicorn/no-array-concat-in-loop": [ "error" ], // Evite usar concat em loop use push
         "use-isnan": [ "error", { enforceForSwitchCase: true, enforceForIndexOf: true } ], // Use a função isNan
         "n/no-deprecated-api": [ "error" ], // Não use API depreciada do Node.js
         "prefer-regex-literals": [ "error", { disallowRedundantWrapping: true } ], // Use a função isNan
@@ -519,6 +534,7 @@ export default {
             "req",
 
             // "callback", Callback parâmetro é bloqueado tb
+            "package",
         ], // Sem variável com palavra reservada
         "id-match": [
             "error",
@@ -571,11 +587,10 @@ export default {
         "sonarjs/no-nested-functions": [ "error" ], // Sem Hadouken de função
         "sonarjs/no-parameter-reassignment": [ "error" ], // Não reatribua um parâmetro sem usar
         "sonarjs/no-redundant-jump": [ "error" ], // Não coloque return desnecessário na função
-        "sonarjs/no-redundant-optional": [ "error" ], // Não Coloque optional e undefined juntos
         "sonarjs/prefer-promise-shorthand": [ "error" ], // Promise.resolve ao invés new Promise resolve
         "sonarjs/public-static-readonly": [ "error" ], // Use Readonly no static
         "sonarjs/redundant-type-aliases": [ "error" ], // Não crie um ja existe
-        "sonarjs/todo-tag": [ "warn" ], // Doc TO-D devem ser resolvidos alerta
+        "sonarjs/todo-tag": [ "warn" ], // Doc TOD-D devem ser resolvidos alerta
         "sonarjs/updated-loop-counter": [ "error" ], // Não reatribua variável do loop
         "sonarjs/use-type-alias": [ "error" ], // Crie um alias se repetir muita concatenação de tipo
         "sonarjs/void-use": [ "error" ], // Não use void em lugar malucos

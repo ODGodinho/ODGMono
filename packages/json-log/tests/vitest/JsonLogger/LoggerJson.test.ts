@@ -78,7 +78,7 @@ describe("Test Log Json", () => {
         await expect(logger2["getRequestUrl"](log)).resolves.toBe("http://localhost");
     });
 
-    test("Log Json Request", async () => {
+    test("test JsonLoggerPlugin.getMessage with exception", async () => {
         const logger2 = new JSONLoggerPlugin("");
 
         await expect(logger2["getMessage"](new Exception("Example"))).resolves.toBe("Example");

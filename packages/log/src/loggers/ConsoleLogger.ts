@@ -2,7 +2,7 @@ import util from "node:util";
 
 import chalk from "chalk";
 
-import { LogLevel } from "../index";
+import { LogLevel } from "../Enums/LogLevel";
 import type { ContextType } from "../Interfaces/LoggerInterface";
 
 import { AbstractLogger } from "./AbstractLogger";

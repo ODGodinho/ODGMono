@@ -24,6 +24,6 @@ describe("Handler Retry tests", () => {
         handlerAttemptMock.mockImplementation(async () => Promise.resolve(4));
 
         await expect(handler.execute()).resolves.toBeUndefined();
-        expect(handlerSolutionMock.mock.calls.length).toBe(3);
+        expect(handlerSolutionMock.mock.calls).toHaveLength(3);
     });
 });

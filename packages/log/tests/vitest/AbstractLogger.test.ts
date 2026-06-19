@@ -1,4 +1,4 @@
-import { LogLevel, type LogLevelType, NullLogger } from "../../src/index";
+import { LogLevel, type LogLevelType, NullLogger } from "#app";
 
 describe("AbstractLogger.test.ts", () => {
     const logger = new NullLogger();

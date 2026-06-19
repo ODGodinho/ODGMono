@@ -2,4 +2,4 @@ export * from "./Exceptions/GraylogException";
 
 export type * from "./Interfaces/GraylogOptionsInterface";
 
-export * from "./log/GraylogLogger";
+export * from "./logger/GraylogLogger";

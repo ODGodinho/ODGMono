@@ -74,7 +74,7 @@ describe("makeListener Test", () => {
 
     test("creates LoginSaveEventListener bound to Login event", async () => {
         await expect(
-            make.makeListener("LoginSave", {
+            make.generateListener("LoginSave", {
                 path,
                 event: "Login",
             }),
@@ -99,7 +99,7 @@ describe("makeListener Test", () => {
         const fixture = await prepareListenerRegisterFixture(root);
 
         await expect(
-            make.makeListener("Notify", {
+            make.generateListener("Notify", {
                 path: fixture.listenersDirectory,
                 event: "Notify",
                 register: true,
@@ -120,7 +120,7 @@ describe("makeListener Test", () => {
 
         const enumText = await readFile(fixture.eventEnumPath, "utf8");
 
-        expect(enumText.includes("NotifyEvent")).toBe(true);
+        expect(enumText).toContain("NotifyEvent");
         const listenerFileInstance = new File(fixture.listenerFile);
 
         expect(await listenerFileInstance.exists()).toBeTruthy();

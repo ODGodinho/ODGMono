@@ -41,7 +41,7 @@ describe("Test EventEmitterBus", () => {
         expect(mockCallback).not.toHaveBeenCalledWith(
             eventSend,
         );
-        expect(mockCallback.mock.calls.length).toBe(0);
+        expect(mockCallback.mock.calls).toHaveLength(0);
     });
 
     test("Test Symbol Event", async () => {
@@ -74,7 +74,7 @@ describe("Test EventEmitterBus", () => {
         expect(mockCallback).toHaveBeenCalledWith(
             eventSend,
         );
-        expect(mockCallback.mock.calls.length).toBe(2);
+        expect(mockCallback.mock.calls).toHaveLength(2);
     });
 
     test("Test Once Event", async () => {
@@ -90,6 +90,6 @@ describe("Test EventEmitterBus", () => {
         expect(mockCallback).toHaveBeenCalledWith(
             eventSend,
         );
-        expect(mockCallback.mock.calls.length).toBe(1);
+        expect(mockCallback.mock.calls).toHaveLength(1);
     });
 });

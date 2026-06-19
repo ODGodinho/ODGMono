@@ -71,7 +71,7 @@ describe("Test parse request", async () => {
         })).rejects.toThrow(JSONParserException);
     });
 
-    test("Throw not JSONLogger", async () => {
+    test("Throw JsonLogger from requestToString", async () => {
         const pluginTest = new RequestStringPlugin();
         const spy = vi.spyOn(pluginTest, "requestToString" as keyof typeof pluginTest);
 

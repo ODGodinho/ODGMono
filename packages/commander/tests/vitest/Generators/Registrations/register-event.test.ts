@@ -35,13 +35,13 @@ describe("Registrations - event", () => {
             typeImports: [ "import type { EventName } from \"./EventName\";" ],
         };
 
-        await make.makeEvent("Example", {
+        await make.generateEvent("Example", {
             register: true,
             registrationTargets,
         });
 
         await expect(
-            make.makeEvent("Example", {
+            make.generateEvent("Example", {
                 register: true,
                 registrationTargets,
             }),
@@ -55,7 +55,7 @@ describe("Registrations - event", () => {
 
         const ifaceText = await readFile(eventsInterfacePath, "utf8");
 
-        expect(ifaceText.includes("[EventName.ExampleEvent]: unknown;")).toBe(true);
+        expect(ifaceText).toContain("[EventName.ExampleEvent]: unknown;");
     });
 
     test("Registers listener barrel without filePath (fallback mode)", async () => {
@@ -83,7 +83,7 @@ describe("Registrations - event", () => {
         const barrelText = await readFile(listenersBarrelPath, "utf8");
 
         // Should use fallback: ./FallbackEventListener
-        expect(barrelText.includes("export * from \"./FallbackEventListener\";")).toBe(true);
+        expect(barrelText).toContain("export * from \"./FallbackEventListener\";");
     });
 
     test("Registers listener barrel with nested filePath", async () => {
@@ -113,6 +113,6 @@ describe("Registrations - event", () => {
         const barrelText = await readFile(listenersBarrelPath, "utf8");
 
         // Should use correct relative path: ./events/NestedEventListener
-        expect(barrelText.includes("export * from \"./events/NestedEventListener\";")).toBe(true);
+        expect(barrelText).toContain("export * from \"./events/NestedEventListener\";");
     });
 });

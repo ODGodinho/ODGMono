@@ -24,7 +24,7 @@ describe("Handler Test Invalid Exception", () => {
         });
 
         await expect(handler.execute()).rejects.toThrow("Retry Unknown Exception");
-        expect(handlerSolutionMock.mock.calls.length).toBe(1);
+        expect(handlerSolutionMock.mock.calls).toHaveLength(1);
     });
 
     test("Test solution invalid exception", async () => {
@@ -38,6 +38,6 @@ describe("Handler Test Invalid Exception", () => {
         handlerFailWaitMock.mockImplementation(async () => RetryAction.Resolve);
 
         await expect(handlerFailed.execute()).resolves.toBeUndefined();
-        expect(handlerSolutionMock.mock.calls.length).toBe(0);
+        expect(handlerSolutionMock.mock.calls).toHaveLength(0);
     });
 });

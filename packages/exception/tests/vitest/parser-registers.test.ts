@@ -29,7 +29,7 @@ describe("Teste $parsers Code", () => {
         expect(exception).not.toHaveProperty("test");
     });
 
-    test("Test one parse", async () => {
+    test("Test add multiple parsers", async () => {
         Exception.$parsers.add(myParse);
         Exception.$parsers.add(myParse2);
 
