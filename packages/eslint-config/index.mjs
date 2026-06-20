@@ -168,7 +168,7 @@ export default [
             },
             "import/external-module-folders": [ "@types" ],
             "import/extensions": [ ".js", ".mjs", ".jsx" ],
-            "import/core-modules": [],
+            "import/core-modules": [ "bun:test" ],
             "import/ignore": [ "node_modules", String.raw`\.(coffee|scss|css|less|hbs|svg|json)$` ],
             "progress": {
                 hide: false, // Use this to hide the progress message, can be useful in CI
