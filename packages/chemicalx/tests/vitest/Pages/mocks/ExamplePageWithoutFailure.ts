@@ -30,7 +30,7 @@ export class ExamplePageWithoutFailure extends BasePage<PageClassEngine & PageEn
         this.startFunction();
     }
 
-    public async success(): Promise<void> {
+    public override async success(): Promise<void> {
         // Only Test
     }
 
@@ -39,7 +39,7 @@ export class ExamplePageWithoutFailure extends BasePage<PageClassEngine & PageEn
         return 2;
     }
 
-    public async finish(): Promise<void> {
+    public override async finish(): Promise<void> {
         // Only for test
     }
 

@@ -19,7 +19,7 @@ export class FailedIgnoreHandler extends BaseHandler<PageClassEngine> {
         return 0;
     }
 
-    public async failure(): Promise<void> {
+    public override async failure(): Promise<void> {
         // Only ignore exception
     }
 

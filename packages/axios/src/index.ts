@@ -1,5 +1,7 @@
 import "./register";
 
+export type * from "./Interfaces";
+
 export * from "./interceptors/AxiosInterceptor";
 
 export * from "./interceptors/AxiosInterceptorRequest";

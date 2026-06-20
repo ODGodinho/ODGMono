@@ -7,7 +7,7 @@ import type {
 } from "@odg/message";
 import type { AxiosInterceptorManager, AxiosRequestConfig } from "axios";
 
-import type { AxiosRequestConfigExtra } from "../interfaces";
+import type { AxiosRequestConfigExtra } from "../Interfaces";
 import { AxiosRequestParser } from "../parser/AxiosRequestParser";
 
 import { AxiosInterceptor } from "./AxiosInterceptor";

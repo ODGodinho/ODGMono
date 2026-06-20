@@ -4,7 +4,7 @@ import type { LookupFunction } from "node:net";
 
 import type { ParametersInterface, RequestInterface } from "@odg/message";
 
-import type { AxiosRequestConfigExtra } from "../interfaces/AxiosInterfaceExtra";
+import type { AxiosRequestConfigExtra } from "../Interfaces/AxiosInterfaceExtra";
 
 import { AxiosParser } from "./AxiosParser";
 

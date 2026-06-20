@@ -3,7 +3,7 @@ import { MessageException } from "@odg/message";
 import axios, { AxiosError } from "axios";
 
 import { AxiosMessage } from "../../src/AxiosMessage";
-import * as Interfaces from "../../src/interfaces";
+import * as Interfaces from "../../src/Interfaces";
 
 describe("AxiosMessage", () => {
     test("Test is Axios Error", async () => {

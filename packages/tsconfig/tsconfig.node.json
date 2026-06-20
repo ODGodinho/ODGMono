@@ -35,7 +35,7 @@
         "strictFunctionTypes": true,
         "strictNullChecks": true,
         "strictPropertyInitialization": true,
-        "target": "ES2024",
+        "target": "esnext",
         "types": [ "node" ]
     },
     "ts-node": {

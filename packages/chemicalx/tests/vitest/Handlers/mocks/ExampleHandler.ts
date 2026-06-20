@@ -23,11 +23,11 @@ export class ExampleHandler extends BaseHandler<PageClassEngine> {
         return 0;
     }
 
-    public async success(): Promise<void> {
+    public override async success(): Promise<void> {
         // Only for test
     }
 
-    public async finish(): Promise<void> {
+    public override async finish(): Promise<void> {
         // Only for test
     }
 

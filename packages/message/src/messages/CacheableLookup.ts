@@ -48,8 +48,8 @@ export class CacheableLookup {
         return this;
     }
 
-    public lookup(...lookupParamers: Parameters<LookupFunction>): void {
-        const [ hostname, options, callback ] = lookupParamers;
+    public lookup(...lookupParameters: Parameters<LookupFunction>): void {
+        const [ hostname, options, callback ] = lookupParameters;
 
         this.lookupAsync(hostname, options)
             .then((resolved) => {

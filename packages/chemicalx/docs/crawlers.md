@@ -99,6 +99,34 @@ Todos usam `@getterAccess` para delegar acessos de propriedade/método ao engine
 
 ---
 
+### Module augmentation (Playwright)
+
+O consumer declara `@types/ExtraBrowser.d.ts` estendendo **todos** os tipos nativos do driver — não só `Page`:
+
+```typescript
+import type { Browser as BrowserBase, Context as ContextBase, Page as PageBase } from "../src/Browser";
+
+declare module "playwright" {
+    interface Page extends PageBase { }
+    interface Frame extends PageBase { }
+    interface BrowserContext extends ContextBase { }
+    interface Browser extends BrowserBase { }
+}
+```
+
+**Por que os três níveis?** O `Page.context()` retorna `ContextChemicalXInterface & BrowserContext`. Se só `Page` for augmentado, o `BrowserContext` nativo não possui `$contextInstance` e o `tsc` quebra. Ao estender `BrowserContext` com a classe `Context` do consumer, o tipo nativo passa a incluir `$contextInstance`, `defaultPageOptions()`, etc.
+
+**Regras:**
+
+- Use `declare module "playwright"` (não `playwright-core`)
+- Mantenha o arquivo em `@types/` com `typeRoots` no `tsconfig.json`
+- Classes consumer (`Browser`, `Context`, `Page`) ficam mínimas — só overrides como `defaultContextOptions()`
+- `PageClassEngine = Page` no `engine.ts` já carrega os métodos customizados no `BasePage`
+
+Referência: [Stanley-Crawler-Event](https://github.com/ODGodinho/Stanley-Crawler-Event) (`@types/ExtraBrowser.d.ts`).
+
+---
+
 ### BasePage (Abstract)
 
 Define uma página por **intenção**, não por URL. Implementa `AttemptableInterface` com lifecycle hooks para retry via `@attemptableFlow`.

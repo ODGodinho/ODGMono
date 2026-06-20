@@ -25,7 +25,7 @@ export class ExampleSolutionReturnErrorHandler extends BaseHandler<PageClassEngi
         return 10;
     }
 
-    public async retrying(_exception: Exception, _times: number): Promise<RetryAction> {
+    public override async retrying(_exception: Exception, _times: number): Promise<RetryAction> {
         return RetryAction.Default;
     }
 

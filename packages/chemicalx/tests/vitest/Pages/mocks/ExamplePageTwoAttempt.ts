@@ -30,7 +30,7 @@ export class ExamplePageTwoAttempt extends BasePage<PageClassEngine & PageEngine
         this.startFunction();
     }
 
-    public async success(): Promise<void> {
+    public override async success(): Promise<void> {
         // Only Test
     }
 
@@ -39,16 +39,16 @@ export class ExamplePageTwoAttempt extends BasePage<PageClassEngine & PageEngine
         return 2;
     }
 
-    public async sleep(): Promise<number> {
+    public override async sleep(): Promise<number> {
         // Only for test
         return 400;
     }
 
-    public async finish(): Promise<void> {
+    public override async finish(): Promise<void> {
         // Only for test
     }
 
-    public async failure(exception: Exception): Promise<void> {
+    public override async failure(exception: Exception): Promise<void> {
         throw exception;
     }
 

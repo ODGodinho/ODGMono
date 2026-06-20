@@ -20,7 +20,7 @@ export class ExampleWaitHandlerReturnException extends BaseHandler<PageClassEngi
         return 5;
     }
 
-    public async retrying(_exception: Exception, _times: number): Promise<RetryAction> {
+    public override async retrying(_exception: Exception, _times: number): Promise<RetryAction> {
         return RetryAction.Default;
     }
 

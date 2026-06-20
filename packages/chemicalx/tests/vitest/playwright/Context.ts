@@ -10,7 +10,7 @@ export class Context extends ContextBase<
     PageClassEngine
 > {
 
-    public async defaultPageOptions(): Promise<ContextOptionsLibraryInterface> {
+    public override async defaultPageOptions(): Promise<ContextOptionsLibraryInterface> {
         return {
             ...await super.defaultPageOptions(),
         };

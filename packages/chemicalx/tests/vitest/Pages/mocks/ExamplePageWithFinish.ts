@@ -21,7 +21,7 @@ export class ExamplePageWithFinish extends BasePage<PageClassEngine & PageEngine
         if (this.testAttempt++ === 0) throw new Exception("Test Finish");
     }
 
-    public async success(): Promise<void> {
+    public override async success(): Promise<void> {
         // Only Test
     }
 
@@ -30,11 +30,11 @@ export class ExamplePageWithFinish extends BasePage<PageClassEngine & PageEngine
         return 3;
     }
 
-    public async finish(): Promise<void> {
+    public override async finish(): Promise<void> {
         // Only for test
     }
 
-    public async failure(): Promise<void> {
+    public override async failure(): Promise<void> {
         // Ignore failed only
     }
 

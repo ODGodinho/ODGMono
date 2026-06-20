@@ -42,13 +42,13 @@ export class ExamplePage extends BasePage<PageClassEngine & PageEngineInterface>
         });
     }
 
-    public async success(): Promise<void> {
+    public override async success(): Promise<void> {
         await super.success?.();
 
         this.testIndex++;
     }
 
-    public async finish(_exception?: Exception): Promise<void> {
+    public override async finish(_exception?: Exception): Promise<void> {
         ++this.testIndex;
     }
 
