@@ -13,18 +13,14 @@
     "scripts": {
         "build": "rimraf dist/ && yarn tsc:build && yarn tsc:alias",
         "build:watch": "concurrently 'yarn tsc:build -w' 'yarn tsc:alias -w'",
-
         "dev": "tsx ./src/index.ts",
         "start": "node ./dist/index.js",
-
         "lint": "odg-lint",
         "lint:fix": "odg-lint --fix",
-
         "test": "vitest run",
         "test:ci": "vitest run --passWithNoTests",
         "test:watch": "vitest --watch",
-
-        "tsc": "tsc --noEmit -p tsconfig.json",
+        "tsc:check": "tsc --noEmit -p tsconfig.json",
         "tsc:build": "tsc --project ./tsconfig.build.json",
         "tsc:alias": "tsc-alias -p tsconfig.build.json"
     },

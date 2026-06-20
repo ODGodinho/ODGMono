@@ -16,7 +16,7 @@
     },
     "author": "Dragons Gamers <https://www.linkedin.com/in/victor-alves-odgodinho>",
     "scripts": {
-        "tsc": "tsc --noEmit -p tsconfig.json",
+        "tsc:check": "tsc --noEmit -p tsconfig.json",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
         "odg-lint": "node lint.mjs"

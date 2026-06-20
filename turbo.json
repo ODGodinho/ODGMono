@@ -13,6 +13,6 @@
         },
         "lint": {},
         "lint:fix": {},
-        "tsc": {}
+        "tsc:check": {}
     }
 }

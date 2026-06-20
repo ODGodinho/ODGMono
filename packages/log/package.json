@@ -27,7 +27,7 @@
         "test:ci": "vitest run --passWithNoTests",
         "test:watch": "vitest --watch",
 
-        "tsc": "tsc --noEmit -p tsconfig.json",
+        "tsc:check": "tsc --noEmit -p tsconfig.json",
         "tsc:build": "tsc --project ./tsconfig.build.json",
         "tsc:alias": "tsc-alias -p tsconfig.build.json"
     },

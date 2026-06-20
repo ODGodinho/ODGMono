@@ -58,12 +58,12 @@ describe("Example Teste", () => {
     let page: MyPage;
 
     beforeAll(async () => {
-        browser = await browserManager.newBrowser(async () => chromium.launch({})) as MyBrowser;
+        browser = await browserManager.newBrowser(async () => chromium.launch({}));
 
-        emptyContext = browser.contexts() as MyContext[];
-        context = await browser.newContext() as MyContext;
-        contexts = browser.contexts() as MyContext[];
-        page = await context.newPage() as MyPage;
+        emptyContext = browser.contexts();
+        context = await browser.newContext();
+        contexts = browser.contexts();
+        page = await context.newPage();
     });
 
     test("Page Empty", async () => {
