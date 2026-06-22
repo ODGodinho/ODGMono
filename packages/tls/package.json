@@ -50,7 +50,7 @@
         "@odg/axios": "workspace:^",
         "@odg/exception": "workspace:^",
         "@odg/message": "workspace:^",
-        "axios": "^1.18.0"
+        "axios": "^1.18.1"
     },
     "peerDependencies": {
         "@odg/axios": "workspace:^",

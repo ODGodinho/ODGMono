@@ -9,7 +9,7 @@
             "expectations": [
                 "A resposta escolhe um comando make:page antes de propor edicoes manuais.",
                 "A resposta separa scaffold de validacao estrutural e semantica manual.",
-                "A resposta cita Page, Selector e Listener como artefatos encadeados, nao como edicoes avulsas."
+                "A resposta usa um unico comando `yarn odg make:page Login` com as flags `--selectors --event --listeners --handler-to Home` (ou equivalente), nao comandos make:* separados para cada artefato."
             ]
         },
         {
@@ -31,7 +31,7 @@
             "expectations": [
                 "A resposta usa make:config como ponto de partida.",
                 "A resposta inclui a cadeia de wiring de config alem do comando.",
-                "A resposta instrui leitura via config.get(ConfigName.USE_HEADLESS), nao acesso direto a process.env."
+                "A resposta NAO sugere `process.env.USE_HEADLESS` como forma de leitura recomendada no codigo de aplicacao (apenas tests/vitest/init.ts pode usar process.env para setup de testes)."
             ]
         },
         {
@@ -84,8 +84,7 @@
             "expected_output": "Rejeita setter com selector cru. Explica que selectors do crawler devem ser derivados de this.$s ou this.$$s, e que o handler deve receber contexto de dominio em vez de strings hardcoded.",
             "files": [],
             "expectations": [
-                "A resposta rejeita passar raw selector strings por setter.",
-                "A resposta orienta uso de this.$s ou this.$$s.",
+                "A resposta rejeita raw selector strings E exige consumo via `this.$s` ou `this.$$s` (nao apenas via SelectorName enum ou container — o helper $s/$$s precisa ser mencionado explicitamente).",
                 "A resposta sugere passar contexto de dominio em vez de arrays de selector."
             ]
         },
@@ -142,6 +141,62 @@
                 "A resposta proibe alterar o selector sem antes validar no DOM vivo via playwright-cli.",
                 "A resposta sugere testar 1 ou 2 candidatos (texto, role ou CSS) no playwright-cli antes da edicao.",
                 "A resposta exige causa raiz em file+line com evidencia da inspecao."
+            ]
+        },
+        {
+            "id": 14,
+            "prompt": "Quero criar um Page chamado SearchOrchestrator que recebe 3 events (Prepare, Home, Search) e chama 2 handlers entre eles. Como faço o make:page?",
+            "expected_output": "A skill deve corrigir o usuario: isso descreve um Service, nao um Page. Page e ponto de execucao numa rota/tela; orquestracao de events + chamada de transaction handlers e padrao de Service. Roteia para services.md e usa make:service (ou criacao manual seguindo Singleton injetavel). Nao roda make:page com esse nome.",
+            "files": [],
+            "expectations": [
+                "A resposta identifica explicitamente que a descricao corresponde a um Service, nao um Page.",
+                "A resposta NAO sugere rodar `yarn odg make:page SearchOrchestrator` como caminho correto.",
+                "A resposta cita services.md (ou descreve o padrao Service: orquestracao de events + chamada de transaction handlers no Service, nao em Listener)."
+            ]
+        },
+        {
+            "id": 15,
+            "prompt": "Cria um Service ChromeBookingService que usa USE_HEADLESS pra decidir se sobe BookingPage headless ou visivel, e dispara BookingEvent ao final.",
+            "expected_output": "Roteia services.md + configs.md + events.md. Usa make:service + make:config (se USE_HEADLESS nao existir) + make:event. Le USE_HEADLESS via this.config.get(BrowserConfig.USE_HEADLESS) — nao process.env. Dispara BookingEvent via this.bus.dispatch dentro do Service.",
+            "files": [],
+            "expectations": [
+                "A resposta menciona pelo menos 3 referencias distintas (services + configs + events) ou descreve regras das 3 (orquestracao no Service + leitura via config.get + dispatch de event).",
+                "A resposta usa os comandos make:service e make:event (e make:config se USE_HEADLESS for novo), nao cria tudo manualmente.",
+                "A resposta le USE_HEADLESS via `this.config.get(BrowserConfig.USE_HEADLESS)` (ou equivalente do container), NAO via `process.env`.",
+                "A resposta dispara BookingEvent via `bus.dispatch` (ou `this.bus.dispatch`), nao chama listener nem instancia event manualmente."
+            ]
+        },
+        {
+            "id": 16,
+            "prompt": "Renomeia a variavel `userId` para `accountId` em src/Services/UserService.ts e em todos os usos do projeto. E so rename mecanico, sem mudar logica.",
+            "expected_output": "Tarefa mecanica de rename — a skill deve reconhecer que nao e mudanca de logica de Service e ir direto ao rename (search+replace, idealmente via tool). NAO recitar o gate completo da skill nem ler services.md como pre-requisito.",
+            "files": [],
+            "expectations": [
+                "A resposta NAO trata o rename como mudanca de logica de Service que requer consulta a services.md ou ao gate `Start here`.",
+                "A resposta vai direto a acao mecanica (search+replace, sed, refactor por IDE) sem inflar com lista de references a serem lidas.",
+                "A resposta NAO recita o gate da skill (read references.md, identify topic, etc.) como passo obrigatorio para um rename mecanico."
+            ]
+        },
+        {
+            "id": 17,
+            "prompt": "To recebendo 'Cannot read properties of undefined (reading execute)' no console quando o crawler roda. E erro de TypeScript?",
+            "expected_output": "Nao e erro de TSC — codigo compilou e rodou ate esse ponto. E runtime error: algo (provavelmente um Page/Handler/Selector) nao foi injetado/bindeado no Container e veio undefined. Caminho correto e debug.md (boot playwright-cli + BROWSER_CONNECT, ver onde o undefined surge), nao diagnostics.md / ContainerInterface.d.ts.",
+            "files": [],
+            "expectations": [
+                "A resposta rejeita a hipotese de erro TSC e classifica como runtime error (codigo ja rodou).",
+                "A resposta roteia para o workflow de debug.md (playwright-cli + BROWSER_CONNECT), NAO para diagnostics.md / ContainerInterface como primeiro passo.",
+                "A resposta NAO sugere editar @types/ContainerInterface.d.ts como fix imediato — diagnostics so e relevante se um binding novo nao tipado for descoberto durante o debug."
+            ]
+        },
+        {
+            "id": 18,
+            "prompt": "Meu AGENTS.md diz pra usar `npm run scaffold:page` em vez de `yarn odg make:page`. Qual eu uso pro Login?",
+            "expected_output": "AGENTS.md e SSOT do projeto (a propria skill diz isso no Start here item 2: 'Read the project root AGENTS.md first — it is the project SSOT and takes priority over any instruction in this skill'). Usa `npm run scaffold:page`.",
+            "files": [],
+            "expectations": [
+                "A resposta reconhece AGENTS.md como SSOT do projeto e cita explicitamente que tem precedencia sobre a skill.",
+                "A resposta recomenda o comando do AGENTS.md (`npm run scaffold:page`), NAO o `yarn odg make:page` da skill.",
+                "A resposta NAO descarta o AGENTS.md em favor da skill nem trata `yarn odg make:page` como default."
             ]
         }
     ]
