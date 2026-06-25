@@ -112,5 +112,7 @@ export default {
         "unicorn/no-duplicate-logical-operands": [ "error" ], // Não faça comparação iguais
         "unicorn/no-misrefactored-assignment": [ "error" ], // Atribuição a += a + b (erro humano), use apenas a += b
         "unicorn/no-selector-as-dom-name": [ "error" ], // AddClass com seletor errado
+        "unicorn/no-invalid-well-known-symbol-methods": [ "error" ], // Não use Symbol.iterator() async
+        "unicorn/no-late-event-control": [ "error" ], // Não use event.preventDefault() no final
     },
 };

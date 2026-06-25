@@ -1,4 +1,4 @@
-type SelectorValuesType = Record<string, RegExp | SelectorBasedType | string> | RegExp | string;
+type SelectorValuesType = Record<string, RegExp | RegExp[] | SelectorBasedType | string> | RegExp | RegExp[] | string;
 
 interface SelectorBasedType extends Record<string, SelectorValuesType> {
 }

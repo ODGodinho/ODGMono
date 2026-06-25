@@ -452,6 +452,14 @@ export default {
         "unicorn/prefer-event-target": [ "error" ], // Use EventTarget no Lugar de EventEmitter
         "unicorn/prefer-export-from": [ "error", { checkUsedVariables: true } ], // Prefira Export From
         "unicorn/prefer-string-raw": [ "error" ], // Use String.raw`` ao invés de scape no código
+        "unicorn/consistent-tuple-labels": [ "error" ], // Prefira usar nome para tuplas tipagem array
+        "unicorn/prefer-abort-signal-timeout": [ "error" ], // Prefira AbortSignal.timeout() ao invés de setTimeout
+        "unicorn/prefer-aggregate-error": [ "error" ], // Prefira AggregateError ao invés de Error
+        "unicorn/prefer-dom-node-replace-children": [ "error" ], // Use replaceChildren não removeChild + appendChild
+        "unicorn/prefer-promise-try": [ "error" ], // Prefira Promise.try() ao invés de new Promise()
+        "unicorn/prefer-set-methods": [ "error" ], // Prefira Set.union ao invés de novos
+        "unicorn/prefer-toggle-attribute": [ "error" ], // Prefira Element.toggleAttribute() ao invés de if else
+        "unicorn/prefer-url-search-parameters": [ "error" ], // Prefira URLSearchParams ao invés de string split
         "array-func/from-map": [ "error" ], // Use .map invés do segundo parâmetro do From
         "array-func/no-unnecessary-this-arg": [ "error" ], // Não passe parâmetro desnecessário
         "array-func/avoid-reverse": [ "error" ], // Não passe parâmetro desnecessário

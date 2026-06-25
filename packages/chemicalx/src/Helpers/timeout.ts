@@ -14,8 +14,7 @@ export async function timeout<ReturnType>(
     }
 
     return Promise.race([
-        Promise.resolve()
-            .then(async () => options.callback()),
+        Promise.try(async () => options.callback()),
         // eslint-disable-next-line no-restricted-syntax -- timeout to never resolve
         sleep(options.timeout).then(() => {
             throw new TimeoutException(`${options.name! || "Default"} - Timeout ${options.timeout}ms exceeded`);
