@@ -4,6 +4,8 @@ export type * from "./MessageInterface";
 
 export type * from "./options";
 
+export type * from "../Validators/ProxyValidator";
+
 export type * from "./request";
 
 export type * from "./response";

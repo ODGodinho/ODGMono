@@ -11,3 +11,5 @@ export * from "./messages/MessageResponse";
 export * from "./MethodsEnum";
 
 export * from "./messages/CacheableLookup";
+
+export * from "./ProxyManager";

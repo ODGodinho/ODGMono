@@ -52,7 +52,8 @@
     },
     "dependencies": {
         "@odg/cache": "workspace:^",
-        "@odg/exception": "workspace:^"
+        "@odg/exception": "workspace:^",
+        "zod": "^4.4.3"
     },
     "peerDependencies": {
         "@odg/cache": "workspace:^",
