@@ -131,8 +131,7 @@ export class ODGDecorators {
         for (const metadata of provideMetadata) {
             containerInstance
                 .bind(metadata.name)
-                .to(metadata.target)
-                .inTransientScope();
+                .to(metadata.target);
         }
     }
 
