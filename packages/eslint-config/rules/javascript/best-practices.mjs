@@ -460,6 +460,10 @@ export default {
         "unicorn/prefer-set-methods": [ "error" ], // Prefira Set.union ao invés de novos
         "unicorn/prefer-toggle-attribute": [ "error" ], // Prefira Element.toggleAttribute() ao invés de if else
         "unicorn/prefer-url-search-parameters": [ "error" ], // Prefira URLSearchParams ao invés de string split
+        "unicorn/no-unnecessary-fetch-options": [ "error" ], // Não passe parâmetro desnecessário fetch request
+        "unicorn/prefer-abort-signal-any": [ "error" ], // Prefira AbortSignal.any() ao invés de Promise.any()
+        "unicorn/prefer-group-by": [ "error" ], // Prefira Object.groupBy() ao invés de reduce
+        "unicorn/prefer-simplified-conditions": [ "error" ], // Prefira condições simplificadas
         "array-func/from-map": [ "error" ], // Use .map invés do segundo parâmetro do From
         "array-func/no-unnecessary-this-arg": [ "error" ], // Não passe parâmetro desnecessário
         "array-func/avoid-reverse": [ "error" ], // Não passe parâmetro desnecessário
