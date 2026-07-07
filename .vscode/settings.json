@@ -48,6 +48,9 @@
     "js/ts.format.placeOpenBraceOnNewLineForFunctions": false,
     "js/ts.format.indentSwitchCase": true,
     "js/ts.format.insertSpaceAfterConstructor": false,
+    "js/ts.preferences.preferTypeOnlyAutoImports": true,
+    "js/ts.preferences.importModuleSpecifier": "non-relative",
+    "js/ts.suggest.autoImports": true,
 
     // Optimize todo hightlight
     "todohighlight.isEnable": true,
