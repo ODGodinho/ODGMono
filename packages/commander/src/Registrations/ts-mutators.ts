@@ -43,7 +43,7 @@ function collapseAdjacentDuplicateCommas(source: string): string {
     return result;
 }
 
-function appendNamedImport(importDeclaration: ImportDeclaration, name: string): boolean {
+function didAppendNamedImport(importDeclaration: ImportDeclaration, name: string): boolean {
     const hasNamed = importDeclaration.getNamedImports().some((named) => named.getName() === name);
 
     if (hasNamed) {
@@ -55,7 +55,7 @@ function appendNamedImport(importDeclaration: ImportDeclaration, name: string): 
     return true;
 }
 
-function mutateNamedImport(
+function didMutateNamedImport(
     sourceFile: SourceFile,
     moduleSpecifier: string,
     name: string,
@@ -67,7 +67,7 @@ function mutateNamedImport(
     );
 
     if (importDeclaration) {
-        return appendNamedImport(importDeclaration, name);
+        return didAppendNamedImport(importDeclaration, name);
     }
 
     sourceFile.addImportDeclaration({
@@ -79,7 +79,7 @@ function mutateNamedImport(
     return true;
 }
 
-async function commitNamedImport(parameters: {
+async function didCommitNamedImport(parameters: {
     filePath: string;
     moduleSpecifier: string;
     name: string;
@@ -87,7 +87,7 @@ async function commitNamedImport(parameters: {
     const project = createProject();
     const sourceFile = addSourceFile(project, parameters.filePath);
 
-    if (!mutateNamedImport(sourceFile, parameters.moduleSpecifier, parameters.name, isTypeOnly)) {
+    if (!didMutateNamedImport(sourceFile, parameters.moduleSpecifier, parameters.name, isTypeOnly)) {
         return false;
     }
 
@@ -133,7 +133,7 @@ function hasObjectPropertyByNamePrefix(
     return objectLiteral.getProperties().some((property) => property.getText().startsWith(propertyName));
 }
 
-export async function ensureEnumMember(parameters: {
+export async function didEnsureEnumMember(parameters: {
     filePath: string;
     enumName: string;
     memberName: string;
@@ -169,7 +169,7 @@ export async function ensureEnumMember(parameters: {
     return true;
 }
 
-export async function ensureBarrelExport(parameters: {
+export async function didEnsureBarrelExport(parameters: {
     barrelPath: string;
     relativeExportPath: string;
 }): Promise<boolean> {
@@ -197,7 +197,7 @@ export async function ensureBarrelExport(parameters: {
     return true;
 }
 
-export async function ensureTopLevelStatements(parameters: {
+export async function didEnsureTopLevelStatements(parameters: {
     filePath: string;
     statements: string[];
 }): Promise<boolean> {
@@ -221,7 +221,7 @@ export async function ensureTopLevelStatements(parameters: {
     return true;
 }
 
-export async function ensureInterfaceProperty(parameters: {
+export async function didEnsureInterfaceProperty(parameters: {
     filePath: string;
     interfaceName: string;
     propertyName: string;
@@ -253,7 +253,7 @@ export async function ensureInterfaceProperty(parameters: {
     return true;
 }
 
-export async function ensureEnvironmentExampleLines(parameters: {
+export async function didEnsureEnvironmentExampleLines(parameters: {
     filePath: string;
     lines: string[];
 }): Promise<boolean> {
@@ -278,7 +278,7 @@ export async function ensureEnvironmentExampleLines(parameters: {
     return true;
 }
 
-export async function ensureZodObjectEntry(parameters: {
+export async function didEnsureZodObjectEntry(parameters: {
     filePath: string;
     constName: string;
     propertyName: string;
@@ -303,18 +303,18 @@ export async function ensureZodObjectEntry(parameters: {
     return true;
 }
 
-export async function ensureTypeNamedImport(parameters: {
+export async function didEnsureTypeNamedImport(parameters: {
     filePath: string;
     moduleSpecifier: string;
     name: string;
 }): Promise<boolean> {
-    return commitNamedImport(parameters, true);
+    return didCommitNamedImport(parameters, true);
 }
 
-export async function ensureValueNamedImport(parameters: {
+export async function didEnsureValueNamedImport(parameters: {
     filePath: string;
     moduleSpecifier: string;
     name: string;
 }): Promise<boolean> {
-    return commitNamedImport(parameters, false);
+    return didCommitNamedImport(parameters, false);
 }

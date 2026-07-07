@@ -4,14 +4,14 @@ import { InvalidArgumentException } from "@odg/exception";
 
 import { resolveContainerEnumMemberValue } from "./pascal-to-dot-lower";
 import {
-    ensureBarrelExport,
-    ensureEnumMember,
-    ensureEnvironmentExampleLines,
-    ensureInterfaceProperty,
-    ensureTopLevelStatements,
-    ensureTypeNamedImport,
-    ensureValueNamedImport,
-    ensureZodObjectEntry,
+    didEnsureBarrelExport,
+    didEnsureEnumMember,
+    didEnsureEnvironmentExampleLines,
+    didEnsureInterfaceProperty,
+    didEnsureTopLevelStatements,
+    didEnsureTypeNamedImport,
+    didEnsureValueNamedImport,
+    didEnsureZodObjectEntry,
 } from "./ts-mutators";
 import type { ArtifactDescriptor, RegistrationTargets } from "./types";
 
@@ -45,7 +45,7 @@ async function registerContainerEnumMember(
     memberName: string,
     memberValue: string,
 ): Promise<void> {
-    await ensureEnumMember({
+    await didEnsureEnumMember({
         filePath: containerEnumPath,
         enumName: "ContainerName",
         memberName,
@@ -59,13 +59,13 @@ async function registerContainerInterfaceBinding(
     className: string,
     moduleSpecifier: string,
 ): Promise<void> {
-    await ensureValueNamedImport({
+    await didEnsureValueNamedImport({
         filePath: containerInterfacePath,
         moduleSpecifier,
         name: className,
     });
 
-    await ensureInterfaceProperty({
+    await didEnsureInterfaceProperty({
         filePath: containerInterfacePath,
         interfaceName: "ContainerInterface",
         propertyName: `[ContainerName.${enumMember}]`,
@@ -80,7 +80,7 @@ async function registerBarrelExport(
 ): Promise<void> {
     const relativeExportPath = resolveRelativeExportPath(filePath, barrelPath, fallbackExportName);
 
-    await ensureBarrelExport({
+    await didEnsureBarrelExport({
         barrelPath,
         relativeExportPath,
     });
@@ -92,7 +92,7 @@ async function registerConfigEnumMembers(descriptor: ArtifactDescriptor, targets
     }
 
     for (const key of descriptor.configEnumMembers) {
-        await ensureEnumMember({
+        await didEnsureEnumMember({
             filePath: targets.configEnumPath,
             enumName: "ConfigName",
             memberName: key,
@@ -109,7 +109,7 @@ async function registerEnvironmentExampleLines(
         return;
     }
 
-    await ensureEnvironmentExampleLines({
+    await didEnsureEnvironmentExampleLines({
         filePath: targets.envExamplePath,
         lines: descriptor.envExampleLines,
     });
@@ -132,7 +132,7 @@ async function registerImports(targets: RegistrationTargets): Promise<void> {
         targets.listenersIndexPath,
     ].filter(Boolean) as string[]);
 
-    await Promise.all([ ...importTargets ].map(async (filePath) => ensureTopLevelStatements({
+    await Promise.all([ ...importTargets ].map(async (filePath) => didEnsureTopLevelStatements({
         filePath,
         statements: imports,
     })));
@@ -214,7 +214,7 @@ async function registerEventsInterface(descriptor: ArtifactDescriptor, targets: 
         );
     }
 
-    await ensureInterfaceProperty({
+    await didEnsureInterfaceProperty({
         filePath: targets.eventsInterfacePath,
         interfaceName: "EventBaseInterface",
         propertyName: `[EventName.${descriptor.eventEnumMember}]`,
@@ -234,13 +234,13 @@ async function registerEventContainerInterface(
         return;
     }
 
-    await ensureTypeNamedImport({
+    await didEnsureTypeNamedImport({
         filePath: targets.containerInterfacePath,
         moduleSpecifier: listenersTypeModuleSpecifier,
         name: descriptor.listenerClassName,
     });
 
-    await ensureInterfaceProperty({
+    await didEnsureInterfaceProperty({
         filePath: targets.containerInterfacePath,
         interfaceName: "ContainerInterface",
         propertyName: `[ContainerName.${descriptor.containerEnumMember}]`,
@@ -250,7 +250,7 @@ async function registerEventContainerInterface(
 
 async function registerEvent(descriptor: ArtifactDescriptor, targets: RegistrationTargets): Promise<void> {
     if (descriptor.eventEnumMember && targets.eventEnumPath) {
-        await ensureEnumMember({
+        await didEnsureEnumMember({
             filePath: targets.eventEnumPath,
             enumName: "EventName",
             memberName: descriptor.eventEnumMember,
@@ -277,7 +277,7 @@ async function registerListener(descriptor: ArtifactDescriptor, targets: Registr
     }
 
     if (descriptor.containerEnumMember && targets.containerEnumPath) {
-        await ensureEnumMember({
+        await didEnsureEnumMember({
             filePath: targets.containerEnumPath,
             enumName: "ContainerName",
             memberName: descriptor.containerEnumMember,
@@ -300,7 +300,7 @@ async function registerConfig(descriptor: ArtifactDescriptor, targets: Registrat
     }
 
     for (const key of descriptor.configEnumMembers) {
-        await ensureZodObjectEntry({
+        await didEnsureZodObjectEntry({
             filePath: targets.configValidatorPath,
             constName: "configValidator",
             propertyName: `[ConfigName.${key}]`,

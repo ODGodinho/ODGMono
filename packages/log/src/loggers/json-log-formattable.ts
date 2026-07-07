@@ -23,5 +23,5 @@ export function isJSONLogFormattable(message: unknown): message is JSONLogFormat
     if (typeof messageTyped.index !== "string") return false;
     if (typeof messageTyped.message !== "string") return false;
 
-    return !(typeof messageTyped.request !== "object" && messageTyped.request);
+    return typeof messageTyped.request === "object" || !messageTyped.request;
 }

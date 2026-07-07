@@ -29,7 +29,7 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
     public static override parseMessageToLibrary<RequestD>(
         options: Partial<TlsRequestInterface<RequestD>>,
     ): AxiosRequestConfig<RequestD> {
-        const allowRedirect = String(this.getAllowRedirect(options));
+        const allowRedirect = String(this.isAllowRedirect(options));
 
         return Object.fromEntries(Object.entries({
             ...super.parseMessageToLibrary(options),
@@ -105,7 +105,7 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
         return `${proxy.protocol}://${proxy.host}${proxyPort}`;
     }
 
-    private static getAllowRedirect<RequestD = unknown>(
+    private static isAllowRedirect<RequestD = unknown>(
         options: Partial<TlsRequestInterface<RequestD>>,
     ): boolean {
         return options.tls?.allowRedirect ?? true;

@@ -12,7 +12,7 @@ describe("Tls Allow Redirect", () => {
             },
         });
 
-        expect(TlsAxiosRequestParser["getAllowRedirect"](await messageTls["getNewOptions"]({}))).toBe(false);
+        expect(TlsAxiosRequestParser["isAllowRedirect"](await messageTls["getNewOptions"]({}))).toBe(false);
     });
 
     test.concurrent("Redirect url override true", async () => {
@@ -23,7 +23,7 @@ describe("Tls Allow Redirect", () => {
             },
         });
 
-        expect(TlsAxiosRequestParser["getAllowRedirect"](await messageTls["getNewOptions"]({
+        expect(TlsAxiosRequestParser["isAllowRedirect"](await messageTls["getNewOptions"]({
             tls: { allowRedirect: true },
         }))).toBe(true);
     });
@@ -36,7 +36,7 @@ describe("Tls Allow Redirect", () => {
             },
         });
 
-        expect(TlsAxiosRequestParser["getAllowRedirect"](await messageTls["getNewOptions"]({
+        expect(TlsAxiosRequestParser["isAllowRedirect"](await messageTls["getNewOptions"]({
             tls: { allowRedirect: undefined },
         }))).toBe(true);
     });

@@ -12,11 +12,13 @@ const NOT_VOID_MSG = `Functions with prefix ${NOT_VOID_PREFIX} must return a val
 // Verbos predicate (devem retornar boolean).
 const BOOLEAN_PREFIX = `(${BOOLEAN_PREFIXES_PIPE})`;
 
-const PREDICATE_PATTERN = `^${BOOLEAN_PREFIX}[A-Z]`;
+const PREDICATE_PATTERN = `^${BOOLEAN_PREFIX}`;
 
 const NON_BOOLEAN_PRIMITIVES = "/^TS(Void|String|Number|Undefined|Null)Keyword$/";
 
 const PREDICATE_MSG = `Predicate functions with prefix ${BOOLEAN_PREFIX} must return boolean.`;
+
+const REQUIRE_PREDICATE_MSG = `Functions returning boolean must use a predicate prefix ${BOOLEAN_PREFIX}.`;
 
 const PROMISE_TYPE_ANNOTATION = "[returnType.typeAnnotation.typeName.name='Promise']";
 
@@ -29,14 +31,22 @@ const PROMISE_TYPE_ANNOTATION = "[returnType.typeAnnotation.typeName.name='Promi
  * Each selector is generated twice: once for direct return type, once for Promise<X>.
  *
  * @param {string} namePattern Regex (string) matching identifier name.
- * @param {string} directTypeMatch Filter on `.type=...` (e.g. `='TSVoidKeyword'` or `=/regex/`).
- * @param {string} promiseTypeMatch Same but for inner Promise type argument.
- * @param {string} message Error message.
+ * @param {string} typeMatch Filter on `.type=...` (e.g. `='TSVoidKeyword'` or `=/regex/`), applied
+ * both to the direct return type and to the inner Promise<X> type argument.
+ * @param {object} options Message and name-matching behavior.
+ * @param {string} options.message Error message.
+ * @param {boolean} [options.negateName] If true, matches identifiers that do NOT match `namePattern`
+ * instead of ones that do.
+ * @param {boolean} [options.includeInterfaces] If false, skips TSMethodSignature (interface method)
+ * selectors — interfaces only declare a contract, they have no implementation to name-check.
  * @returns {object[]} Restricted-syntax rule entries.
  */
-function buildReturnTypeRules(namePattern, directTypeMatch, promiseTypeMatch, message) {
-    const nameFilter = `[key.name=/${namePattern}/]`;
-    const idFilter = `[id.name=/${namePattern}/]`;
+function buildReturnTypeRules(namePattern, typeMatch, { message, negateName = false, includeInterfaces = true }) {
+    const directTypeMatch = typeMatch;
+    const promiseTypeMatch = typeMatch;
+    const nameOperator = negateName ? "!=" : "=";
+    const nameFilter = `[key.name${nameOperator}/${namePattern}/]`;
+    const idFilter = `[id.name${nameOperator}/${namePattern}/]`;
 
     return [
 
@@ -56,19 +66,23 @@ function buildReturnTypeRules(namePattern, directTypeMatch, promiseTypeMatch, me
         },
 
         // Interface method — return type
-        {
-            selector: `TSMethodSignature${nameFilter}`
-                + `[returnType.typeAnnotation.type${directTypeMatch}]`,
-            message,
-        },
+        ...includeInterfaces
+            ? [
+                {
+                    selector: `TSMethodSignature${nameFilter}`
+                        + `[returnType.typeAnnotation.type${directTypeMatch}]`,
+                    message,
+                },
 
-        // Interface method — Promise<X>
-        {
-            selector: `TSMethodSignature${nameFilter}${
-                PROMISE_TYPE_ANNOTATION
-            }[returnType.typeAnnotation.typeArguments.params.0.type${promiseTypeMatch}]`,
-            message,
-        },
+                // Interface method — Promise<X>
+                {
+                    selector: `TSMethodSignature${nameFilter}${
+                        PROMISE_TYPE_ANNOTATION
+                    }[returnType.typeAnnotation.typeArguments.params.0.type${promiseTypeMatch}]`,
+                    message,
+                },
+            ]
+            : [],
 
         // Function declaration — return type
         {
@@ -107,15 +121,23 @@ function buildReturnTypeRules(namePattern, directTypeMatch, promiseTypeMatch, me
 const notVoidRules = buildReturnTypeRules(
     NOT_VOID_PATTERN,
     "='TSVoidKeyword'",
-    "='TSVoidKeyword'",
-    NOT_VOID_MSG,
+    { message: NOT_VOID_MSG },
 );
 
 const predicateRules = buildReturnTypeRules(
     PREDICATE_PATTERN,
     `=${NON_BOOLEAN_PRIMITIVES}`,
-    `=${NON_BOOLEAN_PRIMITIVES}`,
-    PREDICATE_MSG,
+    { message: PREDICATE_MSG },
+);
+
+/*
+ * Inverse of predicateRules: boolean-returning functions WITHOUT a predicate prefix → erro.
+ * Interfaces ficam de fora: são contratos, quem implementa é que deve seguir a convenção.
+ */
+const requirePredicateRules = buildReturnTypeRules(
+    PREDICATE_PATTERN,
+    "='TSBooleanKeyword'",
+    { message: REQUIRE_PREDICATE_MSG, negateName: true, includeInterfaces: false },
 );
 
 const restrictSyntaxBase = [
@@ -169,6 +191,7 @@ const restrictSyntaxBase = [
     },
     ...notVoidRules,
     ...predicateRules,
+    ...requirePredicateRules,
 ];
 
 export const restrictSyntaxTest = [ ...restrictSyntaxBase ];

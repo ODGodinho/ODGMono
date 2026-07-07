@@ -8,14 +8,14 @@ import {
 import { describe, expect, test } from "vitest";
 
 import {
-    ensureBarrelExport,
-    ensureEnumMember,
-    ensureEnvironmentExampleLines,
-    ensureInterfaceProperty,
-    ensureTopLevelStatements,
-    ensureTypeNamedImport,
-    ensureValueNamedImport,
-    ensureZodObjectEntry,
+    didEnsureBarrelExport,
+    didEnsureEnumMember,
+    didEnsureEnvironmentExampleLines,
+    didEnsureInterfaceProperty,
+    didEnsureTopLevelStatements,
+    didEnsureTypeNamedImport,
+    didEnsureValueNamedImport,
+    didEnsureZodObjectEntry,
 } from "#app/Registrations/ts-mutators";
 
 const appUrlPropertyName = "[ConfigName.APP_URL]";
@@ -33,13 +33,13 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "export enum ContainerName {\n}\n", "utf8");
 
-        await expect(ensureEnumMember({
+        await expect(didEnsureEnumMember({
             filePath,
             enumName: "ContainerName",
             memberName: "Foo",
         })).resolves.toBe(true);
 
-        await expect(ensureEnumMember({
+        await expect(didEnsureEnumMember({
             filePath,
             enumName: "ContainerName",
             memberName: "Foo",
@@ -51,7 +51,7 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "export const x = 1;\n", "utf8");
 
-        await expect(ensureEnumMember({
+        await expect(didEnsureEnumMember({
             filePath,
             enumName: "Missing",
             memberName: "Foo",
@@ -74,7 +74,7 @@ describe("ts-mutators", () => {
             "utf8",
         );
 
-        await expect(ensureEnumMember({
+        await expect(didEnsureEnumMember({
             filePath,
             enumName: "ContainerName",
             memberName: "ExamplePage",
@@ -92,8 +92,8 @@ describe("ts-mutators", () => {
 
         await writeFile(barrelPath, "", "utf8");
 
-        await expect(ensureBarrelExport({ barrelPath, relativeExportPath: "./A" })).resolves.toBe(true);
-        await expect(ensureBarrelExport({ barrelPath, relativeExportPath: "./A" })).resolves.toBe(false);
+        await expect(didEnsureBarrelExport({ barrelPath, relativeExportPath: "./A" })).resolves.toBe(true);
+        await expect(didEnsureBarrelExport({ barrelPath, relativeExportPath: "./A" })).resolves.toBe(false);
     });
 
     test("Top-level statements insertion + idempotency + empty", async () => {
@@ -103,12 +103,12 @@ describe("ts-mutators", () => {
 
         const typeImportStatement = "import type { X } from \"x\";";
 
-        await expect(ensureTopLevelStatements({ filePath, statements: [] })).resolves.toBe(false);
-        await expect(ensureTopLevelStatements({
+        await expect(didEnsureTopLevelStatements({ filePath, statements: [] })).resolves.toBe(false);
+        await expect(didEnsureTopLevelStatements({
             filePath,
             statements: [ typeImportStatement ],
         })).resolves.toBe(true);
-        await expect(ensureTopLevelStatements({
+        await expect(didEnsureTopLevelStatements({
             filePath,
             statements: [ typeImportStatement ],
         })).resolves.toBe(false);
@@ -117,7 +117,7 @@ describe("ts-mutators", () => {
     test("Top-level statements works when file does not exist yet", async () => {
         const filePath = `${root}/new-file.ts`;
 
-        await expect(ensureTopLevelStatements({
+        await expect(didEnsureTopLevelStatements({
             filePath,
             statements: [ "export const created = true;" ],
         })).resolves.toBe(true);
@@ -128,14 +128,14 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "export interface ContainerInterface {\n}\n", "utf8");
 
-        await expect(ensureInterfaceProperty({
+        await expect(didEnsureInterfaceProperty({
             filePath,
             interfaceName: "ContainerInterface",
             propertyName: "[ContainerName.Foo]",
             propertyType: "unknown",
         })).resolves.toBe(true);
 
-        await expect(ensureInterfaceProperty({
+        await expect(didEnsureInterfaceProperty({
             filePath,
             interfaceName: "ContainerInterface",
             propertyName: "[ContainerName.Foo]",
@@ -148,7 +148,7 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "export type X = 1;\n", "utf8");
 
-        await expect(ensureInterfaceProperty({
+        await expect(didEnsureInterfaceProperty({
             filePath,
             interfaceName: "MissingInterface",
             propertyName: "a",
@@ -161,7 +161,7 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "export interface X {}\n", "utf8");
 
-        await expect(ensureTypeNamedImport({
+        await expect(didEnsureTypeNamedImport({
             filePath,
             moduleSpecifier: "./SomeModule",
             name: "FooType",
@@ -171,7 +171,7 @@ describe("ts-mutators", () => {
 
         expect(textAfter.includes("import type { FooType } from \"./SomeModule\";")).toBe(true);
 
-        await expect(ensureTypeNamedImport({
+        await expect(didEnsureTypeNamedImport({
             filePath,
             moduleSpecifier: "./SomeModule",
             name: "FooType",
@@ -187,7 +187,7 @@ describe("ts-mutators", () => {
             "utf8",
         );
 
-        await expect(ensureTypeNamedImport({
+        await expect(didEnsureTypeNamedImport({
             filePath,
             moduleSpecifier: "./Shared",
             name: "Beta",
@@ -204,7 +204,7 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "export interface X {}\n", "utf8");
 
-        await expect(ensureValueNamedImport({
+        await expect(didEnsureValueNamedImport({
             filePath,
             moduleSpecifier: "@pages",
             name: "ExamplePage",
@@ -214,7 +214,7 @@ describe("ts-mutators", () => {
 
         expect(textAfter.includes("import { ExamplePage } from \"@pages\";")).toBe(true);
 
-        await expect(ensureValueNamedImport({
+        await expect(didEnsureValueNamedImport({
             filePath,
             moduleSpecifier: "@pages",
             name: "ExamplePage",
@@ -226,12 +226,12 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "A=1\n", "utf8");
 
-        await expect(ensureEnvironmentExampleLines({
+        await expect(didEnsureEnvironmentExampleLines({
             filePath,
             lines: [ "B=2" ],
         })).resolves.toBe(true);
 
-        await expect(ensureEnvironmentExampleLines({
+        await expect(didEnsureEnvironmentExampleLines({
             filePath,
             lines: [ "B=2" ],
         })).resolves.toBe(false);
@@ -247,7 +247,7 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "A=1", "utf8");
 
-        await expect(ensureEnvironmentExampleLines({
+        await expect(didEnsureEnvironmentExampleLines({
             filePath,
             lines: [ "B=2" ],
         })).resolves.toBe(true);
@@ -259,7 +259,7 @@ describe("ts-mutators", () => {
         const emptyPath = `${root}/.env.example.empty`;
 
         await writeFile(emptyPath, "", "utf8");
-        await expect(ensureEnvironmentExampleLines({
+        await expect(didEnsureEnvironmentExampleLines({
             filePath: emptyPath,
             lines: [ "C=3" ],
         })).resolves.toBe(true);
@@ -270,7 +270,7 @@ describe("ts-mutators", () => {
 
         await writeFile(barrelPath, "", "utf8");
 
-        await expect(ensureBarrelExport({ barrelPath, relativeExportPath: "Z" })).resolves.toBe(true);
+        await expect(didEnsureBarrelExport({ barrelPath, relativeExportPath: "Z" })).resolves.toBe(true);
         const text = await readFile(barrelPath, "utf8");
 
         expect(text).toContain("export * from \"./Z\";");
@@ -285,7 +285,7 @@ describe("ts-mutators", () => {
             "utf8",
         );
 
-        await expect(ensureZodObjectEntry({
+        await expect(didEnsureZodObjectEntry({
             filePath,
             constName: "configValidator",
             propertyName: appUrlPropertyName,
@@ -298,7 +298,7 @@ describe("ts-mutators", () => {
         expect(text).toContain(zodStringPropertyValue);
 
         // Idempotency
-        await expect(ensureZodObjectEntry({
+        await expect(didEnsureZodObjectEntry({
             filePath,
             constName: "configValidator",
             propertyName: appUrlPropertyName,
@@ -311,7 +311,7 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "export const other = 1;\n", "utf8");
 
-        await expect(ensureZodObjectEntry({
+        await expect(didEnsureZodObjectEntry({
             filePath,
             constName: "configValidator",
             propertyName: fooPropertyName,
@@ -324,7 +324,7 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "export const configValidator = {};\n", "utf8");
 
-        await expect(ensureZodObjectEntry({
+        await expect(didEnsureZodObjectEntry({
             filePath,
             constName: "configValidator",
             propertyName: fooPropertyName,
@@ -337,7 +337,7 @@ describe("ts-mutators", () => {
 
         await writeFile(filePath, "export const configValidator = zod.object(someRef);\n", "utf8");
 
-        await expect(ensureZodObjectEntry({
+        await expect(didEnsureZodObjectEntry({
             filePath,
             constName: "configValidator",
             propertyName: fooPropertyName,

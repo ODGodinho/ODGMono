@@ -51,6 +51,7 @@ export class CacheManager<CacheType extends object> {
      * @param {string} name - Nome do handler
      * @returns {boolean} true se foi removido, false caso contrário
      */
+    // eslint-disable-next-line no-restricted-syntax
     public removeHandler(name: string): boolean {
         const didRemove = this.handlers.delete(name);
 
