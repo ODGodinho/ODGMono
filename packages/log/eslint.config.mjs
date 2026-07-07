@@ -1,3 +1,3 @@
-import rules from "@odg/eslint-config";
+import odgLinter from "@odg/eslint-config";
 
-export default [ ...rules ];
+export default [ ...odgLinter ];

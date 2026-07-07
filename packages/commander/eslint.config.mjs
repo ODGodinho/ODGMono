@@ -1,7 +1,7 @@
-import odgConfig from "@odg/eslint-config";
+import odgLinter from "@odg/eslint-config";
 
 export default [
-    ...odgConfig,
+    ...odgLinter,
     {
         ignores: [ "tests/vitest/cache/**" ],
     },
