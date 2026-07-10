@@ -41,6 +41,17 @@ export function getNamingConventionRules(isTsxFile = false) {
             format: [ "UPPER_CASE" ],
         },
 
+        /*
+         * Variável referenciando uma função predicate (isValid = () => boolean, ou desestruturada
+         * de um objeto) → ok. O retorno boolean da função já é garantido por restrict-syntax.
+         */
+        {
+            selector: BOOLEAN_SELECTORS,
+            types: [ "function" ],
+            filter: { regex: `^(${BOOLEAN_PREFIXES_PIPE})[A-Z]`, match: true },
+            format: [ "strictCamelCase", "camelCase" ],
+        },
+
         // Identificador com prefixo camelCase boolean (is/has/...) mas que NÃO é boolean → erro
         {
             selector: BOOLEAN_SELECTORS,
@@ -131,6 +142,18 @@ export function getNamingConventionRules(isTsxFile = false) {
             selector: [ "classProperty", "objectLiteralProperty" ],
             format: null,
             modifiers: [ "requiresQuotes" ],
+        },
+
+        // Permite variáveis no padrão PascalCase quando forem referências a Controllers
+        {
+            selector: [ "variable" ],
+            filter: {
+                regex: "^(?!(abortController|signalController)$).+Controller$",
+                match: true,
+            },
+            format: [ "StrictPascalCase" ],
+            leadingUnderscore: "allowSingleOrDouble",
+            trailingUnderscore: "allow",
         },
 
         // Regra genérica (catch-all) — fica por último para não capturar antes das específicas

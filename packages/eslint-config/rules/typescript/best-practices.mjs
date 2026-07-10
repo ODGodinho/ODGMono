@@ -62,7 +62,12 @@ export default {
             { allowInterfaces: "with-single-extends", allowWithName: "Props$" },
         ], // Não Crie tipos vazios
         "@typescript-eslint/no-import-type-side-effects": [ "error" ], // Coloque type fora para n importar no build
-        "@typescript-eslint/explicit-function-return-type": [ "error" ], // Força tipo de retorno
+        "@typescript-eslint/explicit-function-return-type": [
+            "error",
+            {
+                allowExpressions: true,
+            },
+        ], // Força tipo de retorno, exceto function expressions
         "@typescript-eslint/explicit-module-boundary-types": [ "error" ], // Força tipo de retorno
         "no-unused-vars": [ "off" ], // Não permite variáveis não utilizadas
         "@typescript-eslint/no-unused-vars": [

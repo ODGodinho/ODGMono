@@ -1,6 +1,7 @@
 /* eslint-disable import/max-dependencies */
 import { createRequire } from "node:module";
 
+import adonisPlugin from "@adonisjs/eslint-plugin";
 import stylistic from "@stylistic/eslint-plugin";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 // eslint-disable-next-line import/no-unresolved
@@ -65,6 +66,16 @@ const espree = require("espree");
 // eslint-disable-next-line import/no-unresolved
 const jsoncParser = require("jsonc-eslint-parser");
 
+const hasAdonisCore = (() => {
+    try {
+        require.resolve("@adonisjs/core/package.json", { paths: [ process.cwd() ] });
+
+        return true;
+    } catch {
+        return false;
+    }
+})();
+
 let odgTsconfig;
 
 try {
@@ -79,6 +90,7 @@ export default [
     {
         ignores: [
             "!.*",
+            ".adonisjs/**",
             ".claude",
             ".review",
             ".sonarlint",
@@ -122,6 +134,7 @@ export default [
             "coverage/",
             "dist/",
             "tmp/",
+            "temp/",
             "**/*.min.*",
             "**/*.png",
             "package-lock.json",
@@ -129,6 +142,8 @@ export default [
             "bun.lock",
             "bun.lock*",
             "pnpm-lock.yaml",
+            ".yalc/",
+            ".review/",
         ],
     },
 
@@ -275,6 +290,11 @@ export default [
             ...typescriptErrors.rules,
             ...typescriptSecurity.rules,
             ...typescriptPossibleErrors.rules,
+            ...hasAdonisCore
+                ? {
+                    "no-undef": [ "off" ],
+                }
+                : {},
         },
     },
 
@@ -289,6 +309,47 @@ export default [
             ],
         },
     },
+
+    ...hasAdonisCore
+        ? [
+            // Adonis Rules
+            {
+                files: [ "**/*.ts" ],
+                ignores: [
+                    "public/assets/**",
+                    "__snapshots__/**",
+                    "resources/**",
+                ],
+                plugins: {
+                    "@adonisjs": adonisPlugin,
+                },
+                rules: {
+                    "@adonisjs/prefer-lazy-controller-import": [ "error" ],
+                    "@adonisjs/prefer-lazy-listener-import": [ "error" ],
+                    "@adonisjs/prefer-adonisjs-inertia-link": [ "error" ],
+                    "@adonisjs/prefer-adonisjs-inertia-form": [ "error" ],
+                    "@adonisjs/no-backend-import-in-frontend": [ "error" ],
+                },
+            },
+
+            // Root routes file
+            {
+                files: [ "start/routes.ts", "adonisrc.ts" ],
+                rules: {
+                    "@typescript-eslint/explicit-function-return-type": [ "off" ],
+                    "func-style": [ "off" ],
+                },
+            },
+
+            {
+                files: [ "bin/" ],
+                rules: {
+                    "import/no-extraneous-dependencies": [ "off" ],
+                    "import/no-dynamic-require": [ "off" ],
+                },
+            },
+        ]
+        : [],
 
     // Config files
     {
@@ -306,6 +367,8 @@ export default [
             "**/*.config.mjs",
             "**/index.mjs",
             "**/index.mts",
+            "config/**.ts",
+            "adonisrc.ts",
         ],
         rules: {
             "import/no-anonymous-default-export": [ "off" ],

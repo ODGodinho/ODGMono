@@ -36,6 +36,7 @@
         "typescript": "^6.0.3"
     },
     "dependencies": {
+        "@adonisjs/eslint-plugin": "^2.2.2",
         "@babel/core": "^8.0.1",
         "@odg/eslint-plugin": "^1.0.2",
         "@stylistic/eslint-plugin": "^5.10.0",
@@ -74,8 +75,7 @@
         "yaml-eslint-parser": "^2.0.0"
     },
     "peerDependencies": {
-        "eslint": ">=9.39.2",
-        "typescript": ">=5"
+        "eslint": ">=9.39.2"
     },
     "peerDependenciesMeta": {
         "eslint": {
