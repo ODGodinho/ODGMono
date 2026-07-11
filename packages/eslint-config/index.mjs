@@ -4,9 +4,9 @@ import { createRequire } from "node:module";
 import adonisPlugin from "@adonisjs/eslint-plugin";
 import stylistic from "@stylistic/eslint-plugin";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
-// eslint-disable-next-line import/no-unresolved
 import typescriptParser from "@typescript-eslint/parser";
 import anyParser from "any-eslint-parser";
+import { defineConfig } from "eslint/config";
 import antfu from "eslint-plugin-antfu";
 import arrayFunc from "eslint-plugin-array-func";
 import betterMaxParams from "eslint-plugin-better-max-params";
@@ -15,7 +15,6 @@ import filenames from "eslint-plugin-filenames";
 import html from "eslint-plugin-html";
 import importPlugin from "eslint-plugin-import";
 import jsdoc from "eslint-plugin-jsdoc";
-// eslint-disable-next-line import/no-unresolved
 import jsonSchemaValidator from "eslint-plugin-json-schema-validator";
 import jsonc from "eslint-plugin-jsonc";
 import pluginN from "eslint-plugin-n";
@@ -27,7 +26,6 @@ import regexp from "eslint-plugin-regexp";
 import security from "eslint-plugin-security";
 import sonarjs from "eslint-plugin-sonarjs";
 import sortClassMembers from "eslint-plugin-sort-class-members";
-// eslint-disable-next-line import/no-unresolved
 import * as toml from "eslint-plugin-toml";
 import unicorn from "eslint-plugin-unicorn";
 import yml from "eslint-plugin-yml";
@@ -57,13 +55,21 @@ import yamlBase from "./rules/yaml/base.mjs";
 import yamlGithub from "./rules/yaml/github.mjs";
 
 const require = createRequire(import.meta.url);
+const isIdeWatchLint = process.argv
+    .some(
+        (argument) => argument === "--stdin"
+            || argument.startsWith("--stdin-")
+            || String(argument).includes("eslintServer.js"),
+    )
+    || process.env.VSCODE_CLI;
+
 const isAutomation = !process.stdout.isTTY
-    || process.env.CI === "true"
+    || process.env.AI_AGENT
+    || process.env.CI
     || process.env.TERM === "dumb";
 
 const odgPlugin = require("@odg/eslint-plugin");
 const espree = require("espree");
-// eslint-disable-next-line import/no-unresolved
 const jsoncParser = require("jsonc-eslint-parser");
 
 const hasAdonisCore = (() => {
@@ -84,7 +90,7 @@ try {
     // Only ignore optional tsconfig by default
 }
 
-export default [
+export default defineConfig([
 
     // Base configuration
     {
@@ -177,13 +183,12 @@ export default [
             "html/indent": "+4",
             "import/docstyle": [ "jsdoc", "tomdoc" ],
             "import/resolver": {
-                node: {
-                    extensions: [ ".mjs", ".js", ".jsx", ".json", ".ts", ".tsx", ".d.ts" ],
-                },
+                typescript: true,
+                node: true,
             },
             "import/external-module-folders": [ "@types" ],
             "import/extensions": [ ".js", ".mjs", ".jsx" ],
-            "import/core-modules": [ "bun:test" ],
+            "import/core-modules": [ "bun:test", "electron" ],
             "import/ignore": [ "node_modules", String.raw`\.(coffee|scss|css|less|hbs|svg|json)$` ],
             "progress": {
                 hide: false, // Use this to hide the progress message, can be useful in CI
@@ -353,12 +358,21 @@ export default [
 
     // Config files
     {
-        files: [ "./.*", "./*.*", ".github/**", ".vscode/**" ],
         plugins: {
             "json-schema-validator": jsonSchemaValidator,
         },
-        rules: jsonSchemaValidator.configs?.recommended?.rules || {},
+        rules: {
+            "json-schema-validator/no-invalid": isIdeWatchLint ? "off" : "error",
+        },
+        settings: {
+            "json-schema-validator": {
+                cache: {
+                    ttl: "1d",
+                },
+            },
+        },
     },
+
     {
         files: [
             "**/*.config.ts",
@@ -554,4 +568,4 @@ export default [
             "yml/sort-keys": "off",
         },
     },
-];
+]);

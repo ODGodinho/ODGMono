@@ -17,11 +17,12 @@ export default {
         "yml/flow-sequence-bracket-spacing": [ "error", "always" ], // Espaço declarar array
         "yml/flow-sequence-bracket-newline": [ "error" ], // Quebre a linha multi-line array
         "yml/key-spacing": [ "error" ], // Disable key spacing
+        "no-irregular-whitespace": [ "off" ], // Não faça espaço irregular
         "yml/no-irregular-whitespace": [ "error" ], // Sem Espaços em brancos irregular caracteres especiais
         "yml/no-trailing-zeros": [ "error" ], // Use 1.2 ao invés de 1.20
-        "yml/spaced-comment": [ "error" ], // Comentarios com espaço
-        "yml/no-trailing-spaces": [ "error" ], // Sem espaço no final da linha
         "@stylistic/spaced-comment": [ "off" ], // Força espaço apos do // comentário
+        "yml/spaced-comment": [ "error" ], // Comentários com espaço
+        "yml/no-trailing-spaces": [ "error" ], // Sem espaço no final da linha
         "filenames/match-regex": [ "off" ], // Desliga validação de nomes
         "@stylistic/max-len": [
             "warn",

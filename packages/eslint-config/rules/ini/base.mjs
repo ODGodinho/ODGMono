@@ -29,6 +29,7 @@ export default {
         "toml/array-bracket-spacing": [ "error" ], // Espaço declarar array
         "toml/array-element-newline": [ "error", "consistent" ], // Array múltipla linhas
         "toml/comma-style": [ "error" ], // Virgula a direita
+        "@stylistic/spaced-comment": [ "off" ], // Força espaço apos do // comentário
         "toml/spaced-comment": [ "error" ], // Espaço a esquerda comentário
         "toml/inline-table-curly-newline": [ "error" ], // Quebra todos parameters ou nenhum
         "toml/inline-table-key-value-newline": [

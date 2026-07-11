@@ -38,6 +38,8 @@ function orderMember(propertyTypes, tag, accessibilityList) {
 
 export default {
     rules: {
+        "unicorn/no-unnecessary-polyfills": [ "off" ], // Valida recursos suportados
+        "import/default": [ "off" ], // TypeScript valida isso mais rápido
         "strict": [ "off" ], // Strict JavaScript disable
         "no-throw-literal": "off", // Não permite throw "string" ou diferente de classe
         "@typescript-eslint/unified-signatures": [ "error" ], // Unir tipos de overload method se possível

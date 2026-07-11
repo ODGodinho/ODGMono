@@ -26,6 +26,7 @@ export default {
                 ignoreTrailingComments: false,
             },
         ], // Caracteres máximo por linhas
+        "no-irregular-whitespace": [ "off" ], // Não faça espaço irregular
         "jsonc/no-irregular-whitespace": [ "error" ], // Não faça espaço irregular
         "jsonc/space-unary-ops": [ "error" ], // Bloqueia Espaço em operadores unários
         "jsonc/quotes": [ "error", "double" ], // Força aspas duplas
