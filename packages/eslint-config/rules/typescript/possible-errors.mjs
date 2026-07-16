@@ -1,3 +1,5 @@
+import { getRestrictedImportsRule } from "./restricted-imports.mjs";
+
 export default {
     rules: {
         "@typescript-eslint/related-getter-setter-pairs": [ "error" ], // Get e set do mesmo tipo
@@ -40,5 +42,6 @@ export default {
         "@odg/no-inconsistent-docblock": [ "error" ], // Valida Docblock @param e @return com tipagem
         "unicorn/no-invalid-argument-count": [ "off" ], // TypeScript not need
         "unicorn/no-useless-coercion": [ "off" ], // TypeScript rule already handle this
+        "@typescript-eslint/no-restricted-imports": getRestrictedImportsRule(),
     },
 };

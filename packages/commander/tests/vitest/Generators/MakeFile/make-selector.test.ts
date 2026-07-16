@@ -1,4 +1,4 @@
-import { unlink } from "node:fs/promises";
+import { rm } from "node:fs/promises";
 
 import { File } from "@odg/chemical-x";
 import { NullLogger } from "@odg/log";
@@ -15,7 +15,7 @@ describe("makeSelectors Test", () => {
     const filePath = `${path}/Example1Selector.ts`;
 
     afterAll(async () => {
-        await unlink(`${path}/Example1Selector.ts`).catch(() => null);
+        await rm(`${path}/Example1Selector.ts`, { force: true });
     });
 
     test("Generate Example1Selectors", async () => {

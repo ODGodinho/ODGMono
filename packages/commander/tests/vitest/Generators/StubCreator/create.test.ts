@@ -1,4 +1,4 @@
-import { mkdir, rm, unlink } from "node:fs/promises";
+import { mkdir, rm } from "node:fs/promises";
 
 import { File } from "@odg/chemical-x";
 import { InvalidArgumentException } from "@odg/exception";
@@ -10,8 +10,10 @@ describe("Create Page StubTest", () => {
     const path = `${process.cwd()}/tests/vitest/cache`;
 
     afterAll(async () => {
-        unlink(`${path}/ExamplePage1.ts`).catch(() => null);
-        unlink(`${path}/ExamplePage2.ts`).catch(() => null);
+        await Promise.all([
+            rm(`${path}/ExamplePage1.ts`, { force: true }),
+            rm(`${path}/ExamplePage2.ts`, { force: true }),
+        ]);
     });
 
     test("Generate ExamplePage", async () => {
@@ -73,8 +75,7 @@ describe("Create Page StubTest", () => {
             expect(await indexFile.exists())
                 .toBeFalsy();
         } finally {
-            await unlink(indexFilePath).catch(() => null);
-            await rm(directoryWithoutIndex, { recursive: true }).catch(() => null);
+            await rm(directoryWithoutIndex, { recursive: true, force: true });
         }
     });
 });

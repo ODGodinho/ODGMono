@@ -1,4 +1,4 @@
-import { unlink } from "node:fs/promises";
+import { rm } from "node:fs/promises";
 
 import { File } from "@odg/chemical-x";
 import { NullLogger } from "@odg/log";
@@ -15,7 +15,7 @@ describe("makeEvent Test", () => {
     const listenerFile = `${path}/ExampleEventListener.ts`;
 
     afterEach(async () => {
-        await unlink(listenerFile).catch(() => null);
+        await rm(listenerFile, { force: true });
     });
 
     test("makeEvent does not create an EventListener file", async () => {

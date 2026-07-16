@@ -189,6 +189,18 @@ const restrictSyntaxBase = [
         "message": "Do not use 'Async' suffix in TypeScript."
             + " The Promise<T> return type already indicates async behavior — drop the suffix.",
     },
+    {
+        "selector": "CallExpression[callee.property.name='catch']"
+            + " > ArrowFunctionExpression[body.type='Literal'][body.raw='null']",
+        "message": "Do not swallow errors with '.catch(() => null)'. A silent null makes a real failure"
+            + " (timeout, crash) indistinguishable from an expected empty result."
+            + " Log the error with context, or rethrow.",
+    },
+    {
+        "selector": "CallExpression[callee.property.name='catch']"
+            + " > ArrowFunctionExpression[body.type='Identifier'][body.name='undefined']",
+        "message": "Do not swallow errors with '.catch(() => undefined)'. Log the error with context, or rethrow.",
+    },
     ...notVoidRules,
     ...predicateRules,
     ...requirePredicateRules,

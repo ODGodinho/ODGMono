@@ -33,7 +33,7 @@ export class ExamplePage extends BasePage<PageClassEngine & PageEngineInterface>
     public async goto(): Promise<void> {
         await this.page.goto("about:blank", { waitUntil: "domcontentloaded" })
             .then(() => null)
-            .catch(() => null);
+            .catch((exception: unknown) => exception);
         await this.page.evaluate(() => {
             const newDiv = document.createElement("div");
 

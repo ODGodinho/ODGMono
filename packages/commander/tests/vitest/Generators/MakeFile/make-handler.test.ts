@@ -1,4 +1,4 @@
-import { unlink } from "node:fs/promises";
+import { rm } from "node:fs/promises";
 
 import { File } from "@odg/chemical-x";
 import { NullLogger } from "@odg/log";
@@ -24,7 +24,7 @@ describe("makeHandler Test", () => {
         expect(await fileInstance.exists())
             .toBeTruthy();
 
-        unlink(filePath).catch(() => null);
+        await rm(filePath, { force: true });
     });
 
     test("Generate LoginToHomeHandler", async () => {
@@ -38,7 +38,7 @@ describe("makeHandler Test", () => {
         expect(await fileInstance2.exists())
             .toBeTruthy();
 
-        unlink(filePath).catch(() => null);
+        await rm(filePath, { force: true });
     });
 
     test("Generate From and To Handler", async () => {
@@ -52,7 +52,7 @@ describe("makeHandler Test", () => {
         expect(await fileInstance3.exists())
             .toBeTruthy();
 
-        unlink(filePath).catch(() => null);
+        await rm(filePath, { force: true });
     });
 
     test("Generate handler without handler-from or handler-to", async () => {
@@ -66,6 +66,6 @@ describe("makeHandler Test", () => {
         expect(await fileInstance4.exists())
             .toBeTruthy();
 
-        unlink(filePath).catch(() => null);
+        await rm(filePath, { force: true });
     });
 });

@@ -1,4 +1,4 @@
-import { readFile, unlink } from "node:fs/promises";
+import { readFile, rm } from "node:fs/promises";
 
 import { File } from "@odg/chemical-x";
 import { NullLogger } from "@odg/log";
@@ -15,22 +15,14 @@ describe("makePage Test", () => {
     const filePath = `${path}/ExamplePage.ts`;
 
     afterEach(async () => {
-        await unlink(`${path}/ExamplePage.ts`).catch(() => null);
-    });
-    afterEach(async () => {
-        await unlink(`${path}/ExampleEventListener.ts`).catch(() => null);
-    });
-    afterEach(async () => {
-        await unlink(`${path}/ExampleSelector.ts`).catch(() => null);
-    });
-    afterEach(async () => {
-        await unlink(`${path}/ExampleToExampleHandler.ts`).catch(() => null);
-    });
-    afterEach(async () => {
-        await unlink(`${path}/LoginPage.ts`).catch(() => null);
-    });
-    afterEach(async () => {
-        await unlink(`${path}/LoginHandler.ts`).catch(() => null);
+        await Promise.all([
+            rm(`${path}/ExamplePage.ts`, { force: true }),
+            rm(`${path}/ExampleEventListener.ts`, { force: true }),
+            rm(`${path}/ExampleSelector.ts`, { force: true }),
+            rm(`${path}/ExampleToExampleHandler.ts`, { force: true }),
+            rm(`${path}/LoginPage.ts`, { force: true }),
+            rm(`${path}/LoginHandler.ts`, { force: true }),
+        ]);
     });
 
     test("Generate ExamplePage", async () => {
@@ -191,6 +183,6 @@ describe("makePage Test", () => {
 
         expect(source.includes("EventName.ExampleEvent")).toBe(true);
 
-        await unlink(listenerFile).catch(() => null);
+        await rm(listenerFile, { force: true });
     });
 });

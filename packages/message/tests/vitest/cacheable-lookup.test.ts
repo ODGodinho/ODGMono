@@ -178,12 +178,11 @@ describe("CacheableLookup", () => {
         expect((resolved as LookupAddress).address).toBe("127.0.0.6");
     });
 
-    test("lookupAsync resolve cache.get with other attempt failed", async () => {
+    test("lookupAsync propagate cache.get failure", async () => {
         const { cache } = createCache();
+        const cacheError = new Exception("cache get fail");
 
-        cache.get = vi.fn(async () => Promise.reject(
-            new Exception("cache get fail"),
-        ));
+        cache.get = vi.fn(async () => Promise.reject(cacheError));
 
         const resolver = vi.fn(async (): Promise<LookupAddress> => ({
             address: "127.0.0.7",
@@ -194,17 +193,16 @@ describe("CacheableLookup", () => {
             maxTTL: 2000,
         });
 
-        const resolved = await lookup.lookupAsync("get-fail.test", { family: 4 });
-
-        expect((resolved as LookupAddress).address).toBe("127.0.0.7");
-        expect(resolver).toHaveBeenCalledTimes(1);
-        expect(cache.set).toHaveBeenCalledTimes(1);
+        await expect(lookup.lookupAsync("get-fail.test", { family: 4 })).rejects.toBe(cacheError);
+        expect(resolver).not.toHaveBeenCalled();
+        expect(cache.set).not.toHaveBeenCalled();
     });
 
-    test("lookupAsync working if cache.set failed", async () => {
+    test("lookupAsync propagate cache.set failure", async () => {
         const { cache } = createCache();
+        const cacheError = new Exception("cache set fail");
 
-        cache.set = vi.fn(async () => Promise.reject(new Exception("cache set fail")));
+        cache.set = vi.fn(async () => Promise.reject(cacheError));
 
         const resolver = vi.fn(async (): Promise<LookupAddress> => ({
             address: "127.0.0.8",
@@ -215,9 +213,7 @@ describe("CacheableLookup", () => {
             maxTTL: 2000,
         });
 
-        const resolved = await lookup.lookupAsync("set-fail.test", { family: 4 });
-
-        expect((resolved as LookupAddress).address).toBe("127.0.0.8");
+        await expect(lookup.lookupAsync("set-fail.test", { family: 4 })).rejects.toBe(cacheError);
         expect(resolver).toHaveBeenCalledTimes(1);
     });
 });

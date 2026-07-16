@@ -17,7 +17,7 @@ describe("Intercept Eject", () => {
         });
 
         await expect(requester.request<undefined, { headers: HttpHeadersInterface }>({
-            url: "https://httpbun.com/post",
+            url: endpoint,
             method: "POST",
             timeout: 10_000,
         })).resolves.toHaveProperty(requestHeaderIntercept, interceptHeader);

@@ -2,7 +2,6 @@ import {
     mkdir,
     readFile,
     rm,
-    unlink,
     writeFile,
 } from "node:fs/promises";
 
@@ -69,7 +68,7 @@ describe("makeListener Test", () => {
     const loginSaveListener = `${path}/LoginSaveEventListener.ts`;
 
     afterEach(async () => {
-        await unlink(loginSaveListener).catch(() => null);
+        await rm(loginSaveListener, { force: true });
     });
 
     test("creates LoginSaveEventListener bound to Login event", async () => {

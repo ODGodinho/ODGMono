@@ -1,4 +1,4 @@
-import { unlink } from "node:fs/promises";
+import { rm } from "node:fs/promises";
 
 import { File } from "@odg/chemical-x";
 import { NullLogger } from "@odg/log";
@@ -17,8 +17,8 @@ describe("makeEvent Test", () => {
 
     afterAll(async () => {
         await Promise.all([
-            unlink(`${path}/LoginException.ts`).catch(() => null),
-            unlink(`${path}/LoginUnknownException.ts`).catch(() => null),
+            rm(`${path}/LoginException.ts`, { force: true }),
+            rm(`${path}/LoginUnknownException.ts`, { force: true }),
         ]);
     });
 

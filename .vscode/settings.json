@@ -102,11 +102,11 @@
     // Silent the stylistic rules in you IDE, but still auto fix them
     "eslint.rules.customizations": [
         {
-            "rule": "@stylistic/*|comment-content",
+            "rule": "@stylistic/*|comment-content|no-negated*",
             "severity": "info"
         },
         {
-            "rule": "style*|*-indent|indent|*-spacing|*-spaces|*order|*-dangle|*-newline|*quotes|*semi|sort-imports",
+            "rule": "*style*|*-indent|indent|*-spacing|*-spaces|*order|*-dangle|*-newline|*quotes|*semi|sort-imports",
             "severity": "info"
         }
     ],

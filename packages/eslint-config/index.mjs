@@ -56,6 +56,7 @@ import typescriptBestPractices from "./rules/typescript/best-practices.mjs";
 import typescriptErrors from "./rules/typescript/errors.mjs";
 import { getNamingConventionRules } from "./rules/typescript/naming-convention.mjs";
 import typescriptPossibleErrors from "./rules/typescript/possible-errors.mjs";
+import { getRestrictedImportsRule } from "./rules/typescript/restricted-imports.mjs";
 import typescriptSecurity from "./rules/typescript/security.mjs";
 import typescriptTests from "./rules/typescript/tests.mjs";
 import yamlBase from "./rules/yaml/base.mjs";
@@ -271,6 +272,22 @@ export default defineConfig([
                 "error",
                 ...getNamingConventionRules(true),
             ],
+        },
+    },
+
+    // Pages / Handlers — selectors only via this.$s / this.$$s (DI restriction kept here too)
+    {
+        files: [ "**/Pages/**", "**/Handlers/**" ],
+        rules: {
+            "@typescript-eslint/no-restricted-imports": getRestrictedImportsRule(true),
+        },
+    },
+
+    // ContainerInject.ts defines the typed wrappers from raw inversify — exempt it
+    {
+        files: [ "**/ContainerInject.ts" ],
+        rules: {
+            "@typescript-eslint/no-restricted-imports": [ "off" ],
         },
     },
 

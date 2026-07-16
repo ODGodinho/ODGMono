@@ -70,7 +70,7 @@ export class CacheableLookup {
         const cacheKey = this.makeCacheKey(hostname, options);
 
         if (this.shouldReadCache) {
-            const cached = await this.cache.get(cacheKey).catch(() => undefined);
+            const cached = await this.cache.get(cacheKey);
 
             if (cached) return cached;
         }
@@ -78,7 +78,7 @@ export class CacheableLookup {
         const resolved = await this.resolver(hostname, options);
 
         if (this.shouldWriteCache) {
-            void this.cache.set(cacheKey, resolved, this.maxTTL).catch(() => false);
+            await this.cache.set(cacheKey, resolved, this.maxTTL);
         }
 
         return resolved;
