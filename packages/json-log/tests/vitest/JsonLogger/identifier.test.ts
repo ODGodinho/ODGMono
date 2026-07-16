@@ -16,6 +16,7 @@ describe("Test Identifier log fill", () => {
         logger.setIdentifier(identifier);
 
         expect(logger["identifier"]).toBe(identifier);
+        expect(logger.getIdentifier()).toBe(identifier);
     });
 
     test("Test Log Identifier JSON", async () => {

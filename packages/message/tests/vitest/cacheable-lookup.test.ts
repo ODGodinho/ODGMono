@@ -82,14 +82,16 @@ describe("CacheableLookup", () => {
             }),
         });
 
-        await new Promise<void>((resolve) => {
-            lookup.lookup("single.test", { family: 4 }, (error, address, family) => {
-                expect(error).toBeNull();
-                expect(address).toBe("127.0.0.3");
-                expect(family).toBe(4);
-                resolve();
-            });
+        const { promise, resolve } = Promise.withResolvers<undefined>();
+
+        lookup.lookup("single.test", { family: 4 }, (error, address, family) => {
+            expect(error).toBeNull();
+            expect(address).toBe("127.0.0.3");
+            expect(family).toBe(4);
+            resolve(undefined);
         });
+
+        await promise;
     });
 
     test("lookup working with callback array of addresses", async () => {
@@ -104,14 +106,16 @@ describe("CacheableLookup", () => {
             lookup: async (): Promise<LookupAddress[]> => addresses,
         });
 
-        await new Promise<void>((resolve) => {
-            lookup.lookup("array.test", { all: true }, (error, address, family) => {
-                expect(error).toBeNull();
-                expect(address).toStrictEqual(addresses);
-                expect(family).toBeUndefined();
-                resolve();
-            });
+        const { promise, resolve } = Promise.withResolvers<undefined>();
+
+        lookup.lookup("array.test", { all: true }, (error, address, family) => {
+            expect(error).toBeNull();
+            expect(address).toStrictEqual(addresses);
+            expect(family).toBeUndefined();
+            resolve(undefined);
         });
+
+        await promise;
     });
 
     test("setUseCache e setSetCache disable read/write cache", async () => {
@@ -144,14 +148,16 @@ describe("CacheableLookup", () => {
             },
         });
 
-        await new Promise<void>((resolve) => {
-            lookup.lookup("error.test", { family: 4 }, (error, address, family) => {
-                expect(error).toBe(lookupError);
-                expect(address).toBe("");
-                expect(family).toBeUndefined();
-                resolve();
-            });
+        const { promise, resolve } = Promise.withResolvers<undefined>();
+
+        lookup.lookup("error.test", { family: 4 }, (error, address, family) => {
+            expect(error).toBe(lookupError);
+            expect(address).toBe("");
+            expect(family).toBeUndefined();
+            resolve(undefined);
         });
+
+        await promise;
     });
 
     test("lookupAsync with cache cache and config without lookup custom", async () => {

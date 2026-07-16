@@ -114,9 +114,7 @@ describe("KeyvCacheHandler - Batch Operations", () => {
             expect(value1).toBeDefined();
 
             // Wait for expiration
-            await new Promise((resolve) => {
-                setTimeout(resolve, 150);
-            });
+            await sleepTest(150);
 
             const value2 = await handler.get(cacheKeyUser1);
 

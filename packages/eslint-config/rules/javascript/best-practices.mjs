@@ -1,3 +1,5 @@
+import { isIdeWatchLint } from "../../helpers/lint-mode.mjs";
+
 const maxHadoukenDepth = 3;
 const maxStatements = 12;
 
@@ -22,7 +24,7 @@ export default {
         "no-array-constructor": [ "error" ], // Não permite usar new Array()
         "no-throw-literal": [ "error" ], // Não permite throw "string" ou diferente de classe
         "no-empty-function": [ "error" ], // Não permite funções vazias
-        "no-duplicate-imports": [ "error", { "includeExports": true } ], // Bloqueia import duplicado
+        "no-duplicate-imports": [ "error" ], // Bloqueia import duplicado
         "import/no-duplicates": [ "error", { "prefer-inline": true } ], // Bloqueia import duplicado
         "prefer-const": [ "error" ], // Preferir constantes
         "no-unsafe-optional-chaining": [
@@ -80,7 +82,6 @@ export default {
         "promise/no-nesting": [ "error" ], // Warn se colocar uma then ou catch dentro de outra promise
         "promise/no-return-in-finally": [ "error" ], // No Return in finally
         "promise/valid-params": [ "error" ], // Valida Parâmetros da promise
-        "promise/avoid-new": [ "error" ], // Evita new Promise() use async await
         "promise/no-callback-in-promise": [ "warn" ], // Evita callback dentro de promise mandar sucesso e error
         "promise/no-multiple-resolved": [ "error" ], // Evita chamar resolve ou reject mais de uma vez na promise
         "promise/prefer-catch": [ "error" ], // Força usar catch ao invés de then(null, fn)
@@ -369,7 +370,7 @@ export default {
                     "**/*.e2e.*",
                     "**/*.spec.*",
                     "**/*.test.*",
-                    "**/.eslintrc.{js,cjs,ts}",
+                    "**/.eslintrc.{js,cjs,ts,mjs}",
                     "**/Gruntfile{,.js,.ts}",
                     "**/__mocks__/**",
                     "**/__tests__/**",
@@ -597,7 +598,7 @@ export default {
         "antfu/no-import-dist": [ "error" ], // Não importe a pasta dist
         "antfu/no-import-node-modules-by-path": [ "error" ], // Não importe de dentro da node_modules,
         "sonarjs/block-scoped-var": [ "error" ], // Bloqueia variáveis fora do escopo do bloco
-        "sonarjs/deprecation": [ "warn" ], // Não use função depreciadas
+        "sonarjs/deprecation": [ isIdeWatchLint ? "off" : "error" ], // Não use função depreciadas
         "sonarjs/max-union-size": [ "error" ], // Não une mais de 3 tipos sem criar um type
         "sonarjs/no-async-constructor": [ "error" ], // Não coloque coisas async no construtor
         "sonarjs/no-collapsible-if": [ "error" ], // Unir os if desnecessários

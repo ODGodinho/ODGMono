@@ -7,7 +7,11 @@ import {
 
 import { Cache } from "#app/Cache/Cache";
 
-import { createMemoryHandler, type TestCacheSchema } from "./setup";
+import {
+    createMemoryHandler,
+    sleepTest,
+    type TestCacheSchema,
+} from "./setup";
 
 describe("Cache - Remember Operations", () => {
     let cache: Cache<TestCacheSchema>;
@@ -84,9 +88,7 @@ describe("Cache - Remember Operations", () => {
 
         expect(value1).toBeDefined();
 
-        await new Promise((resolve) => {
-            setTimeout(resolve, 150);
-        });
+        await sleepTest(150);
 
         const value2 = await cache.get("user:1");
 

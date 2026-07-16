@@ -1,3 +1,5 @@
+import { isIdeWatchLint } from "../../helpers/lint-mode.mjs";
+
 export default {
     rules: {
         "no-eval": [ "error" ], // Não permite usar eval
@@ -33,7 +35,7 @@ export default {
         "sonarjs/aws-iam-public-access": [ "error" ], // Segurança AWS
         "sonarjs/aws-opensearchservice-domain": [ "error" ], // Segurança AWS
         "sonarjs/aws-rds-unencrypted-databases": [ "error" ], // Segurança AWS
-        "sonarjs/aws-restricted-ip-admin-access": [ "error" ], // Segurança AWS
+        "sonarjs/aws-restricted-ip-admin-access": [ isIdeWatchLint ? "off" : "error" ], // Segurança AWS
         "sonarjs/aws-s3-bucket-granted-access": [ "error" ], // Segurança AWS
         "sonarjs/aws-s3-bucket-insecure-http": [ "error" ], // Segurança AWS
         "sonarjs/aws-s3-bucket-public-access": [ "error" ], // Segurança AWS

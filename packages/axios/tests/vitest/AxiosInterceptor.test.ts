@@ -7,6 +7,6 @@ describe("AxiosInterceptorResponse", () => {
     test("Teste intercept", async () => {
         const intercept = new AxiosInterceptorResponse(axios.create().interceptors.response);
 
-        await expect(intercept["onRejected"](void 0)(void 0)).rejects.toThrowError(MessageUnknownException);
+        await expect(intercept["onRejected"](void 0)(void 0)).rejects.toThrow(MessageUnknownException);
     });
 });

@@ -5,9 +5,7 @@ import { timeout } from "#helpers";
 
 describe("Timeout Test", () => {
     test("Timeout Without name", async () => {
-        const testCallback = vi.fn(async () => new Promise(() => {
-            // Ignore
-        }));
+        const testCallback = vi.fn(async () => Promise.withResolvers().promise);
 
         await expect(timeout({
             "timeout": 10,
@@ -17,9 +15,7 @@ describe("Timeout Test", () => {
     });
 
     test("Timeout With name", async () => {
-        const testCallback = vi.fn(async () => new Promise(() => {
-            // Ignore
-        }));
+        const testCallback = vi.fn(async () => Promise.withResolvers().promise);
 
         await expect(timeout({
             "timeout": 5,

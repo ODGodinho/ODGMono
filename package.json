@@ -11,6 +11,7 @@
         "packages/commander",
         "packages/config",
         "packages/eslint-config",
+        "packages/eslint-plugin",
         "packages/events",
         "packages/exception",
         "packages/graylog",
@@ -21,12 +22,12 @@
         "packages/tsconfig"
     ],
     "scripts": {
-        "build": "turbo run build",
-        "test": "turbo run test",
-        "test:ci": "turbo run test:ci",
-        "lint": "turbo run lint",
-        "lint:fix": "turbo run lint:fix",
-        "tsc:check": "turbo run tsc:check",
+        "build": "CI=true turbo run build",
+        "test": "CI=true turbo run test",
+        "test:ci": "CI=true turbo run test:ci",
+        "lint": "CI=true turbo run lint",
+        "lint:fix": "CI=true turbo run lint:fix",
+        "tsc:check": "CI=true turbo run tsc:check",
         "release": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --sequential-init",
         "release:local": "multi-semantic-release --deps.bump=satisfy --deps.prefix=^ --sequential-init --no-ci",
         "release:debug": "DEBUG=msr:*,semantic-release:* yarn release:local",
@@ -43,7 +44,8 @@
         "husky": "^9.1.7",
         "lint-staged": "^17.0.8",
         "multi-semantic-release": "^3.1.0",
+        "semantic-release": "^25.0.7",
         "turbo": "^2.10.5"
     },
-    "packageManager": "yarn@4.13.0"
+    "packageManager": "yarn@4.17.1"
 }

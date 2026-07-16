@@ -1,8 +1,8 @@
-/* eslint-disable import/max-dependencies */
 import { createRequire } from "node:module";
 
 import adonisPlugin from "@adonisjs/eslint-plugin";
 import css from "@eslint/css";
+import odgPlugin from "@odg/eslint-plugin";
 import stylistic from "@stylistic/eslint-plugin";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
@@ -14,7 +14,7 @@ import betterMaxParams from "eslint-plugin-better-max-params";
 import fileProgress from "eslint-plugin-file-progress";
 import filenames from "eslint-plugin-filenames";
 import html from "eslint-plugin-html";
-import importPlugin from "eslint-plugin-import";
+import importPlugin from "eslint-plugin-import-x";
 import jsdoc from "eslint-plugin-jsdoc";
 import jsonSchemaValidator from "eslint-plugin-json-schema-validator";
 import jsonc from "eslint-plugin-jsonc";
@@ -33,6 +33,12 @@ import globals from "globals";
 import * as tomlParser from "toml-eslint-parser";
 import * as yamlParser from "yaml-eslint-parser";
 
+import { hasAdonisCore } from "./helpers/has-adonis-core.mjs";
+import { createImportSettings } from "./helpers/import-settings.mjs";
+import {
+    isFastMode,
+    isIdeWatchLint,
+} from "./helpers/lint-mode.mjs";
 import { frontmatterProcessor } from "./processors/frontmatter.mjs";
 import anyBase from "./rules/any/base.mjs";
 import cssGlobal from "./rules/css/global.mjs";
@@ -56,32 +62,9 @@ import yamlBase from "./rules/yaml/base.mjs";
 import yamlGithub from "./rules/yaml/github.mjs";
 
 const require = createRequire(import.meta.url);
-const isIdeWatchLint = process.argv
-    .some(
-        (argument) => argument === "--stdin"
-            || argument.startsWith("--stdin-")
-            || String(argument).includes("eslintServer.js"),
-    )
-    || process.env.VSCODE_CLI;
 
-const isAutomation = !process.stdout.isTTY
-    || process.env.AI_AGENT
-    || process.env.CI
-    || process.env.TERM === "dumb";
-
-const odgPlugin = require("@odg/eslint-plugin");
 const espree = require("espree");
 const jsoncParser = require("jsonc-eslint-parser");
-
-const hasAdonisCore = (() => {
-    try {
-        require.resolve("@adonisjs/core/package.json", { paths: [ process.cwd() ] });
-
-        return true;
-    } catch {
-        return false;
-    }
-})();
 
 let odgTsconfig;
 
@@ -181,18 +164,10 @@ export default defineConfig([
         settings: {
             "html/report-bad-indent": "error",
             "html/indent": "+4",
-            "import/docstyle": [ "jsdoc", "tomdoc" ],
-            "import/resolver": {
-                typescript: true,
-                node: true,
-            },
-            "import/external-module-folders": [ "@types" ],
-            "import/extensions": [ ".js", ".mjs", ".jsx" ],
-            "import/core-modules": [ "bun:test", "electron" ],
-            "import/ignore": [ "node_modules", String.raw`\.(coffee|scss|css|less|hbs|svg|json)$` ],
+            ...createImportSettings(),
             "progress": {
-                hide: false, // Use this to hide the progress message, can be useful in CI
-                hideFileName: false, // Use this to hide the file name, would simply show "Linting..."
+                hide: isFastMode, // Use this to hide the progress message, can be useful in CI
+                hideFileName: isFastMode, // Use this to hide the file name, would simply show "Linting..."
                 successMessage: "Lint done...",
             },
             "node": {
@@ -204,7 +179,7 @@ export default defineConfig([
             ...globalErrors.rules,
             ...globalPossibleErrors.rules,
             ...globalSecurity.rules,
-            "progress/activate": isAutomation ? 0 : 1,
+            "progress/activate": isFastMode ? 0 : 1,
         },
     },
 
@@ -273,21 +248,6 @@ export default defineConfig([
             promise,
             regexp,
             filenames,
-        },
-        settings: {
-            "import/extensions": [ ".mjs", ".js", ".jsx", ".json", ".ts", ".tsx", ".d.ts" ],
-            "import/external-module-folders": [ "node_modules", "node_modules/@types" ],
-            "import/parsers": {
-                "@typescript-eslint/parser": [ ".ts", ".tsx" ],
-            },
-            "import/resolver": {
-                typescript: {
-                    project: [ "tsconfig.json" ],
-                },
-                node: {
-                    extensions: [ ".mjs", ".js", ".jsx", ".json", ".ts", ".tsx", ".d.ts" ],
-                },
-            },
         },
         rules: {
             ...typescriptBestPractices.rules,
@@ -361,7 +321,7 @@ export default defineConfig([
             "json-schema-validator": jsonSchemaValidator,
         },
         rules: {
-            "json-schema-validator/no-invalid": isIdeWatchLint ? "off" : "error",
+            "json-schema-validator/no-invalid": [ isIdeWatchLint ? "off" : "error" ],
         },
         settings: {
             "json-schema-validator": {

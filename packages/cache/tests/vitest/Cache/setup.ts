@@ -1,3 +1,5 @@
+import { setTimeout as delay } from "node:timers/promises";
+
 import Keyv from "keyv";
 
 import { KeyvCacheHandler } from "#app/Cache/Handlers/KeyvCacheHandler";
@@ -48,9 +50,7 @@ export interface TestCacheSchema {
 export type UserCacheValue = TestCacheSchema[`user:${number}`];
 
 export async function sleepTest(milles: number): Promise<void> {
-    await new Promise((resolve) => {
-        setTimeout(resolve, milles);
-    });
+    await delay(milles);
 }
 
 export function createMemoryHandler<CacheType extends object = TestCacheSchema>(
