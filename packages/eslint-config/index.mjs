@@ -2,6 +2,7 @@
 import { createRequire } from "node:module";
 
 import adonisPlugin from "@adonisjs/eslint-plugin";
+import css from "@eslint/css";
 import stylistic from "@stylistic/eslint-plugin";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
@@ -21,7 +22,6 @@ import pluginN from "eslint-plugin-n";
 import noConstructorBind from "eslint-plugin-no-constructor-bind";
 import phpMarkup from "eslint-plugin-php-markup";
 import promise from "eslint-plugin-promise";
-import regex from "eslint-plugin-regex";
 import regexp from "eslint-plugin-regexp";
 import security from "eslint-plugin-security";
 import sonarjs from "eslint-plugin-sonarjs";
@@ -35,6 +35,7 @@ import * as yamlParser from "yaml-eslint-parser";
 
 import { frontmatterProcessor } from "./processors/frontmatter.mjs";
 import anyBase from "./rules/any/base.mjs";
+import cssGlobal from "./rules/css/global.mjs";
 import globalBase from "./rules/global/base.mjs";
 import globalErrors from "./rules/global/errors.mjs";
 import globalPossibleErrors from "./rules/global/possible-errors.mjs";
@@ -173,7 +174,6 @@ export default defineConfig([
             "@stylistic": stylistic,
             "n": pluginN,
             regexp,
-            regex,
             sonarjs,
             security,
             unicorn,
@@ -232,7 +232,6 @@ export default defineConfig([
             security,
             unicorn,
             html,
-            regex,
             sonarjs,
             antfu,
         },
@@ -533,6 +532,15 @@ export default defineConfig([
         },
         rules: {
             ...anyBase.rules,
+        },
+    },
+
+    {
+        files: [ "**/*.css" ],
+        language: "css/css",
+        plugins: { css },
+        rules: {
+            ...cssGlobal.rules,
         },
     },
 

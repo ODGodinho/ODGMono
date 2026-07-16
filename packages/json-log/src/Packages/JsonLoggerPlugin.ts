@@ -97,6 +97,16 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
     }
 
     /**
+     * Get unique identifier for the current process
+     * Example: Request ID, Transaction ID, Crawler Process, etc
+     *
+     * @returns {string | undefined}
+     */
+    public getIdentifier(): string | undefined {
+        return this.identifier;
+    }
+
+    /**
      * Define device instance name
      *
      * @param {string} instance name of instance

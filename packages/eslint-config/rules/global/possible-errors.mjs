@@ -19,20 +19,6 @@ export default {
         "no-octal-escape": [ "error" ], // Não use 071
         "no-octal": [ "error" ], // Use \ em Unicode e hexadecimal
         "no-case-declarations": [ "error" ], // Use chaves em caso de declaração em switch case
-        "regex/invalid": [
-            "error",
-            [
-                {
-                    "id": "EmptyImport",
-                    "message": "Empty import is not allowed",
-                    "regex": String.raw`import(.*{\s*}.*)from.*\n`,
-                    "replacement": {
-                        "function":
-                            String.raw`return $[1].replace(/\s/g, '') !== '{}' ? $[0].replace(/,?\s{\s*}\s/, ' ') : ''`,
-                    },
-                }, // BLoqueia import vazios
-            ],
-        ],
         "for-direction": [ "error" ], // Não faça for contador infinito.
         "sonarjs/no-internal-api-use": [ "error" ], // Não import node_modules
         "sonarjs/misplaced-loop-counter": [ "error" ], // Não faca loop e some no contador errado
@@ -80,6 +66,8 @@ export default {
         "unicorn/no-unnecessary-array-splice-count": [ "error" ], // N faça splice com .length ele ja pega tudo
         "unicorn/no-useless-error-capture-stack-trace": [ "error" ], // N faça Error.captureStackTrace se n precisa
         "unicorn/no-unnecessary-polyfills": [ "error" ], // Valida recursos suportados
+        "unicorn/no-multiple-promise-resolver-calls": [ "error" ], // Não chame resolve ou reject juntos na promise
+        "unicorn/no-useless-re-export": [ "error" ], // Não faça export duplicados
         "unicorn/no-useless-iterator-to-array": [ "error" ], // Useless toArray
         "regexp/no-extra-lookaround-assertions": [ "error" ], // Look around invalido em regex
         "n/no-unsupported-features/es-builtins": [ "error", { "ignores": [] } ],

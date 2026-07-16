@@ -102,7 +102,7 @@
     // Silent the stylistic rules in you IDE, but still auto fix them
     "eslint.rules.customizations": [
         {
-            "rule": "@stylistic/*",
+            "rule": "@stylistic/*|comment-content",
             "severity": "info"
         },
         {

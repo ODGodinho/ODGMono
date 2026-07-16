@@ -23,6 +23,7 @@ export default {
         "unicorn/prefer-unary-minus": [ "error" ], // Nao use * -1 para deixar negativo use apenas - na frente do número
         "unicorn/prefer-url-can-parse": [ "error" ], // Use URL.canParse para validar URLs
         "unicorn/prefer-observer-apis": [ "error" ], // Use IntersectionObserver ao invés de scroll e resize
-        // "unicorn/prefer-disposed": [ "error" ], // Use objetos descartados para evitar memory leak // ? don't working
+        "unicorn/no-unnecessary-string-trim": [ "error" ], // Não use trim() se não for necessário
+        "unicorn/prefer-dispose": [ "error" ], // Use objetos descartados para evitar memory leak
     },
 };

@@ -29,6 +29,10 @@ export default {
         "sonarjs/prefer-type-guard": [ "error" ], // Use is no return boolean type
         "sonarjs/stable-tests": [ "error" ], // Testes devem funcionar de primeira tentativa
         "sonarjs/test-check-exception": [ "error" ], // Testes devem testar exceção
+        "sonarjs/parameterized-tests": [ "error" ], // Prefira each nos tests
+        "sonarjs/assertions-in-test-cases": [ "error" ], // Asserts dentro de it/test sempre
+        "sonarjs/synchronous-suite-callback": [ "error" ], // Nao faca teste com algo antes iniciar
+        "sonarjs/no-interpolation-in-inline-snapshots": [ "error" ], // Nao use interpolação em tests
         "@typescript-eslint/unbound-method": [ "off" ], // Preserve bind class
         "no-restricted-syntax": [
             "error",

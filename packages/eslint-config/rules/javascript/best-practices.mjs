@@ -22,7 +22,7 @@ export default {
         "no-array-constructor": [ "error" ], // Não permite usar new Array()
         "no-throw-literal": [ "error" ], // Não permite throw "string" ou diferente de classe
         "no-empty-function": [ "error" ], // Não permite funções vazias
-        "no-duplicate-imports": [ "error" ], // Bloqueia import duplicado
+        "no-duplicate-imports": [ "error", { "includeExports": true } ], // Bloqueia import duplicado
         "import/no-duplicates": [ "error", { "prefer-inline": true } ], // Bloqueia import duplicado
         "prefer-const": [ "error" ], // Preferir constantes
         "no-unsafe-optional-chaining": [
@@ -77,9 +77,14 @@ export default {
         "promise/no-return-wrap": [ "error" ], // Não use promise.resolve ou reject dentro de then e catch
         "promise/param-names": [ "error" ], // Use nome correto para promise
         "promise/always-return": [ "error" ], // Se a promise não tiver retorno reportar erro
-        "promise/no-nesting": [ "warn" ], // Warn se colocar uma then ou catch dentro de outra promise
+        "promise/no-nesting": [ "error" ], // Warn se colocar uma then ou catch dentro de outra promise
         "promise/no-return-in-finally": [ "error" ], // No Return in finally
         "promise/valid-params": [ "error" ], // Valida Parâmetros da promise
+        "promise/avoid-new": [ "error" ], // Evita new Promise() use async await
+        "promise/no-callback-in-promise": [ "warn" ], // Evita callback dentro de promise mandar sucesso e error
+        "promise/no-multiple-resolved": [ "error" ], // Evita chamar resolve ou reject mais de uma vez na promise
+        "promise/prefer-catch": [ "error" ], // Força usar catch ao invés de then(null, fn)
+        "promise/no-promise-in-callback": [ "error" ], // Evita promise dentro de callback transforme em promise
         "import/newline-after-import": [ "error", { count: 1 } ], // Linhas em branco apos o import
 
         "array-callback-return": [ "error" ], // Força returno em array callback
@@ -300,7 +305,7 @@ export default {
         "unicorn/prefer-location-assign": [ "error" ], // Prefira location.assign/replace ao invés de location.href
         "unicorn/prefer-minimal-ternary": [
             "error",
-            { "checkComputedMemberAccess": true },
+            { "checkComputedMemberAccess": true, "checkVaryingBase": true },
         ], // Prefira ternário minimalista
         "unicorn/prefer-object-define-properties": [ "error" ], // Prefira Object.defineProperties no lugar de 1 a 1
         "unicorn/prefer-object-destructuring-defaults": [ "error" ], // Prefira desestruturar com valor padrão
@@ -599,7 +604,7 @@ export default {
         "sonarjs/no-nested-functions": [ "error" ], // Sem Hadouken de função
         "sonarjs/no-parameter-reassignment": [ "error" ], // Não reatribua um parâmetro sem usar
         "sonarjs/no-redundant-jump": [ "error" ], // Não coloque return desnecessário na função
-        "sonarjs/prefer-promise-shorthand": [ "error" ], // Promise.resolve ao invés new Promise resolve
+        "sonarjs/prefer-promise-shorthand": [ "error" ], // Promise.resolve ao invés new Promise "promise/avoid-new"
         "sonarjs/public-static-readonly": [ "error" ], // Use Readonly no static
         "sonarjs/redundant-type-aliases": [ "error" ], // Não crie um ja existe
         "sonarjs/todo-tag": [ "warn" ], // Doc TOD-D devem ser resolvidos alerta

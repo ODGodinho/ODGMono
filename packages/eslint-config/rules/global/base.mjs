@@ -135,6 +135,9 @@ export default {
         "sonarjs/no-table-as-layout": [ "error" ], // Não Coloque presentation em table HTML
         "sonarjs/object-alt-content": [ "error" ], // Tag Object tem q ter conteúdo
         "sonarjs/prefer-read-only-props": [ "error" ], // Props react Readonly
+        "sonarjs/no-fixed-wait-in-tests": [ "error" ], // Nao use pause no código
+        "sonarjs/no-default-utility-imports": [ "error" ], // Nao use import default de utilitários
+        "sonarjs/no-debug-commands-in-ui-tests": [ "error" ], // Nao use sleep playwright ou cypress
         "@stylistic/array-bracket-newline": [ "error", { "multiline": true } ],
         "@stylistic/array-bracket-spacing": [ "error", "always" ],
         "@stylistic/array-element-newline": [
@@ -521,5 +524,6 @@ export default {
             },
         ],
         "unicorn/expiring-todo-comments": [ "error" ], // Alertas em docs com TOD0 + data
+        "unicorn/no-missing-local-resource": [ "error" ], // Evita path de arquivo inexistente
     },
 };
