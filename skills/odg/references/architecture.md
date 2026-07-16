@@ -14,6 +14,7 @@ You **MUST** adhere to the rules defined in this document.
 - Whenever a binding is added in `src/app/Container.ts`, `@types/ContainerInterface.d.ts` **MUST** be updated with the corresponding entry. Failure to do so causes Property X does not exist on type ContainerInterface TypeScript errors.
 - **MUST NOT** disable an ESLint rule unless there is no plausible fix and the reason is documented.
 - **MUST NOT** disable ESLint for an entire file when a narrower occurrence-level disable is enough.
+- An injected primitive (`Logger`, `Config`, requester, `EventBus`) **MUST** be used directly at the call site. **MUST NOT** wrap it in a bespoke function or class that only forwards to it without adding behavior — the indirection hides the dependency and earns nothing.
 
 ### Decorator Scope
 
@@ -44,3 +45,7 @@ process.on("error", (error: Error) => {
     });
 });
 ```
+
+## Helper classes
+
+- `CustomValidator` is a class of reusable validation **helper** functions (auxiliary checks shared across projects), not a data schema. It **MUST NOT** be treated as, or replaced by, a `zod`/`yup` schema; schema definitions live in their own validator files.

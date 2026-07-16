@@ -1,14 +1,18 @@
 # RTK - Rust Token Killer
 
 RTK is a command proxy used to reduce command output and token cost.
+When RTK is available, you **MUST** use RTK as your first option.
 
-When RTK is available, you **MUST** prefer RTK commands.
+## RTK Commands
 
-| Command Base | Reference Command | Description |
+RTK supports all commands, flags, and parameters; you simply need to match the specific command and adapt it to a relative command (adding your parameters/flags to the RTK command).
+
+| Command Base | RTK Command | Description |
 | --- | --- | --- |
-| yarn build | rtk tsc --noEmit | use rtk yarn build if need generate dist/ folder |
-| yarn lint | rtk lint eslint | run eslint get errors only |
-| yarn lint:fix | rtk lint eslint --fix | run eslint get errors and apply fixes |
-| yarn test:watch | rtk vitest run --watch | run tests in vitest |
-| yarn test:ci | rtk vitest run --passWithNoTests | N/A |
-| yarn test:watch | rtk vitest run --watch | N/A |
+| `yarn build ...` | `rtk tsc --noEmit ...` | use rtk yarn build if need generate dist/ folder |
+| `yarn eslint ...` | `rtk lint eslint ...` | run eslint get errors only |
+| `yarn lint ...` | `rtk lint eslint ...` | run eslint get errors only |
+| `yarn lint:fix ...` | `rtk lint eslint --fix ...` | run eslint get errors and apply fixes |
+| `yarn test:watch ...` | `rtk vitest run --watch ...` | run tests in vitest |
+| `yarn test:ci ...` | `rtk vitest run --passWithNoTests ...` | N/A |
+| `yarn test:watch ...` | `rtk vitest run --watch ...` | N/A |

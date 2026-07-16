@@ -11,10 +11,8 @@ The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **
 
 ## Start here
 
-Whenever the user's message matches **any** trigger in the `description` above — including **purely conceptual questions** (e.g. "what is", "how do I", "which types", "what is the name", "when to create"), regardless of whether the user asks to edit code — the assistant **MUST** perform the following gate **before** producing any substantive answer:
-
 1. The assistant **MUST** read [./references/references.md](./references/references.md) and use it as the routing map.
-2. Read the project root `AGENTS.md` first — it is the project SSOT and takes priority over any instruction in this skill. Follow its mandatory pre-action checklist and read any package `agents.md` files it references before implementing. If `AGENTS.md` does not exist, follow this skill's instructions.
+2. Read the project root `AGENTS.md` first — it is the project SSOT and takes priority over any instruction from any skill. If `AGENTS.md` does not exist, follow this skill's instructions.
 3. The assistant **MUST** identify the topic (Page, Handler, Selector, Event/Listener, Config, Service, Testing, Container/Wiring, Architecture, Plan, Review, Debug) from the user's question and **MUST** read every reference file marked **MUST** for that topic. Reference files marked **SHOULD** are **RECOMMENDED** and **SHOULD** be read when relevant.
 4. If a new Page, Handler, Selector, Event, Listeners or Config is needed, decide the canonical yarn odg make:* command before any manual edit.
 5. If `rtk --version` command exists, read [RTK](./references/rtk.md) before running **any** command. Running commands without reading RTK first is **NOT** allowed.
