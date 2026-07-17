@@ -18,6 +18,7 @@ import importPlugin from "eslint-plugin-import-x";
 import jsdoc from "eslint-plugin-jsdoc";
 import jsonSchemaValidator from "eslint-plugin-json-schema-validator";
 import jsonc from "eslint-plugin-jsonc";
+import eslintPluginJsxA11y from "eslint-plugin-jsx-a11y";
 import pluginN from "eslint-plugin-n";
 import noConstructorBind from "eslint-plugin-no-constructor-bind";
 import phpMarkup from "eslint-plugin-php-markup";
@@ -50,6 +51,7 @@ import iniBase from "./rules/ini/base.mjs";
 import javascriptBestPractices from "./rules/javascript/best-practices.mjs";
 import javascriptErrors from "./rules/javascript/errors.mjs";
 import javascriptJsDocumentation from "./rules/javascript/js-documentation.mjs";
+import javascriptJSX from "./rules/javascript/jsx.mjs";
 import javascriptPerformance from "./rules/javascript/performance.mjs";
 import jsonBase from "./rules/json/base.mjs";
 import typescriptBestPractices from "./rules/typescript/best-practices.mjs";
@@ -148,7 +150,6 @@ export default defineConfig([
             },
             parserOptions: {
                 sourceType: "module",
-                ecmaVersion: 2022,
             },
         },
         plugins: {
@@ -166,6 +167,12 @@ export default defineConfig([
             "html/report-bad-indent": "error",
             "html/indent": "+4",
             ...createImportSettings(),
+            "jsx-a11y": {
+                "polymorphicPropName": "as",
+                "attributes": {
+                    "for": [ "htmlFor", "for" ],
+                },
+            },
             "progress": {
                 hide: isFastMode, // Use this to hide the progress message, can be useful in CI
                 hideFileName: isFastMode, // Use this to hide the file name, would simply show "Linting..."
@@ -186,12 +193,14 @@ export default defineConfig([
 
     // JavaScript/TypeScript files
     {
-        files: [ "**/*.js", "**/*.jsx", "**/*.mjs", "**/*.cjs", "**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts" ],
+        files: [ "**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mts,mtsx,cts}" ],
         languageOptions: {
             parser: espree,
             parserOptions: {
                 sourceType: "module",
-                ecmaVersion: 2022,
+                ecmaFeatures: {
+                    jsx: true,
+                },
             },
         },
         plugins: {
@@ -201,6 +210,7 @@ export default defineConfig([
             "no-constructor-bind": noConstructorBind,
             "sort-class-members": sortClassMembers,
             "better-max-params": betterMaxParams,
+            "jsx-a11y": eslintPluginJsxA11y,
             jsdoc,
             promise,
             regexp,
@@ -216,6 +226,7 @@ export default defineConfig([
             ...javascriptErrors.rules,
             ...javascriptJsDocumentation.rules,
             ...javascriptPerformance.rules,
+            ...javascriptJSX.rules,
         },
     },
 
@@ -229,7 +240,6 @@ export default defineConfig([
                     jsx: true,
                 },
                 warnOnUnsupportedTypeScriptVersion: false,
-                ecmaVersion: 2022,
                 sourceType: "module",
                 project: [
                     "./tsconfig.json",

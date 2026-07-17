@@ -18,7 +18,6 @@ const ruleTester = new RuleTester({
             ecmaFeatures: {
                 jsx: true,
             },
-            ecmaVersion: 2022,
             sourceType: "module",
         },
     },
