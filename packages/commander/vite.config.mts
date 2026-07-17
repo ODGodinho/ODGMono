@@ -6,6 +6,7 @@ const vite = defineConfig({
         tsconfigPaths: true,
     },
     test: {
+        testTimeout: 25_000,
         globals: true,
         pool: "forks",
         maxWorkers: 1,

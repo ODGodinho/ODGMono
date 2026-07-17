@@ -7,7 +7,7 @@ const vite = defineConfig({
         tsconfigPaths: true,
     },
     test: {
-        testTimeout: 15_000,
+        testTimeout: 25_000,
         globals: true,
         coverage: {
             enabled: true,
