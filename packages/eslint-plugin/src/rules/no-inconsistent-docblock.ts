@@ -88,8 +88,8 @@ export const rule = createRule({
             description: "Function declaration names should start with an upper-case letter.",
         },
         messages: {
-            invalidParamType: "@Param not match with function type",
-            invalidReturnType: "@Returns not match with function type",
+            invalidParamType: "@param not match with function type",
+            invalidReturnType: "@returns not match with function type",
         },
         type: "suggestion",
         schema: [],
