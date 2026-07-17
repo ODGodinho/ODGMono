@@ -46,6 +46,18 @@ process.on("error", (error: Error) => {
 });
 ```
 
+## Fire-and-forget promises
+
+When async work starts from a synchronous context — an event listener, a constructor, any `() => void` callback where you cannot `await` — the promise **MUST NOT** be left floating. `void promise` only silences the linter (a rejection still becomes an `unhandledRejection` and can crash the process) and `.catch(() => null)` swallows the failure. Use `detach(promise, log)` from `@odg/chemical-x`: it records any rejection through the logger, falling back to `console.error` only if the logger itself fails.
+
+```typescript
+import { detach } from "@odg/chemical-x";
+
+process.on("session-refreshed", () => {
+    detach(this.reloadProfile(), this.logger);
+});
+```
+
 ## Helper classes
 
 - `CustomValidator` is a class of reusable validation **helper** functions (auxiliary checks shared across projects), not a data schema. It **MUST NOT** be treated as, or replaced by, a `zod`/`yup` schema; schema definitions live in their own validator files.
