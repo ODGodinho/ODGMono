@@ -116,7 +116,6 @@ export default {
         ], // Use arrow function em method signature interface
         "@typescript-eslint/no-unnecessary-type-assertion": [ "error" ], // Não As declaração que não altera expressão
         "@typescript-eslint/no-unsafe-call": [ "error" ], // Não permite chamadas de funções em tipo any
-        "space-infix-ops": [ "off" ], // Espaço na separação operadores
         "no-underscore-dangle": [ "error" ], // Não permite _ no nome
         "@typescript-eslint/prefer-return-this-type": [ "error" ], // Return this ao invés do nome classe
         "no-shadow": [ "off" ], // Erro caso ja esteja declarado escopo a cima

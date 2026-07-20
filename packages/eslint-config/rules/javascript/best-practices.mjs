@@ -89,7 +89,6 @@ export default {
         "import/newline-after-import": [ "error", { count: 1 } ], // Linhas em branco apos o import
 
         "array-callback-return": [ "error" ], // Força returno em array callback
-        "space-infix-ops": [ "error" ], // Espaço em operadores
         "curly": [ "off" ], // Utilize chaves em multi linhas
         "handle-callback-err": [ "error" ], // Funções que recebem error deve ser tratado
         "n/handle-callback-err": [
@@ -163,7 +162,7 @@ export default {
         "unicorn/prefer-unicode-code-point-escapes": [ "error" ], // Prefer Unicode code point escapes over legacy
         "unicorn/comment-content": [ "error" ], // Comentários com texto valido
         "unicorn/no-array-method-this-argument": [ "error" ], // Evita this array que pode falhar
-        "unicorn/no-array-push-push": [ "error" ], // Faça apenas 1 push ao invés de vários
+        "unicorn/prefer-single-call": [ "error" ], // Faça apenas 1 push ao invés de vários
         "unicorn/no-await-expression-member": [ "error" ], // Não use (await getObject()).property;
         "unicorn/no-for-loop": [ "error" ], // Use ForOf em vez de for
         "unicorn/no-invalid-remove-event-listener": [ "error" ], // Não use removeEventListener Invalid
@@ -203,7 +202,6 @@ export default {
         "unicorn/no-invalid-fetch-options": [ "error" ], // Valida função fetch
         "unicorn/consistent-empty-array-spread": [ "error" ], // ... no ternário deve ser 2 dados tipos iguais
         "unicorn/no-negation-in-equality-check": [ "error" ], // Evite if(!a !== b) evite isso
-        "unicorn/no-length-as-slice-end": [ "error" ], // Não coloque fim no slice igual ao length
         "unicorn/name-replacements": [
             "error",
             {
@@ -232,13 +230,12 @@ export default {
         "unicorn/prefer-blob-reading-methods": [ "error" ], // Prefira BufferArray em blob
         "unicorn/prefer-bigint-literals": [ "error" ], // Prefira BigInt literal ao invés de BigInt function
         "unicorn/prefer-date-now": [ "error" ], // Prefira usar date.now() ao invés dos outros
-        "unicorn/prefer-dom-node-dataset": [ "error" ], // Prefira .dataset ao invés de .getAttribute(data-*)
+        "unicorn/dom-node-dataset": [ "error" ], // Prefira .dataset ao invés de .getAttribute(data-*)
         "unicorn/prefer-modern-math-apis": [ "error" ], // Prefira Math API modernas
         "unicorn/prefer-object-from-entries": [ "error" ], // Prefira Object entries ao invés de loop
         "unicorn/prefer-reflect-apply": [ "error" ], // Prefira Reflect ao invés Function.prototype.apply
         "unicorn/prefer-set-has": [ "error" ], // Prefira Set.has ao invés array.includes
         "unicorn/prefer-set-size": [ "error" ], // Prefira Set.size ao invés array.length
-        "unicorn/prefer-single-call": [ "error" ], // Prefira class
         "unicorn/require-module-specifiers": [ "error" ], // Não faça import vazio
         "unicorn/throw-new-error": [ "error" ], // Faça um new na hora do throw
         "unicorn/no-constant-zero-expression": [ "error" ], // Não * 0 prefira = 0

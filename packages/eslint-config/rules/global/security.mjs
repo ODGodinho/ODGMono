@@ -54,7 +54,6 @@ export default {
         "sonarjs/encryption-secure-mode": [ "error" ], // Crypto de forma segura
         "sonarjs/file-permissions": [ "error" ], // Crie arquivos com perm segura
         "sonarjs/file-uploads": [ "error" ], // Upload arquivos seguro
-        "sonarjs/frame-ancestors": [ "error" ], // Frame ancestors police
         // "sonarjs/hardcoded-secret-signatures": [ "error" ], // Poe senha no código nao mano
         "sonarjs/hashing": [ "error" ], // Crie hash seguros
         "sonarjs/hidden-files": [ "error" ], // Server arquivos statics n deve deixar listagem publica

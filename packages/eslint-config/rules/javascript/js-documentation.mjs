@@ -233,6 +233,7 @@ export default {
             },
         ], // Ordem dos params da docblock
         "jsdoc/no-blank-blocks": [ "error", { "enableFixer": true } ], // Não faça comentários vazios
+        "jsdoc/normalize-see-links": [ "error" ], // Normalize links @see
         "jsdoc/type-formatting": [
             "warn",
             {
