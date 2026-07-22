@@ -128,4 +128,54 @@ describe("makeConfig Test", () => {
         expect(enumText.includes("\"ZECA_URL\" = \"ZECA_URL\"")).toBeTruthy();
         expect(validatorText.includes("[ConfigName.ZECA_URL]")).toBeTruthy();
     });
+
+    test("Normalizes PascalCase config name to CONST_CASE in enum and .env.example", async () => {
+        await rm(cacheRoot, { recursive: true, force: true });
+        await mkdir(cacheRoot, { recursive: true });
+
+        const configEnumPath = `${cacheRoot}/ConfigName.ts`;
+        const configValidatorPath = `${cacheRoot}/index.ts`;
+        const environmentExamplePath = `${cacheRoot}/.env.example`;
+
+        await writeFile(configEnumPath, configEnumFixture, "utf8");
+        await writeFile(configValidatorPath, emptyConfigValidator(), "utf8");
+        await writeFile(environmentExamplePath, "EXISTING=1\n", "utf8");
+
+        await make.generateConfig("AppUrl", {
+            register: true,
+            configEnumPath,
+            configValidatorPath,
+            envExamplePath: environmentExamplePath,
+        });
+
+        const enumText = await readFile(configEnumPath, "utf8");
+        const validatorText = await readFile(configValidatorPath, "utf8");
+        const environmentText = await readFile(environmentExamplePath, "utf8");
+
+        expect(enumText.includes("\"APP_URL\" = \"APP_URL\"")).toBeTruthy();
+        expect(validatorText.includes("[ConfigName.APP_URL]")).toBeTruthy();
+        expect(environmentText.includes("# APP_URL")).toBeTruthy();
+        expect(environmentText.includes("APP_URL=\"\"")).toBeTruthy();
+
+        expect(enumText.includes("AppUrl")).toBeFalsy();
+        expect(environmentText.includes("AppUrl")).toBeFalsy();
+    });
+
+    test("Normalizes camelCase config name to CONST_CASE", async () => {
+        await rm(cacheRoot, { recursive: true, force: true });
+        await mkdir(cacheRoot, { recursive: true });
+
+        const configEnumPath = `${cacheRoot}/ConfigName.ts`;
+
+        await writeFile(configEnumPath, configEnumFixture, "utf8");
+
+        await make.generateConfig("appUrl", {
+            register: true,
+            configEnumPath,
+        });
+
+        const enumText = await readFile(configEnumPath, "utf8");
+
+        expect(enumText.includes("\"APP_URL\" = \"APP_URL\"")).toBeTruthy();
+    });
 });

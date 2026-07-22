@@ -205,16 +205,17 @@ export default class MakeFile {
 
     public async generateConfig(configName: string, options: MakeConfigOptions): Promise<void> {
         const validator = options.validator ?? "zod.string()";
+        const configKey = new Str(configName).constCase().toString();
 
         await registerArtifact({
             kind: "config",
-            name: configName,
-            configEnumMembers: [ configName ],
-            envExampleLines: [ `\n# ${configName}`, `${configName}=""` ],
+            name: configKey,
+            configEnumMembers: [ configKey ],
+            envExampleLines: [ `\n# ${configKey}`, `${configKey}=""` ],
             configValidatorType: validator,
         }, this.buildRegistrationTargets(options));
 
-        await this.logger.info(`Config "${configName}" registered successfully`);
+        await this.logger.info(`Config "${configKey}" registered successfully`);
     }
 
     public async generateException(exceptionName: string, options: MakeExceptionOptions): Promise<void> {
