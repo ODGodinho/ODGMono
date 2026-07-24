@@ -20,17 +20,23 @@ interface LoggerInterface {
  *     detach(this.reloadProfile(), this.logger);
  * });
  *
- * @param {Promise<unknown>} promise Operation to run and forget
- * @param {LoggerInterface} log Logger used to record a rejection
- * @returns {void}
+ * @template PromiseType Promise return type
+ * @param {Promise<PromiseType>} promise Operation to run and forget
+ * @param {LoggerInterface | null} log Logger used to if null log is ignored null parameter is not recommended
+ * @returns {Promise<PromiseType | undefined>}
  */
-export function detach(promise: Promise<unknown>, log: LoggerInterface): void {
-    promise.catch(async (error: unknown) => {
+export async function detach<PromiseType>(
+    promise: Promise<PromiseType>,
+    log: LoggerInterface | null,
+): Promise<PromiseType | undefined> {
+    return promise.catch(async (error: unknown) => {
         try {
-            await log.error(error);
+            await log?.error(error);
         } catch (exception: unknown) {
             // eslint-disable-next-line no-console -- último recurso: o log falhou ao registrar o erro
             console.error(exception, error);
         }
+
+        return void 0;
     });
 }

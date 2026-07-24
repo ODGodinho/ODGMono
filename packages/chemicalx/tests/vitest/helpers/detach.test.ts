@@ -12,7 +12,7 @@ describe("Detach Test", () => {
         const error = new Exception("boom");
         const log = { "error": vi.fn() };
 
-        detach(Promise.reject(error), log);
+        await detach(Promise.reject(error), log);
 
         await vi.waitFor(() => {
             expect(log.error).toHaveBeenCalledWith(error);
@@ -22,7 +22,7 @@ describe("Detach Test", () => {
     test("does not call log.error when the promise resolves", async () => {
         const log = { "error": vi.fn() };
 
-        detach(Promise.resolve("ok"), log);
+        await detach(Promise.resolve("ok"), log);
 
         await vi.waitFor(() => {
             expect(log.error).not.toHaveBeenCalled();
@@ -37,7 +37,7 @@ describe("Detach Test", () => {
             }),
         };
 
-        detach(Promise.reject(new Exception("boom")), log);
+        await detach(Promise.reject(new Exception("boom")), log);
 
         await vi.waitFor(() => {
             expect(consoleError).toHaveBeenCalledTimes(1);
@@ -53,7 +53,7 @@ describe("Detach Test", () => {
             }),
         };
 
-        detach(Promise.reject(new Exception("boom")), log);
+        await detach(Promise.reject(new Exception("boom")), log);
 
         await vi.waitFor(() => {
             expect(consoleError).toHaveBeenCalledTimes(1);
