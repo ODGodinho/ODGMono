@@ -50,7 +50,7 @@ export class ODGDecorators {
         };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Any is required for decorators
     public static attemptableFlow<T extends new (...constructors: any[]) => AttemptableInterface>() {
         return (constructor: T): T => class extends constructor implements AttemptableInterface {
 

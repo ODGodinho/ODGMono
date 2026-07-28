@@ -150,12 +150,21 @@ const configInterfaceRestriction = {
         + " alias (e.g. MyConfig) for the project-level config type.",
 };
 
+/*
+ * Test files legitimately construct a raw `new Error(...)` to simulate a thrown value from a
+ * mocked dependency (`vi.fn().mockRejectedValue(new Error("boom"))` and similar) — that's test
+ * fixture data, not real logging, so the @odg/exception requirement doesn't apply. Kept
+ * isolated the same way `configInterfaceRestriction` is, so `restrictSyntaxTest` can rebuild the
+ * list minus this one entry instead of disabling the whole rule for test files.
+ */
+const noNewErrorRestriction = {
+    "selector": "NewExpression[callee.name='Error']",
+    "message": "Do not use 'new Error()'. Use the exception classes from the @odg/exception"
+        + " package to maintain logging standardization.",
+};
+
 const restrictSyntaxBaseWithoutConfigInterface = [
-    {
-        "selector": "NewExpression[callee.name='Error']",
-        "message": "Do not use 'new Error()'. Use the exception classes from the @odg/exception"
-            + " package to maintain logging standardization.",
-    },
+    noNewErrorRestriction,
     {
         "selector": "CallExpression[callee.object.name='console'][callee.property.name='log']",
         "message": "Do not use console.log. Use the @odg/log injected in the container to ensure traceability.",
@@ -228,7 +237,7 @@ const restrictSyntaxBase = [
     configInterfaceRestriction,
 ];
 
-const restrictSyntaxTestList = [ ...restrictSyntaxBase ];
+const restrictSyntaxTestList = restrictSyntaxBase.filter((entry) => entry !== noNewErrorRestriction);
 
 const restrictSyntaxList = [
     ...restrictSyntaxBase,

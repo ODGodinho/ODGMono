@@ -38,6 +38,7 @@
     "dependencies": {
         "@adonisjs/eslint-plugin": "^2.2.2",
         "@babel/core": "^8.0.1",
+        "@eslint-community/eslint-plugin-eslint-comments": "^4.7.2",
         "@eslint/css": "^1.4.0",
         "@odg/eslint-plugin": "workspace:^",
         "@stylistic/eslint-plugin": "^5.10.0",

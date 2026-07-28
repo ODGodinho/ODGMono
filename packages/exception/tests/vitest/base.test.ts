@@ -18,7 +18,6 @@ describe("Exception Tests", () => {
     test("Teste Exception base Error", () => {
         const message1 = "message1";
         const base1 = "base1";
-        // eslint-disable-next-line no-restricted-syntax
         const previousException = new Error(base1);
         const exception = new Exception(message1, previousException);
 

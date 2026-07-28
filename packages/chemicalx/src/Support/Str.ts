@@ -14,7 +14,7 @@ import { Num } from "./Num";
  */
 export class Str implements CloneableInterface, NativeInterface<string> {
 
-    // eslint-disable-next-line security/detect-unsafe-regex
+    // eslint-disable-next-line security/detect-unsafe-regex -- This regex is used to match money values
     private readonly moneyRegex = /(?<value>\d+)(?:[,.]\d{3})*(?<blockCents>(?<separatorCent>[,.])(?<cents>\d{1,2}))?/;
 
     public constructor(
@@ -100,7 +100,7 @@ export class Str implements CloneableInterface, NativeInterface<string> {
     public formatUnicorn(objectVariable: Record<string, number | string>): this {
         for (const key in objectVariable) {
             this.subject = this.subject.replaceAll(
-                // eslint-disable-next-line security/detect-non-literal-regexp
+                // eslint-disable-next-line security/detect-non-literal-regexp -- TODO:: check later
                 new RegExp(String.raw`\{\{\s*${key}\s*\}\}`, "gi"),
                 () => String(objectVariable[key]),
             );
@@ -249,7 +249,7 @@ export class Str implements CloneableInterface, NativeInterface<string> {
      * @returns {never[] | RegExpMatchArray}
      */
     private moneyAllOccurrences(): never[] | RegExpMatchArray {
-        // eslint-disable-next-line security/detect-non-literal-regexp
+        // eslint-disable-next-line security/detect-non-literal-regexp -- TODO: check later
         return this.subject.match(new RegExp(this.moneyRegex, "g")) ?? [];
     }
 

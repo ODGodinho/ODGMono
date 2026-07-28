@@ -148,7 +148,7 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
             return process.env.HOSTNAME!
                 || process.env.CONTAINER_ID!
                 || process.env.DOCKER_CONTAINER_UUID!;
-            /* eslint-enable n/no-process-env */
+            /* eslint-enable n/no-process-env -- Enable process.env validate */
         }
 
         return "unknown";

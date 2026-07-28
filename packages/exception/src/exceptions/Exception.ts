@@ -1,9 +1,9 @@
-/* eslint-disable max-classes-per-file */
-/* eslint-disable sort-class-members/sort-class-members */
-/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable max-classes-per-file -- Prevent no circular import prevent */
+/* eslint-disable sort-class-members/sort-class-members -- Rule false positive */
+/* eslint-disable @typescript-eslint/no-use-before-define -- All class extends of Exception */
 type ParseObjectType = Record<number | string | symbol, unknown>;
 
-// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type -- Need to create all empty types
 type EmptyType = "" | 0 | false | null | undefined | void;
 
 export type ParserException = (newException: Exception, original: unknown) => Exception;

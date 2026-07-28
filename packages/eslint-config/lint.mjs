@@ -67,7 +67,7 @@ async function checkPnpmEslint() {
         return null;
     }
 
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- trusted path, not user input
     const eslintStorePaths = await readdir(pnpmStoreDirectory);
 
     for (const eslintStorePath of eslintStorePaths) {

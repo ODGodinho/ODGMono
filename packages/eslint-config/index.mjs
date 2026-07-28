@@ -2,6 +2,7 @@ import { createRequire } from "node:module";
 
 import adonisPlugin from "@adonisjs/eslint-plugin";
 import css from "@eslint/css";
+import eslintComments from "@eslint-community/eslint-plugin-eslint-comments";
 import odgPlugin from "@odg/eslint-plugin";
 import stylistic from "@stylistic/eslint-plugin";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
@@ -49,6 +50,7 @@ import cssGlobal from "./rules/css/global.mjs";
 import globalBase from "./rules/global/base.mjs";
 import globalCheckFile from "./rules/global/check-file.mjs";
 import globalErrors from "./rules/global/errors.mjs";
+import globalEslintComments from "./rules/global/eslint-comments.mjs";
 import globalPossibleErrors from "./rules/global/possible-errors.mjs";
 import { restrictSyntax, restrictSyntaxBaseWithoutConfigInterfaceRule } from "./rules/global/restrict-syntax.mjs";
 import globalSecurity from "./rules/global/security.mjs";
@@ -221,6 +223,7 @@ export default defineConfig([
             "better-max-params": betterMaxParams,
             "jsx-a11y": eslintPluginJsxA11y,
             "zod": eslintPluginZod,
+            "eslint-comments": eslintComments,
             jsdoc,
             promise,
             regexp,
@@ -237,6 +240,7 @@ export default defineConfig([
             ...javascriptJsDocumentation.rules,
             ...javascriptPerformance.rules,
             ...javascriptJSX.rules,
+            ...globalEslintComments.rules,
         },
     },
 
@@ -332,16 +336,6 @@ export default defineConfig([
      */
     ...getOwnBarrelImportBlocks(),
 
-    /*
-     * Process.env MUST NOT be read directly outside the places that actually populate/parse it
-     * (skills/odg/references/configs.md, skills/odg/references/testing.md)
-     */
-    {
-        files: [ "tests/vitest/**" ],
-        rules: {
-            "n/no-process-env": [ "off" ],
-        },
-    },
     {
         files: [ "src/Configs/**/*.ts", "src/app/Configs/**/*.ts", "src/app/Container.ts" ],
         rules: {
@@ -450,6 +444,7 @@ export default defineConfig([
             "import/no-anonymous-default-export": [ "off" ],
             "filenames/match-exported": [ "off" ],
             "import/no-extraneous-dependencies": [ "off" ],
+            "n/no-process-env": [ "off" ],
         },
     },
 
@@ -525,6 +520,13 @@ export default defineConfig([
         },
         rules: {
             ...typescriptTests.rules,
+        },
+    },
+
+    {
+        files: [ "tests/helpers/browser.ts" ],
+        rules: {
+            "no-empty-pattern": [ "off" ],
         },
     },
 

@@ -259,7 +259,7 @@ export default {
             {
                 min: 3,
                 exceptions: [ "i", "fs", "os", "id", "ip" ],
-                // eslint-disable-next-line no-template-curly-in-string
+                // eslint-disable-next-line no-template-curly-in-string -- regex pattern, not a template literal
                 exceptionPatterns: [ "^\\${1,2}[a-z]?$" ],
             },
         ], // Tamanho mínimo das variáveis

@@ -11,11 +11,9 @@ describe("Test Default Exception", () => {
 
     test("Test Error", async () => {
         const message = "ok";
-        // eslint-disable-next-line no-restricted-syntax
         const baseError = new Error(message);
         const newError = new UnknownException(message);
 
-        // eslint-disable-next-line no-restricted-syntax
         newError.original = new Error(message);
 
         await expect((async (): Promise<never> => {

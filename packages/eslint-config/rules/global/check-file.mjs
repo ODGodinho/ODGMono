@@ -57,11 +57,50 @@ const kebabCaseFolders = [
 ];
 
 const pascalCaseFilenames = [
-    "src/{Kernel,Configs,Interfaces,Validators,Exceptions,Pages,Handlers,Selectors}/**/!(index).ts",
-    "src/app/{Enums,Services,Listeners,Providers}/**/!(index).ts",
+    "src/{Kernel,Configs,Interfaces,Validators}/**/!(index).ts",
+    "src/app/{Enums,Providers}/**/!(index).ts",
     "src/Http/{Controllers,Middlewares}/**/!(index).ts",
     "src/{Consumers,Jobs,Schedules}/**/!(index).ts",
 ];
+
+/**
+ * `check-file`'s predefined `PASCAL_CASE` value (see its own source) is really this extglob:
+ * `*([A-Z]*([a-z0-9]))` — zero or more "capital letter followed by lowercase/digits" groups.
+ * Any convention value that ISN'T one of the plugin's predefined keywords (PASCAL_CASE,
+ * CAMEL_CASE, ...) is passed straight to `micromatch` as a glob run against the filename
+ * (minus extension). Prepending this same extglob to a literal suffix therefore gets BOTH
+ * checks from one pattern: `${PASCAL_CASE_GLOB}Page` matches "LoginPage" and "ExamplePage" but
+ * rejects "loginpage" (not PascalCase), "Login" (missing suffix) and "LoginThing" (wrong
+ * suffix) — verified with `micromatch.isMatch` directly against the plugin's own constant.
+ */
+const PASCAL_CASE_GLOB = "*([A-Z]*([a-z0-9]))";
+
+/**
+ * File-level suffix conventions (skills/odg/references/{pages,handler,selectors,events,
+ * services}.md + architecture.md's `Exceptions/<Name>Exception.ts`): the artifact's filename
+ * MUST literally end in its ring's suffix, not just be PascalCase. These previously lived in
+ * `pascalCaseFilenames` above as plain `PASCAL_CASE` entries (casing only, no suffix check) —
+ * replaced here 1:1 per folder so PascalCase is still implied (via `PASCAL_CASE_GLOB`) while
+ * also gaining the literal suffix check. `!(index).ts` again exempts the barrel, which never
+ * carries the ring's suffix.
+ *
+ * `check-file` requires a file to satisfy EVERY glob entry that matches its path, not just the
+ * most specific one — verified: adding both `"src/Pages/**"` and `"src/Pages/Components/**"`
+ * entries still fails a `*Component`-suffixed file, because the broader Pages glob ALSO matches
+ * it and still demands the `*Page` suffix. `src/Pages/Components/**` (own suffix `*Component`,
+ * per pages.md's "## Components" — e.g. `AcceptCookieComponent`) must therefore be carved OUT of
+ * the Pages entry with a negative extglob segment (`!(Components)`), not just added alongside it.
+ */
+const suffixFilenames = {
+    "src/Pages/!(Components)/**/!(index).ts": `${PASCAL_CASE_GLOB}Page`,
+    "src/Pages/!(index).ts": `${PASCAL_CASE_GLOB}Page`,
+    "src/Pages/Components/**/!(index).ts": `${PASCAL_CASE_GLOB}Component`,
+    "src/Handlers/**/!(index).ts": `${PASCAL_CASE_GLOB}Handler`,
+    "src/Selectors/**/!(index).ts": `${PASCAL_CASE_GLOB}Selector`,
+    "src/app/Listeners/**/!(index).ts": `${PASCAL_CASE_GLOB}EventListener`,
+    "src/app/Services/**/!(index).ts": `${PASCAL_CASE_GLOB}Service`,
+    "src/Exceptions/**/!(index).ts": `${PASCAL_CASE_GLOB}Exception`,
+};
 
 const electronPascalCaseFilenames = [
     "electron/{Kernel,Configs,Services,Listeners,Providers}/**/!(index).ts",
@@ -103,6 +142,7 @@ export default {
             "error",
             {
                 ...toConventionMap(pascalCaseFilenames, "PASCAL_CASE"),
+                ...suffixFilenames,
                 ...hasElectron
                     ? toConventionMap(electronPascalCaseFilenames, "PASCAL_CASE")
                     : {},

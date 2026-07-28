@@ -5,6 +5,7 @@ const maxHadoukenDepth = 5;
 
 export default {
     rules: {
+        "n/no-process-env": [ "off" ],
         "dot-notation": [ "off" ],
         "@typescript-eslint/dot-notation": [ "off" ],
         "no-magic-numbers": [ "off" ], // Desliga magic number em test

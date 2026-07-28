@@ -8,7 +8,6 @@ import { retry } from "#helpers";
 describe("Retry Test", () => {
     test("Retry 0 times test", async () => {
         const testCallback = vi.fn(() => {
-            // eslint-disable-next-line no-restricted-syntax
             throw new Error("Example");
         });
 
@@ -21,7 +20,6 @@ describe("Retry Test", () => {
 
     test("Retry Test When Resolve", async () => {
         const testCallback = vi.fn(() => {
-            // eslint-disable-next-line no-restricted-syntax
             throw new Error("Example");
         });
         const when = vi.fn(() => RetryAction.Resolve);
@@ -49,7 +47,6 @@ describe("Retry Test", () => {
     });
 
     test("Retry when Sleep", async () => {
-        // eslint-disable-next-line no-restricted-syntax
         const errorInstance = new Error("error 2");
         const errorParse = new UnknownException("error 2");
 
@@ -103,7 +100,6 @@ describe("Retry Test", () => {
 
     test("All Retry errors", async () => {
         const testCallback = vi.fn(() => {
-            // eslint-disable-next-line no-restricted-syntax
             throw new Error("Example");
         });
 
@@ -116,7 +112,6 @@ describe("Retry Test", () => {
 
     test("First Time retry resolve", async () => {
         const testCallback = vi.fn(() => {
-            // eslint-disable-next-line no-restricted-syntax
             throw new Error("RetryResolve");
         });
 
@@ -129,7 +124,6 @@ describe("Retry Test", () => {
 
     test("Throw if invalid times", async () => {
         const callbackTest = vi.fn(() => {
-            // eslint-disable-next-line no-restricted-syntax
             throw new Error("RetryResolve");
         });
 
@@ -142,7 +136,6 @@ describe("Retry Test", () => {
 
     test("Throw if aborted", async () => {
         const testCallback = vi.fn(() => {
-            // eslint-disable-next-line no-restricted-syntax
             throw new Error("RetryErrorBeforeAbort");
         });
         const signalController = new AbortController();
@@ -164,7 +157,6 @@ describe("Retry Test", () => {
 
     test("Throw if aborted after sleep", async () => {
         const callbackTest = vi.fn(() => {
-            // eslint-disable-next-line no-restricted-syntax
             throw new Error("RetryErrorBeforeAbort");
         });
         const signalController = new AbortController();

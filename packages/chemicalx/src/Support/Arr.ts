@@ -1,4 +1,4 @@
-/* eslint-disable jsdoc/type-formatting */
+/* eslint-disable jsdoc/type-formatting -- Conflict rules */
 import { randomInt } from "node:crypto";
 
 import { InvalidArgumentException } from "#exceptions";

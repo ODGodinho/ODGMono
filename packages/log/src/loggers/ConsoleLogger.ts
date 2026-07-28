@@ -38,7 +38,7 @@ export class ConsoleLogger extends AbstractLogger {
             newMessage = formatter.format(message);
         }
 
-        // eslint-disable-next-line no-console, no-restricted-syntax
+        // eslint-disable-next-line no-console, no-restricted-syntax -- This package used to console.log
         console.log(this.getLevel(level), newMessage);
     }
 
