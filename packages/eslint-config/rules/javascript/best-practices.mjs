@@ -609,5 +609,32 @@ export default {
         "sonarjs/updated-loop-counter": [ "error" ], // Não reatribua variável do loop
         "sonarjs/use-type-alias": [ "error" ], // Crie um alias se repetir muita concatenação de tipo
         "sonarjs/void-use": [ "error" ], // Não use void em lugar malucos
+
+        "zod/array-style": [ "error" ], // Use Zod.array() ao invés de z.string().array();
+        "zod/consistent-import": [ "error" ], // Use import * as z from "zod"
+        "zod/consistent-import-source": [ "error" ], // Use import from "zod" ou zod/v4
+        "zod/consistent-schema-var-name": [ "error", { "after": "Validator" } ], // Zod nome termina com Validator
+        "zod/no-any-schema": [ "error" ], // Não use z.any() use z.unknown()
+        "zod/no-coerce-boolean": [ "error" ], // Não use z.coerce.boolean() use z.boolean()
+        "zod/no-number-schema-with-int": [ "error" ], // Não use z.number().int() use z.int()
+        "zod/no-number-schema-with-safe": [ "error" ], // Não use z.number().safe() use z.int()
+        "zod/no-number-schema-with-step": [ "error" ], // Não use z.number().step() use z.multipleOf()
+        "zod/no-optional-and-default-together": [
+            "error",
+            { "preferredMethod": "optional" },
+        ], // Não use z.optional().default() use z.default()
+        "zod/prefer-top-level-string-formats": [ "error" ], // Use Nao use string().uuid use uuid() etc..
+        "zod/no-throw-in-refine": [ "error" ], // Não use throw no refine
+        "zod/no-transform-in-record-key": [ "warn" ], // Não use transform no record key para evitar transforma os dados
+        "zod/prefer-enum-over-literal-union": [ "error" ], // Prefira enum ao invés de union literal
+        "zod/prefer-loose-object": [ "error" ], // Prefira z.looseObject({}) ao invés de z.object({}).passthrough()
+        "zod/prefer-meta": [ "error" ], // Prefira zod.meta() ao invés de .describe()
+        "zod/prefer-meta-last": [ "error" ], // Prefira zod.meta() no final
+        "zod/prefer-nullish": [ "error" ], // Prefira zod.nullish() ao invés de zod.optional().nullable()
+        "zod/prefer-strict-object": [ "error" ], // Prefira zod.strictObject() ao invés de zod.object().strict()
+        "zod/prefer-string-schema-with-trim": [ "error" ], // Prefira z.string().trim() ao invés de z.string()
+        "zod/prefer-trim-before-string-length-checks": [ "error" ], // Trim antes de validar o tamanho string
+        "zod/require-error-message": [ "error" ], // Refine() precisa colocar mensagem de erro
+
     },
 };

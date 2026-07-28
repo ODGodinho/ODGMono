@@ -140,7 +140,17 @@ const requirePredicateRules = buildReturnTypeRules(
     { message: REQUIRE_PREDICATE_MSG, negateName: true, includeInterfaces: false },
 );
 
-const restrictSyntaxBase = [
+/*
+ * Isolated so packages/config (the package that DEFINES ConfigInterface) can rebuild the same
+ * `no-restricted-syntax` selector list minus this one entry, instead of disabling the whole rule.
+ */
+const configInterfaceRestriction = {
+    "selector": "TSInterfaceDeclaration[id.name='ConfigInterface'], TSTypeAliasDeclaration[id.name='ConfigInterface']",
+    "message": "ConfigInterface is already exported by @odg/config — use ConfigType or a project"
+        + " alias (e.g. MyConfig) for the project-level config type.",
+};
+
+const restrictSyntaxBaseWithoutConfigInterface = [
     {
         "selector": "NewExpression[callee.name='Error']",
         "message": "Do not use 'new Error()'. Use the exception classes from the @odg/exception"
@@ -168,6 +178,13 @@ const restrictSyntaxBase = [
     {
         "selector": "ClassExpression[superClass.name=/(Error|Exception)$/]:not([id.name=/Exception$/])",
         "message": "Classes that extend Error/Exception must end with 'Exception' suffix.",
+    },
+    {
+        "selector": "ClassDeclaration[decorators.0.expression.callee.property.name!='injectable']"
+            + ":has(Decorator[expression.callee.property.name='injectable'])",
+        "message": "@ODGDecorators.injectable(...) must be the first decorator on the class."
+            + " Otherwise @ODGDecorators.attemptableFlow() stops working — the Handler's retry"
+            + " counter never advances and the crawler retries indefinitely.",
     },
     {
         "selector": ":matches("
@@ -206,9 +223,14 @@ const restrictSyntaxBase = [
     ...requirePredicateRules,
 ];
 
-export const restrictSyntaxTest = [ ...restrictSyntaxBase ];
+const restrictSyntaxBase = [
+    ...restrictSyntaxBaseWithoutConfigInterface,
+    configInterfaceRestriction,
+];
 
-export const restrictSyntax = [
+const restrictSyntaxTestList = [ ...restrictSyntaxBase ];
+
+const restrictSyntaxList = [
     ...restrictSyntaxBase,
     {
         "selector": "CallExpression[callee.name='sleep']",
@@ -221,3 +243,9 @@ export const restrictSyntax = [
             + " Move a string to a file in the 'Selectors' folder to ensure decoupling.",
     },
 ];
+
+export const restrictSyntaxBaseWithoutConfigInterfaceRule = [ ...restrictSyntaxBaseWithoutConfigInterface ];
+
+export const restrictSyntaxTest = [ ...restrictSyntaxTestList ];
+
+export const restrictSyntax = [ ...restrictSyntaxList ];

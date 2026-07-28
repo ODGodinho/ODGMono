@@ -58,7 +58,6 @@ Ask internally or outwardly, as needed:
 - Handlers live in `src/Handlers/` by default.
 - Handlers **MUST** extend `BaseHandler`.
 - All core interaction and business logic within a Handler **MUST** be encapsulated exclusively inside the solution() method.
-- The types `HandlerFunction` and `HandlerSolution` **MUST** only be used within Handler classes or BaseHandler classes. These types **MUST NOT** be exported in other files.
 
 **WHEN** writing a `waitForHandler()` that waits for a specific request or response:
 
@@ -88,16 +87,16 @@ Ask internally or outwardly, as needed:
   - `identifyLoginBlocked` → `loginBlockedSolution`
   - `identifyMfaRequest` → `mfaRequestSolution`
   - `identifyCaptchaBlock` → `captchaBlockSolution`
-- If you create a custom solution, you **MAY** read the interface documentation in [@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts](node_modules/@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts).
+- If you create a custom solution, you **MAY** read the interface documentation in [@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts]($$PROJECT_ROOT/node_modules/@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts).
 
 ## How to Create a Handler
 
-- If you are creating a page with a handler, prefer `yarn odg make:page PageName --handler` to create both together.
+- If you are creating a page with a handler, prefer `$$PM odg make:page PageName --handler` to create both together.
 
 ```bash
-yarn odg make:handler <handlerName>
+$$PM odg make:handler <handlerName>
 # or
-yarn odg make:handler --help
+$$PM odg make:handler --help
 ```
 
 ## Examples
@@ -134,4 +133,4 @@ public async captchaBlockSolution(): Promise<HandlerSolutionType> {
 
 ## Documentation
 
-For RetryAction, HandlerFunction, and HandlerSolutionType, read [@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts](node_modules/@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts).
+For RetryAction, HandlerFunction, and HandlerSolutionType, read [@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts]($$PROJECT_ROOT/node_modules/@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts).

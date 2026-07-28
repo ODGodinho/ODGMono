@@ -18,7 +18,6 @@ An event only takes effect when at least one listener is registered for it.
 | **Service** | ✅ | Primary dispatcher; owns the browser context lifecycle |
 | **Handler** | ✅ | Use to trigger a retry path (always throw after dispatch — see handler.md) |
 | **Listener** | ✅ | Use to chain to the next step in a composed flow |
-| **Page** | ❌ | Pages **MUST NOT** dispatch events |
 
 ## Payload Type Pattern
 
@@ -46,12 +45,12 @@ export type EventTypes<T = EventBaseInterface> = T;
 
 ## Create an Event
 
-- If you need a page and its event together, prefer `yarn odg make:page PageName --event EventName`.
+- If you need a page and its event together, prefer `$$PM odg make:page PageName --event EventName`.
 
 ```bash
-yarn odg make:event <eventName>
+$$PM odg make:event <eventName>
 # or
-yarn odg make:event --help
+$$PM odg make:event --help
 ```
 
 ## Listeners
@@ -79,19 +78,19 @@ export class SearchEventListener implements EventListenerInterface<EventTypes, E
 
 ### Make listeners
 
-- If you need a listener tied to a page, prefer `yarn odg make:listener ListenerName --event EventName`.
+- If you need a listener tied to a page, prefer `$$PM odg make:listener ListenerName --event EventName`.
 
 ```bash
-yarn odg make:listener <listenerName> --event <eventName>
+$$PM odg make:listener <listenerName> --event <eventName>
 # or
-yarn odg make:listener --help
+$$PM odg make:listener --help
 ```
 
 ## Register Event Listeners Manually
 
 Use manual registration only when a listener needs to be added to an event that already has other auto-registered listeners, or when the decorator approach is not viable.
 
-In `src/app/Provider/EventServiceProvider.ts`:
+In `src/app/Providers/EventServiceProvider.ts`:
 
 ```typescript
 @ODGDecorators.injectable(ContainerName.EventServiceProvider, "Singleton")

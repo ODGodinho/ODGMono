@@ -11,6 +11,7 @@ import { defineConfig } from "eslint/config";
 import antfu from "eslint-plugin-antfu";
 import arrayFunc from "eslint-plugin-array-func";
 import betterMaxParams from "eslint-plugin-better-max-params";
+import checkFile from "eslint-plugin-check-file";
 import fileProgress from "eslint-plugin-file-progress";
 import filenames from "eslint-plugin-filenames";
 import html from "eslint-plugin-html";
@@ -30,12 +31,14 @@ import sortClassMembers from "eslint-plugin-sort-class-members";
 import * as toml from "eslint-plugin-toml";
 import unicorn from "eslint-plugin-unicorn";
 import yml from "eslint-plugin-yml";
+import eslintPluginZod from "eslint-plugin-zod";
 import globals from "globals";
 import * as tomlParser from "toml-eslint-parser";
 import * as yamlParser from "yaml-eslint-parser";
 
 import { hasAdonisCore } from "./helpers/has-adonis-core.mjs";
 import { createImportSettings } from "./helpers/import-settings.mjs";
+import { isOdgConfigPackage } from "./helpers/is-odg-config-package.mjs";
 import {
     isFastMode,
     isIdeWatchLint,
@@ -44,8 +47,10 @@ import { frontmatterProcessor } from "./processors/frontmatter.mjs";
 import anyBase from "./rules/any/base.mjs";
 import cssGlobal from "./rules/css/global.mjs";
 import globalBase from "./rules/global/base.mjs";
+import globalCheckFile from "./rules/global/check-file.mjs";
 import globalErrors from "./rules/global/errors.mjs";
 import globalPossibleErrors from "./rules/global/possible-errors.mjs";
+import { restrictSyntax, restrictSyntaxBaseWithoutConfigInterfaceRule } from "./rules/global/restrict-syntax.mjs";
 import globalSecurity from "./rules/global/security.mjs";
 import iniBase from "./rules/ini/base.mjs";
 import javascriptBestPractices from "./rules/javascript/best-practices.mjs";
@@ -54,11 +59,15 @@ import javascriptJsDocumentation from "./rules/javascript/js-documentation.mjs";
 import javascriptJSX from "./rules/javascript/jsx.mjs";
 import javascriptPerformance from "./rules/javascript/performance.mjs";
 import jsonBase from "./rules/json/base.mjs";
+import typescriptArchitectureBoundaries from "./rules/typescript/architecture-boundaries.mjs";
 import typescriptBestPractices from "./rules/typescript/best-practices.mjs";
+import typescriptEnumConventions from "./rules/typescript/enum-conventions.mjs";
 import typescriptErrors from "./rules/typescript/errors.mjs";
 import { getNamingConventionRules } from "./rules/typescript/naming-convention.mjs";
+import { getOwnBarrelImportBlocks } from "./rules/typescript/own-barrel-imports.mjs";
 import typescriptPossibleErrors from "./rules/typescript/possible-errors.mjs";
 import typescriptSecurity from "./rules/typescript/security.mjs";
+import selectorsImportBoundary from "./rules/typescript/selectors-import-boundary.mjs";
 import typescriptTests from "./rules/typescript/tests.mjs";
 import yamlBase from "./rules/yaml/base.mjs";
 import yamlGithub from "./rules/yaml/github.mjs";
@@ -155,6 +164,7 @@ export default defineConfig([
             "progress": fileProgress,
             "import": importPlugin,
             "@odg": odgPlugin,
+            "zod": eslintPluginZod,
             "@stylistic": stylistic,
             "n": pluginN,
             regexp,
@@ -210,6 +220,7 @@ export default defineConfig([
             "sort-class-members": sortClassMembers,
             "better-max-params": betterMaxParams,
             "jsx-a11y": eslintPluginJsxA11y,
+            "zod": eslintPluginZod,
             jsdoc,
             promise,
             regexp,
@@ -264,6 +275,8 @@ export default defineConfig([
             ...typescriptErrors.rules,
             ...typescriptSecurity.rules,
             ...typescriptPossibleErrors.rules,
+            ...typescriptArchitectureBoundaries.rules,
+            ...typescriptEnumConventions.rules,
             ...hasAdonisCore
                 ? {
                     "no-undef": [ "off" ],
@@ -289,6 +302,78 @@ export default defineConfig([
         files: [ "**/ContainerInject.ts" ],
         rules: {
             "@typescript-eslint/no-restricted-imports": [ "off" ],
+        },
+    },
+
+    /*
+     * @odg/config is the package that DEFINES ConfigInterface — the global ConfigInterface
+     * selector below exists to stop *consumers* of @odg/config from redeclaring it, not to stop
+     * @odg/config itself. Rebuild no-restricted-syntax with the same selector list minus that one
+     * entry, instead of disabling the whole rule (which would also unban `new Error()`,
+     * `console.log`, the `Async` suffix, etc. for this package).
+     */
+    ...isOdgConfigPackage
+        ? [
+            {
+                files: [ "**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts" ],
+                rules: {
+                    "no-restricted-syntax": [ "error", ...restrictSyntaxBaseWithoutConfigInterfaceRule ],
+                },
+            },
+        ]
+        : [],
+
+    /* Selectors MUST NOT import Pages/Handlers (skills/odg/references/selectors.md) */
+    selectorsImportBoundary,
+
+    /*
+     * A file MUST import its own siblings by relative path, never its folder's own barrel/alias
+     * (skills/odg/references/architecture.md → `### index.ts`)
+     */
+    ...getOwnBarrelImportBlocks(),
+
+    /*
+     * Process.env MUST NOT be read directly outside the places that actually populate/parse it
+     * (skills/odg/references/configs.md, skills/odg/references/testing.md)
+     */
+    {
+        files: [ "tests/vitest/**" ],
+        rules: {
+            "n/no-process-env": [ "off" ],
+        },
+    },
+    {
+        files: [ "src/Configs/**/*.ts", "src/app/Configs/**/*.ts", "src/app/Container.ts" ],
+        rules: {
+            "n/no-process-env": [ "off" ],
+        },
+    },
+
+    {
+        files: [ "src/Pages/**/*.ts", "src/Handlers/**/*.ts" ],
+        rules: {
+            "no-restricted-syntax": [
+                "error",
+                ...restrictSyntax,
+                {
+                    "selector": "CallExpression[callee.property.name='injectable'][arguments.1.value='Singleton']",
+                    "message": "Pages and Handlers represent a single flow step, not a long-lived service."
+                        + " @ODGDecorators.injectable(..., \"Singleton\") makes the container reuse the same"
+                        + " instance across executions — state from one flow (e.g. `this.page`) leaks into"
+                        + " the next. Drop the \"Singleton\" argument.",
+                },
+            ],
+        },
+    },
+
+    // Check-file: folder & filename casing (ODG architecture canon)
+    {
+        files: [ "**/*" ],
+        plugins: {
+            "check-file": checkFile,
+        },
+        rules: {
+            ...globalCheckFile.rules,
         },
     },
 

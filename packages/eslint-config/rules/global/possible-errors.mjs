@@ -102,5 +102,18 @@ export default {
         "unicorn/no-selector-as-dom-name": [ "error" ], // AddClass com seletor errado
         "unicorn/no-invalid-well-known-symbol-methods": [ "error" ], // Não use Symbol.iterator() async
         "unicorn/no-late-event-control": [ "error" ], // Não use event.preventDefault() no final
+
+        "zod/no-conflicting-checks": [ "error" ], // Não use regras que se conflitam
+        "zod/no-duplicate-schema-methods": [ "error" ], // Não use métodos duplicados no mesmo zod
+        "zod/no-empty-custom-schema": [ "error" ], // Não use z.custom() vazio ou invalido
+        "zod/no-native-enum": [ "error" ], // Não use enum nativo, use z.enum()
+        "zod/no-number-schema-with-finite": [ "error" ], // Não use z.number().finite() use z.number()
+        "zod/no-number-schema-with-is-finite": [ "error" ], // Não use z.number().isFinite
+        "zod/no-number-schema-with-is-int": [ "error" ], // Não use z.number().isInt
+        "zod/no-promise-schema": [ "error" ], // Não use z.promise()
+        "zod/no-schema-with-is-nullable": [ "error" ], // Não use z.isNullable()
+        "zod/no-schema-with-is-optional": [ "error" ], // Não use z.isOptional()
+        "zod/no-unnecessary-readonly": [ "error" ], // Não use z.readonly() desnecessário
+        "zod/require-brand-type-parameter": [ "error" ], // Use z.brand() com tipo genérico explicito
     },
 };

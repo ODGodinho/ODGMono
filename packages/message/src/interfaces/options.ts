@@ -1,4 +1,4 @@
-import type zod from "zod";
+import type * as zod from "zod";
 
 import type { ProxyValidator } from "../Validators/ProxyValidator";
 

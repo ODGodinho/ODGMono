@@ -1,6 +1,6 @@
 # Testing
 
-Tests live in `tests/vitest/`. The runner is **Vitest**. Tests run with `yarn test:ci`.
+Tests live in `tests/vitest/`. The runner is **Vitest**. Tests run with `$$PM test:ci`.
 
 ## tests/vitest/init.ts
 

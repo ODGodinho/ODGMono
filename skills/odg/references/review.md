@@ -11,7 +11,7 @@ The agent **MUST** include maintainability issues in the violation count, not on
 2. **Index References** Read `.review/$$GIT_BRANCH.md` end-to-end.
 3. **Forgiveness Rule:** If a file is modified but the surrounding legacy code is out of standard, DO NOT propagate the error to your review unless the user's specific change caused it. Focus on the impact of the new code.
 4. **Mindset**: You **MUST** act as a Senior Tech Leader and Specialist. You **MUST NOT** limit your analysis to syntax or static checklist compliance. You **MUST** proactively investigate the operational context of the diff, challenge design choices, analyze surrounding legacy code for side effects, read all referenced documentation and utilize relevant agent skills to uncover logical bugs (such as inverted conditions), regressions (such as lost toggles/kill-switches), and design flaws that extend beyond the literal checklist.
-5. **Knowledge Indexing:** Before start review all **touch, edit** references in [References to review](./references.md)
+5. **Knowledge Indexing:** Before start review all **touch, edit** references via the [Routing map](../SKILL.md#routing-map)
 6. **Review Checklist** read review checklist in [Review Checklist](./review/checklist.md) and check inconsistency
 7. **Execute Output** Start print all outputs [Output Format](#output-format)
 

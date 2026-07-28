@@ -1,4 +1,4 @@
-import zod from "zod";
+import * as zod from "zod";
 
 import type { ConfigInterface } from "#interfaces";
 
@@ -6,8 +6,8 @@ import { JsonConfig } from "../../src";
 
 describe("Example Teste", () => {
     const validator = zod.object({
-        example: zod.string().optional(),
-        example2: zod.string().optional(),
+        example: zod.string().trim().optional(),
+        example2: zod.string().trim().optional(),
     });
     let config: ConfigInterface<zod.infer<typeof validator>>;
     const exampleValue = "123";
@@ -21,7 +21,7 @@ describe("Example Teste", () => {
 
     test("Test Invalid Validator", async () => {
         const invalidValidator = zod.object({
-            example: zod.string(),
+            example: zod.string().trim(),
         });
         const jsonConfig = new JsonConfig<zod.infer<typeof invalidValidator>>(
             { example: 123 },

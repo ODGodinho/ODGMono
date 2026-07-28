@@ -144,9 +144,11 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
         if (instanceProperty) return instanceProperty;
 
         if (this.isNode()) {
+            /* eslint-disable n/no-process-env -- Package need read from env file */
             return process.env.HOSTNAME!
                 || process.env.CONTAINER_ID!
                 || process.env.DOCKER_CONTAINER_UUID!;
+            /* eslint-enable n/no-process-env */
         }
 
         return "unknown";

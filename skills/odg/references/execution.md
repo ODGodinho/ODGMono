@@ -35,7 +35,7 @@ After registering an event contract with `make:event` or `make:page` `--event` p
 
 1. `src/app/Enums/EventName.ts` — enum key present
 2. `@types/EventsInterface.d.ts` — payload type added to `EventBaseInterface`
-3. For each listener: `src/app/Enums/ContainerName.ts` — listener entry in the `// Events` section with a `dot.case` value, via `make:listener` or `make:page --listeners`.
+3. For each listener: `src/app/Enums/ContainerName.ts` — listener entry in the `// Events` section, via `make:listener` or `make:page --listeners`.
 
 ## Post-Scaffold Per-File Checklist
 
@@ -64,8 +64,8 @@ When RTK is available:
 | rtk | Without RTK |
 | --- | --- |
 | rtk tsc --noEmit | tsc --noEmit |
-| rtk lint eslint --fix | yarn eslint --fix |
-| rtk vitest run | yarn test |
+| rtk lint eslint --fix | $$PM eslint --fix |
+| rtk vitest run | $$PM test |
 
 ## Build Divergence Rule
 

@@ -91,7 +91,7 @@
         {
             "id": 9,
             "prompt": "Rodei yarn dev e o crawler trava com TimeoutError: waitForSelector .login-btn. Como debugamos?",
-            "expected_output": "Bootar playwright-cli via $SKILL_DIR/scripts/debug-browser.sh exportando CLI_BROWSER_CONNECT_WS, rodar BROWSER_CONNECT=$CLI_BROWSER_CONNECT_WS yarn dev em background e usar a skill playwright-cli para capturar snapshot e validar o seletor contra o DOM vivo ANTES de propor edicao em arquivo.",
+            "expected_output": "Bootar playwright-cli via $$SKILL_DIR/scripts/debug-browser.sh exportando CLI_BROWSER_CONNECT_WS, rodar BROWSER_CONNECT=$CLI_BROWSER_CONNECT_WS yarn dev em background e usar a skill playwright-cli para capturar snapshot e validar o seletor contra o DOM vivo ANTES de propor edicao em arquivo.",
             "files": [],
             "expectations": [
                 "A resposta inicia bootando playwright-cli e exportando CLI_BROWSER_CONNECT_WS antes do yarn dev.",
@@ -113,10 +113,10 @@
         {
             "id": 11,
             "prompt": "Rodei debug-browser.sh e o CLI_BROWSER_CONNECT_WS veio vazio. preciso fazer um debug numa porta diferente, O que fazer?",
-            "expected_output": "Copiar $SKILL_DIR/configs/playwright-cli.config.json para um arquivo temporario (ex.: /tmp/new-playwright-cli.config.json), alterar cdpPort e a flag --remote-debugging-port= para uma porta livre, e re-exportar CLI_BROWSER_CONNECT_WS apontando para o config temporario. NUNCA editar o config compartilhado in place.",
+            "expected_output": "Copiar $$SKILL_DIR/configs/playwright-cli.config.json para um arquivo temporario (ex.: /tmp/new-playwright-cli.config.json), alterar cdpPort e a flag --remote-debugging-port= para uma porta livre, e re-exportar CLI_BROWSER_CONNECT_WS apontando para o config temporario. NUNCA editar o config compartilhado in place.",
             "files": [],
             "expectations": [
-                "A resposta proibe editar $SKILL_DIR/configs/playwright-cli.config.json in place.",
+                "A resposta proibe editar $$SKILL_DIR/configs/playwright-cli.config.json in place.",
                 "A resposta orienta copia para /tmp e troca de cdpPort e --remote-debugging-port=.",
                 "A resposta re-exporta CLI_BROWSER_CONNECT_WS usando o config temporario."
             ]

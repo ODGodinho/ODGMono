@@ -21,9 +21,9 @@ export interface ContainerInterface {
 
 ### `Type 'string' is not assignable to type 'ContainerName'`
 
-**Cause:** A ContainerName enum value uses a string that doesn't match the expected `dot.case` pattern, or a loose string was used instead of the enum.
+**Cause:** A loose string was used where `ContainerName.MyClass` was expected.
 
-**Fix:** Always use the enum (`ContainerName.MyClass`), never a raw string. Verify that the enum value is `"my.class"` not `"MyClass"`.
+**Fix:** Always use the enum member, never a raw string.
 
 ---
 
@@ -125,11 +125,3 @@ await this.myPage.setPage(page).execute();
 3. `.env.example` — default/example value added
 4. `.env` (locally) — actual value set
 5. `tests/vitest/init.ts` — dummy value if required
-
----
-
-### Decorator order violation
-
-**Cause:** `@ODGDecorators.injectable()` is not the first decorator on the class, so `attemptableFlow` does not work.
-
-**Fix:** Move `@ODGDecorators.injectable(...)` to the absolute top of the decorator stack, above all other decorators including `@ODGDecorators.attemptableFlow()`.

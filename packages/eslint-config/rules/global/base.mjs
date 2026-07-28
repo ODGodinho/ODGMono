@@ -27,6 +27,7 @@ export default {
         "no-self-assign": [ "error" ], // Nao se atribua seu próprio valor a variável
         "no-irregular-whitespace": [ "error" ], // Não permite espaços entre palavras
         "no-undef": [ "error", { typeof: true } ], // Não chame variáveis não definidas
+        "n/no-process-env": [ "error" ],
         "regexp/negation": [ "error" ], // This rule enforces use of \D, \W, \S and \P on negation.
         "regexp/prefer-set-operation": [ "error" ],
         "regexp/no-useless-set-operand": [ "error" ],

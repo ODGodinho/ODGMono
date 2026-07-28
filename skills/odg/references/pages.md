@@ -22,13 +22,11 @@ Pages **MUST NOT**:
 
 Ask internally or outwardly, as needed:
 
-- Page classes and their corresponding files **MUST** be named using **PascalCase**.
 - If the crawler uses a browser, it is **RECOMMENDED** to use the --selectors flag when scaffolding the page.
 - If the step crosses domains (e.g. `accounts.google.com` → `youtube.com`) or contains 2+ primary verbs ("login", "search", "checkout"), split it into 3+ Pages and orchestrate them in a Service or Listener.
 - If a page uses selectors, it **SHOULD** use typed selectors and the scaffold **SHOULD** include --selectors.
 - If a handler is needed, the command **SHOULD** include --handler for a default `<PageName>Handler`, or --handler-from and/or --handler-to for transition handlers.
-- When flag meaning is unclear, agents **MUST** read `yarn odg make:page --help` and **MUST NOT** guess semantics.
-- **MUST NOT** change a page to singleton, because a page is a per-flow step.
+- When flag meaning is unclear, agents **MUST** read `$$PM odg make:page --help` and **MUST NOT** guess semantics.
 - **MUST NOT** create OneAndOtherPage-style classes, because each page must represent one intention.
 - **MUST** use **setPage()** in page before use **IF** your crawler using browser.
 
@@ -44,7 +42,7 @@ Ask internally or outwardly, as needed:
 You **MUST** use the official scaffolding command to create pages.
 
 ```bash
-yarn odg make:page --help
+$$PM odg make:page --help
 ```
 
 > When creating a page together with handler, selectors, event contract, and listener class, you **SHOULD** prefer a single `make:page` with `--selectors`, `--event`, `--listeners`, and `--register` (see [events.md](./events.md)) unless a documented exception applies.

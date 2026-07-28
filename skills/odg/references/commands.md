@@ -3,7 +3,7 @@
 This file governs the execution phase. For planning rules, see [./plan.md](./plan.md).
 Treat @odg/command as a CLI contract. Choose commands from the real artifact being created.
 
-- Full CLI Guide: [@odg/command/agents.md](node_modules/@odg/command/agents.md)
+- Full CLI Guide: [@odg/command/agents.md]($$PROJECT_ROOT/node_modules/@odg/command/agents.md)
 
 ## Global Rules
 
@@ -13,18 +13,18 @@ Treat @odg/command as a CLI contract. Choose commands from the real artifact bei
   - `Login` not `LoginHandler`
   - `Login` not `LoginEventListener`
   - `Login` not `LoginSelector`
-- Examples **SHOULD** be derived from the official CLI help via `yarn odg --help` or `yarn odg make:* --help`.
+- Examples **SHOULD** be derived from the official CLI help via `$$PM odg --help` or `$$PM odg make:* --help`.
 - If path-flag behavior is ambiguous, developers **MUST** verify the CLI help output before suggesting any split-command workaround.
 
 ## Available Scaffold Commands
 
 ```bash
-yarn odg make:page <Name> [flags]       # Creates Page class
-yarn odg make:handler <Name> [flags]    # Creates Handler class
-yarn odg make:event <Name> [flags]      # Creates EventName enum entry + payload type
-yarn odg make:listener <Name> [flags]   # Creates Listener class
-yarn odg make:selector <Name> [flags]   # Creates Selector file
-yarn odg make:config <Name> [flags]     # Mutates config wiring (no standalone file created)
+$$PM odg make:page <Name> [flags]       # Creates Page class
+$$PM odg make:handler <Name> [flags]    # Creates Handler class
+$$PM odg make:event <Name> [flags]      # Creates EventName enum entry + payload type
+$$PM odg make:listener <Name> [flags]   # Creates Listener class
+$$PM odg make:selector <Name> [flags]   # Creates Selector file
+$$PM odg make:config <Name> [flags]     # Mutates config wiring (no standalone file created)
 ```
 
 **No command exists for Components** — they are created manually (see execution.md).
@@ -37,4 +37,4 @@ Only fall back to separate commands with -p when a real runtime failure is repro
 
 Example for this repo:
 
-- yarn odg make:page Search --path src/Pages/Google --selectors --selectorPath src/Selectors/Google --event --listeners --listenersPath src/app/Listeners/Search --register
+- $$PM odg make:page Search --path src/Pages/Google --selectors --selectorPath src/Selectors/Google --event --listeners --listenersPath src/app/Listeners/Search --register

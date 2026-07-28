@@ -1,17 +1,17 @@
-import { z } from "zod";
+import * as zod from "zod";
 
 export namespace ProxyValidator {
 
-    export const proxyAuthValidator = z.object({
-        username: z.string().min(1),
-        password: z.string().min(1),
+    export const proxyAuthValidator = zod.object({
+        username: zod.string().trim().min(1),
+        password: zod.string().trim().min(1),
     });
 
-    export const proxyValidator = z.object({
-        host: z.string().min(1),
-        protocol: z.string().min(1).optional(),
-        port: z.number().int().positive().optional(),
-        name: z.string().min(1),
+    export const proxyValidator = zod.object({
+        host: zod.string().trim().min(1),
+        protocol: zod.string().trim().min(1).optional(),
+        port: zod.int().positive().optional(),
+        name: zod.string().trim().min(1),
         auth: proxyAuthValidator.optional(),
     });
 }

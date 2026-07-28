@@ -9,10 +9,9 @@ RTK supports all commands, flags, and parameters; you simply need to match the s
 
 | Command Base | RTK Command | Description |
 | --- | --- | --- |
-| `yarn build ...` | `rtk tsc --noEmit ...` | use rtk yarn build if need generate dist/ folder |
-| `yarn eslint ...` | `rtk lint eslint ...` | run eslint get errors only |
-| `yarn lint ...` | `rtk lint eslint ...` | run eslint get errors only |
-| `yarn lint:fix ...` | `rtk lint eslint --fix ...` | run eslint get errors and apply fixes |
-| `yarn test:watch ...` | `rtk vitest run --watch ...` | run tests in vitest |
-| `yarn test:ci ...` | `rtk vitest run --passWithNoTests ...` | N/A |
-| `yarn test:watch ...` | `rtk vitest run --watch ...` | N/A |
+| `$$PM build ...` | `rtk tsc --noEmit ...` | use `rtk $$PM build` when the `dist/` folder is actually needed |
+| `$$PM eslint ...` | `rtk lint eslint ...` | run eslint, get errors only |
+| `$$PM lint ...` | `rtk lint eslint ...` | run eslint, get errors only |
+| `$$PM lint:fix ...` | `rtk lint eslint --fix ...` | run eslint, get errors and apply fixes |
+| `$$PM test:watch ...` | `rtk vitest run --watch ...` | run tests in vitest |
+| `$$PM test:ci ...` | `rtk vitest run --passWithNoTests ...` | run the CI suite |

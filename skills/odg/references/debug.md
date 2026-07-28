@@ -9,16 +9,16 @@ Imperative playbook. When the user reports an execution failure or asks to debug
 The script opens `playwright-cli` headed and prints the CDP WebSocket endpoint to stdout, after this not need to attach the browser.
 
 ```bash
-export CLI_BROWSER_CONNECT_WS=$($SKILL_DIR/scripts/debug-browser.sh $SKILL_DIR/configs/playwright-cli.config.json)
+export CLI_BROWSER_CONNECT_WS=$($$SKILL_DIR/scripts/debug-browser.sh $$SKILL_DIR/configs/playwright-cli.config.json)
 # OR
-source $SKILL_DIR/scripts/debug-browser.sh
+source $$SKILL_DIR/scripts/debug-browser.sh
 ```
 
 Validate the output:
 
 - Must be non-empty and start with `ws://`.
 - If empty, recovery: run lsof -i :9222 to check if the CDP port is already taken by a stale browser;
-  - Copy `$SKILL_DIR/configs/playwright-cli.config.json` to a temp file such as `/tmp/new-playwright-cli.config.json`, change the `cdpPort` field and the `--remote-debugging-port=` argument to a free port, then execute `export CLI_BROWSER_CONNECT_WS=$($SKILL_DIR/scripts/debug-browser.sh /tmp/new-playwright-cli.config.json)`.
+  - Copy `$$SKILL_DIR/configs/playwright-cli.config.json` to a temp file such as `/tmp/new-playwright-cli.config.json`, change the `cdpPort` field and the `--remote-debugging-port=` argument to a free port, then execute `export CLI_BROWSER_CONNECT_WS=$($$SKILL_DIR/scripts/debug-browser.sh /tmp/new-playwright-cli.config.json)`.
 
 **Exit criterion:** `CLI_BROWSER_CONNECT_WS` is exported and looks like `ws://localhost:9222/devtools/browser/<uuid>`.
 
@@ -29,7 +29,7 @@ Validate the output:
 Start attached to the shared browser **in the background** so logs can be read while the crawler runs:
 
 ```bash
-BROWSER_CONNECT=$CLI_BROWSER_CONNECT_WS yarn dev
+BROWSER_CONNECT=$CLI_BROWSER_CONNECT_WS $$PM dev
 
 # Or start playwright-cli commands if manual debugger
 playwright-cli goto https://www.google.com
@@ -53,5 +53,5 @@ The agent **MUST NOT** propose a selector fix without confirming that the candid
 
 ## Constraints reminder
 
-- `$SKILL_DIR/configs/playwright-cli.config.json` — shared, **MUST NOT** be edited in place; copy to a temp folder if a change is needed.
-- All `$SKILL_DIR` occurrences above **MUST** be expanded to the absolute skill directory before execution; see the Path convention in `SKILL.md`.
+- `$$SKILL_DIR/configs/playwright-cli.config.json` — shared, **MUST NOT** be edited in place; copy to a temp folder if a change is needed.
+- All `$$SKILL_DIR` occurrences above **MUST** be expanded to the absolute skill directory before execution; see the Path convention in `SKILL.md`.

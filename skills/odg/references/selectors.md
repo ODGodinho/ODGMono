@@ -10,7 +10,6 @@ Selectors live in src/Selectors/ as typed constants.
 - If using a selector from another page, reference it via `this.$$s`; if it belongs to the current page, use `this.$s`.
 - Every selector used **MUST** be accessed exclusively through `this.$s` or `this.$$s`.
 - If one behavior accepts more than one equivalent selector, prefer composing them from the typed selector map instead of hardcoding a new selector string locally.
-- **MUST NOT** import Pages or Handlers in Selectors files.
 - **MUST** ensure DOM selectors target a unique occurrence to satisfy framework strict mode requirements. **WHEN** the selector is intentionally used for lists or multi-element interactions, multiple matches are allowed.
 
 ## Naming Conventions
@@ -23,12 +22,12 @@ Selectors live in src/Selectors/ as typed constants.
 
 ## How to Create a Selector
 
-- If you are creating a page with selectors, prefer `yarn odg make:page PageName --selectors` to create both together.
+- If you are creating a page with selectors, prefer `$$PM odg make:page PageName --selectors` to create both together.
 
 ```bash
-yarn odg make:selector <selectorName>
+$$PM odg make:selector <selectorName>
 # or
-yarn odg make:selector --help
+$$PM odg make:selector --help
 ```
 
 ## Code Review
