@@ -21,15 +21,15 @@ interface LoggerInterface {
  * });
  *
  * @template PromiseType Promise return type
- * @param {Promise<PromiseType>} promise Operation to run and forget
+ * @param {Promise<PromiseType> | undefined} promise Operation to run and forget
  * @param {LoggerInterface | null} log Logger used to if null log is ignored null parameter is not recommended
  * @returns {Promise<PromiseType | undefined>}
  */
 export async function detach<PromiseType>(
-    promise: Promise<PromiseType>,
+    promise: Promise<PromiseType> | undefined,
     log: LoggerInterface | null,
 ): Promise<PromiseType | undefined> {
-    return promise.catch(async (error: unknown) => {
+    return promise?.catch(async (error: unknown) => {
         try {
             await log?.error(error);
         } catch (exception: unknown) {

@@ -524,7 +524,7 @@ export default defineConfig([
     },
 
     {
-        files: [ "tests/helpers/browser.ts" ],
+        files: [ "tests/helpers/*.ts" ],
         rules: {
             "no-empty-pattern": [ "off" ],
         },

@@ -146,23 +146,24 @@
         {
             "id": 14,
             "prompt": "Quero criar um Page chamado SearchOrchestrator que recebe 3 events (Prepare, Home, Search) e chama 2 handlers entre eles. Como faço o make:page?",
-            "expected_output": "A skill deve corrigir o usuario: isso descreve um Service, nao um Page. Page e ponto de execucao numa rota/tela; orquestracao de events + chamada de transaction handlers e padrao de Service. Roteia para services.md e usa make:service (ou criacao manual seguindo Singleton injetavel). Nao roda make:page com esse nome.",
+            "expected_output": "A skill deve corrigir o usuario: isso descreve um Service, nao um Page. Page e ponto de execucao numa rota/tela; orquestracao de events + chamada de transaction handlers e padrao de Service. Roteia para services.md; Services sao criados manualmente (nao existe make:service) seguindo @ODGDecorators.injectable(ContainerName.X, \"Singleton\"). Nao roda make:page com esse nome.",
             "files": [],
             "expectations": [
                 "A resposta identifica explicitamente que a descricao corresponde a um Service, nao um Page.",
                 "A resposta NAO sugere rodar `yarn odg make:page SearchOrchestrator` como caminho correto.",
-                "A resposta cita services.md (ou descreve o padrao Service: orquestracao de events + chamada de transaction handlers no Service, nao em Listener)."
+                "A resposta cita services.md (ou descreve o padrao Service: orquestracao de events + chamada de transaction handlers no Service, nao em Listener).",
+                "A resposta NAO sugere um comando `make:service` (nao existe) — orienta criacao manual do arquivo com @ODGDecorators.injectable(..., \"Singleton\")."
             ]
         },
         {
             "id": 15,
             "prompt": "Cria um Service ChromeBookingService que usa USE_HEADLESS pra decidir se sobe BookingPage headless ou visivel, e dispara BookingEvent ao final.",
-            "expected_output": "Roteia services.md + configs.md + events.md. Usa make:service + make:config (se USE_HEADLESS nao existir) + make:event. Le USE_HEADLESS via this.config.get(BrowserConfig.USE_HEADLESS) — nao process.env. Dispara BookingEvent via this.bus.dispatch dentro do Service.",
+            "expected_output": "Roteia services.md + configs.md + events.md. Cria o Service manualmente (nao existe make:service) + usa make:config (se USE_HEADLESS nao existir) + make:event. Le USE_HEADLESS via this.config.get(ConfigName.USE_HEADLESS) — nao process.env. Dispara BookingEvent via this.bus.dispatch dentro do Service.",
             "files": [],
             "expectations": [
                 "A resposta menciona pelo menos 3 referencias distintas (services + configs + events) ou descreve regras das 3 (orquestracao no Service + leitura via config.get + dispatch de event).",
-                "A resposta usa os comandos make:service e make:event (e make:config se USE_HEADLESS for novo), nao cria tudo manualmente.",
-                "A resposta le USE_HEADLESS via `this.config.get(BrowserConfig.USE_HEADLESS)` (ou equivalente do container), NAO via `process.env`.",
+                "A resposta cria o Service manualmente (make:service nao existe) e usa make:event (e make:config se USE_HEADLESS for novo).",
+                "A resposta le USE_HEADLESS via `this.config.get(ConfigName.USE_HEADLESS)` (ou equivalente do container), NAO via `process.env`.",
                 "A resposta dispara BookingEvent via `bus.dispatch` (ou `this.bus.dispatch`), nao chama listener nem instancia event manualmente."
             ]
         },

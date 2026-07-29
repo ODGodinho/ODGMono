@@ -42,8 +42,6 @@ Read the matching reference **before** you plan, edit, or review one of these fi
 | **Pages** | `src/Pages/**` · `make:page` | **MUST** [pages.md](./references/pages.md); **SHOULD** [selectors.md](./references/selectors.md) |
 | **Handlers** | `src/Handlers/**` · `make:handler` | **MUST** [handler.md](./references/handler.md) |
 | **Selectors** | `src/Selectors/**` | **MUST** [selectors.md](./references/selectors.md) |
-| **Controllers / Routes** | `src/Http/**` · `src/Routes/**` | **MUST** [runtimes/api.md](./references/runtimes/api.md) |
-| **Consumers / Jobs / Schedules** | `src/Consumers/**` · `src/Jobs/**` · `src/Schedules/**` | **MUST** [runtimes/worker.md](./references/runtimes/worker.md) |
 | **Windows / Tray / preload / IPC** | `electron/**` · `preload.ts` · IPC channel enums | **MUST** [runtimes/electron.md](./references/runtimes/electron.md) |
 | **React UI** | `resources/**` · `src/components/**` · `src/hooks/**` · `src/features/**` | **MUST** [runtimes/frontend.md](./references/runtimes/frontend.md) |
 | **Events / Listeners** | `src/app/Listeners/**` · `src/app/Enums/Event**` · `EventsInterface.d.ts` | **MUST** [events.md](./references/events.md) |
@@ -51,6 +49,8 @@ Read the matching reference **before** you plan, edit, or review one of these fi
 | **Configs** | `src/Configs/**` · `src/app/Enums/Config**` · `.env**` · `make:config` | **MUST** [configs.md](./references/configs.md) |
 | **Enums / Container wiring** | `src/app/Enums/**` · `src/app/Container.ts` · `@types/ContainerInterface.d.ts` | **MUST** [execution.md](./references/execution.md) + [diagnostics.md](./references/diagnostics.md); **SHOULD** [configs.md](./references/configs.md) |
 | **Testing** | `tests/**` | **MUST** [testing.md](./references/testing.md) |
+
+Unlisted runtime (API, worker) → apply [architecture.md](./references/architecture.md) only; no dedicated runtime file exists yet.
 
 ### By activity
 
@@ -63,8 +63,7 @@ Read the matching reference **before** you plan, edit, or review one of these fi
 | Common TSC / wiring failures | [diagnostics.md](./references/diagnostics.md) |
 | Runtime debug (`rode o debug`, `TimeoutError`, `waitForSelector` fail, `Cannot read properties of undefined (reading 'execute')`) | [debug.md](./references/debug.md) |
 | Code review requested | [review.md](./references/review.md) |
-| Writing a log call | [conventions/logging.md](./references/conventions/logging.md) |
-| Starting a promise you cannot `await` | [conventions/async.md](./references/conventions/async.md) |
+| Writing a log call, or starting a promise you cannot `await` | [conventions.md](./references/conventions.md) |
 | Token-saving command proxy (only when `rtk --version` succeeds) | [rtk.md](./references/rtk.md) |
 
 ### Package references

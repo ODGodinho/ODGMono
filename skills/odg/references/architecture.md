@@ -118,7 +118,6 @@ Domain classes are discovered by `ODGDecorators.loadModule` (invoked in `setUp`)
 - Developers **MUST** use `ContainerName`, `EventName`, and `ConfigName` enums instead of loose strings.
 - Manual bindings **MUST** be maintained strictly inside `src/app/Container.ts`.
 - Barrel files **MUST** be kept updated whenever files are added or removed from a directory.
-- Whenever a binding is added in `src/app/Container.ts`, `@types/ContainerInterface.d.ts` **MUST** be updated with the corresponding entry.
 - **MUST NOT** disable ESLint for an entire file when a narrower occurrence-level disable is enough.
 - An injected primitive (`Logger`, `Config`, requester, `EventBus`) **MUST** be used directly at the call site. **MUST NOT** wrap it in a bespoke function or class that only forwards to it without adding behavior.
 
