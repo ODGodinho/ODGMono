@@ -55,7 +55,7 @@ Only after structure is stable:
 - write page interaction logic
 - write handler success and failure gates
 - complete listener or service orchestration
-- If a new config is required, add a dummy value to `tests/vitest/init.ts` so tests keep working.
+- If a new config is required, add a dummy value to the project's test setup file so tests keep working ([testing.md](./testing.md)).
 
 ## Validation Sequence
 

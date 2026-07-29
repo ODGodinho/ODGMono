@@ -66,7 +66,7 @@ export interface EventBaseInterface extends EventObjectType {
 
 **Cause:** The config field was declared as `.optional()` in Zod but the code treats it as required.
 
-**Fix:** Either use `.nullish()` and add a null-check, or make the field required in the Zod schema. If required, add a dummy value to `tests/vitest/init.ts`.
+**Fix:** Either use `.nullish()` and add a null-check, or make the field required in the Zod schema. If required, add a dummy value to the project's test setup file ([testing.md](./testing.md)).
 
 ---
 
@@ -76,17 +76,7 @@ export interface EventBaseInterface extends EventObjectType {
 
 **Cause:** A `*Solution()` function dispatches an event AND returns `RetryAction.Retry`. The dispatch resets the page but `RetryAction.Retry` bypasses the attempt counter, causing the loop.
 
-**Fix:** After dispatching the event, throw an exception instead of returning `RetryAction.Retry`:
-
-```typescript
-// WRONG
-await this.bus.dispatch(EventName.MyPageEvent, { page: this.page });
-return RetryAction.Retry; // infinite loop
-
-// CORRECT
-await this.bus.dispatch(EventName.MyPageEvent, { page: this.page });
-throw new Exception("Reason for retry"); // framework calls retrying(), counter decrements
-```
+**Fix:** After dispatching the event, throw an exception instead of returning `RetryAction.Retry`, so the framework calls `retrying()` and the attempt counter decrements. Canonical pattern and rationale: [handler.md](./handler.md) (anti-loop pattern).
 
 ---
 
@@ -118,10 +108,4 @@ await this.myPage.setPage(page).execute();
 
 **Cause:** The key exists in `ConfigName.ts` but was not added to the Zod schema in `src/Configs/index.ts`, so it passes validation as `undefined`.
 
-**Fix:** Close the full config chain:
-
-1. `ConfigName.ts` — key declared
-2. `src/Configs/index.ts` — Zod rule added
-3. `.env.example` — default/example value added
-4. `.env` (locally) — actual value set
-5. `tests/vitest/init.ts` — dummy value if required
+**Fix:** Close the full config chain — key in `ConfigName.ts`, Zod rule in the validator (`src/Configs/**`), `.env.example`, local `.env`, and a dummy in the test setup when the field is required. Naming and validation rules: [configs.md](./configs.md); test dummy rules: [testing.md](./testing.md).

@@ -1,22 +1,17 @@
 # Testing
 
-Tests live in `tests/vitest/`. The runner is **Vitest**. Tests run with `$$PM test:ci`.
+This skill is cross-project. The test layout, runner projects, and setup chain are **project-specific** and **MUST** be read from the project itself, never assumed from this file:
 
-## tests/vitest/init.ts
+1. The root `AGENTS.md`/`agents.md`, and any testing doc it points to (for example `docs/**/testing-strategy.md`) — SSOT.
+2. `package.json` scripts (`test`, `test:ci`, `test:unit`, `test:browser`, …) and the runner config (`vitest.config.*`, `vitest.workspace.*`, `bunfig.toml`) — the authoritative list of suites and setup files.
 
-This file runs before every test suite. Its job is to populate `process.env` with valid dummy values for all **required** config keys, meaning those without `.optional()` in the Zod schema.
+Layouts differ across ODG projects: a single `tests/vitest/` with one runner, or split `tests/unit/` + `tests/browser/` with per-project setup files chaining into a shared bootstrap. Locate the setup file(s) from the runner config before editing anything.
+
+## Universal invariant
+
+Every `ConfigName` key mapping to a **required** Zod field (no `.optional()`) **MUST** have a dummy value in the project's test setup, or the suite fails at boot. When you add a required config via `make:config`, add its dummy in the same change.
 
 Rules:
 
-- Every `ConfigName` key that maps to a **required** Zod field **MUST** have a dummy value here.
-- Dummy values must satisfy the Zod type: numbers as numeric strings (`"5000"`), booleans as `"true"` or `"false"`, enums as a valid member.
-- When you add a new required config via `make:config`, add its dummy here immediately.
-
-```typescript
-// tests/vitest/init.ts
-process.env.APP_NAME = "test-app";
-process.env.USE_HEADLESS = "true";
-process.env.HANDLER_TIMEOUT = "5000";
-process.env.HANDLER_ATTEMPT = "2";
-process.env.PAGE_ATTEMPT = "3";
-```
+- Dummy values **MUST** satisfy the Zod type: numbers as numeric strings (`"5000"`), booleans as `"true"`/`"false"`, enums as a valid member.
+- **MUST** follow the assignment style already used in that setup file. `??=` is idempotent and preserves a value already present in the environment; plain `=` overwrites it. Do not switch styles.

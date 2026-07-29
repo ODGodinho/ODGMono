@@ -26,12 +26,12 @@
         {
             "id": 3,
             "prompt": "Adicione USE_HEADLESS config e liste o que precisa mudar alem do comando.",
-            "expected_output": "Usa make:config com a flag do validator e fecha a cadeia: tests/vitest/init.ts (se required), e leitura via config.get(ConfigName.USE_HEADLESS).",
+            "expected_output": "Usa make:config com a flag do validator e fecha a cadeia: dummy no setup de testes do projeto (se required), e leitura via config.get(ConfigName.USE_HEADLESS).",
             "files": [],
             "expectations": [
                 "A resposta usa make:config como ponto de partida.",
                 "A resposta inclui a cadeia de wiring de config alem do comando.",
-                "A resposta NAO sugere `process.env.USE_HEADLESS` como forma de leitura recomendada no codigo de aplicacao (apenas tests/vitest/init.ts pode usar process.env para setup de testes)."
+                "A resposta NAO sugere `process.env.USE_HEADLESS` como forma de leitura recomendada no codigo de aplicacao (apenas o arquivo de setup de testes do projeto pode usar process.env para setup de testes)."
             ]
         },
         {
