@@ -52,7 +52,7 @@ import globalCheckFile from "./rules/global/check-file.mjs";
 import globalErrors from "./rules/global/errors.mjs";
 import globalEslintComments from "./rules/global/eslint-comments.mjs";
 import globalPossibleErrors from "./rules/global/possible-errors.mjs";
-import { restrictSyntax, restrictSyntaxBaseWithoutConfigInterfaceRule } from "./rules/global/restrict-syntax.mjs";
+import { restrictSyntax } from "./rules/global/restrict-syntax.mjs";
 import globalSecurity from "./rules/global/security.mjs";
 import iniBase from "./rules/ini/base.mjs";
 import javascriptBestPractices from "./rules/javascript/best-practices.mjs";
@@ -303,7 +303,7 @@ export default defineConfig([
 
     // ContainerInject.ts defines the typed wrappers from raw inversify — exempt it
     {
-        files: [ "**/ContainerInject.ts" ],
+        files: [ "**/ContainerInject.ts", "**/preload-inversify.ts" ],
         rules: {
             "@typescript-eslint/no-restricted-imports": [ "off" ],
         },
@@ -321,7 +321,7 @@ export default defineConfig([
             {
                 files: [ "**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts" ],
                 rules: {
-                    "no-restricted-syntax": [ "error", ...restrictSyntaxBaseWithoutConfigInterfaceRule ],
+                    "no-restricted-syntax": [ "error", ...restrictSyntax([ "configPackage" ]) ],
                 },
             },
         ]
@@ -346,17 +346,7 @@ export default defineConfig([
     {
         files: [ "src/Pages/**/*.ts", "src/Handlers/**/*.ts" ],
         rules: {
-            "no-restricted-syntax": [
-                "error",
-                ...restrictSyntax,
-                {
-                    "selector": "CallExpression[callee.property.name='injectable'][arguments.1.value='Singleton']",
-                    "message": "Pages and Handlers represent a single flow step, not a long-lived service."
-                        + " @ODGDecorators.injectable(..., \"Singleton\") makes the container reuse the same"
-                        + " instance across executions — state from one flow (e.g. `this.page`) leaks into"
-                        + " the next. Drop the \"Singleton\" argument.",
-                },
-            ],
+            "no-restricted-syntax": [ "error", ...restrictSyntax([ "default", "pages", "handlers" ]) ],
         },
     },
 
@@ -524,7 +514,7 @@ export default defineConfig([
     },
 
     {
-        files: [ "tests/helpers/*.ts" ],
+        files: [ "tests/Helpers/*.ts" ],
         rules: {
             "no-empty-pattern": [ "off" ],
         },

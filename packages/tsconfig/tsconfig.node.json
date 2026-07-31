@@ -16,6 +16,8 @@
             "ESNext"
         ],
         "isolatedModules": true,
+        "rewriteRelativeImportExtensions": true,
+        "strictBindCallApply": true,
         "verbatimModuleSyntax": false,
         "module": "nodenext",
         "moduleResolution": "nodenext",

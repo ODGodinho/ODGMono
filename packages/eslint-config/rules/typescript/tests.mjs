@@ -1,4 +1,4 @@
-import { restrictSyntaxTest } from "../global/restrict-syntax.mjs";
+import { restrictSyntax } from "../global/restrict-syntax.mjs";
 
 const MAX_STATEMENTS = 20;
 const maxHadoukenDepth = 5;
@@ -37,7 +37,7 @@ export default {
         "@typescript-eslint/unbound-method": [ "off" ], // Preserve bind class
         "no-restricted-syntax": [
             "error",
-            ...restrictSyntaxTest,
+            ...restrictSyntax([ "test" ]),
         ],
     },
 };

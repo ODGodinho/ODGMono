@@ -110,7 +110,7 @@ export default {
         ],
         "no-restricted-syntax": [
             "error",
-            ...restrictSyntax,
+            ...restrictSyntax([ "default" ]),
         ],
         "no-magic-numbers": [
             "warn",

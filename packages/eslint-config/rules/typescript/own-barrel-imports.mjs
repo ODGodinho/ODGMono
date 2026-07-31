@@ -1,4 +1,4 @@
-import { basePathBans } from "./restricted-imports.mjs";
+import { buildPathBans } from "./restricted-imports.mjs";
 
 /**
  * ODG architecture canon (skills/odg/references/architecture.md → `### index.ts`): "A file
@@ -65,17 +65,9 @@ export function getOwnBarrelImportBlocks() {
             "@typescript-eslint/no-restricted-imports": [
                 "error",
 
-                /*
-                 * Handlers is the ONE folder that must NOT inherit the global
-                 * HandlerFunction/HandlerSolutionType ban — that's the whole point of
-                 * handler.md line 61 (those types exist to be used inside Handlers). Every
-                 * other managed folder keeps the full default ban set.
-                 */
                 {
                     paths: [
-                        ...folder === "Handlers"
-                            ? basePathBans.filter((ban) => ban.name !== "@odg/chemical-x")
-                            : basePathBans,
+                        ...buildPathBans(folder === "Handlers" ? "handlers" : "default"),
                         {
                             name: `#${alias}`,
                             allowTypeImports: true,
