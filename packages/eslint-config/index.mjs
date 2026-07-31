@@ -55,7 +55,7 @@ import globalPossibleErrors from "./rules/global/possible-errors.mjs";
 import { restrictSyntax } from "./rules/global/restrict-syntax.mjs";
 import globalSecurity from "./rules/global/security.mjs";
 import iniBase from "./rules/ini/base.mjs";
-import javascriptBestPractices from "./rules/javascript/best-practices.mjs";
+import javascriptBestPractices, { idDenylistRule } from "./rules/javascript/best-practices.mjs";
 import javascriptErrors from "./rules/javascript/errors.mjs";
 import javascriptJsDocumentation from "./rules/javascript/js-documentation.mjs";
 import javascriptJSX from "./rules/javascript/jsx.mjs";
@@ -397,6 +397,19 @@ export default defineConfig([
                 rules: {
                     "import/no-extraneous-dependencies": [ "off" ],
                     "import/no-dynamic-require": [ "off" ],
+                },
+            },
+
+            /*
+             * Adonis' own root config files (config/database.ts, config/session.ts, ...)
+             * legitimately export a `default` connection/guard name and a `list` of allowed
+             * values under those names — allow just those 2 words here, keep the rest of the
+             * denylist intact.
+             */
+            {
+                files: [ "config/**/*.ts" ],
+                rules: {
+                    "id-denylist": idDenylistRule([ "default", "list" ]),
                 },
             },
         ]
