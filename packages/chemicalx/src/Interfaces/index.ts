@@ -10,4 +10,6 @@ export type * from "./TimeoutInterface";
 
 export type * from "./AttemptableFlow";
 
+export type * from "./UserAgentInterface";
+
 export type * from "../crawler/Interfaces";

@@ -67,12 +67,15 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 | `Num` | Wrapper numérico com `toNative()` e `clone()` |
 | `Arr<Type>` | Wrapper de array com `random(length?)` e `clone()` |
 | `File` | Verificação de existência de arquivo via `exists()` |
+| `UserAgent` | Identidade de navegador: `toString()` (UA string), `brands()`, `fullVersionList()`, `headers()`, `metadata()`, `cdpParams()` |
 
 **Enums:**
 
 | Enum | Valores |
 |---|---|
 | `RetryAction` | `Retry` (forçar retry), `Throw` (lançar), `Resolve` (resolver com undefined), `Default` (seguir `times`) |
+| `UserAgentPlatform` | `Windows`, `MacOS`, `Linux`, `Android`, `ChromeOS` — tokens de `Sec-CH-UA-Platform` |
+| `UserAgentVersionType` | `Major` (`Sec-CH-UA`), `Full` (`Sec-CH-UA-Full-Version-List`) |
 
 **Container:**
 
@@ -103,6 +106,8 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 
 8. **`AttemptableInterface` — contrato base**: Tanto `BasePage` quanto `BaseHandler` implementam `AttemptableInterface`. Hooks opcionais: `success()`, `failure(exception)`, `retrying(exception, attempt)`, `finish(exception?)`, `sleep()`. Obrigatórios: `execute()`, `attempt()`.
    📖 See also: [docs/decorators.md](docs/decorators.md)
+
+9. **`UserAgent` — seed é sempre o major**: A marca GREASE deriva da versão maior declarada, nunca de `Math.random()`. Isso faz a marca girar uma vez por release e ficar estável no ciclo, como o Chromium nativo — uma marca que não bate com o major declarado é, ela própria, um sinal de automação. Aplique tudo de uma vez com `Network.setUserAgentOverride` e `cdpParams()`, para o UA string e os client hints contarem a mesma história.
 
 ## 💥 Critical Exceptions
 
@@ -151,6 +156,11 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 | `NativeInterface<Type>` | Define `toNative()` para conversão ao tipo primitivo |
 | `RetryOptionsInterface` | Parâmetros de `retry()`: `times`, `sleep`, `callback`, `signal` |
 | `TimeoutOptionsInterface` | Parâmetros de `timeout()`: `name`, `timeout`, `callback` |
+| `UserAgentOptionsInterface` | Parâmetros de `UserAgent`: só `version` é obrigatório; o resto cai no perfil da plataforma |
+| `UserAgentBrandInterface` | Par `brand` + `version` de uma entrada de brand list |
+| `UserAgentMetadataInterface` | `userAgentMetadata` do CDP (`brands`, `fullVersionList`, `platform`, `mobile`, ...) |
+| `UserAgentOverrideInterface` | Payload completo de `Network.setUserAgentOverride` |
+| `UserAgentHeadersInterface` | Headers `Sec-CH-UA-*` já serializados |
 
 ## 🔍 Entry Points
 
