@@ -3,6 +3,95 @@ import { isIdeWatchLint } from "../../helpers/lint-mode.mjs";
 const maxHadoukenDepth = 3;
 const maxStatements = 12;
 
+const denylistedIds = [
+
+    // Tipos TS
+    "number",
+    "string",
+    "boolean",
+    "any",
+    "void",
+    "never",
+    "unknown",
+
+    // Controle de Fluxo
+    "yield",
+    "await",
+    "async",
+
+    // Modificadores de Acesso
+    "public",
+    "protected",
+    "private",
+    "readonly",
+    "static",
+
+    // Estrutura
+    "class",
+    "interface",
+    "enum",
+    "namespace",
+    "module",
+
+    // Declaração
+    "function",
+    "var",
+    "let",
+    "const",
+
+    // Condicionais/Loops
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "switch",
+    "case",
+    "default",
+
+    // Exceções
+    "try",
+    "catch",
+    "finally",
+    "throw",
+
+    // Módulos
+    "export",
+    "from",
+    "as",
+
+    // POO
+    "this",
+    "super",
+    "new",
+    "extends",
+    "implements",
+
+    // Genéricos proibidos
+    "val",
+    "obj",
+    "item",
+    "list",
+    "res",
+    "req",
+
+    // "callback", Callback parâmetro é bloqueado tb
+    "package",
+];
+
+/**
+ * Build the `id-denylist` rule entry, optionally allowing a few of the otherwise-banned words.
+ * Used by index.mjs to let `default`/`list` through inside an Adonis project's root `config/`
+ * folder — Adonis' own config files (`config/database.ts`, `config/app.ts`, ...) legitimately
+ * export a `default` connection name and a `list` of allowed values under those names.
+ *
+ * @param {string[]} [allow] Words to remove from the denylist for this scope.
+ * @returns {unknown[]} Rule entry for `id-denylist`.
+ */
+export function idDenylistRule(allow = []) {
+    return [ "error", ...denylistedIds.filter((id) => !allow.includes(id)) ];
+}
+
 export default {
     rules: {
         "no-unexpected-multiline": [ "error" ], // Desabilita multiline possíveis erros operadores ;
@@ -360,7 +449,7 @@ export default {
         "import/no-import-module-exports": [ "error" ], // Import e export CommanJs bloqueado
         "import/no-useless-path-segments": [ "error", { commonjs: true } ], // Não volte pasta desnecessária import
         "import/no-extraneous-dependencies": [
-            "error",
+            isIdeWatchLint ? "off" : "error",
             {
                 devDependencies: [
                     "**/*.e2e-spec.*",
@@ -475,82 +564,7 @@ export default {
         "vars-on-top": [ "error" ], // Caso a regra de var seja desativa elas devem ficar no topo
         "strict": [ "error" ], // Strict JavaScript top file
         "no-shadow-restricted-names": [ "error" ], // Sem variável com palavra reservada
-        "id-denylist": [
-            "error",
-
-            // Tipos TS
-            "number",
-            "string",
-            "boolean",
-            "any",
-            "void",
-            "never",
-            "unknown",
-
-            // Controle de Fluxo
-            "yield",
-            "await",
-            "async",
-
-            // Modificadores de Acesso
-            "public",
-            "protected",
-            "private",
-            "readonly",
-            "static",
-
-            // Estrutura
-            "class",
-            "interface",
-            "enum",
-            "namespace",
-            "module",
-
-            // Declaração
-            "function",
-            "var",
-            "let",
-            "const",
-
-            // Condicionais/Loops
-            "if",
-            "else",
-            "for",
-            "while",
-            "do",
-            "switch",
-            "case",
-            "default",
-
-            // Exceções
-            "try",
-            "catch",
-            "finally",
-            "throw",
-
-            // Módulos
-            "export",
-            "from",
-            "as",
-
-            // POO
-            "this",
-            "super",
-            "new",
-            "extends",
-            "implements",
-
-            // Genéricos proibidos
-            "val",
-            "obj",
-            "item",
-            "list",
-            "res",
-            "req",
-
-            // "callback", Callback parâmetro é bloqueado tb
-            "package",
-        ], // Sem variável com palavra reservada
+        "id-denylist": idDenylistRule(), // Sem variável com palavra reservada
         "id-match": [
             "error",
             "^(?!(?:type|import)$).*$",

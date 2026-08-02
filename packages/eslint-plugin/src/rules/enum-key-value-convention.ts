@@ -40,10 +40,14 @@ export function toDotCase(key: string): string {
     for (let index = 0; index < key.length; index += 1) {
         const char = key[index];
         const previous = index > 0 ? key[index - 1] : "";
-        const isUpperBoundary = char >= "A" && char <= "Z"
-            && previous >= "a" && previous <= "z";
+        const next = index + 1 < key.length ? key[index + 1] : "";
+        const isUpper = char >= "A" && char <= "Z";
+        const isCamelBoundary = isUpper && previous >= "a" && previous <= "z";
+        const isAcronymBoundary = isUpper
+            && previous >= "A" && previous <= "Z"
+            && next >= "a" && next <= "z";
 
-        result += isUpperBoundary ? `.${char}` : char;
+        result += isCamelBoundary || isAcronymBoundary ? `.${char}` : char;
     }
 
     return result.toLowerCase();

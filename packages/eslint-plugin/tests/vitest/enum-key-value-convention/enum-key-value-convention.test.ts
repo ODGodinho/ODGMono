@@ -141,6 +141,9 @@ describe("enum-key-value-convention", () => {
         expect(isConstCase("appName")).toBeFalsy();
         expect(toDotCase("SearchPage")).toBe("search.page");
         expect(toDotCase("GoogleSearchToSelectionHandler")).toBe("google.search.to.selection.handler");
+        expect(toDotCase("JSONLogger")).toBe("json.logger");
+        expect(toDotCase("HTTPSProxyHandler")).toBe("https.proxy.handler");
+        expect(toDotCase("JSON")).toBe("json");
     });
 
     test("getEnumMemberKey / getEnumMemberValue return undefined for non literal nodes", () => {

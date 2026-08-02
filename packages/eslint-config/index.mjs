@@ -1,5 +1,3 @@
-import { createRequire } from "node:module";
-
 import adonisPlugin from "@adonisjs/eslint-plugin";
 import css from "@eslint/css";
 import eslintComments from "@eslint-community/eslint-plugin-eslint-comments";
@@ -33,7 +31,9 @@ import * as toml from "eslint-plugin-toml";
 import unicorn from "eslint-plugin-unicorn";
 import yml from "eslint-plugin-yml";
 import eslintPluginZod from "eslint-plugin-zod";
+import * as espree from "espree";
 import globals from "globals";
+import * as jsoncParser from "jsonc-eslint-parser";
 import * as tomlParser from "toml-eslint-parser";
 import * as yamlParser from "yaml-eslint-parser";
 
@@ -55,7 +55,7 @@ import globalPossibleErrors from "./rules/global/possible-errors.mjs";
 import { restrictSyntax } from "./rules/global/restrict-syntax.mjs";
 import globalSecurity from "./rules/global/security.mjs";
 import iniBase from "./rules/ini/base.mjs";
-import javascriptBestPractices from "./rules/javascript/best-practices.mjs";
+import javascriptBestPractices, { idDenylistRule } from "./rules/javascript/best-practices.mjs";
 import javascriptErrors from "./rules/javascript/errors.mjs";
 import javascriptJsDocumentation from "./rules/javascript/js-documentation.mjs";
 import javascriptJSX from "./rules/javascript/jsx.mjs";
@@ -74,17 +74,11 @@ import typescriptTests from "./rules/typescript/tests.mjs";
 import yamlBase from "./rules/yaml/base.mjs";
 import yamlGithub from "./rules/yaml/github.mjs";
 
-const require = createRequire(import.meta.url);
-
-const espree = require("espree");
-const jsoncParser = require("jsonc-eslint-parser");
-
-let odgTsconfig;
-
-try {
-    odgTsconfig = require.resolve("@odg/tsconfig/tsconfig.json");
-} catch {
-    // Only ignore optional tsconfig by default
+if (anyParser && !anyParser.meta) {
+    anyParser.meta = {
+        name: "any-eslint-parser",
+        version: "1.0.0", // Adicione uma versão fictícia para o serializador
+    };
 }
 
 export default defineConfig([
@@ -206,7 +200,6 @@ export default defineConfig([
     {
         files: [ "**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mts,mtsx,cts}" ],
         languageOptions: {
-            parser: espree,
             parserOptions: {
                 sourceType: "module",
                 ecmaFeatures: {
@@ -244,6 +237,11 @@ export default defineConfig([
         },
     },
 
+    {
+        files: [ "**/*.{js,mjs,cjs,jsx,mjsx}" ],
+        languageOptions: { parser: espree /* ... */ },
+    },
+
     // TypeScript files
     {
         files: [ "**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts" ],
@@ -255,10 +253,8 @@ export default defineConfig([
                 },
                 warnOnUnsupportedTypeScriptVersion: false,
                 sourceType: "module",
-                project: [
-                    "./tsconfig.json",
-                    ...odgTsconfig ? [ odgTsconfig ] : [],
-                ],
+                projectService: true,
+                tsconfigRootDir: import.meta.dirname,
             },
             globals: {
                 ...globals.node,
@@ -397,6 +393,19 @@ export default defineConfig([
                 rules: {
                     "import/no-extraneous-dependencies": [ "off" ],
                     "import/no-dynamic-require": [ "off" ],
+                },
+            },
+
+            /*
+             * Adonis' own root config files (config/database.ts, config/session.ts, ...)
+             * legitimately export a `default` connection/guard name and a `list` of allowed
+             * values under those names — allow just those 2 words here, keep the rest of the
+             * denylist intact.
+             */
+            {
+                files: [ "config/**/*.ts" ],
+                rules: {
+                    "id-denylist": idDenylistRule([ "default", "list" ]),
                 },
             },
         ]
