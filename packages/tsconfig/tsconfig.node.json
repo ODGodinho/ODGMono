@@ -19,6 +19,7 @@
         "rewriteRelativeImportExtensions": true,
         "strictBindCallApply": true,
         "verbatimModuleSyntax": false,
+        "allowImportingTsExtensions": true,
         "module": "nodenext",
         "moduleResolution": "nodenext",
         "newLine": "lf",

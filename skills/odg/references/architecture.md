@@ -45,12 +45,12 @@ src/ or $$PROJECT_ROOT
         <Name>Exception.ts
     app/
         Container.ts            composition root — the ONLY place for manual bindings
+        ContainerInject.ts      typed @$inject / @$multiInject (wraps inversify)
         Enums/                  name SSOTs: ContainerName · EventName · ConfigName (+ barrel)
         Services/               orchestration: dispatch events, drive handlers (usually Singleton)
         Listeners/
             <Name>EventListener.ts
         Providers/              EventServiceProvider — registers Listeners on boot
-    ContainerInject.ts          typed @$inject / @$multiInject (wraps inversify)
 
 @types/
     ContainerInterface.d.ts     mirror of every binding (id → type)
