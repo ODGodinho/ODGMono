@@ -91,15 +91,6 @@
             "optional": true
         }
     },
-    "bundledDependencies": [
-        "eslint",
-        "eslint-plugin-sonarjs",
-        "globals",
-        "ts-api-utils",
-        "@odg/eslint-plugin",
-        "@typescript-eslint/eslint-plugin",
-        "@typescript-eslint/parser"
-    ],
     "files": [
         "./index.d.ts",
         "./index.mjs",

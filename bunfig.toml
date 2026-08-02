@@ -1,8 +1,2 @@
-# Espelha o comportamento do Yarn 4 anterior (`nodeLinker: node-modules`).
-#
-# O bun 1.3 usa `linker = "isolated"` por padrao em workspaces, o que quebra
-# pacotes que dependem de hoisting (ex.: @odg/tsconfig usa `types: ["node"]`
-# sem declarar @types/node). Manter "hoisted" preserva a resolucao que o
-# monorepo ja assumia; migrar para "isolated" exige declarar essas deps.
 [install]
 linker = "isolated"
