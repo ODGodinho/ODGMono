@@ -449,7 +449,7 @@ export default {
         "import/no-import-module-exports": [ "error" ], // Import e export CommanJs bloqueado
         "import/no-useless-path-segments": [ "error", { commonjs: true } ], // Não volte pasta desnecessária import
         "import/no-extraneous-dependencies": [
-            "error",
+            isIdeWatchLint ? "off" : "error",
             {
                 devDependencies: [
                     "**/*.e2e-spec.*",
