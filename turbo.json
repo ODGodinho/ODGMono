@@ -6,13 +6,19 @@
             "outputs": [ "dist/**", "build/**" ]
         },
         "test": {
-            "dependsOn": [ "build" ]
+            "dependsOn": [ ]
         },
         "test:ci": {
-            "dependsOn": [ "build" ]
+            "dependsOn": [ ]
         },
-        "lint": {},
-        "lint:fix": {},
-        "tsc:check": {}
+        "lint": {
+            "dependsOn": []
+        },
+        "lint:fix": {
+            "dependsOn": []
+        },
+        "tsc:check": {
+            "dependsOn": []
+        }
     }
 }

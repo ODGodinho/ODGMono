@@ -14,8 +14,8 @@
         "odg": "./odg.js"
     },
     "scripts": {
-        "build": "rimraf dist/ && yarn tsc:build && yarn tsc:alias",
-        "build:watch": "concurrently 'yarn tsc:build -w' 'yarn tsc:alias -w'",
+        "build": "rimraf dist/ && bun run tsc:build && bun run tsc:alias",
+        "build:watch": "concurrently 'bun run tsc:build -w' 'bun run tsc:alias -w'",
         "dev": "tsx ./src/index.ts",
         "start": "node ./dist/index.js",
         "lint": "odg-lint",

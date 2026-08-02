@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-yarn build
-yarn tsc:check
-yarn lint-staged
-yarn test:ci
+bun run build
+bun run tsc:check
+bun run lint-staged
+bun run test:ci

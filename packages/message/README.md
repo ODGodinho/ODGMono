@@ -163,7 +163,7 @@ export class AxiosMessage<RequestData, ResponseData> implements MessageInterface
 To Test execute this command
 
 ```bash
-yarn test
+bun run test
 # or
-yarn test:watch
+bun run test:watch
 ```

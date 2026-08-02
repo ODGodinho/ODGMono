@@ -9,7 +9,7 @@ Use this file as the package-level source of truth for AI agents and developers 
 - Example plug in `AxiosMessage` in `@odg/axios` to message with axios package.
 - Provide unified exceptions and type guards for safe error handling.
 
-## Integration/Review Rules
+## Rules
 
 - All messages is typed with `MessageInterface<Req, Res>`
 - In `RequestInterface<RequestData>`:

@@ -110,7 +110,7 @@ function name2(): string {
 First install dependencies with the following command
 
 ```bash
-yarn install
+bun install
 # or
 npm install
 ```
@@ -119,12 +119,12 @@ npm install
 
 To build the project, you can use the following command
 
-> if you change files, you need to run `yarn build` and `yarn start` again
+> if you change files, you need to run `bun run build` and `bun run start` again
 
 ```bash
-yarn build && yarn start
+bun run build && bun run start
 # or
-yarn dev
+bun run dev
 ```
 
 ## 🧪 Teste Code
@@ -132,7 +132,7 @@ yarn dev
 To Test execute this command
 
 ```bash
-yarn test
+bun run test
 # or
-yarn test:watch
+bun run test:watch
 ```

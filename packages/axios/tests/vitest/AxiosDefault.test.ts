@@ -31,7 +31,7 @@ describe("Axios Default Params test", () => {
 
     test("Test request Time", async () => {
         const requester = new AxiosMessage();
-        const baseURL = "https://httpbin.org/delay/2";
+        const baseURL = "https://postman-echo.com/delay/2";
 
         requester.setDefaultOptions({
             baseURL,

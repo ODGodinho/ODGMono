@@ -124,7 +124,7 @@ interface Exception {
 First install dependencies with the following command
 
 ```bash
-yarn install
+bun install
 # or
 npm install
 ```
@@ -133,10 +133,10 @@ npm install
 
 To build the project, you can use the following command
 
-> if you change files, you need to run `yarn build` and `yarn test` again
+> if you change files, you need to run `bun run build` and `bun run test` again
 
 ```bash
-yarn build && yarn test
+bun run build && bun run test
 ```
 
 ## 🧪 Teste Code
@@ -144,9 +144,9 @@ yarn build && yarn test
 To Test execute this command
 
 ```bash
-yarn test
+bun run test
 # or
-yarn test:watch
+bun run test:watch
 ```
 
 ## License

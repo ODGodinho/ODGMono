@@ -23,33 +23,32 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Enable Corepack (Yarn 4 from packageManager)
-        run: corepack enable
-
+      # Node continua necessário: semantic-release, multi-semantic-release,
+      # `npm pkg set version` (prepareCmd) e o .npmrc de auth do registry.
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.version }}
           registry-url: "https://npm.pkg.github.com/"
-          cache: yarn
 
-      - name: Get Yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      - name: Setup Bun (version from packageManager)
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
 
-      - name: Cache Yarn dependencies
+      - name: Cache Bun dependencies
         uses: actions/cache@v4
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-bun-
 
       - name: Install Dependencies
-        run: yarn install
+        run: bun install --frozen-lockfile
 
       - name: Playwright Install
-        run: yarn workspace @odg/chemical-x playwright install chromium
+        run: bun x playwright install chromium
 
       - if: ${{ github.event_name == 'pull_request' }}
         name: Review Dog Pull Request
@@ -61,14 +60,14 @@ jobs:
           fail_level: error
 
       - name: Build
-        run: yarn build
+        run: bun run build
 
       - name: Test CI
-        run: yarn test:ci
+        run: bun run test:ci
 
       - if: ${{ github.event_name != 'pull_request' }}
         name: Multi Semantic Release
-        run: yarn release
+        run: bun run release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
