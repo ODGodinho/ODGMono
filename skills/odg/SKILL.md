@@ -70,10 +70,13 @@ Unlisted runtime (API, worker) → apply [architecture.md](./references/architec
 
 You **MUST** read a package's `agents.md` whenever you **touch, edit, OR review** code that imports it.
 
-| Package | agents.md |
-| --- | --- |
-| `@odg/message` | `$$PROJECT_ROOT/node_modules/@odg/message/agents.md` |
-| `@odg/command` | `$$PROJECT_ROOT/node_modules/@odg/command/agents.md` |
+| Package | Trigger | agents.md |
+| --- | --- | --- |
+| `@odg/message` | If need message send with request and response (Requester, HTTP)| `$$PROJECT_ROOT/node_modules/@odg/message/agents.md` |
+| `@odg/axios` | Axios with @odg/message interface | `$$PROJECT_ROOT/node_modules/@odg/axios/agents.md` |
+| `@odg/command` | If need command to make files | `$$PROJECT_ROOT/node_modules/@odg/command/agents.md` |
+| `@odg/log` | If need use logger/audit application  | `$$PROJECT_ROOT/node_modules/@odg/log/agents.md` |
+| `@odg/json-log` | If you need standardized structured logging, all logs share the same JSON format. | `$$PROJECT_ROOT/node_modules/@odg/json-log/agents.md` |
 
 ## Alias convention
 

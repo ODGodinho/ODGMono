@@ -16,9 +16,9 @@
 - **`AxiosRequestParser` / `AxiosResponseParser`:** apenas métodos `static` `parseMessageToLibrary` / `parseLibraryToMessage` (mapeamento bidirecional).
 - Tipos de domínio de requisição/resposta vêm de **`@odg/message`**; formas Axios de **`axios`** nas assinaturas inferidas. `AxiosRequestConfigExtra` não é reexportado pelo entrypoint — uso indireto via classes acima.
 
-## Rules
+## 🚦 Rules (Usage): Regras para consumo desta lib.
 
-- Don't use AxiosError use `MessageException`, `MessageUnknownException`.
+- Em falha em `AxiosMessage.request`, tratar **`MessageException`** ou **`MessageUnknownException`** (`@odg/message`); não depender de `AxiosError` como tipo estável na borda desta lib.
 - **`AxiosMessage.request`:** em erro na chamada HTTP, o que sobe ao `await` é em geral **`MessageException`** (salvo recuperação via interceptor — ver abaixo).
 - Chaves de opção que começam com `$` são preservadas nos objetos montados pelos parsers (comportamento intencional de extensão).
 - Encadeamento de interceptors (`eject`, `clear`, ordem) segue o **Axios**; esta lib só converte entradas/saídas com os parsers.
