@@ -102,6 +102,5 @@
     "bugs": {
         "url": "https://github.com/ODGodinho/ODGMono/issues"
     },
-    "homepage": "https://github.com/ODGodinho/ODGMono/tree/main/packages/eslint-config",
-    "packageManager": "yarn@4.17.1"
+    "homepage": "https://github.com/ODGodinho/ODGMono/tree/main/packages/eslint-config"
 }

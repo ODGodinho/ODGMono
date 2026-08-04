@@ -63,6 +63,5 @@
         "@odg/message": {
             "optional": true
         }
-    },
-    "packageManager": "yarn@4.17.1"
+    }
 }

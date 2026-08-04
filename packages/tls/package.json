@@ -57,6 +57,5 @@
         "@odg/exception": "workspace:^",
         "@odg/message": "workspace:^",
         "axios": "*"
-    },
-    "packageManager": "yarn@4.17.1"
+    }
 }

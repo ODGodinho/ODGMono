@@ -66,6 +66,5 @@
         "@odg/exception": {
             "optional": true
         }
-    },
-    "packageManager": "yarn@4.17.1"
+    }
 }

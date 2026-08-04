@@ -49,6 +49,5 @@
         "@typescript-eslint/types": "^8.65.0",
         "@typescript-eslint/utils": "^8.65.0",
         "comment-parser": "^1.4.7"
-    },
-    "packageManager": "yarn@4.17.1"
+    }
 }
