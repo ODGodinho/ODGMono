@@ -7,10 +7,17 @@ To understand the standard structure of all logs, refer to the contract for the 
 - Plugin `LoggerPluginInterface` (`@odg/log`) transform a log message into a structured object (`JSONLogger`) and, optionally, into `JSONLoggerString` (request serialized into strings).
 - Type models for the log payload (`LoggerObjectInterface` and derivatives) and parsing exceptions (`JSONParserException`, `JSONParserUnknownException`).
 
+## 📜 Contracts
+
+- `JSONLoggerPlugin(appName, maxExceptionPrevious?, instanceId?)`: `parser` replaces `message` with `JSONLogger`; `logJSON(level, message)` builds the same object; setters `setIdentifier`, `setInstance`, `setGitRelease`, `setGitBranch`.
+- Exported types: `LoggerObjectInterface`, `LoggerStringInterface`, `LoggerObjectRequestInterface`, `LoggerRequestStringInterface`, `LoggerRequestStringInterfaceOmit`, `GitLoggerInterface`, `ExceptionObjectLoggerInterface`.
+
 ## Rules
 
 - register `JSONLoggerPlugin` **before** `RequestStringPlugin` in the logger's plugin chain; otherwise `RequestStringPlugin` fails by design.
 - `JSONLoggerPlugin` fills `git` via `git` commands in Node environment if `setGitRelease` / `setGitBranch` have not been used (release/branch may be empty if the command fails or is not Node).
+- Request fields whose name starts with `$` are omitted when building the request object. `@odg/axios` **preserves** those same `$`-prefixed keys — the two halves of this contract must stay in sync.
+- `exceptionPrevious` is only filled when the message is an instance of `Exception` (`@odg/exception`), up to `maxExceptionPrevious` (default 10).
 
 ## 💥 Exceptions
 

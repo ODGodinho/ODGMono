@@ -34,7 +34,7 @@
     "files": [
         "./dist/",
         "./README.md",
-        "AGENTS.md",
+        "./AGENTS.md",
         "docs/**"
     ],
     "author": "Dragons Gamers <https://www.linkedin.com/in/victor-alves-odgodinho>",

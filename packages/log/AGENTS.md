@@ -2,8 +2,8 @@
 
 ## 🎯 Purpose
 
-- IOT/IOC to loggers with push handlers and processors.
-- Class base `AbstractLogger`, and Helpers `NullLogger`, `ConsoleLogger`, composite `Logger` (handlers + processors).
+- IoC/DI contracts for loggers with pluggable handlers and processors.
+- Base class `AbstractLogger`, and helpers `NullLogger`, `ConsoleLogger`, composite `Logger` (handlers + processors).
 
 ## 📜 Contracts
 

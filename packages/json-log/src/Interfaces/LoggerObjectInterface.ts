@@ -37,9 +37,8 @@ export interface LoggerObjectInterface {
     message: string;
 
     /**
-     * Id identify this exception
-     * all logs one request has one identifier
-     * Retry process has same identifier
+     * Correlation id shared by every log of the same request or process.
+     * A retry keeps the same identifier.
      */
     identifier?: string;
 

@@ -143,3 +143,6 @@ out/
 .mcp.json
 !.claude/skills/
 !.claude/clauderules.md
+
+# Code review reports (skills/odg/scripts/review.sh)
+.review/
