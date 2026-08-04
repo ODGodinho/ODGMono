@@ -1,4 +1,4 @@
-import { buildPathBans } from "./restricted-imports.mjs";
+import { buildPathBans, buildPatternBans } from "./restricted-imports.mjs";
 
 /**
  * ODG architecture canon (skills/odg/references/architecture.md → `### index.ts`): "A file
@@ -77,6 +77,7 @@ export function getOwnBarrelImportBlocks() {
                         },
                     ],
                     patterns: [
+                        ...buildPatternBans(folder === "Handlers" ? "handlers" : "default"),
                         {
                             group: [ `#${alias}/*` ],
                             allowTypeImports: true,

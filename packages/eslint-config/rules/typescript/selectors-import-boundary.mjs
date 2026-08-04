@@ -12,9 +12,10 @@ import { getRestrictedImportsRule } from "./restricted-imports.mjs";
  * tsconfig.json#paths: `#pages` / `#pages/*` and `#handlers` / `#handlers/*`.
  *
  * `no-restricted-imports` config is a single value per matching file — a `files`-scoped block
- * fully replaces (not merges with) the base TS block's config for files it matches, so the
- * base inversify-decorator ban (getRestrictedImportsRule()) is folded back in here to avoid
- * silently un-banning it for Selectors files. For the same reason, the "own barrel" self-import
+ * fully replaces (not merges with) the base TS block's config for files it matches, so the base
+ * bans (getRestrictedImportsRule(): `paths` = inversify decorators + Handler types, `patterns` =
+ * build-output reach-in) are folded back in here — both keys — to avoid silently un-banning them
+ * for Selectors files. For the same reason, the "own barrel" self-import
  * ban for `#selectors` (architecture.md → `### index.ts`, see ./own-barrel-imports.mjs) is also
  * folded in here rather than living in a second block that targets the same `files` glob.
  */
@@ -41,6 +42,7 @@ export default {
                     { name: "#selectors", message: noOwnBarrelMessage },
                 ],
                 patterns: [
+                    ...baseRestrictedImports.patterns,
                     {
                         group: [ "*/Pages/*", "*/Pages", "**/Pages/**", "#pages/*" ],
                         message: noPagesMessage,
