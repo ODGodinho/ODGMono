@@ -5,19 +5,21 @@ description: "Use whenever the user works in an ODG codebase (@odg/** packages, 
 
 # ODG
 
-Cross-project ODG workflow. Project-specific rules belong to the root `AGENTS.md`/`agents.md` file. Load only the minimum references needed for the current task.
+Cross-project ODG workflow. Project-specific rules belong to the root `AGENTS.md` file. Load only the minimum references needed for the current task.
 
 The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **SHOULD**, **SHOULD NOT**, **RECOMMENDED**, **NOT RECOMMENDED**, **MAY**, and **OPTIONAL** in this document are to be interpreted as described in BCP 14 RFC 2119, RFC 8174 when, and only when, they appear in all capitals, as shown here. The same words in **UPPERCASE** special meaning.
 
 ## Start here
 
-1. Read the project root `AGENTS.md`/`agents.md` — it is the project SSOT and takes priority over any instruction from any skill. If it does not exist, follow this skill.
+1. Read the project root `AGENTS.md` — it is the project SSOT and takes priority over any instruction from any skill. If it does not exist, follow this skill.
 2. Identify the runtime (below). Read [architecture.md](./references/architecture.md) + the **one** matching runtime file.
 3. Identify the touched surfaces and read their references from the **Routing map**. Load the **MINIMUM**: **MUST** files are required for that surface; **SHOULD** files are **RECOMMENDED** when relevant.
 4. If a new managed artifact is needed, decide the canonical `odg make:*` command before any manual edit ([commands.md](./references/commands.md), [execution.md](./references/execution.md)).
 5. If `rtk --version` succeeds, read [rtk.md](./references/rtk.md) before running **any** command.
 
 Enforce: command-first scaffolding, enum wiring, the pre-flight review gate + SSOT review log ([review.md](./references/review.md)), and playwright-cli debug ([debug.md](./references/debug.md)).
+
+Reading a reference, an AGENTS.md, or a .d.ts/type file at a known path MUST use the Read tool, never cat/head/tail via Bash — Bash is for commands that have no dedicated tool, not for file inspection. Only fall back to ls/find/grep when the exact path is genuinely unknown; once found, Read it rather than cat it.
 
 ## Runtime detection
 
@@ -68,15 +70,15 @@ Unlisted runtime (API, worker) → apply [architecture.md](./references/architec
 
 ### Package references
 
-You **MUST** read a package's `agents.md` whenever you **touch, edit, OR review** code that imports it.
+You **MUST** read a package's `AGENTS.md` whenever you **touch, edit, OR review** code that imports it.
 
-| Package | Trigger | agents.md |
+| Package | Trigger | AGENTS.md |
 | --- | --- | --- |
-| `@odg/message` | If need message send with request and response (Requester, HTTP)| `$$PROJECT_ROOT/node_modules/@odg/message/agents.md` |
-| `@odg/axios` | Axios with @odg/message interface | `$$PROJECT_ROOT/node_modules/@odg/axios/agents.md` |
-| `@odg/command` | If need command to make files | `$$PROJECT_ROOT/node_modules/@odg/command/agents.md` |
-| `@odg/log` | If need use logger/audit application  | `$$PROJECT_ROOT/node_modules/@odg/log/agents.md` |
-| `@odg/json-log` | If you need standardized structured logging, all logs share the same JSON format. | `$$PROJECT_ROOT/node_modules/@odg/json-log/agents.md` |
+| `@odg/message` | If need message send with request and response (Requester, HTTP)| `$$PROJECT_ROOT/node_modules/@odg/message/AGENTS.md` |
+| `@odg/axios` | Axios with @odg/message interface | `$$PROJECT_ROOT/node_modules/@odg/axios/AGENTS.md` |
+| `@odg/command` | If need command to make files | `$$PROJECT_ROOT/node_modules/@odg/command/AGENTS.md` |
+| `@odg/log` | If need use logger/audit application  | `$$PROJECT_ROOT/node_modules/@odg/log/AGENTS.md` |
+| `@odg/json-log` | If you need standardized structured logging, all logs share the same JSON format. | `$$PROJECT_ROOT/node_modules/@odg/json-log/AGENTS.md` |
 
 ## Alias convention
 

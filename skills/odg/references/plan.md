@@ -9,7 +9,7 @@ Every plan should translate the request into a compact operational contract and 
 ## Read Before Planning
 
 1. Read the local AGENTS.md or agents.md file if one exists — it defines the mandatory pre-action checklist and required package reads.
-2. Read [@odg/command/agents.md]($$PROJECT_ROOT/node_modules/@odg/command/agents.md) before deciding flags or artifacts.
+2. Read [@odg/command/AGENTS.md]($$PROJECT_ROOT/node_modules/@odg/command/AGENTS.md) before deciding flags or artifacts.
 
 ## Minimum Operational Contract
 

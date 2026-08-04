@@ -1,10 +1,9 @@
-## @odg/log - Consumer Guide
+# @odg/log - Consumer Guide
 
 ## 🎯 Purpose
 
-- Contratos TypeScript e enum de níveis para logging assíncrono.
-- Classe base `AbstractLogger`, implementações `NullLogger` e `ConsoleLogger`, compositor `Logger` (handlers + processors).
-- Tipo `JSONLogFormattable` e guarda `isJSONLogFormattable` para reconhecer payloads estruturados.
+- IOT/IOC to loggers with push handlers and processors.
+- Class base `AbstractLogger`, and Helpers `NullLogger`, `ConsoleLogger`, composite `Logger` (handlers + processors).
 
 ## 📜 Contracts
 
@@ -18,7 +17,7 @@
 - `ConsoleLogger`: escreve no console com rótulo por nível; se `isJSONLogFormattable(message)`, formatação alternativa do conteúdo.
 - `JSONLogFormattable`: campos opcionais `request`, `exception`; `type` é `LogLevel`.
 
-## 🚦 Rules (Usage)
+## Rules
 
 - Preferir `await` em todas as chamadas de log (API inteira é `Promise<void>`).
 - Ao estender `AbstractLogger`, implementar apenas `log(level, message, context?)`.

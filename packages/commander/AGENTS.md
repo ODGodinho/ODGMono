@@ -3,7 +3,7 @@
 ## Purpose
 
 - `@odg/command` is a CLI-first package.
-- Agents MUST treat it as a scaffolding tool consumed through `yarn odg <command>`.
+- AGENTS MUST treat it as a scaffolding tool consumed through `yarn odg <command>`.
 - Do not describe or use it as a library-first API.
 
 ## Core Rule

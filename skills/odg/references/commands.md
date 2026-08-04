@@ -3,7 +3,7 @@
 This file governs the execution phase. For planning rules, see [./plan.md](./plan.md).
 Treat @odg/command as a CLI contract. Choose commands from the real artifact being created.
 
-- Full CLI Guide: [@odg/command/agents.md]($$PROJECT_ROOT/node_modules/@odg/command/agents.md)
+- Full CLI Guide: [@odg/command/AGENTS.md]($$PROJECT_ROOT/node_modules/@odg/command/AGENTS.md)
 
 ## Global Rules
 

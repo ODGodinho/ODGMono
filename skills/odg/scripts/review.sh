@@ -442,7 +442,7 @@ detect_packages_in_file() {
 
     while IFS=$'\t' read -r sym pkg; do
         [[ -z "$sym" || -z "$pkg" ]] && continue
-        [[ -f "node_modules/$pkg/agents.md" ]] || continue
+        [[ -f "node_modules/$pkg/AGENTS.md" ]] || continue
         if grep -qxF "$sym" <<< "$tokens"; then
             printf '%s\n' "$pkg"
         fi
@@ -471,11 +471,11 @@ print_package_references_required() {
         return
     fi
 
-    printf 'The agent **MUST** read each `agents.md` below before emitting findings:\n\n'
+    printf 'The agent **MUST** read each `AGENTS.md` below before emitting findings:\n\n'
 
     while IFS= read -r pkg; do
         [[ -z "$pkg" ]] && continue
-        printf -- '- `%s` — [agents.md](node_modules/%s/agents.md)\n' "$pkg" "$pkg"
+        printf -- '- `%s` — [AGENTS.md](node_modules/%s/AGENTS.md)\n' "$pkg" "$pkg"
     done <<< "$packages"
 }
 
