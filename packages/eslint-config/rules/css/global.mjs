@@ -1,5 +1,14 @@
 export default {
     rules: {
+        "regexp/no-legacy-features": [ "off" ], // Desliga features legadas de regex
+        "regexp/no-useless-flag": [ "off" ], // Desliga flags inúteis de regex
+        "no-irregular-whitespace": [ "off" ], // Regra falha arquivos CSS
+        "@stylistic/lines-around-comment": [ "off" ], // Regra falha arquivos CSS
+        "regexp/no-useless-dollar-replacements": [ "off" ], // Regra falha arquivos CSS
+        "n/no-unsupported-features/node-builtins": [ "off" ], // Regra falha arquivos CSS
+        "json-schema-validator/no-invalid": [ "off" ], // Regra falha arquivos CSS
+        "sonarjs/no-gratuitous-expressions": [ "off" ], // Regra falha arquivos CSS
+        "no-useless-assignment": [ "off" ], // Regra falha arquivos CSS
         "css/font-family-fallbacks": [ "error" ], // Força fallback de font-family
         "css/no-duplicate-imports": [ "error" ], // Não use import duplicado
         "css/no-duplicate-keyframe-selectors": [ "error" ], // Não use keyframe duplicado

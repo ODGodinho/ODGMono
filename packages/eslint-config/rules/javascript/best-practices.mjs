@@ -94,6 +94,52 @@ export function idDenylistRule(allow = []) {
 
 export default {
     rules: {
+        "unicorn/no-document-cookie": [ "error" ], // Não setCookie pelo document.cookie
+        "unicorn/prefer-https": [ "error" ], // Use links HTTPS
+        "unicorn/no-unsafe-dom-html": [ "error" ], // Bloqueia innerHTML, outerHTML, prefira setHtml e outros evita XSS
+        "unicorn/no-unsafe-string-replacement": [ "error" ], // Replace inseguros com variáveis
+        "unicorn/prefer-number-is-safe-integer": [ "error" ], // Prefira Number.isSafeInteger para verificar se é safe
+        "unicorn/prefer-dom-node-html-methods": [ "error" ], // Prefira métodos de HTML seguros
+        "unicorn/no-unused-properties": [ "warn" ], // Informe caso um campo não esteja sendo usado.
+        "unicorn/text-encoding-identifier-case": [ "error" ], // Encode de texto no formato correto
+        "unicorn/no-useless-concat": [ "error" ], // Desabilita concatenação de strings desnecessárias ex: "a" + "b"
+        "unicorn/consistent-existence-index-check": [ "error" ], // Valide o indexOf() de forma correta
+        "unicorn/consistent-date-clone": [ "error" ], // Se clonar uma data clone o objeto completo
+        "unicorn/consistent-assert": [ "error" ], // Use assert.ok ao invés de assert(value)
+        "unicorn/no-unnecessary-array-splice-count": [ "error" ], // N faça splice com .length ele ja pega tudo
+        "unicorn/no-useless-error-capture-stack-trace": [ "error" ], // N faça Error.captureStackTrace se n precisa
+        "unicorn/no-unnecessary-polyfills": [ "error" ], // Valida recursos suportados
+        "unicorn/no-multiple-promise-resolver-calls": [ "error" ], // Não chame resolve ou reject juntos na promise
+        "unicorn/no-useless-re-export": [ "error" ], // Não faça export duplicados
+        "unicorn/no-useless-iterator-to-array": [ "error" ], // Useless toArray
+        "unicorn/isolated-functions": [
+            "error",
+            {
+                comments: [ "@isolated" ],
+                selectors: [
+                    "FunctionDeclaration[id.name=/lambdaHandler.*/]",
+                    String.raw`:matches(ArrowFunctionExpression, FunctionExpression)[parent.type='CallExpression'][parent.callee.type='MemberExpression'][parent.callee.property.name=/^(evaluate|\$eval|\$\$eval)$/]`,
+                ],
+            },
+        ], // Ao usar Docblock isolate n permite usar variáveis de fora
+        "unicorn/no-late-current-target-access": [ "error" ], // Acesse event.currentTarget antes de operação assíncrona
+        "unicorn/no-unused-array-method-return": [ "error" ], // Use retorno de array.map, filter sem salvar em variável
+        "unicorn/no-break-in-nested-loop": [ "error" ], // Não use break em loops dentro de outros loops
+        "unicorn/no-confusing-array-with": [ "error" ], // Concatenar array com spread ao invés de with
+        "unicorn/no-incorrect-template-string-interpolation": [ "error" ], // Valida interpolação de template string
+        "unicorn/no-mismatched-map-key": [ "error" ], // Não use chave diferente para map.has e map.get
+        "unicorn/no-optional-chaining-on-undeclared-variable": [ "error" ], // Não use ?. em variável não declarada
+        "unicorn/no-redundant-comparison": [ "error" ], // Não faça comparação redundante
+        "unicorn/prefer-direct-iteration": [ "error" ], // Nao use .values ou entries sem efeitos
+        "unicorn/prefer-scoped-selector": [ "error" ], // Use seletor de escopo ao invés de universal
+        "unicorn/no-invalid-argument-count": [ "error" ], // Nao passe parametros a + em Js
+        "unicorn/no-useless-coercion": [ "error" ], // Não faça coerção de tipo desnecessária
+        "unicorn/no-useless-continue": [ "error" ], // Não faça continue desnecessário
+        "unicorn/no-duplicate-logical-operands": [ "error" ], // Não faça comparação iguais
+        "unicorn/no-misrefactored-assignment": [ "error" ], // Atribuição a += a + b (erro humano), use apenas a += b
+        "unicorn/no-selector-as-dom-name": [ "error" ], // AddClass com seletor errado
+        "unicorn/no-invalid-well-known-symbol-methods": [ "error" ], // Não use Symbol.iterator() async
+        "unicorn/no-late-event-control": [ "error" ], // Não use event.preventDefault() no final
         "no-unexpected-multiline": [ "error" ], // Desabilita multiline possíveis erros operadores ;
         "no-cond-assign": [ "error" ], // Não atribua variável na condição do IF
         "object-shorthand": [ "error" ], // Não permite labels não usadas

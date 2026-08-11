@@ -10,12 +10,9 @@ export default {
         "no-unneeded-ternary": [ "error" ], // Ternário Desnecessários
         "no-unsafe-negation": [ "error" ], // Não permite negações invalidas
         // "import/no-cycle": [ "error" ], // Não faça import circular
-        "unicorn/no-unused-properties": [ "warn" ], // Informe caso um campo não esteja sendo usado.
-        "unicorn/text-encoding-identifier-case": [ "error" ], // Encode de texto no formato correto
         "no-empty-static-block": [ "error" ], // Não faça static{ } vazio
         "no-fallthrough": [ "error" ], // Se misturar 2 cases no switch coloque comentário // falls through
         "no-useless-concat": [ "error" ], // Desabilita concatenação de strings desnecessárias ex: "a" + "b"
-        "unicorn/no-useless-concat": [ "error" ], // Desabilita concatenação de strings desnecessárias ex: "a" + "b"
         "no-octal-escape": [ "error" ], // Não use 071
         "no-octal": [ "error" ], // Use \ em Unicode e hexadecimal
         "no-case-declarations": [ "error" ], // Use chaves em caso de declaração em switch case
@@ -60,48 +57,10 @@ export default {
         "sonarjs/stateful-regex": [ "error" ], // Valida regex podem ser sempre false
         "sonarjs/table-header": [ "error" ], // Table HTML deve ter header
         "sonarjs/table-header-reference": [ "error" ], // Table HTML deve ter header
-        "unicorn/consistent-existence-index-check": [ "error" ], // Valide o indexOf() de forma correta
-        "unicorn/consistent-date-clone": [ "error" ], // Se clonar uma data clone o objeto completo
-        "unicorn/consistent-assert": [ "error" ], // Use assert.ok ao invés de assert(value)
-        "unicorn/no-unnecessary-array-splice-count": [ "error" ], // N faça splice com .length ele ja pega tudo
-        "unicorn/no-useless-error-capture-stack-trace": [ "error" ], // N faça Error.captureStackTrace se n precisa
-        "unicorn/no-unnecessary-polyfills": [ "error" ], // Valida recursos suportados
-        "unicorn/no-multiple-promise-resolver-calls": [ "error" ], // Não chame resolve ou reject juntos na promise
-        "unicorn/no-useless-re-export": [ "error" ], // Não faça export duplicados
-        "unicorn/no-useless-iterator-to-array": [ "error" ], // Useless toArray
         "regexp/no-extra-lookaround-assertions": [ "error" ], // Look around invalido em regex
         "n/no-unsupported-features/es-builtins": [ "error", { "ignores": [] } ],
         "n/no-unsupported-features/es-syntax": [ "error", { "ignores": [] } ],
         "n/no-unsupported-features/node-builtins": [ "error", { "ignores": [] } ],
-        "unicorn/isolated-functions": [
-            "error",
-            {
-                comments: [ "@isolated" ],
-                selectors: [
-                    "FunctionDeclaration[id.name=/lambdaHandler.*/]",
-                    String.raw`:matches(ArrowFunctionExpression, FunctionExpression)[parent.type='CallExpression'][parent.callee.type='MemberExpression'][parent.callee.property.name=/^(evaluate|\$eval|\$\$eval)$/]`,
-                ],
-            },
-        ], // Ao usar Docblock isolate n permite usar variáveis de fora
-        "unicorn/no-late-current-target-access": [ "error" ], // Acesse event.currentTarget antes de operação assíncrona
-        "unicorn/no-unused-array-method-return": [ "error" ], // Use retorno de array.map, filter sem salvar em variável
-        "unicorn/no-break-in-nested-loop": [ "error" ], // Não use break em loops dentro de outros loops
-        "unicorn/no-confusing-array-with": [ "error" ], // Concatenar array com spread ao invés de with
-        // "unicorn/no-declarations-before-early-exit": [ "error" ], // Early return é a primeira coisa // ? Código complexo d+ const em cima fica mais facil
-        "unicorn/no-incorrect-template-string-interpolation": [ "error" ], // Valida interpolação de template string
-        "unicorn/no-mismatched-map-key": [ "error" ], // Não use chave diferente para map.has e map.get
-        "unicorn/no-optional-chaining-on-undeclared-variable": [ "error" ], // Não use ?. em variável não declarada
-        "unicorn/no-redundant-comparison": [ "error" ], // Não faça comparação redundante
-        "unicorn/prefer-direct-iteration": [ "error" ], // Nao use .values ou entries sem efeitos
-        "unicorn/prefer-scoped-selector": [ "error" ], // Use seletor de escopo ao invés de universal
-        "unicorn/no-invalid-argument-count": [ "error" ], // Nao passe parametros a + em Js
-        "unicorn/no-useless-coercion": [ "error" ], // Não faça coerção de tipo desnecessária
-        "unicorn/no-useless-continue": [ "error" ], // Não faça continue desnecessário
-        "unicorn/no-duplicate-logical-operands": [ "error" ], // Não faça comparação iguais
-        "unicorn/no-misrefactored-assignment": [ "error" ], // Atribuição a += a + b (erro humano), use apenas a += b
-        "unicorn/no-selector-as-dom-name": [ "error" ], // AddClass com seletor errado
-        "unicorn/no-invalid-well-known-symbol-methods": [ "error" ], // Não use Symbol.iterator() async
-        "unicorn/no-late-event-control": [ "error" ], // Não use event.preventDefault() no final
 
         "zod/no-conflicting-checks": [ "error" ], // Não use regras que se conflitam
         "zod/no-duplicate-schema-methods": [ "error" ], // Não use métodos duplicados no mesmo zod

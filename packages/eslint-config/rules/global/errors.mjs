@@ -18,12 +18,6 @@ export default {
         "regexp/no-useless-backreference": [ "error" ],
         "regexp/no-useless-dollar-replacements": [ "error" ],
         "regexp/strict": [ "error" ], // Regex strict
-        "unicorn/no-instanceof-builtins": [ "error" ], // Não use instanceof Array,Function,String etc
-        "unicorn/no-accessor-recursion": [ "error" ], // Não use recursão em getters e setters
-        "unicorn/require-module-attributes": [ "error" ], // Não use with {} import sem atributos
-        "unicorn/no-impossible-length-comparison": [ "error" ], // Valida comparação de length
-        "unicorn/no-invalid-character-comparison": [ "error" ], // Valida comparação de caracteres invalida
-        "unicorn/no-useless-compound-assignment": [ "error" ], // Variável que nao faz nada += 0
         "constructor-super": [ "error" ], // Bloqueia Super construtor quando invalido
         "getter-return": [ "error" ], // Getter tem q ter return
         "no-class-assign": [ "error" ], // Não atribua variável com nome classe

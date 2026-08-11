@@ -141,7 +141,7 @@ export default defineConfig([
             "pnpm-lock.yaml",
             ".yalc/",
             ".review/",
-            "routeTree.gen.ts",
+            "**/routeTree.gen.ts",
         ],
     },
 

@@ -11,18 +11,12 @@ export default {
         "security/detect-no-csrf-before-method-override": [ "error" ], // Valida CSRF antes override express
         "security/detect-non-literal-fs-filename": [ "error" ],
         "security/detect-pseudoRandomBytes": [ "error" ], // Não use pseudo Random
-        "unicorn/no-document-cookie": [ "error" ], // Não setCookie pelo document.cookie
         "security/detect-eval-with-expression": [ "error" ], // Não permite eval com expressões
         "security/detect-new-buffer": [ "error" ], // Bloqueia New Buffer
         "security/detect-non-literal-regexp": [ "error" ], // Regex Protect
         "security/detect-non-literal-require": [ "error" ], // Require Protect
         "security/detect-possible-timing-attacks": [ "error" ], // Previne Tokens no código
         "security/detect-bidi-characters": [ "error" ], // Anti Trojan code program
-        "unicorn/prefer-https": [ "error" ], // Use links HTTPS
-        "unicorn/no-unsafe-dom-html": [ "error" ], // Bloqueia innerHTML, outerHTML, prefira setHtml e outros evita XSS
-        "unicorn/no-unsafe-string-replacement": [ "error" ], // Replace inseguros com variáveis
-        "unicorn/prefer-number-is-safe-integer": [ "error" ], // Prefira Number.isSafeInteger para verificar se é safe
-        "unicorn/prefer-dom-node-html-methods": [ "error" ], // Prefira métodos de HTML seguros
         "import/no-dynamic-require": [ "error", { "esmodule": true } ], // Sem import dinâmicos
         "no-prototype-builtins": [ "error" ], // Object.prototype.hasOwnProperty.call no lugar obj.hasOwnProperty
         "sonarjs/aws-apigateway-public-api": [ "error" ], // Bloqueia API Gateway público
