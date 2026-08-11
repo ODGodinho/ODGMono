@@ -105,7 +105,7 @@ export default {
                     "kebabCase": true,
                     "pascalCase": true,
                 },
-                "ignore": [ ".md$" ],
+                "ignore": [ ".md$", String.raw`drizzle/.*\.json$` ],
             },
         ],
         "no-restricted-syntax": [
