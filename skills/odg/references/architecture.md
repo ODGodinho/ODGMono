@@ -4,6 +4,8 @@ The part of an ODG project that is **identical in every runtime**. Read this for
 
 Do **NOT** re-derive the project shape by reading source. Trust this map and open source only for the concrete logic you change.
 
+> This file answers **where things go**. [engineering.md](./engineering.md) answers **whether they should exist at all** — read it first on every task.
+
 ## The model — three rings
 
 Dependencies point **inward only**.
@@ -43,6 +45,12 @@ src/ or $$PROJECT_ROOT
         <Name>Validator.ts      zod schema for a domain/service/integration
     Exceptions/
         <Name>Exception.ts
+    Instructions/               static text the program carries (AI prompts, templates)
+        <Name>.ts               one coherent unit per file — see "Text as data" below
+        index.ts                barrel
+    database/                   only in projects that own a schema — see runtimes/api.md
+        DatabaseSeeder.ts       registry of seeders (ordered runUp / reversed runDown)
+        Seeders/<Name>Seeder.ts idempotent, minimum initial data, no logging
     app/
         Container.ts            composition root — the ONLY place for manual bindings
         ContainerInject.ts      typed @$inject / @$multiInject (wraps inversify)
@@ -57,7 +65,7 @@ src/ or $$PROJECT_ROOT
     EventsInterface.d.ts        event → payload contract
 ```
 
-`ContainerInject.ts` sits at the source root and is imported by relative path (`../ContainerInject.js`), not through an alias.
+`ContainerInject.ts` lives in `src/app/` (as shown above) and is imported through the `#app/*` alias (`#app/ContainerInject.js`).
 
 ### Naming
 
@@ -84,6 +92,24 @@ The alias — not the physical folder — is the import surface. `#services` mea
 - A project **MUST NOT** carry an alias for a ring it does not have (no `#pages` in an API).
 - Every project **MUST** extend `@odg/tsconfig`.
 
+### Monorepo exception — `paths` shadows across packages
+
+`tsconfig#paths` is **global to a compilation**, while `package.json#imports` is **per package**. So in a
+monorepo where package B imports package A's TypeScript source (a shared contract type, for example),
+B's `paths` also apply while the compiler reads A's files — and identically named aliases (`#enums`,
+`#kernel`) silently resolve to **B's** folders inside A's code. The symptom is nonsense: `Property 'X'
+does not exist on type 'typeof ContainerName'` pointing at a file where that member plainly exists.
+
+Therefore: when two workspaces would declare the same alias name and one imports the other's source,
+the **importing** package **MUST NOT** declare `paths` for those aliases — `package.json#imports`
+resolves them correctly on its own under `moduleResolution` `nodenext` or `bundler`. Record the
+exception in the project `AGENTS.md`.
+
+The `extends` target **MUST** be a relative path (`../../node_modules/@odg/tsconfig/tsconfig.node.json`),
+not the `@odg/tsconfig/...` package specifier: Bun ignores specifier-based `extends`, which silently
+drops `emitDecoratorMetadata` and breaks every `@$inject` at runtime. See
+[diagnostics.md](./diagnostics.md).
+
 > Nothing checks the two files against each other automatically. When a task touches either file, diff the two maps key by key.
 
 ## Wiring contract (add X → you MUST also touch Y)
@@ -109,9 +135,33 @@ TSC/wiring failures (missing `ContainerInterface` entry, section drift, barrel g
 | Service | decorator (auto) | `@ODGDecorators.injectable(ContainerName.X, "Singleton")` |
 | Listener | decorator (auto) | `@ODGDecorators.injectable(ContainerName.X, "Singleton")` + `@registerListener(EventName.X, ContainerName.X, {})` |
 | Runtime-ring managed class | decorator (auto) | see the runtime file — usually `@injectable(ContainerName.X)` with no singleton |
-| Config, Logger, EventBus, Requester, Kernel, factories | **manual** in `Container.ts` | `toDynamicValue` / `toConstantValue` |
+| `Kernel`, `ProcessKernel`, seeders, HTTP adapter | decorator (auto) | `@ODGDecorators.injectable(ContainerName.X, "Singleton")`; the barrel is imported for side-effect in `Container.ts` |
+| Config, Logger, EventBus, Requester, DB handle, external SDK clients, factories | **manual** in `Container.ts` | `toDynamicValue` / `toConstantValue` |
 
 Domain classes are discovered by `ODGDecorators.loadModule` (invoked in `setUp`); their barrels are imported for side-effect in `Container.ts`. Only infra/factories/libs are bound by hand.
+
+### Two-phase binding
+
+`Container.setUp()` has phases, and the split is load-bearing:
+
+```typescript
+await ODGDecorators.loadModule(this);
+await this.bindKernel();                       // only what the Kernel itself needs
+await this.get(ContainerName.Kernel).init();   // ← the Kernel is CONSTRUCTED here
+await this.bindApp();                          // everything that needs an initialized Config
+```
+
+A class resolved in phase 2 **MUST NOT** inject a binding registered in phase 3, or boot fails with
+`No matching bindings found`. Late bindings are resolved inside the method that uses them, and the
+constraint is stated in the class docblock.
+
+### Typing a binding in `ContainerInterface`
+
+A binding **MUST NOT** be typed as a union of an implementation and its interface
+(`Logger | LoggerInterface`). A union collapses to its narrowest member at every injection site, so
+consumers lose the concrete API and are forced to re-resolve the binding from the Container just to
+reach it. Declare the concrete type when the app depends on its methods (`Logger` already satisfies
+`LoggerInterface`); declare the interface when it is genuinely swappable.
 
 ## Container & Enums rules
 
@@ -126,13 +176,20 @@ Domain classes are discovered by `ODGDecorators.loadModule` (invoked in `setUp`)
 - `CustomValidator` is a class of reusable validation **helper** functions, not a data schema. It **MUST NOT** be treated as, or replaced by, a `zod`/`yup` schema.
 - A `Helpers/` folder holds **pure functions only**. A class that is `@injectable` is a Service, not a helper, and belongs in `Services/`.
 
-## Review-time gaps
+## Text as data
 
-A review pass still has to check these — neither has an automated gate:
+Long text the program *carries* — AI prompts and agent instructions, message templates, static domain lists — is **data**, and `Instructions/` is its folder. Only projects that carry such text have it; it is not part of the minimum spine.
 
-| Gap | Why it slips through |
-| --- | --- |
-| Ring direction (ENTRY → APP → CORE) in a single-root project | APP legitimately references ENTRY types; no rule distinguishes that from a real violation |
-| Alias parity (`package.json#imports` ↔ `tsconfig.json#paths`) | `tsc` only reads `paths` — a drifted `imports` entry compiles fine and fails at runtime |
+- **One coherent unit per file**, named for what it is (`DevelopmentProcess.ts`, `Workspace.ts`, `Adjustment.ts`), exported through the barrel.
+- A unit **MAY** be a function whose entire body is one template literal — the parameter fills a slot in the text. It is still data, not logic.
+- The consuming Service **composes** named units and **MUST NOT** author fragments inline:
 
-A project **MUST** run `lint` and `tsc:check` in CI.
+```typescript
+const sections = [
+    developmentProcess,
+    workspaceInstruction(request.repos),
+    request.adjustmentComments.length > 0 ? adjustmentInstruction(request.adjustmentComments) : null,
+    cardInstruction(request.card),
+];
+
+return sections.filter(Boolean).join("\n\n");

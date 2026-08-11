@@ -25,11 +25,11 @@
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
     "files.trimFinalNewlines": true,
-    "eslint.runtime": "node",
+    "eslint.runtime": "bun",
+    "eslint.nodePath": "packages/eslint-config/node_modules",
 
     // Monorepo: resolve o tsconfig/config do pacote certo (perf + type-aware correto)
     "eslint.workingDirectories": [ { "mode": "auto" } ],
-    "eslint.useFlatConfig": true,
 
     "js/ts.preferences.quoteStyle": "double",
     "js/ts.format.semicolons": "ignore",

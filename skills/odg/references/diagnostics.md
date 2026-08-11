@@ -19,6 +19,14 @@ export interface ContainerInterface {
 
 ---
 
+### `Property 'X' does not exist on type 'typeof ContainerName'`
+
+**Cause:** a class was written (or a decorator referenced `ContainerName.X`) before the enum member existed. This is the mirror image of the error above, and it appears at the *decorator* line, not at the binding.
+
+**Fix:** follow the wiring order strictly — **enum → `@types/ContainerInterface.d.ts` → folder barrel → class**. Doing it in that order means the compiler never sees a half-wired artifact.
+
+---
+
 ### `Type 'string' is not assignable to type 'ContainerName'`
 
 **Cause:** A loose string was used where `ContainerName.MyClass` was expected.
@@ -89,6 +97,46 @@ export interface EventBaseInterface extends EventObjectType {
 ```typescript
 await this.myPage.setPage(page).execute();
 ```
+
+---
+
+### `Found unexpected missing metadata on type "X". "X" constructor requires at least N arguments, found 0`
+
+Inversify's message suggests enabling `emitDecoratorMetadata`, which is usually already `true` via `@odg/tsconfig` — so the real cause is that the tsconfig **is not being applied**.
+
+**Cause (Bun):** `extends` was written as a package specifier (`"extends": "@odg/tsconfig/tsconfig.node.json"`). Bun ignores specifier-based `extends`, so every compiler option in the preset — including `emitDecoratorMetadata` — silently disappears at runtime.
+
+**Fix:** use a relative path: `"extends": "../../node_modules/@odg/tsconfig/tsconfig.node.json"`.
+
+**Verify** the metadata is actually emitted before hunting elsewhere:
+
+```typescript
+class Probe {} // in a scratch file
+Reflect.getMetadata("design:paramtypes", SomeInjectableClass); // undefined ⇒ metadata is off
+```
+
+---
+
+### `Could not find ESLint binary. Install dependencies or check Yarn linker configuration.`
+
+**Cause:** `odg-lint` locates ESLint by walking parent directories for `node_modules/eslint/bin/eslint.js`. Bun's default **isolated** (pnpm-style) linker in a workspace never produces that layout.
+
+**Fix:** add to `bunfig.toml` at the repo root:
+
+```toml
+[install]
+linker = "hoisted"
+```
+
+---
+
+### `TypeError: node_util_1.default.format is not a function` (or `node:child_process` externalized) in a browser bundle
+
+**Cause:** `@odg/log` (`ConsoleLogger` → `node:util.format`) and `@odg/json-log` (git release/branch → `node:child_process.exec`) are **Node-only**. A bundler externalizes the builtins and the app crashes at boot.
+
+They work in an Electron renderer only because it runs with `nodeIntegration: true`.
+
+**Fix:** do not bind the ODG logger stack in a browser-targeted package. See [runtimes/frontend.md](./runtimes/frontend.md).
 
 ---
 

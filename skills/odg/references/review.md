@@ -5,6 +5,8 @@ Use this file when the user requests a code review of current changes, unpushed 
 ## Review Process
 
 **MANDATORY** The agent **MUST** report every rule violation it observes, with **no upper cap** and **no severity filtering**. Trivial violations, **MUST** be reported the same as structural ones. The number of comments in the output **MUST** equal the number of violations.
+A finding is **deterministic** when an automated gate configured in the project — `eslint`, `tsc`, `prettier`, or any equivalent check, The agent **MUST NOT** spend review effort on deterministic findings.
+
 The agent **MUST** include maintainability issues in the violation count, not only functional defects:
 
 1. **Identify Changes:** Run the script from the project root. `$$SKILL_DIR/scripts/review.sh > .review/$$GIT_BRANCH.md`. This file **MUST** be your **only** input for diff content. You **MUST NOT** run `git diff`, `git show`, `git log -p`, `git blame`, or any command wrappers.

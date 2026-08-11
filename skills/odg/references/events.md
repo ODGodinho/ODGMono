@@ -10,6 +10,8 @@ An event only takes effect when at least one listener is registered for it.
 - Inject the event bus with `@$inject(ContainerName.EventBus) protected bus: EventBusInterface<EventTypes>,`
 - Dispatch events with `await this.bus.dispatch(EventName.CustomEvent, { page, ...extraParams });`
 - Events **MUST NOT** have a transaction handler — only a validation handler. The transaction handler is called inside the Service, not the Listener.
+- Therefore an event without a listener is a no-op, and declaring one is a violation
+- **WHEN** a change removes the last listener of an event, the event, its payload entry and its enum member go with it.
 
 ## Who Can Dispatch Events
 

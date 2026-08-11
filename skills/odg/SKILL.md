@@ -74,11 +74,11 @@ You **MUST** read a package's `AGENTS.md` whenever you **touch, edit, OR review*
 
 | Package | Trigger | AGENTS.md |
 | --- | --- | --- |
-| `@odg/message` | If need message send with request and response (Requester, HTTP)| `$$PROJECT_ROOT/node_modules/@odg/message/AGENTS.md` |
+| `@odg/message` | If need message send with request and response (Requester, HTTP) | `$$PROJECT_ROOT/node_modules/@odg/message/AGENTS.md` |
 | `@odg/axios` | Axios with @odg/message interface | `$$PROJECT_ROOT/node_modules/@odg/axios/AGENTS.md` |
 | `@odg/command` | If need command to make files | `$$PROJECT_ROOT/node_modules/@odg/command/AGENTS.md` |
-| `@odg/log` | If need use logger/audit application  | `$$PROJECT_ROOT/node_modules/@odg/log/AGENTS.md` |
-| `@odg/json-log` | If you need standardized structured logging, all logs share the same JSON format. | `$$PROJECT_ROOT/node_modules/@odg/json-log/AGENTS.md` |
+| `@odg/log` | If need use logger/audit application | `$$PROJECT_ROOT/node_modules/@odg/log/AGENTS.md` |
+| `@odg/json-log` | If you need standardized structured logging, all logs share the same JSON format, use this if need filter key in graylog/Kibana etc | `$$PROJECT_ROOT/node_modules/@odg/json-log/AGENTS.md` |
 
 ## Alias convention
 
