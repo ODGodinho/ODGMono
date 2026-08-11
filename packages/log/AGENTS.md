@@ -32,4 +32,4 @@
 
 - `isJSONLogFormattable` valida só `index`, `instance` e `message` como strings; não garante `type`, `createdAt` nem subestruturas — não assumir payload completo só pelo guard.
 - `Logger.log` executa handlers em paralelo (`Promise.all`); falha em um handler rejeita a promessa inteira.
-- `ConsoleLogger` depende de `console.log` e de `chalk` para cores; adequado a dev, não a políticas de produção sem avaliação própria.
+- `ConsoleLogger` depende de `console.log` e de `ansis` para cores; adequado a dev, não a políticas de produção sem avaliação própria.
