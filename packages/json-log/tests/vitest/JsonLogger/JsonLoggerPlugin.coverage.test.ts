@@ -1,85 +1,8 @@
-import type * as NodeChildProcess from "node:child_process";
-
 import { Exception } from "@odg/exception";
 import { type LoggerParserInterface, LogLevel } from "@odg/log";
 import { MessageException, MessageResponse, type RequestInterface } from "@odg/message";
-import { vi } from "vitest";
 
-import { JSONLogger, JSONLoggerPlugin, JSONParserUnknownException } from "#app";
-
-type ExecCallback = (error: Error | null, stdout: Buffer | string, stderr: Buffer | string) => void;
-
-const gitDescribeTagsSnippet = "describe --tags";
-const gitRevParseBranchSnippet = "rev-parse --abbrev-ref";
-const mockGitReleaseLabel = "mock-release";
-const mockGitBranchLabel = "mock-branch";
-const mockGitReleaseStdout = `${mockGitReleaseLabel}\n`;
-const mockGitBranchStdout = `${mockGitBranchLabel}\n`;
-const emptyExecStderr = "";
-
-vi.mock("node:child_process", async (importOriginal) => {
-    const actual = await importOriginal<typeof NodeChildProcess>();
-    const origExec = actual.exec;
-    const promisifyCustom = Symbol.for("nodejs.util.promisify.custom");
-
-    type ExecPromise = Promise<{ stdout: Buffer | string; stderr: Buffer | string }>;
-
-    function patchedExec(
-        execContext: unknown,
-        ...arguments_: Parameters<typeof origExec>
-    ): ReturnType<typeof origExec> {
-        const [ command ] = arguments_;
-        const last = arguments_.at(-1);
-        const previous = arguments_.at(-2);
-        let callback: ExecCallback | undefined;
-
-        if (typeof last === "function") {
-            callback = last as ExecCallback;
-        } else if (typeof previous === "function") {
-            callback = previous as ExecCallback;
-        }
-
-        if (callback && command.includes(gitDescribeTagsSnippet)) {
-            callback(null, mockGitReleaseStdout, emptyExecStderr);
-
-            return undefined as unknown as ReturnType<typeof origExec>;
-        }
-
-        if (callback && command.includes(gitRevParseBranchSnippet)) {
-            callback(null, mockGitBranchStdout, emptyExecStderr);
-
-            return undefined as unknown as ReturnType<typeof origExec>;
-        }
-
-        return Reflect.apply(origExec, execContext, arguments_);
-    }
-
-    const origCustom = origExec[promisifyCustom as unknown as keyof typeof origExec] as
-        | ((command: string, options?: object) => ExecPromise)
-        | undefined;
-
-    Object.defineProperty(patchedExec, promisifyCustom, {
-        configurable: true,
-        value: async function promisifiedExec(command: string, options?: object): ExecPromise {
-            if (command.includes(gitDescribeTagsSnippet)) {
-                return Promise.resolve({ stdout: mockGitReleaseStdout, stderr: emptyExecStderr });
-            }
-
-            if (command.includes(gitRevParseBranchSnippet)) {
-                return Promise.resolve({ stdout: mockGitBranchStdout, stderr: emptyExecStderr });
-            }
-
-            if (origCustom) return origCustom.call(origExec, command, options ?? {});
-
-            return Promise.reject(new JSONParserUnknownException("exec promisify fallback missing"));
-        },
-    });
-
-    return {
-        ...actual,
-        exec: patchedExec as typeof origExec,
-    };
-});
+import { JSONLogger, JSONLoggerPlugin } from "#app";
 
 describe("JSONLoggerPlugin coverage", () => {
     test("parseException returns undefined for non-Error", async () => {
@@ -159,7 +82,7 @@ describe("JSONLoggerPlugin coverage", () => {
         await expect(logger["getMessage"](plainObject)).resolves.toBe(JSON.stringify(plainObject));
     });
 
-    test("getMessage catch uses util.format when JSON.stringify throws", async () => {
+    test("getMessage catch uses formatUnknown when JSON.stringify throws", async () => {
         const logger = new JSONLoggerPlugin("app");
         const circular: Record<string, unknown> = {};
 
@@ -167,7 +90,7 @@ describe("JSONLoggerPlugin coverage", () => {
 
         const out = await logger["getMessage"](circular);
 
-        expect(out).toMatch(/Circular/i);
+        expect(out).toBe("[object Object]");
     });
 
     test("getMessage handles BigInt via catch branch", async () => {
@@ -193,28 +116,6 @@ describe("JSONLoggerPlugin coverage", () => {
         expect(parsed.level).toBe(LogLevel.INFO);
         expect(parsed.message).toBeInstanceOf(JSONLogger);
         expect((parsed.message as JSONLogger).message).toBe("hello");
-    });
-
-    test("getGitRelease assigns from exec when release unset", async () => {
-        const logger = new JSONLoggerPlugin("app");
-
-        await expect(logger["getGitRelease"]()).resolves.toBe(mockGitReleaseLabel);
-        await expect(logger["getGitRelease"]()).resolves.toBe(mockGitReleaseLabel);
-    });
-
-    test("getGitBranch assigns from exec when branch unset", async () => {
-        const logger = new JSONLoggerPlugin("app");
-
-        await expect(logger["getGitBranch"]()).resolves.toBe(mockGitBranchLabel);
-        await expect(logger["getGitBranch"]()).resolves.toBe(mockGitBranchLabel);
-    });
-
-    test("getGitRelease returns empty when not Node", async () => {
-        const logger = new JSONLoggerPlugin("app");
-        const spy = vi.spyOn(logger as unknown as { isNode(): boolean }, "isNode").mockReturnValue(false);
-
-        await expect(logger["getGitRelease"]()).resolves.toBe("");
-        spy.mockRestore();
     });
 
     test("getInstance uses HOSTNAME when set", async () => {

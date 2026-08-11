@@ -333,7 +333,7 @@
       "version": "0.0.4",
       "dependencies": {
         "@odg/exception": "workspace:^",
-        "chalk": "^5.6.2",
+        "ansis": "^4.3.1",
       },
       "devDependencies": {
         "@odg/eslint-config": "workspace:^",
@@ -861,6 +861,8 @@
     "ansi-regex": ["ansi-regex@6.2.2", "", {}, "sha512-Bq3SmSpyFHaWjPk8If9yc6svM8c56dB5BAtW4Qbw5jHTwwXXcTLoRMkpDJp6VL0XzlWaCHTXrkFURMYmD0sLqg=="],
 
     "ansi-styles": ["ansi-styles@3.2.1", "", { "dependencies": { "color-convert": "^1.9.0" } }, "sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA=="],
+
+    "ansis": ["ansis@4.3.1", "", {}, "sha512-BJ8/l4R5LRE7hW9WdSuGYrLSHi2ynxeFpDFbH0K/CgNeY/tyhk+vO6TYxXC5r5CpUhNVX310xzPsN/H9lCdfOA=="],
 
     "any-eslint-parser": ["any-eslint-parser@1.0.1", "", { "peerDependencies": { "eslint": "*" } }, "sha512-vQoHUcGbnsVd1N4yZtCyxR+5zjDehf6Hmi4BSbOYRFpzR8ba3UySQUoHyWnj13AV9dyrxHsTZh9Z+x+eeIdqzw=="],
 

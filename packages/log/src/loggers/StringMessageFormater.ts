@@ -1,6 +1,6 @@
-import util from "node:util";
+import ansis from "ansis";
 
-import chalk from "chalk";
+import { formatUnknown } from "../Support/format-unknown";
 
 import type { JSONLogFormattable } from "./json-log-formattable";
 
@@ -10,22 +10,22 @@ export class StringMessageFormatter {
         if (message.request) return this.formatRequester(message);
 
         if (message.exception) {
-            return `${chalk.whiteBright.bold("Exception -")} ${message.exception.stack}`;
+            return `${ansis.whiteBright.bold("Exception -")} ${message.exception.stack}`;
         }
 
-        return util.format(message.message || message);
+        return formatUnknown(message.message || message);
     }
 
     private formatRequester(message: JSONLogFormattable): string {
         const requester = message.request!;
-        const url = chalk.white(`${requester.baseURL! || ""}${requester.url! || ""}`);
+        const url = ansis.white(`${requester.baseURL! || ""}${requester.url! || ""}`);
         const statusCode = message.request?.response?.status;
         const status = statusCode
-            ? chalk.bgHex(this.getStatusCodeColor(statusCode)).white(statusCode)
-            : chalk.bgGrey("XXX");
+            ? ansis.bgHex(this.getStatusCodeColor(statusCode)).white(String(statusCode))
+            : ansis.bgGray("XXX");
         const method = (requester.method ?? "GET").toUpperCase();
 
-        return `${chalk.bold("Request -")} ${chalk.bgGrey(method)} ${url} ${status}`;
+        return `${ansis.bold("Request -")} ${ansis.bgGray(method)} ${url} ${status}`;
     }
 
     private getStatusCodeColor(statusCode: number): string {

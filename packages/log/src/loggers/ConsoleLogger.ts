@@ -1,9 +1,8 @@
-import util from "node:util";
-
-import chalk from "chalk";
+import ansis from "ansis";
 
 import { LogLevel } from "../Enums/LogLevel";
 import type { ContextType } from "../Interfaces/LoggerInterface";
+import { formatUnknown } from "../Support/format-unknown";
 
 import { AbstractLogger } from "./AbstractLogger";
 import { isJSONLogFormattable } from "./json-log-formattable";
@@ -30,7 +29,7 @@ export class ConsoleLogger extends AbstractLogger {
      * @returns {Promise<void>}
      */
     public async log(level: LogLevel, message: unknown, _context?: ContextType): Promise<void> {
-        let newMessage = util.format(message);
+        let newMessage = formatUnknown(message);
 
         if (isJSONLogFormattable(message)) {
             const formatter = new StringMessageFormatter();
@@ -47,23 +46,23 @@ export class ConsoleLogger extends AbstractLogger {
 
         switch (level) {
             case LogLevel.EMERGENCY:
-                return chalk.bgBlack.bold.red(message);
+                return ansis.bgBlack.bold.red(message);
             case LogLevel.ALERT:
-                return chalk.bgHex("#FFFCCD").bold.white(message);
+                return ansis.bgHex("#FFFCCD").bold.white(message);
             case LogLevel.CRITICAL:
-                return chalk.bgHex("#990033").white.bold(message);
+                return ansis.bgHex("#990033").white.bold(message);
             case LogLevel.ERROR:
-                return chalk.bgRed.white.bold(message);
+                return ansis.bgRed.white.bold(message);
             case LogLevel.WARNING:
-                return chalk.bgYellow.white(message);
+                return ansis.bgYellow.white(message);
             case LogLevel.NOTICE:
-                return chalk.bgBlue.white(message);
+                return ansis.bgBlue.white(message);
             case LogLevel.INFO:
-                return chalk.bgCyan.white(message);
+                return ansis.bgCyan.white(message);
             case LogLevel.DEBUG:
-                return chalk.bgMagenta.white(message);
+                return ansis.bgMagenta.white(message);
             default:
-                return chalk.bgGray.white("  unknown:  ");
+                return ansis.bgGray.white("  unknown:  ");
         }
     }
 

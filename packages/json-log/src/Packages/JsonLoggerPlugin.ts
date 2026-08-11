@@ -1,11 +1,9 @@
-import { exec } from "node:child_process";
-import util, { promisify } from "node:util";
-
 import { Exception } from "@odg/exception";
-import type {
-    LoggerParserInterface,
-    LoggerPluginInterface,
-    LogLevel,
+import {
+    formatUnknown,
+    type LoggerParserInterface,
+    type LoggerPluginInterface,
+    type LogLevel,
 } from "@odg/log";
 import {
     ODGMessage,
@@ -17,7 +15,6 @@ import ErrorStackParser from "error-stack-parser";
 import { JSONParserUnknownException } from "../Exceptions/JsonParserUnknownException";
 import type {
     ExceptionObjectLoggerInterface,
-    GitLoggerInterface,
     LoggerObjectRequestInterface,
 } from "../Interfaces";
 
@@ -31,8 +28,6 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
      * @type {string}
      */
     protected identifier?: string;
-
-    protected git: GitLoggerInterface = {};
 
     public constructor(
         protected readonly appName: string,
@@ -60,10 +55,8 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
     }
 
     public async logJSON(level: LogLevel, message: unknown): Promise<JSONLogger> {
-        const [ newMessage, release, branch, exception, previousException, request ] = await Promise.all([
+        const [ newMessage, exception, previousException, request ] = await Promise.all([
             this.getMessage(message),
-            this.getGitRelease().catch(() => void 0),
-            this.getGitBranch().catch(() => void 0),
             this.parseException(message),
             this.parseExceptionPrevious(message),
             this.parseRequest(message),
@@ -76,10 +69,6 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
             message: newMessage,
             createdAt: new Date(),
             identifier: this.identifier,
-            git: {
-                release: release! || undefined,
-                branch: branch! || undefined,
-            },
             exception,
             exceptionPrevious: previousException,
             request,
@@ -116,24 +105,6 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
     }
 
     /**
-     * Define current Git Release
-     *
-     * @param {string} release name of instance
-     */
-    public setGitRelease(release: string): void {
-        this.git.release = release;
-    }
-
-    /**
-     * Define current Git Branch
-     *
-     * @param {string} branch name of instance
-     */
-    public setGitBranch(branch: string): void {
-        this.git.branch = branch;
-    }
-
-    /**
      * Return instance HostName, identifier
      *
      * @returns {string}
@@ -152,36 +123,6 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
         }
 
         return "unknown";
-    }
-
-    /**
-     * Return Git tag name
-     *
-     * @returns {Promise<string>}
-     */
-    protected async getGitRelease(): Promise<string> {
-        if (typeof this.git.release === "string") return this.git.release;
-        if (!this.isNode()) return "";
-
-        const command = promisify(exec);
-        const gitVersion = await command("git describe --tags --abbrev=41");
-
-        return this.git.release ??= gitVersion.stdout.trim();
-    }
-
-    /**
-     * Return Git tag name
-     *
-     * @returns {Promise<string>}
-     */
-    protected async getGitBranch(): Promise<string> {
-        if (typeof this.git.branch === "string") return this.git.branch;
-        if (!this.isNode()) return "";
-
-        const command = promisify(exec);
-        const gitVersion = await command("git rev-parse --abbrev-ref HEAD");
-
-        return this.git.branch ??= gitVersion.stdout.trim();
     }
 
     /**
@@ -314,9 +255,9 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
         try {
             if (typeof message === "string") return message;
 
-            return JSON.stringify(message) || util.format(message);
+            return JSON.stringify(message) || formatUnknown(message);
         } catch {
-            return util.format(message);
+            return formatUnknown(message);
         }
     }
 
@@ -325,7 +266,8 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
     }
 
     private isNode(): boolean {
-        return typeof process !== "undefined";
+        return typeof process !== "undefined"
+            && typeof (process as { versions?: { node?: string } }).versions?.node === "string";
     }
 
 }
