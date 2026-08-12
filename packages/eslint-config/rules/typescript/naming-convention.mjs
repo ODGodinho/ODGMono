@@ -98,6 +98,16 @@ export function getNamingConventionRules(isTsxFile = false) {
                         match: false,
                     },
                 },
+                {
+                    selector: [ "variable" ],
+                    format: [ "PascalCase", "camelCase" ],
+                    leadingUnderscore: "allowSingleOrDouble",
+                    trailingUnderscore: "allow",
+                    filter: {
+                        regex: "[- ]",
+                        match: false,
+                    },
+                },
             ]
             : [],
 

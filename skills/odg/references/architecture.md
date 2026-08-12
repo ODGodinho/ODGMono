@@ -4,8 +4,6 @@ The part of an ODG project that is **identical in every runtime**. Read this for
 
 Do **NOT** re-derive the project shape by reading source. Trust this map and open source only for the concrete logic you change.
 
-> This file answers **where things go**. [engineering.md](./engineering.md) answers **whether they should exist at all** — read it first on every task.
-
 ## The model — three rings
 
 Dependencies point **inward only**.
