@@ -138,7 +138,7 @@ out/
 .playwright/
 
 # Claude Code
-.claude/
+.claude/*
 .mcp.json
 !.claude/skills/
 !.claude/clauderules.md

@@ -31,7 +31,7 @@ The agent **MUST** provide a brief 1-2 sentence summary regarding the overall im
 
 The agent **MUST** repeat the block below **once per violation**, with **no cap**. The agent **MUST** end the section with the count footer.
 
-- `path/to/file.ts:LINE`
+- `path/to/file.ts:LINE` - ($$rule-checklist-name)
   - [ICON] [Direct description of the violation. No conversational filler.]
     - 💡 [Code snippet or correction in 1–3 lines.]
 
