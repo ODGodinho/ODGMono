@@ -1,10 +1,9 @@
-import http from "node:http";
-
 import { MessageResponse } from "@odg/message";
 import type {
     AxiosResponse,
     InternalAxiosRequestConfig,
 } from "axios";
+import httpStatus from "http-status";
 
 import { AxiosParser } from "./AxiosParser";
 import { AxiosRequestParser } from "./AxiosRequestParser";
@@ -27,7 +26,7 @@ export class AxiosResponseParser {
         return {
             data: message.response.data,
             status: message.response.status,
-            statusText: http.STATUS_CODES[message.response.status] ?? "Unknown Status Code",
+            statusText: (httpStatus as Record<number, string>)[message.response.status] ?? "Unknown Status Code",
             headers: AxiosParser.parseHeaders(message.response.headers),
             config: this.requestParser.parseMessageToLibrary({
                 ...message.request,

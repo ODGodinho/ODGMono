@@ -266,7 +266,7 @@ export default {
         "unicorn/no-unnecessary-nested-ternary": [ "error" ], // Ternários mais inteligentes
         "unicorn/prefer-get-or-insert-computed": [ "error" ], // Use Map insert computed
         "unicorn/prefer-includes-over-repeated-comparisons": [ "error" ], // Use includes ao invés de várias comparações
-        // "unicorn/prefer-iterator-to-array-at-end": [ "error" ], // Use toArray no final depois de manipular o array ! Classe odg Arr com conflito
+        // "unicorn/prefer-iterator-to-array-at-end": [ "error" ], // Use toArray no final ! Classe odg Arr conflita
         "unicorn/prefer-math-abs": [ "error" ], // Use Math.abs ao invés de ternário
         "unicorn/string-content": [ "error" ], // Previne scape em string desnecessário
         "unicorn/no-negated-array-predicate": [ "error" ], // Não inverta filtro apos filtrar
@@ -471,7 +471,7 @@ export default {
         "unicorn/consistent-export-decorator-position": [ "error" ], // Colocar decorator no lugar certo
         "unicorn/consistent-function-style": [ "error" ], // Colocar decorator no lugar certo
         "unicorn/explicit-timer-delay": [ "error" ], // Use delay explícito em setTimeout/setInterval
-        // "unicorn/prefer-uint8array-base64": [ "error" ], // Prefira Uint8Array ao invés atob ou buffer.From // ? Apenas 24
+        // "unicorn/prefer-uint8array-base64": [ "error" ], // Prefira Uint8Array ao invés de atob/buffer // ? Apenas 24
         "unicorn/require-proxy-trap-boolean-return": [ "error" ], // Proxy set deve retornar boolean
         "unicorn/default-export-style": [ "error" ], // Export default direto sem usar variável
         "unicorn/no-accidental-bitwise-operator": [ "error" ], // Evite usar operadores bitwise acidentalmente

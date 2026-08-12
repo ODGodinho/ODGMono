@@ -4,6 +4,16 @@
     "description": "Interface request fo inversion of control",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./node": {
+            "types": "./dist/node.d.ts",
+            "default": "./dist/node.js"
+        }
+    },
     "homepage": "https://github.com/ODGodinho/ODGMono/tree/main/packages/message",
     "repository": {
         "type": "git",

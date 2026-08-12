@@ -44,7 +44,15 @@ export default {
         "no-throw-literal": "off", // Não permite throw "string" ou diferente de classe
         "@typescript-eslint/unified-signatures": [ "error" ], // Unir tipos de overload method se possível
         "@typescript-eslint/unbound-method": [ "error" ], // Preserve bind class
-        "@typescript-eslint/only-throw-error": [ "error" ], // Não permite throw "string" ou diferente de classe
+        "@typescript-eslint/only-throw-error": [
+            "error",
+            {
+                "allow": [
+                    { "from": "package", "package": "@tanstack/router-core", "name": "Redirect" },
+                    { "from": "package", "package": "@tanstack/router-core", "name": "NotFoundError" },
+                ],
+            },
+        ], // Não permite throw "string" ou diferente de classe
         "@typescript-eslint/triple-slash-reference": [ "error" ], // Disable import por reference
         "@typescript-eslint/no-wrapper-object-types": [ "error" ], // Use primitivo minusculo
         "@typescript-eslint/no-unsafe-function-type": [ "error" ], // Não use tipo Function
@@ -99,7 +107,7 @@ export default {
         "@typescript-eslint/no-explicit-any": [ "error" ], // Não permite usar any
         "no-empty-function": [ "off" ], // Não permite funções vazias
         "@typescript-eslint/no-empty-function": [ "error" ], // Não permite funções vazias
-        "@typescript-eslint/no-unnecessary-type-constraint": [ "error" ], // Não permite restrições de tipo desnecessárias <T extends any>
+        "@typescript-eslint/no-unnecessary-type-constraint": [ "error" ], // Não permite tipo <T extends any>
         "@typescript-eslint/prefer-as-const": [ "error" ], // Preferir constantes
         "@typescript-eslint/array-type": [
             "error",
