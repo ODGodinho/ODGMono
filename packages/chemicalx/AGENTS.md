@@ -107,7 +107,9 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 8. **`AttemptableInterface` — contrato base**: Tanto `BasePage` quanto `BaseHandler` implementam `AttemptableInterface`. Hooks opcionais: `success()`, `failure(exception)`, `retrying(exception, attempt)`, `finish(exception?)`, `sleep()`. Obrigatórios: `execute()`, `attempt()`.
    📖 See also: [docs/decorators.md](docs/decorators.md)
 
-9. **`UserAgent` — seed é sempre o major**: A marca GREASE deriva da versão maior declarada, nunca de `Math.random()`. Isso faz a marca girar uma vez por release e ficar estável no ciclo, como o Chromium nativo — uma marca que não bate com o major declarado é, ela própria, um sinal de automação. Aplique tudo de uma vez com `Network.setUserAgentOverride` e `cdpParams()`, para o UA string e os client hints contarem a mesma história.
+9. **`UserAgent` — seed é sempre o major**: A marca GREASE deriva da versão maior declarada, nunca de `Math.random()`. Isso faz a marca girar uma vez por release e ficar estável no ciclo, como o Chromium nativo — uma marca que não bate com o major declarado é, ela própria, um sinal de automação. Aplique tudo de uma vez com `Emulation.setUserAgentOverride` e `cdpParams()`, para o UA string e os client hints contarem a mesma história.
+
+10. **`UserAgent` — os dois `platform` do CDP são valores diferentes**: `userAgentMetadata.platform` é o token de `Sec-CH-UA-Platform` (`Windows`, `macOS`, `Chrome OS`); o `platform` de primeiro nível é o que `navigator.platform` vai reportar, congelado pelo Chromium em apenas quatro valores (`Win32`, `MacIntel`, `Linux x86_64`, `Linux armv81`). Mandar o token do hint ali entrega o override, porque nenhum navegador real reporta `Windows` em `navigator.platform`. `cdpParams()` já resolve os dois — não montar o payload à mão.
 
 ## 💥 Critical Exceptions
 
@@ -159,7 +161,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 | `UserAgentOptionsInterface` | Parâmetros de `UserAgent`: só `version` é obrigatório; o resto cai no perfil da plataforma |
 | `UserAgentBrandInterface` | Par `brand` + `version` de uma entrada de brand list |
 | `UserAgentMetadataInterface` | `userAgentMetadata` do CDP (`brands`, `fullVersionList`, `platform`, `mobile`, ...) |
-| `UserAgentOverrideInterface` | Payload completo de `Network.setUserAgentOverride` |
+| `UserAgentOverrideInterface` | Payload completo de `Emulation.setUserAgentOverride` (`platform` = `navigator.platform` congelado) |
 | `UserAgentHeadersInterface` | Headers `Sec-CH-UA-*` já serializados |
 
 ## 🔍 Entry Points

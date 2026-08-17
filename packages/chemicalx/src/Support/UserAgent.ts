@@ -81,6 +81,7 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
             model: "",
             isWow64: false,
             systemInformation: "Windows NT 10.0; Win64; x64",
+            navigatorPlatform: "Win32",
         },
         [UserAgentPlatform.MacOS]: {
             platformVersion: "15.5.0",
@@ -89,6 +90,7 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
             model: "",
             isWow64: false,
             systemInformation: "Macintosh; Intel Mac OS X 10_15_7",
+            navigatorPlatform: "MacIntel",
         },
         [UserAgentPlatform.Linux]: {
             platformVersion: "",
@@ -97,6 +99,7 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
             model: "",
             isWow64: false,
             systemInformation: "X11; Linux x86_64",
+            navigatorPlatform: "Linux x86_64",
         },
         [UserAgentPlatform.Android]: {
             platformVersion: "14.0.0",
@@ -105,6 +108,9 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
             model: "Pixel 8",
             isWow64: false,
             systemInformation: "Linux; Android 10; K",
+
+            // Digit one, not an "l": the literal Chromium froze and the HTML spec now lists.
+            navigatorPlatform: "Linux armv81",
         },
         [UserAgentPlatform.ChromeOS]: {
             platformVersion: "14541.0.0",
@@ -113,6 +119,7 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
             model: "",
             isWow64: false,
             systemInformation: "X11; CrOS x86_64 14541.0.0",
+            navigatorPlatform: "Linux x86_64",
         },
     };
 
@@ -226,8 +233,12 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
     }
 
     /**
-     * Payload for `Network.setUserAgentOverride`, the single call that keeps the
+     * Payload for `Emulation.setUserAgentOverride`, the single call that keeps the
      * User-Agent string and the client hints telling the same story.
+     *
+     * The top level `platform` is the one `navigator.platform` will report, so it
+     * carries the frozen value and never the `Sec-CH-UA-Platform` token that goes
+     * into `userAgentMetadata.platform`.
      *
      * @throws {InvalidArgumentException} If the configured version has no leading digits.
      * @returns {UserAgentOverrideInterface} Parameters for the CDP command.
@@ -236,7 +247,7 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
         return {
             userAgent: this.toString(),
             acceptLanguage: this.options.acceptLanguage,
-            platform: this.platform(),
+            platform: this.navigatorPlatform(),
             userAgentMetadata: this.metadata(),
         };
     }
@@ -419,6 +430,16 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
      */
     private platform(): UserAgentPlatform {
         return this.options.platform ?? UserAgentPlatform.Windows;
+    }
+
+    /**
+     * Value `navigator.platform` reports, the one CDP takes as its top level `platform`.
+     * Chromium froze it per platform, so it does not follow the platform hint.
+     *
+     * @returns {string} The configured value, or the frozen value of the platform.
+     */
+    private navigatorPlatform(): string {
+        return this.options.navigatorPlatform ?? this.platformProfile().navigatorPlatform;
     }
 
     /**

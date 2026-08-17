@@ -1,6 +1,7 @@
 import { UserAgent, UserAgentPlatform } from "#app";
 
 const chromeVersion = "124.0.6367.60";
+const linuxPlatform = "Linux x86_64";
 
 describe("UserAgent.cdpParams", () => {
     test("carries the User-Agent string, the platform and the metadata", () => {
@@ -13,7 +14,7 @@ describe("UserAgent.cdpParams", () => {
         expect(parameters).toStrictEqual({
             userAgent: userAgent.toString(),
             acceptLanguage: undefined,
-            platform: "macOS",
+            platform: "MacIntel",
             userAgentMetadata: userAgent.metadata(),
         });
     });
@@ -27,13 +28,37 @@ describe("UserAgent.cdpParams", () => {
         expect(parameters.acceptLanguage).toBe("pt-BR,pt;q=0.9,en;q=0.8");
     });
 
-    test("keeps the CDP platform equal to the platform hint", () => {
+    test.each([
+        [ UserAgentPlatform.Windows, "Win32" ],
+        [ UserAgentPlatform.MacOS, "MacIntel" ],
+        [ UserAgentPlatform.Linux, linuxPlatform ],
+        [ UserAgentPlatform.Android, "Linux armv81" ],
+        [ UserAgentPlatform.ChromeOS, linuxPlatform ],
+    ])("reports the frozen navigator.platform of %s", (platform, navigatorPlatform) => {
+        const userAgent = new UserAgent({ version: chromeVersion, platform });
+
+        expect(userAgent.cdpParams().platform).toBe(navigatorPlatform);
+    });
+
+    test("never sends the platform hint token as the CDP platform", () => {
         const userAgent = new UserAgent({
             version: chromeVersion,
             platform: UserAgentPlatform.ChromeOS,
         });
 
-        expect(userAgent.cdpParams().platform).toBe(userAgent.metadata().platform);
+        expect(userAgent.metadata().platform).toBe("Chrome OS");
+        expect(userAgent.cdpParams().platform).not.toBe(userAgent.metadata().platform);
+    });
+
+    test("honours the explicit navigator platform override", () => {
+        const parameters = new UserAgent({
+            version: chromeVersion,
+            platform: UserAgentPlatform.Windows,
+            navigatorPlatform: linuxPlatform,
+        }).cdpParams();
+
+        expect(parameters.platform).toBe(linuxPlatform);
+        expect(parameters.userAgentMetadata.platform).toBe("Windows");
     });
 
     test("produces the same payload for the same input", () => {

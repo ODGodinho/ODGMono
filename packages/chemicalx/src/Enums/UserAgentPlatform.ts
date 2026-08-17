@@ -4,6 +4,9 @@
  * The values are the literal tokens Chromium emits — casing is part of the wire format
  * and MUST NOT be normalized, otherwise the hint stops matching a real browser.
  *
+ * These tokens do NOT belong in the top level `platform` of the CDP override, which is
+ * the frozen `navigator.platform` value instead. `UserAgent.cdpParams()` handles both.
+ *
  * @enum {string}
  */
 export enum UserAgentPlatform {

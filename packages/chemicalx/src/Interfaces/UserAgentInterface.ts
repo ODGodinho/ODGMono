@@ -103,6 +103,16 @@ export interface UserAgentPlatformProfileInterface {
      * @memberof UserAgentPlatformProfileInterface
      */
     systemInformation: string;
+
+    /**
+     * Value `navigator.platform` reports. Chromium froze it with the User-Agent
+     * reduction, so there are only four legal values: `Win32`, `MacIntel`,
+     * `Linux x86_64` and `Linux armv81`. It is NOT the `Sec-CH-UA-Platform` token.
+     *
+     * @type {string}
+     * @memberof UserAgentPlatformProfileInterface
+     */
+    navigatorPlatform: string;
 }
 
 /**
@@ -214,6 +224,15 @@ export interface UserAgentOptionsInterface {
      * @memberof UserAgentOptionsInterface
      */
     acceptLanguage?: string;
+
+    /**
+     * Overrides what `navigator.platform` reports. Only the frozen values are
+     * plausible, so overriding it means departing from every real browser.
+     *
+     * @type {string}
+     * @memberof UserAgentOptionsInterface
+     */
+    navigatorPlatform?: string;
 }
 
 /**
@@ -313,7 +332,8 @@ export interface UserAgentMetadataInterface {
 }
 
 /**
- * Payload accepted by `Network.setUserAgentOverride` on both Puppeteer and Playwright.
+ * Payload accepted by `Emulation.setUserAgentOverride`, and by its deprecated twin
+ * `Network.setUserAgentOverride`, on both Puppeteer and Playwright.
  *
  * @interface UserAgentOverrideInterface
  */
@@ -336,7 +356,10 @@ export interface UserAgentOverrideInterface {
     acceptLanguage?: string;
 
     /**
-     * Operating system token, kept in sync with the metadata.
+     * Value `navigator.platform` will report (`Win32`, `MacIntel`, `Linux x86_64`,
+     * `Linux armv81`). CDP names it like the platform hint, but it is a different
+     * value: sending the `Sec-CH-UA-Platform` token here leaks the override, since
+     * no browser ever reports `Windows` or `macOS` on `navigator.platform`.
      *
      * @type {string}
      * @memberof UserAgentOverrideInterface
