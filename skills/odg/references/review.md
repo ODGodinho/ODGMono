@@ -31,9 +31,21 @@ The agent **MUST** provide a brief 1-2 sentence summary regarding the overall im
 
 The agent **MUST** repeat the block below **once per violation**, with **no cap**. The agent **MUST** end the section with the count footer.
 
-- `path/to/file.ts:LINE` - ($$rule-checklist-name)
+- `path/to/file.ts:LINE` — `(Rule Name | source:line | source:line)`
   - [ICON] [Direct description of the violation. No conversational filler.]
     - 💡 [Code snippet or correction in 1–3 lines.]
+
+The parenthetical is the finding's citation and **MUST** be on every line — this is the single place
+that defines its format; [checklist.md](./review/checklist.md) only states the obligation.
+
+- **Rule Name** — the bold item name from [checklist.md](./review/checklist.md) this finding
+  violates, verbatim (e.g. `Duplicated literal/structural definitions`). When no checklist item
+  matches — an empirically verified regression, reproduced by actually running a command — use
+  `Agent Found` instead; the reproduction itself is the citation.
+- **source:line** — every other document that also states the rule, pipe-separated, in the order
+  found: a skill reference (`architecture.md:81`), the project's own `AGENTS.md:LINE`, or a
+  package's `node_modules/<pkg>/AGENTS.md:LINE`. Zero, one, or several may apply — cite only the
+  ones that actually back **this** finding, never a blanket reference to a whole file.
 
 Icon legend:
 

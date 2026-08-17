@@ -59,25 +59,33 @@ Ask internally or outwardly, as needed:
 - Handlers **MUST** extend `BaseHandler`.
 - All core interaction and business logic within a Handler **MUST** be encapsulated exclusively inside the solution() method.
 
-**WHEN** writing a `waitForHandler()` that waits for a specific request or response:
+### Handlers **MUST NOT**
 
+- contain `try`/`catch` — if you need one, the producer stored the wrong thing
+- perform the request or interaction whose result it classifies
+- write domain state (store, OutputPayload) — that belongs to the Page/Component
+
+### **WHEN** writing a `waitForHandler()` that waits for a specific request or response
+
+- `waitForHandler()` has **exactly two** shapes. A third shape — `try`/`catch`, `if/else` over an awaited call, or invoking the action itself — is a violation, not a variant.
 - **MUST** use `Promise.race([ identify1(), identify2(), ... ])` when the elements occur in parallel
 - **MUST** chain with `??` when the elements occur in sequence
   - Example: `identifyCaptchaBlock ?? identifyLoginBlocked ?? identifySiteError ?? successSolution.bind(this)`
 - `waitForHandler()` is the orchestration boundary. Keep branching and outcome competition there, not buried inside helper methods.
+- **MUST NOT** call `execute()` on a Page, Component, or Service — a Handler observes an outcome, never triggers it
 
-**WHEN** writing a `identify*()` that waits for a specific request or response:
+### **WHEN** writing a `identify*()` that waits for a specific request or response
 
 - All identify functions **MUST** have the prefix `identify*`
 - Each `identify*()` **MUST** detect exactly one semantic outcome.
 - If the same outcome can be recognized by more than one selector, prefer a single locator composed with `locator(a).or(locator(b))` or an equivalent selector union, instead of a nested `Promise.race()` inside `identify*()`.
 - Create multiple identify functions only when the outcomes are behaviorally different and map to different solution functions.
 
-**WHEN** defining attemptable flow behavior
+### **WHEN** defining attemptable flow behavior
 
 - It is **RECOMMENDED** that handlers own their timeout via `getTimeout()` and project config.
 
-**WHEN** writing a `*Solution()` that cannot recover and needs to trigger a retry:
+### **WHEN** writing a `*Solution()` that cannot recover and needs to trigger a retry
 
 - You **MAY** dispatch the page event again (e.g., `await this.bus.dispatch(EventName.MyPageEvent, { page: this.page })`).
 - It is **NOT RECOMMENDED** to return `RetryAction.Retry` after dispatching the event internally, as this bypasses the attempt counter and creates an infinite loop.

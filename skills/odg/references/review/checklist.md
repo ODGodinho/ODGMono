@@ -2,7 +2,7 @@
 
 > **MANDATORY:** Every item below **MUST** be fully evaluated and resolved. Skipped items **MUST NOT** occur.
 
-- **Citation (MUST)** Every finding carries a verifiable citation: a repo `path:line`, a skill reference `path:line`, `node_modules/<pkg>/<file>:line` or checklist `Name:Line-Checklist`.
+- **Citation (MUST)** Every finding carries a verifiable citation: a repo `path:line`, a skill reference `path:line`, `node_modules/<pkg>/<file>:line` or checklist `$$rule-checklist-name`.
 - **Forgiveness (MUST)** Legacy code around the change is out of scope unless the change caused the defect.
 
 - [ ] **Correctness**

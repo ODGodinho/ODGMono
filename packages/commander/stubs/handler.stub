@@ -4,6 +4,7 @@ import {
     type HandlerSolutionType,
     ODGDecorators,
     RetryAction,
+    type SelectorType,
 } from "@odg/chemical-x";
 import type { Exception } from "@odg/exception";
 
@@ -12,6 +13,8 @@ import { BaseHandler } from "@handlers/BaseHandler";
 
 @ODGDecorators.injectable(ContainerName.{{ HandlerClassName }})
 export class {{ HandlerClassName }} extends BaseHandler implements HandlerInterface {
+
+    public readonly $s: SelectorType = {};
 
     public async waitForHandler(): Promise<HandlerFunction> {
         return Promise.race([
@@ -26,17 +29,6 @@ export class {{ HandlerClassName }} extends BaseHandler implements HandlerInterf
 
     public async attempt(): Promise<number> {
         return this.config.get(ConfigName.HANDLER_ATTEMPT);
-    }
-
-    public override async retrying(exception: Exception, attempt: number): Promise<RetryAction> {
-        await this.logger.debug(`Step {{ HandlerClassName }}: Failed Attempt ${attempt}.`);
-        await this.logger.warning(exception.message);
-
-        return RetryAction.Default;
-    }
-
-    public override async success(): Promise<void> {
-        await this.logger.debug("Step {{ HandlerClassName }} finish with success.");
     }
 
     /**
