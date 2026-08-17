@@ -5,6 +5,13 @@ import type { RetryOptionsInterface } from "#interfaces";
 
 export interface AttemptableInterface {
 
+    /**
+     * Attempt currently running (starts at 1).
+     *
+     * Owned by the flow, not by the implementing class.
+     *
+     * @type {number}
+     */
     currentAttempt: number;
 
     /**
@@ -12,6 +19,8 @@ export interface AttemptableInterface {
      *
      * This is the core method that will be retried if it fails.
      *
+     * @param {...Parameters<RetryOptionsInterface["callback"]>} argumentsCallback The running attempt (starts at 1)
+     * and the `AbortSignal`, forwarded by the flow.
      * @returns {Promise<void>}
      */
     execute(
@@ -55,7 +64,7 @@ export interface AttemptableInterface {
      * Use this to clean up resources or log results.
      *
      * @param {Exception} exception Exception If it ends with failure
-     * @returns {Promise<number>}
+     * @returns {Promise<void>}
      */
     finish?(exception?: Exception): Promise<void>;
 

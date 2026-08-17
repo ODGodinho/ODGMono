@@ -10,7 +10,9 @@ import { ODGDecorators } from "@odg/chemical-x";
 
 ### `@ODGDecorators.attemptableFlow()`
 
-Decorator de classe que adiciona retry com lifecycle hooks completo. Envolve `execute()` com lógica de retentativa baseada em `AttemptableInterface`.
+Class decorator that adds retry with a full lifecycle. It replaces the class with a subclass that overrides **`execute()` and nothing else**, based on `AttemptableInterface`.
+
+> 📖 **Before touching anything involving `@attemptableFlow`, read [attemptable-flow.md](./attemptable-flow.md)** — surface contract (`execute()` is the only door into the flow), lifecycle order, `currentAttempt`, and the decorator's traps. Hook signatures, optionality and purpose live in `dist/Interfaces/AttemptableFlow.d.ts`.
 
 **Aplicação:**
 
@@ -19,35 +21,6 @@ Decorator de classe que adiciona retry com lifecycle hooks completo. Envolve `ex
 class MyPage extends BasePage<PageEngine> {
     // ...
 }
-```
-
-**Lifecycle Hooks:**
-
-| Hook | Obrigatório | Quando chamado |
-|---|---|---|
-| `execute()` | Sim | Ação principal; retentada até `attempt()` vezes |
-| `attempt()` | Sim | Retorna número máximo de tentativas |
-| `sleep()` | Não | Retorna ms entre tentativas (se definido) |
-| `success()` | Não | Chamado quando `execute()` sucede |
-| `failure(exception)` | Não | Chamado quando todas tentativas falham; recebe a última exceção |
-| `retrying(exception, attempt)` | Não | Chamado antes de cada retry; retorna `RetryAction` para decidir ação |
-| `finish(exception?)` | Não | Chamado sempre ao final (sucesso ou falha); recebe exceção se houve |
-
-**Propriedade:**
-
-- `currentAttempt: number` — número da tentativa atual (atualizado automaticamente pelo decorator)
-
-**Fluxo de Execução:**
-
-```
-execute() chamado
-  ├─ Sucesso → success() → finish()
-  └─ Falha → retrying(exception, attempt)?
-               ├─ RetryAction.Retry → execute() novamente
-               ├─ RetryAction.Throw → failure(exception) → finish(exception)
-               ├─ RetryAction.Resolve → finish() (sem exceção, resolve undefined)
-               └─ RetryAction.Default → se attempts restam → sleep() → execute()
-                                         └─ se esgotou → failure(exception) → finish(exception)
 ```
 
 **Exemplo:**
@@ -91,7 +64,7 @@ class LoginPage extends BasePage<PuppeteerPage> {
 }
 ```
 
-See also: `tests/vitest/Pages/` para exemplos de Pages com `@attemptableFlow`.
+See also: [attemptable-flow.md](./attemptable-flow.md) for the full contract, and `tests/vitest/Pages/` para exemplos de Pages com `@attemptableFlow`.
 
 ---
 
@@ -198,6 +171,7 @@ class PageLoadedListener {
 **Regra geral:**
 - Use `retry()` quando quer retentar **uma função**
 - Use `@ODGDecorators.attemptableFlow` quando quer retentar **um comportamento de classe** com estado e lifecycle
+- Variable backoff between attempts requires calling `retry()` directly — the decorator's `sleep()` is read only once ([attemptable-flow.md](./attemptable-flow.md))
 
 ---
 

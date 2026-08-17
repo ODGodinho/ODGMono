@@ -161,6 +161,18 @@ consumers lose the concrete API and are forced to re-resolve the binding from th
 reach it. Declare the concrete type when the app depends on its methods (`Logger` already satisfies
 `LoggerInterface`); declare the interface when it is genuinely swappable.
 
+## Managed artifacts
+
+A managed artifact is any class the Container registers and the framework drives: Service, Listener,
+Page, Component, Handler, Window, IPC handler. The framework only ever sees the interface, so the
+conventional entrypoint — `execute()`, or `handler()` for a Listener — is the class's whole contract,
+and the attemptable flow wrapped around it belongs to `@odg/chemical-x`.
+
+**WHEN** a task writes, reviews, or debugs an artifact's entrypoint, its retry or error behavior, or a
+caller of it, read `@odg/chemical-x`'s `AGENTS.md` and follow it to `docs/attemptable-flow.md` first.
+That document owns the public-surface contract, the lifecycle order, and the decorator's traps — this
+skill does not restate them.
+
 ## Container & Enums rules
 
 - Developers **MUST** use `ContainerName`, `EventName`, and `ConfigName` enums instead of loose strings.

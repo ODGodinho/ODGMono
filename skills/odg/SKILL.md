@@ -74,6 +74,7 @@ You **MUST** read a package's `AGENTS.md` whenever you **touch, edit, OR review*
 
 | Package | Trigger | AGENTS.md |
 | --- | --- | --- |
+| `@odg/chemical-x` | Any managed artifact — Page, Component, Handler, `@ODGDecorators.*`, `@attemptableFlow`, `retry()`, Browser/Context/Page wrappers | `$$PROJECT_ROOT/node_modules/@odg/chemical-x/AGENTS.md` |
 | `@odg/message` | If need message send with request and response (Requester, HTTP) | `$$PROJECT_ROOT/node_modules/@odg/message/AGENTS.md` |
 | `@odg/axios` | Axios with @odg/message interface | `$$PROJECT_ROOT/node_modules/@odg/axios/AGENTS.md` |
 | `@odg/command` | If need command to make files | `$$PROJECT_ROOT/node_modules/@odg/command/AGENTS.md` |

@@ -39,7 +39,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 
 | Decorator | Propósito |
 |---|---|
-| `@ODGDecorators.attemptableFlow()` | Retry a nível de classe com lifecycle hooks (`attempt`, `sleep`, `success`, `failure`, `retrying`, `finish`) |
+| `@ODGDecorators.attemptableFlow()` | Retry a nível de classe com lifecycle hooks (`attempt`, `sleep`, `success`, `failure`, `retrying`, `finish`). **Required reading before editing:** [docs/attemptable-flow.md](docs/attemptable-flow.md) |
 | `@ODGDecorators.getterAccess()` | Proxy que intercepta todo acesso a propriedades via `__get(key, value)` |
 | `@ODGDecorators.injectable(name, scope?)` | Registra classe no Container (Inversify) |
 | `@ODGDecorators.registerListener(event, container, options)` | Registra listener de eventos em Container EventEmitter |
@@ -83,33 +83,36 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 
 ## 🚦 Key Rules
 
-1. **`@attemptableFlow` vs `retry()`**: Use `@attemptableFlow` para retry a nível de classe com lifecycle hooks completo (attempt, success, failure, retrying, finish, sleep). Use `retry()` para retentativa simples de um callback isolado.
+1. **`@attemptableFlow` — required reading**: **WHEN** a task writes, reviews, or debugs anything involving `@attemptableFlow` — the decorated class, its hooks (`attempt`, `sleep`, `retrying`, `finish`, `success`, `failure`), `currentAttempt`, or a caller of `execute()` on a decorated class — the agent **MUST** read [docs/attemptable-flow.md](docs/attemptable-flow.md) **before** editing. The decorator overrides **only** `execute()`, and the consequences do not follow from the signature: `execute()` is the only door into the flow, declaring `failure()` removes the rethrow, `sleep()` is read once, `RetryAction.Retry` ignores `times`.
+   📖 See also: [docs/attemptable-flow.md](docs/attemptable-flow.md)
+
+2. **`@attemptableFlow` vs `retry()`**: Use `@attemptableFlow` para retry a nível de classe com lifecycle hooks completo (attempt, success, failure, retrying, finish, sleep). Use `retry()` para retentativa simples de um callback isolado.
    📖 See also: [docs/decorators.md](docs/decorators.md)
 
-2. **`@getterAccess` — Proxy total**: Todo acesso a propriedade/método passa por `__get(key, value)`. Implementações de Browser, Context e Page usam isso para delegar ao engine subjacente.
+3. **`@getterAccess` — Proxy total**: Todo acesso a propriedade/método passa por `__get(key, value)`. Implementações de Browser, Context e Page usam isso para delegar ao engine subjacente.
    📖 See also: [docs/decorators.md](docs/decorators.md)
 
-3. **Page Intent Design**: Pages agrupam por **intenção**, não por URL. Uma mesma URL pode ter múltiplas Pages (ex: `LoginPage` para autenticar, `HomeVerificationPage` para validar conteúdo).
+4. **Page Intent Design**: Pages agrupam por **intenção**, não por URL. Uma mesma URL pode ter múltiplas Pages (ex: `LoginPage` para autenticar, `HomeVerificationPage` para validar conteúdo).
    📖 See also: [docs/crawlers.md](docs/crawlers.md)
 
-4. **Handler Validation Contract**: Handlers **validam**, não executam. `waitForHandler()` retorna `Exception` ou `() => Promise<HandlerSolutionType>`. O handler declara Solution (próxima Page) ou lança Exception. Nunca falha silenciosamente.
+5. **Handler Validation Contract**: Handlers **validam**, não executam. `waitForHandler()` retorna `Exception` ou `() => Promise<HandlerSolutionType>`. O handler declara Solution (próxima Page) ou lança Exception. Nunca falha silenciosamente.
    📖 See also: [docs/crawlers.md](docs/crawlers.md)
 
-5. **Container.loadModule() obrigatório**: Classes com `@ODGDecorators.injectable` precisam de `Container.loadModule()` antes da execução. DI binding é responsabilidade do consumidor.
+6. **Container.loadModule() obrigatório**: Classes com `@ODGDecorators.injectable` precisam de `Container.loadModule()` antes da execução. DI binding é responsabilidade do consumidor.
    📖 See also: [docs/crawlers.md](docs/crawlers.md)
 
-6. **`retry()` com `when` callback**: O callback `when(exception, times)` retorna `RetryAction` para decidir por tentativa: `Retry` (forçar), `Throw` (parar), `Resolve` (resolver com `undefined`), `Default` (seguir contagem `times`).
+7. **`retry()` com `when` callback**: O callback `when(exception, times)` retorna `RetryAction` para decidir por tentativa: `Retry` (forçar), `Throw` (parar), `Resolve` (resolver com `undefined`), `Default` (seguir contagem `times`).
    📖 See also: [docs/helpers.md](docs/helpers.md)
 
-7. **Seletores `$s` e `$$s` em Pages/Handlers**: `$s` define seletor único da página; `$$s` usa `SelectorType` (`Record<string, SelectorType>`): folha `string`/`RegExp`. Ambos são `abstract readonly` em `BasePage`/`BaseHandler`.
+8. **Seletores `$s` e `$$s` em Pages/Handlers**: `$s` define seletor único da página; `$$s` usa `SelectorType` (`Record<string, SelectorType>`): folha `string`/`RegExp`. Ambos são `abstract readonly` em `BasePage`/`BaseHandler`.
    📖 See also: [docs/crawlers.md](docs/crawlers.md)
 
-8. **`AttemptableInterface` — contrato base**: Tanto `BasePage` quanto `BaseHandler` implementam `AttemptableInterface`. Hooks opcionais: `success()`, `failure(exception)`, `retrying(exception, attempt)`, `finish(exception?)`, `sleep()`. Obrigatórios: `execute()`, `attempt()`.
+9. **`AttemptableInterface` — contrato base**: Tanto `BasePage` quanto `BaseHandler` implementam `AttemptableInterface`. Hooks opcionais: `success()`, `failure(exception)`, `retrying(exception, attempt)`, `finish(exception?)`, `sleep()`. Obrigatórios: `execute()`, `attempt()`.
    📖 See also: [docs/decorators.md](docs/decorators.md)
 
-9. **`UserAgent` — seed é sempre o major**: A marca GREASE deriva da versão maior declarada, nunca de `Math.random()`. Isso faz a marca girar uma vez por release e ficar estável no ciclo, como o Chromium nativo — uma marca que não bate com o major declarado é, ela própria, um sinal de automação. Aplique tudo de uma vez com `Emulation.setUserAgentOverride` e `cdpParams()`, para o UA string e os client hints contarem a mesma história.
+10. **`UserAgent` — seed é sempre o major**: A marca GREASE deriva da versão maior declarada, nunca de `Math.random()`. Isso faz a marca girar uma vez por release e ficar estável no ciclo, como o Chromium nativo — uma marca que não bate com o major declarado é, ela própria, um sinal de automação. Aplique tudo de uma vez com `Emulation.setUserAgentOverride` e `cdpParams()`, para o UA string e os client hints contarem a mesma história.
 
-10. **`UserAgent` — os dois `platform` do CDP são valores diferentes**: `userAgentMetadata.platform` é o token de `Sec-CH-UA-Platform` (`Windows`, `macOS`, `Chrome OS`); o `platform` de primeiro nível é o que `navigator.platform` vai reportar, congelado pelo Chromium em apenas quatro valores (`Win32`, `MacIntel`, `Linux x86_64`, `Linux armv81`). Mandar o token do hint ali entrega o override, porque nenhum navegador real reporta `Windows` em `navigator.platform`. `cdpParams()` já resolve os dois — não montar o payload à mão.
+11. **`UserAgent` — os dois `platform` do CDP são valores diferentes**: `userAgentMetadata.platform` é o token de `Sec-CH-UA-Platform` (`Windows`, `macOS`, `Chrome OS`); o `platform` de primeiro nível é o que `navigator.platform` vai reportar, congelado pelo Chromium em apenas quatro valores (`Win32`, `MacIntel`, `Linux x86_64`, `Linux armv81`). Mandar o token do hint ali entrega o override, porque nenhum navegador real reporta `Windows` em `navigator.platform`. `cdpParams()` já resolve os dois — não montar o payload à mão.
 
 ## 💥 Critical Exceptions
 
@@ -117,7 +120,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 |---|---|---|
 | `BrowserException` | Falha em operação do browser em runtime (crash, perda de conexão) | Catch e retry ou fallback |
 | `BrowserInstanceException` | Falha ao criar/inicializar instância do browser (extends `BrowserException`) | Verificar setup do driver, retry init |
-| `RetryException` | Todas as tentativas de `retry()` esgotadas sem sucesso | Fallback final ou propagar erro |
+| `RetryException` | `times` is not a number (`RetryException("Attempt is not a number")`) — the **only** site that throws it. When attempts run out, what propagates is the **original exception**, not a `RetryException` | Validate `times`/`attempt()`; on exhaustion, handle the domain exception |
 | `TimeoutException` | Operação excede o limite de `timeout()` | Catch e tratar timeout; ajustar limite se válido |
 | `InvalidArgumentException` | Parâmetros inválidos (ex: `times < 1`, timeout negativo) | Validar inputs antes de chamar API |
 | `MoneyNotFoundException` | `Str.money()` não encontra valor monetário na string | Verificar formato da string antes |
@@ -141,6 +144,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 
 | Documento | Conteúdo |
 |---|---|
+| [docs/attemptable-flow.md](docs/attemptable-flow.md) | **`@attemptableFlow` in depth** — `execute()` as the only door into the flow, exact lifecycle order, traps (`failure()` removes the rethrow, `sleep()` read once, `Retry` ignores `times`). Required reading when touching the decorator |
 | [docs/helpers.md](docs/helpers.md) | Guia completo de `retry()`, `sleep()`, `timeout()`, `throwIf()` com padrões de uso |
 | [docs/crawlers.md](docs/crawlers.md) | Arquitetura Crawler: BrowserManager, Pages, Handlers, Container/DI, workflow examples |
 | [docs/decorators.md](docs/decorators.md) | `@ODGDecorators.attemptableFlow`, `@ODGDecorators.getterAccess`, `@ODGDecorators.injectable` com lifecycle e exemplos |
