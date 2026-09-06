@@ -46,7 +46,6 @@
         "vitest": "^4.1.10"
     },
     "dependencies": {
-        "@odg/exception": "workspace:^",
         "eventemitter2": "^6.4.9"
     }
 }
