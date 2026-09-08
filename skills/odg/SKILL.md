@@ -58,14 +58,14 @@ Unlisted runtime (API, worker) → apply [architecture.md](./references/architec
 
 | Activity | Read |
 | --- | --- |
-| Any change or review of behavior / wiring / responsibilities | [architecture.md](./references/architecture.md) + one runtime file |
+| Any change or review of behavior / wiring / responsibilities, or deciding between a helper and a class, or whether a class should be split | [architecture.md](./references/architecture.md) + one runtime file |
 | Planning started | [plan.md](./references/plan.md) |
 | Command selection, flags, CLI limits | [commands.md](./references/commands.md) |
 | Scaffold order, structural checks, validation sequence | [execution.md](./references/execution.md) |
 | Common TSC / wiring failures | [diagnostics.md](./references/diagnostics.md) |
 | Runtime debug (`rode o debug`, `TimeoutError`, `waitForSelector` fail, `Cannot read properties of undefined (reading 'execute')`) | [debug.md](./references/debug.md) |
 | Code review requested | [review.md](./references/review.md) |
-| Writing a log call, or starting a promise you cannot `await` | [conventions.md](./references/conventions.md) |
+| Writing a log call, starting a promise you cannot `await`, or declaring a constant | [conventions.md](./references/conventions.md) |
 | Token-saving command proxy (only when `rtk --version` succeeds) | [rtk.md](./references/rtk.md) |
 
 ### Package references

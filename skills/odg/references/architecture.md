@@ -185,6 +185,22 @@ skill does not restate them.
 
 - `CustomValidator` is a class of reusable validation **helper** functions, not a data schema. It **MUST NOT** be treated as, or replaced by, a `zod`/`yup` schema.
 - A `Helpers/` folder holds **pure functions only**. A class that is `@injectable` is a Service, not a helper, and belongs in `Services/`.
+- A helper file **MUST** expose exactly **one** helper. A factory that closes over state and returns an object whose properties are methods (`return { decorate, preflight }`) is an object simulated with closures — it **MUST** be a `class` with `public` and `private` methods. Convert when **either** holds: the factory returns **2+** callables, or the entry point needs auxiliary functions that exist only to serve it in the same file. Those auxiliaries are private methods, not module functions.
+- A function called from **2+** places is a genuine helper: it stays a function and **MUST** live where every call site imports the **same** one. Copying it, or burying it in the single file that happens to use it today, is the violation.
+- **Not covered by the rule above:** a factory returning a **single** callable, or a third-party handle it only configures (`createDatabase`, `createAuth`) — nothing is being simulated. A `static async create()` returning an instance of its **own** class is also correct: it is the idiom for construction that needs `await`, and the constructor **MUST** then be `private`.
+
+## One class, one job
+
+A class **MUST** answer one question. **WHEN** a stable class starts carrying a subsystem that grows on its own axis, that subsystem **MUST** move to its own class — **even when the host class is still short**. Line count is not the trigger. These are:
+
+- **A different question.** Owning a resource's lifecycle, deciding which collaborator handles an input, and deciding what is safe to record afterwards are three questions, so three classes.
+- **Its own vocabulary.** A method that needs module constants nobody else reads has brought its own domain in with it.
+- **A different growth rate.** Lifecycle code is written once and rarely touched; a dispatch table grows with every feature. **MUST NOT** tie a stable thing to a growing one.
+- **Its own auxiliaries.** **2+** private methods serving one public method is a class waiting to be named.
+
+The host **constructs and composes** the extracted classes; it **MUST NOT** reach inside them.
+
+**Counter-rule (do NOT split):** a method **MUST NOT** be extracted only because a file is long. One class of 200 lines doing one job is healthier than four files that must be read together to follow one path.
 
 ## Text as data
 
