@@ -53,6 +53,7 @@ src/ or $$PROJECT_ROOT
         Container.ts            composition root — the ONLY place for manual bindings
         ContainerInject.ts      typed @$inject / @$multiInject (wraps inversify)
         Enums/                  name SSOTs: ContainerName · EventName · ConfigName (+ barrel)
+        Dtos/<Name>Dto.ts       payload data built with `new` — see "DTO" below
         Services/               orchestration: dispatch events, drive handlers (usually Singleton)
         Listeners/
             <Name>EventListener.ts
@@ -201,6 +202,24 @@ A class **MUST** answer one question. **WHEN** a stable class starts carrying a 
 The host **constructs and composes** the extracted classes; it **MUST NOT** reach inside them.
 
 **Counter-rule (do NOT split):** a method **MUST NOT** be extracted only because a file is long. One class of 200 lines doing one job is healthier than four files that must be read together to follow one path.
+
+## DTO
+
+A DTO is the data a flow carries, in object form. It is created with `new`, filled by whoever owns the flow, and knows how to render its external shape (`toJson()`). `src/app/Dtos/<Name>Dto.ts` is its folder.
+
+```typescript
+// WRONG — src/app/Services/Server/UserInfo.ts
+export class UserInfo {
+    public cardNumber?: string;
+    public toJson(): UserInfoInterface { /* ... */ }
+}
+
+// RIGHT — src/app/Dtos/UserInfoDto.ts
+export class UserInfoDto {
+    public cardNumber?: string;
+    public toJson(): UserInfoInterface { /* ... */ }
+}
+```
 
 ## Text as data
 

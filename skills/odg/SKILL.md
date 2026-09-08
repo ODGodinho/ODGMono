@@ -58,7 +58,7 @@ Unlisted runtime (API, worker) → apply [architecture.md](./references/architec
 
 | Activity | Read |
 | --- | --- |
-| Any change or review of behavior / wiring / responsibilities, or deciding between a helper and a class, or whether a class should be split | [architecture.md](./references/architecture.md) + one runtime file |
+| Any change or review of behavior / wiring / responsibilities, or deciding between a helper and a class, whether a class should be split, or whether a class is a DTO or a Service | [architecture.md](./references/architecture.md) + one runtime file |
 | Planning started | [plan.md](./references/plan.md) |
 | Command selection, flags, CLI limits | [commands.md](./references/commands.md) |
 | Scaffold order, structural checks, validation sequence | [execution.md](./references/execution.md) |

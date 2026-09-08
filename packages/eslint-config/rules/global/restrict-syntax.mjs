@@ -155,11 +155,12 @@ const requirePredicateRules = buildReturnTypeRules(
  *   - "configPackage" O próprio pacote @odg/config, fora de teste (index.mjs isOdgConfigPackage)
  *   - "pages"        src/Pages/**  (index.mjs)
  *   - "handlers"     src/Handlers/** (index.mjs)
+ *   - "dtos"         src/app/Dtos/** (index.mjs)
  *
  * Sem `contexts` explícito = vale em todos (regra "sempre ligada").
  * ---------------------------------------------------------------------------------------------
  */
-const ALL_CONTEXTS = [ "default", "test", "configPackage", "pages", "handlers" ];
+const ALL_CONTEXTS = [ "default", "test", "configPackage", "pages", "handlers", "dtos" ];
 
 const restrictSyntaxRules = [
     {
@@ -303,6 +304,22 @@ const restrictSyntaxRules = [
                 + " the next. Drop the \"Singleton\" argument.",
         },
     },
+    {
+
+        /*
+         * O que separa DTO de Service é o container, não o formato: uma classe injetável é
+         * Service (architecture.md → "A class that is @injectable is a Service"). Sem esta
+         * regra, `src/app/Dtos/` aceita qualquer coisa e vira depósito — foi assim que 10 DTOs
+         * de payload acabaram morando dentro de `src/app/Services/`.
+         */
+        contexts: [ "dtos" ],
+        entry: {
+            "selector": String.raw`Decorator[expression.callee.name=/^(injectable|inject|multiInject|\$inject|\$injectOptional|\$multiInject)$/], Decorator[expression.callee.property.name=/^(injectable|inject|multiInject)$/]`,
+            "message": "A DTO MUST NOT be container-managed: it is built with `new` and receives its"
+                + " data by parameter. A class carrying @injectable / @$inject is a Service —"
+                + " move it to src/app/Services/ with the *Service suffix.",
+        },
+    },
 ];
 
 /**
@@ -310,7 +327,7 @@ const restrictSyntaxRules = [
  * A rule is included if it applies to ANY of the requested contexts — no duplicate entries even
  * when several requested contexts share a rule.
  *
- * @param {("default" | "test" | "configPackage" | "pages" | "handlers")[]} contexts Consumer
+ * @param {("default" | "test" | "configPackage" | "pages" | "handlers" | "dtos")[]} contexts Consumer
  * contexts — see table comment above. Example: `restrictSyntax(["default", "pages", "handlers"])`.
  * @returns {object[]} The `no-restricted-syntax` entries active for that set of contexts.
  */

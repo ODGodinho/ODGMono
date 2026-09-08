@@ -29,7 +29,7 @@ import { hasElectron } from "../../helpers/has-electron.mjs";
 
 const pascalCaseFolders = [
     "src/{Kernel,Configs,Interfaces,Validators,Exceptions}/**/",
-    "src/app/{Enums,Services,Listeners,Providers}/**/",
+    "src/app/{Enums,Services,Listeners,Providers,Dtos}/**/",
     "src/{Pages,Handlers,Selectors}/**/",
     "src/Http/{Controllers,Middlewares}/**/",
     "src/{Consumers,Jobs,Schedules}/**/",
@@ -77,8 +77,8 @@ const PASCAL_CASE_GLOB = "*([A-Z]*([a-z0-9]))";
 
 /**
  * File-level suffix conventions (skills/odg/references/{pages,handler,selectors,events,
- * services}.md + architecture.md's `Exceptions/<Name>Exception.ts`): the artifact's filename
- * MUST literally end in its ring's suffix, not just be PascalCase. These previously lived in
+ * services}.md + architecture.md's `Exceptions/<Name>Exception.ts` and `Dtos/<Name>Dto.ts`): the
+ * artifact's filename MUST literally end in its ring's suffix, not just be PascalCase. These previously lived in
  * `pascalCaseFilenames` above as plain `PASCAL_CASE` entries (casing only, no suffix check) —
  * replaced here 1:1 per folder so PascalCase is still implied (via `PASCAL_CASE_GLOB`) while
  * also gaining the literal suffix check. `!(index).ts` again exempts the barrel, which never
@@ -99,6 +99,7 @@ const suffixFilenames = {
     "src/Selectors/**/!(index).ts": `${PASCAL_CASE_GLOB}Selector`,
     "src/app/Listeners/**/!(index).ts": `${PASCAL_CASE_GLOB}EventListener`,
     "src/app/Services/**/!(index).ts": `${PASCAL_CASE_GLOB}Service`,
+    "src/app/Dtos/**/!(index).ts": `${PASCAL_CASE_GLOB}Dto`,
     "src/Exceptions/**/!(index).ts": `${PASCAL_CASE_GLOB}Exception`,
 };
 

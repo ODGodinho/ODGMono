@@ -347,6 +347,14 @@ export default defineConfig([
         },
     },
 
+    /* A DTO is built with `new`, never resolved from the Container (architecture.md → DTO) */
+    {
+        files: [ "src/app/Dtos/**/*.ts" ],
+        rules: {
+            "no-restricted-syntax": [ "error", ...restrictSyntax([ "default", "dtos" ]) ],
+        },
+    },
+
     // Check-file: folder & filename casing (ODG architecture canon)
     {
         files: [ "**/*" ],
