@@ -73,6 +73,7 @@ export default {
         // "sonarjs/review-blockchain-mnemonic": [ "error" ], // Não coloca token no código
         "sonarjs/session-regeneration": [ "error" ], // Renovar sessão de login
         "sonarjs/sql-queries": [ "error" ], // Não Concatene SQL
+        "unicorn/no-unsafe-sqlite-interpolation": [ "error" ], // Evite interpolação insegura no SQLite
         "sonarjs/strict-transport-security": [ "error" ], // Segurança em H-STS
         "sonarjs/unverified-certificate": [ "error" ], // Validar certificado SSL
         "sonarjs/unverified-hostname": [ "error" ], // Validar host SSL

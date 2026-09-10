@@ -21,7 +21,7 @@ const vite = defineConfig({
             thresholds: {
                 "100": true,
             },
-            exclude: [ "tests/" ],
+            exclude: [ "./tests/**" ],
         },
         setupFiles: [ "./tests/vitest/init.ts" ],
     },

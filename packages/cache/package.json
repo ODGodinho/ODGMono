@@ -55,7 +55,7 @@
         "@odg/tsconfig": "workspace:^",
         "@types/keyv": "^4.2.0",
         "@types/node": ">=24",
-        "@vitest/coverage-istanbul": "^4.1.11",
+        "@vitest/coverage-istanbul": "^5.0.0",
         "@vitest/runner": "^4.1.11",
         "concurrently": "^10.0.5",
         "keyv": "^5.6.0",
@@ -64,6 +64,6 @@
         "tsx": "^4.23.13",
         "typescript": "^6.0.3",
         "vite": "^8.3.0",
-        "vitest": "^4.1.11"
+        "vitest": "^5.0.0"
     }
 }
