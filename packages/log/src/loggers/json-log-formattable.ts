@@ -6,10 +6,12 @@ export interface JSONLogFormattable {
     "instance": string;
     "message": string;
     "createdAt": Date;
+    "identifier"?: string;
     "request"?: {
         baseURL?: string;
         url?: string;
         method?: string;
+        timestamps?: number;
         response?: { status?: number };
     };
     "exception"?: { "stack"?: string; "type"?: string; "message"?: string };

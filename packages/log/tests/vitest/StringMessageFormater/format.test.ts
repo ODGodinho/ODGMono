@@ -1,4 +1,5 @@
 import { Exception } from "@odg/exception";
+import ansis from "ansis";
 
 import {
     ConsoleLogger,
@@ -94,5 +95,26 @@ describe("Test request message", () => {
         expect(formatter["getStatusCodeColor"](400)).toBe("#FFFF00");
         expect(formatter["getStatusCodeColor"](500)).toBe("#FF0000");
         expect(formatter["getStatusCodeColor"](100)).toBe("#FFA500");
+    });
+
+    test("identifier option, timestamps and the stack below a failed request", () => {
+        const stack = "Error: boom\n    at here";
+        const exception = { type: "Error", message: "boom", stack };
+        const request = {
+            method: "get",
+            url: "/api/users",
+            timestamps: 12,
+            response: { status: 500 },
+        };
+        const plain = new StringMessageFormatter();
+        const full = new StringMessageFormatter({ shouldShowIdentifier: true });
+
+        expect(ansis.strip(plain.format(jsonLog({ identifier: "abc", request }))))
+            .toBe("Request - GET /api/users 500 12ms");
+        expect(ansis.strip(full.format(jsonLog({ identifier: "abc", request, exception }))))
+            .toBe(`abc Request - GET /api/users 500 12ms\n${stack}`);
+        expect(ansis.strip(full.format(jsonLog({ identifier: "abc", exception }))))
+            .toBe(`abc Exception - ${stack}`);
+        expect(ansis.strip(plain.format(jsonLog({ exception })))).toBe(`Exception - ${stack}`);
     });
 });

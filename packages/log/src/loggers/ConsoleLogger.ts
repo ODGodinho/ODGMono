@@ -1,6 +1,7 @@
 import ansis from "ansis";
 
 import { LogLevel } from "../Enums/LogLevel.ts";
+import type { ConsoleLoggerOptionsInterface } from "../Interfaces/ConsoleLoggerOptionsInterface.ts";
 import type { ContextType } from "../Interfaces/LoggerInterface.ts";
 import { formatUnknown } from "../Support/format-unknown.ts";
 
@@ -20,6 +21,10 @@ import { StringMessageFormatter } from "./StringMessageFormater.ts";
  */
 export class ConsoleLogger extends AbstractLogger {
 
+    public constructor(private readonly options: ConsoleLoggerOptionsInterface = {}) {
+        super();
+    }
+
     /**
      * Logs with an arbitrary level.
      *
@@ -32,7 +37,7 @@ export class ConsoleLogger extends AbstractLogger {
         let newMessage = formatUnknown(message);
 
         if (isJSONLogFormattable(message)) {
-            const formatter = new StringMessageFormatter();
+            const formatter = new StringMessageFormatter(this.options);
 
             newMessage = formatter.format(message);
         }

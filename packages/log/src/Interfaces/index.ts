@@ -1,3 +1,5 @@
+export type * from "./ConsoleLoggerOptionsInterface.ts";
+
 export type * from "./LoggerAwareInterface.ts";
 
 export type * from "./LoggerInterface.ts";
