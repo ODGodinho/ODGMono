@@ -1,7 +1,7 @@
 import type {
     LoggerParserInterface,
     LoggerPluginInterface,
-} from "../../src/index";
+} from "../../src/index.ts";
 
 /**
  * Test Plugin Logger to unit tests

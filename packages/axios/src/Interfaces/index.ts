@@ -1,1 +1,1 @@
-export type * from "./AxiosInterfaceExtra";
+export type * from "./AxiosInterfaceExtra.ts";

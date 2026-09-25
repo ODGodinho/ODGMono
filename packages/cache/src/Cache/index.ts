@@ -1,3 +1,3 @@
-export * from "./Cache";
+export * from "./Cache.ts";
 
-export * from "./CacheManager";
+export * from "./CacheManager.ts";

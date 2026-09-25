@@ -1,3 +1,3 @@
-export * from "./EventEmitterBus";
+export * from "./EventEmitterBus.ts";
 
-export * from "./EventServiceProvider";
+export * from "./EventServiceProvider.ts";

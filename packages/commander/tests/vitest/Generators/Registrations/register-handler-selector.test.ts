@@ -9,7 +9,7 @@ import { describe, expect, test } from "vitest";
 
 import { registerArtifact } from "#app/Registrations/register";
 
-import { emptyContainerInterfaceWithImport } from "../../helpers/dts-stub-contents";
+import { emptyContainerInterfaceWithImport } from "../../helpers/dts-stub-contents.ts";
 
 describe("registerArtifact - handler and selector branches", () => {
     const root = `${process.cwd()}/tests/vitest/cache/register-handler-selector`;

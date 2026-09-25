@@ -1,5 +1,5 @@
-export * from "./Browser";
+export * from "./Browser.ts";
 
-export * from "./Context";
+export * from "./Context.ts";
 
-export * from "./Page";
+export * from "./Page.ts";

@@ -2,7 +2,7 @@ import { dirname, relative } from "node:path";
 
 import { InvalidArgumentException } from "@odg/exception";
 
-import { resolveContainerEnumMemberValue } from "./pascal-to-dot-lower";
+import { resolveContainerEnumMemberValue } from "./pascal-to-dot-lower.ts";
 import {
     didEnsureBarrelExport,
     didEnsureEnumMember,
@@ -12,8 +12,8 @@ import {
     didEnsureTypeNamedImport,
     didEnsureValueNamedImport,
     didEnsureZodObjectEntry,
-} from "./ts-mutators";
-import type { ArtifactDescriptor, RegistrationTargets } from "./types";
+} from "./ts-mutators.ts";
+import type { ArtifactDescriptor, RegistrationTargets } from "./types.ts";
 
 /** TypeScript path alias for the listeners barrel (see tsconfig paths). */
 const listenersTypeModuleSpecifier = "@listeners";

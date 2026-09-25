@@ -3,7 +3,7 @@ import { randomInt } from "node:crypto";
 
 import { InvalidArgumentException } from "#exceptions";
 
-import type { CloneableInterface } from "../Interfaces";
+import type { CloneableInterface } from "../Interfaces/index.ts";
 
 /**
  * Arr Class Helper

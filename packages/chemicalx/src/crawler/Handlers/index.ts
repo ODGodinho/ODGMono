@@ -1,1 +1,1 @@
-export * from "./BaseHandler";
+export * from "./BaseHandler.ts";

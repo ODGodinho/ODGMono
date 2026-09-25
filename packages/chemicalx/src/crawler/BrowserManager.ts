@@ -7,7 +7,7 @@ import type {
     CreateContextFactoryType,
     CreatePageFactoryType,
     PageEngineInterface,
-} from "..";
+} from "../index.ts";
 
 export class BrowserManager<
     BrowserClassEngine extends BrowserEngineInterface,

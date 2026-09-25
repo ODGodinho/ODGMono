@@ -1,9 +1,9 @@
-import { Page as PageBase } from "../../../src/crawler";
+import { Page as PageBase } from "../../../src/crawler/index.ts";
 
 import type {
     ContextClassEngine,
     PageClassEngine,
-} from "./engine";
+} from "./engine.ts";
 
 export class Page extends PageBase<
     ContextClassEngine,

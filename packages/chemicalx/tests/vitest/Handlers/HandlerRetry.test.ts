@@ -1,8 +1,8 @@
 import { type Mock, vi } from "vitest";
 
-import { type HandlerSolutionType, RetryAction } from "../../../src";
+import { type HandlerSolutionType, RetryAction } from "../../../src/index.ts";
 
-import { ExampleHandler } from "./mocks/ExampleHandler";
+import { ExampleHandler } from "./mocks/ExampleHandler.ts";
 
 describe("Handler Retry tests", () => {
     let handler: ExampleHandler;

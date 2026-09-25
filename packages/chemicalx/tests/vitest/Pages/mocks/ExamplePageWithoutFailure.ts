@@ -6,8 +6,8 @@ import {
     ODGDecorators,
     type PageEngineInterface,
     type SelectorType,
-} from "../../../../src";
-import type { PageClassEngine } from "../../playwright/engine";
+} from "../../../../src/index.ts";
+import type { PageClassEngine } from "../../playwright/engine.ts";
 
 @ODGDecorators.attemptableFlow()
 export class ExamplePageWithoutFailure extends BasePage<PageClassEngine & PageEngineInterface> {

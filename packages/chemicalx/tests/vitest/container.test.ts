@@ -1,6 +1,6 @@
 import { type BasePage, ODGDecorators, type PageEngineInterface } from "#app";
 import { Container } from "#app/Container";
-import "./Pages/mocks/ExamplePage";
+import "./Pages/mocks/ExamplePage.ts";
 
 describe("Container Test", () => {
     test("Test new Container", async () => {

@@ -1,4 +1,4 @@
-import type { LogLevel } from "../Enums/LogLevel";
+import type { LogLevel } from "../Enums/LogLevel.ts";
 
 /**
  * Content type in context

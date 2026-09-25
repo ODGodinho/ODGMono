@@ -1,3 +1,3 @@
-export type * from "./GenericType";
+export type * from "./GenericType.ts";
 
-export type * from "../crawler/@types";
+export type * from "../crawler/@types/index.ts";

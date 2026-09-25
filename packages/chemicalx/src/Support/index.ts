@@ -1,11 +1,11 @@
-export * from "./Decorators";
+export * from "./Decorators/index.ts";
 
-export * from "./File";
+export * from "./File.ts";
 
-export * from "./Arr";
+export * from "./Arr.ts";
 
-export * from "./Str";
+export * from "./Str.ts";
 
-export * from "./Num";
+export * from "./Num.ts";
 
-export * from "./UserAgent";
+export * from "./UserAgent.ts";

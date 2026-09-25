@@ -1,9 +1,9 @@
-export * from "./AbstractLogger";
+export * from "./AbstractLogger.ts";
 
-export * from "./NullLogger";
+export * from "./NullLogger.ts";
 
-export * from "./ConsoleLogger";
+export * from "./ConsoleLogger.ts";
 
-export * from "./json-log-formattable";
+export * from "./json-log-formattable.ts";
 
-export * from "./Logger";
+export * from "./Logger.ts";

@@ -3,9 +3,9 @@ import { type Mock, vi } from "vitest";
 
 import type { HandlerFunction } from "#interfaces";
 
-import type { PageClassEngine } from "../playwright/engine";
+import type { PageClassEngine } from "../playwright/engine.ts";
 
-import { ExampleHandler } from "./mocks/ExampleHandler";
+import { ExampleHandler } from "./mocks/ExampleHandler.ts";
 
 describe("Handler Attempt", () => {
     let handler: ExampleHandler;

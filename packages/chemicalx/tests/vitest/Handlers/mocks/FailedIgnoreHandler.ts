@@ -5,7 +5,7 @@ import {
     type HandlerFunction,
 } from "#app";
 
-import type { PageClassEngine } from "../../playwright/engine";
+import type { PageClassEngine } from "../../playwright/engine.ts";
 
 export class FailedIgnoreHandler extends BaseHandler<PageClassEngine> {
 

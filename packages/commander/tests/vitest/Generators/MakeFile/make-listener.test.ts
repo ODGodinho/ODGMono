@@ -14,7 +14,7 @@ import MakeFile from "#app/Generators/MakeFile";
 import {
     emptyContainerInterfaceWithImport,
     emptyEventBaseInterfaceWithImport,
-} from "../../helpers/dts-stub-contents";
+} from "../../helpers/dts-stub-contents.ts";
 
 async function prepareListenerRegisterFixture(root: string): Promise<{
     eventEnumPath: string;

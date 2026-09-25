@@ -7,7 +7,7 @@ import { describe, expect, test } from "vitest";
 import MakeFile from "#app/Generators/MakeFile";
 import { registerArtifact } from "#app/Registrations/register";
 
-import { preparePageRegistrationFixture } from "../../helpers/prepare-page-registration-fixture";
+import { preparePageRegistrationFixture } from "../../helpers/prepare-page-registration-fixture.ts";
 
 describe("Registrations - page", () => {
     const make = new MakeFile(new NullLogger());

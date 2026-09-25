@@ -3,8 +3,8 @@ import type {
     InterceptorManager,
 } from "@odg/message";
 
-import type { TlsRequestInterface } from "../interfaces/TlsOptionsInterface";
-import { TlsAxiosRequestParser } from "../parser/TlsAxiosRequestParser";
+import type { TlsRequestInterface } from "../interfaces/TlsOptionsInterface.ts";
+import { TlsAxiosRequestParser } from "../parser/TlsAxiosRequestParser.ts";
 
 export class TlsAxiosInterceptorRequest<
     RequestData,

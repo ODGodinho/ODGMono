@@ -9,7 +9,7 @@ import {
     doesParameterNotMatch,
     doesReturnNotMatch,
     rule,
-} from "../../../src/rules/no-inconsistent-docblock";
+} from "../../../src/rules/no-inconsistent-docblock.ts";
 
 const ruleTester = new RuleTester({
     languageOptions: {

@@ -1,6 +1,6 @@
-import { EventEmitterBus } from "../../../src";
+import { EventEmitterBus } from "../../../src/index.ts";
 
-import { EventServiceProvider } from "./EventServiceProvider";
+import { EventServiceProvider } from "./EventServiceProvider.ts";
 
 describe("Teste Event Service Provider", () => {
     test("Teste Event Service Provider", async () => {

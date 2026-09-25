@@ -1,8 +1,8 @@
 import ansis from "ansis";
 
-import { formatUnknown } from "../Support/format-unknown";
+import { formatUnknown } from "../Support/format-unknown.ts";
 
-import type { JSONLogFormattable } from "./json-log-formattable";
+import type { JSONLogFormattable } from "./json-log-formattable.ts";
 
 export class StringMessageFormatter {
 

@@ -1,5 +1,5 @@
-import type { EventOptions } from "..";
-import type { EventBusInterface, EventListenerInterface, EventObjectType } from "../interfaces";
+import type { EventOptions } from "../index.ts";
+import type { EventBusInterface, EventListenerInterface, EventObjectType } from "../interfaces/index.ts";
 
 export interface EventListenerOptions<
     Events extends EventObjectType,

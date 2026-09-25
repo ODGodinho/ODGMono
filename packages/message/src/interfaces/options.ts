@@ -1,6 +1,6 @@
 import type * as zod from "zod";
 
-import type { ProxyValidator } from "../Validators/ProxyValidator";
+import type { ProxyValidator } from "../Validators/ProxyValidator.ts";
 
 /**
  * Proxy interface for requests

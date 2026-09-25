@@ -4,7 +4,7 @@ import { describe, expect, test } from "vitest";
 
 import { registerArtifact } from "#app/Registrations/register";
 
-import { prepareEventFullFixture } from "../../helpers/prepare-event-full-fixture";
+import { prepareEventFullFixture } from "../../helpers/prepare-event-full-fixture.ts";
 
 describe("registerArtifact - event full", () => {
     const root = `${process.cwd()}/tests/vitest/cache/register-event-full`;

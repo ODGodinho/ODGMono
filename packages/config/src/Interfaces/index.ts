@@ -1,3 +1,3 @@
-export type * from "./ConfigInterface";
+export type * from "./ConfigInterface.ts";
 
-export type * from "./ValidatorInterface";
+export type * from "./ValidatorInterface.ts";

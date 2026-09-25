@@ -1,4 +1,4 @@
-import { AbstractLogger } from "./AbstractLogger";
+import { AbstractLogger } from "./AbstractLogger.ts";
 
 /**
  * This Logger can be used to avoid conditional log calls.

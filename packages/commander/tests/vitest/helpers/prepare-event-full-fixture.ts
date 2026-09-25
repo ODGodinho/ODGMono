@@ -7,7 +7,7 @@ import {
 import {
     emptyContainerInterfaceWithImport,
     emptyEventBaseInterfaceWithImport,
-} from "./dts-stub-contents";
+} from "./dts-stub-contents.ts";
 
 export interface EventFullFixturePaths {
     containerEnumPath: string;

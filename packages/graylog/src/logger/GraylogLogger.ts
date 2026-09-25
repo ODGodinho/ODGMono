@@ -3,13 +3,12 @@ import util from "node:util";
 import { Exception } from "@odg/exception";
 import type { JSONLogger, JSONLoggerString } from "@odg/json-log";
 import { AbstractLogger, type LoggerInterface, type LogLevel } from "@odg/log";
+import { flatten } from "flat";
 import Gelf from "gelf-pro";
 
 import { GelfLogLevels } from "#enums/GelfLogLevels";
 import { GraylogException } from "#exceptions/GraylogException";
 import type { GraylogOptionsInterface } from "#interfaces/GraylogOptionsInterface";
-
-type flattenType<T, R> = (target: T, options?: { delimiter: string; maxDepth: number }) => R;
 
 /**
  * Classe responsável por salvar os arquivos de logs do GrayLog
@@ -20,8 +19,6 @@ type flattenType<T, R> = (target: T, options?: { delimiter: string; maxDepth: nu
 export class GraylogLogger extends AbstractLogger implements LoggerInterface {
 
     private logger?: typeof Gelf;
-
-    private flatten?: flattenType<unknown, Record<string, unknown>>;
 
     public constructor(protected options: GraylogOptionsInterface) {
         super();
@@ -38,10 +35,6 @@ export class GraylogLogger extends AbstractLogger implements LoggerInterface {
                 protocol: this.options.protocol,
             },
         });
-
-        const { flatten } = await import("flat");
-
-        this.flatten = flatten;
     }
 
     public async log(level: LogLevel, message: JSONLoggerString, options?: Record<string, string>): Promise<void> {
@@ -63,11 +56,12 @@ export class GraylogLogger extends AbstractLogger implements LoggerInterface {
         delete messageItens.message;
 
         const defaultFlat = 3;
+        const flatOptions = { delimiter: "_", maxDepth: this.options.flatDepthLevel ?? defaultFlat };
 
         this.logger.message(
             logTitle,
             GelfLogLevels[level],
-            this.flatten!(messageItens, { delimiter: "_", maxDepth: this.options.flatDepthLevel ?? defaultFlat }),
+            flatten<unknown, Record<string, unknown>>(messageItens, flatOptions),
             this.onMessageError.bind(this, withResolvers.resolve, withResolvers.reject),
         );
 

@@ -12,7 +12,7 @@ import { registerArtifact } from "#app/Registrations/register";
 import {
     emptyContainerInterfaceWithImport,
     emptyEventBaseInterfaceWithImport,
-} from "../../helpers/dts-stub-contents";
+} from "../../helpers/dts-stub-contents.ts";
 
 const configEnumFixture = "export enum ConfigName {\n}\n";
 const defaultConfigValidatorType = "zod.string()";

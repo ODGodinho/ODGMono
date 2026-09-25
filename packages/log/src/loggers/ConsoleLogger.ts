@@ -1,12 +1,12 @@
 import ansis from "ansis";
 
-import { LogLevel } from "../Enums/LogLevel";
-import type { ContextType } from "../Interfaces/LoggerInterface";
-import { formatUnknown } from "../Support/format-unknown";
+import { LogLevel } from "../Enums/LogLevel.ts";
+import type { ContextType } from "../Interfaces/LoggerInterface.ts";
+import { formatUnknown } from "../Support/format-unknown.ts";
 
-import { AbstractLogger } from "./AbstractLogger";
-import { isJSONLogFormattable } from "./json-log-formattable";
-import { StringMessageFormatter } from "./StringMessageFormater";
+import { AbstractLogger } from "./AbstractLogger.ts";
+import { isJSONLogFormattable } from "./json-log-formattable.ts";
+import { StringMessageFormatter } from "./StringMessageFormater.ts";
 
 /**
  * This Logger can be used to avoid conditional log calls.

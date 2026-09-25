@@ -8,7 +8,7 @@ import {
 import { CacheManager } from "#app/Cache/CacheManager";
 import { CacheHandlerException } from "#app/Exceptions/CacheHandlerException";
 
-import { createMemoryHandler, type TestCacheSchema } from "./setup";
+import { createMemoryHandler, type TestCacheSchema } from "./setup.ts";
 
 describe("CacheManager - Handler Management", () => {
     let manager: CacheManager<TestCacheSchema>;

@@ -1,3 +1,3 @@
-export type * from "./EventBusInterface";
+export type * from "./EventBusInterface.ts";
 
-export type * from "./EventListenerInterface";
+export type * from "./EventListenerInterface.ts";

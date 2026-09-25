@@ -1,1 +1,1 @@
-export * from "./JsonConfig";
+export * from "./JsonConfig.ts";

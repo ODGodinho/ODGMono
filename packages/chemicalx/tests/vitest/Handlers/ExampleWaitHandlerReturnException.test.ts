@@ -1,9 +1,9 @@
 import { Exception } from "@odg/exception";
 import { type Mock, vi } from "vitest";
 
-import type { RetryAction } from "../../../src";
+import type { RetryAction } from "../../../src/index.ts";
 
-import { ExampleWaitHandlerReturnException } from "./mocks/ExampleWaitHandlerReturnException";
+import { ExampleWaitHandlerReturnException } from "./mocks/ExampleWaitHandlerReturnException.ts";
 
 describe("Handler Retry tests", () => {
     let handler: ExampleWaitHandlerReturnException;

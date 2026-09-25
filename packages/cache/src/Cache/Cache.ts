@@ -1,7 +1,7 @@
 import { CacheHandlerException } from "#exceptions/CacheHandlerException";
 import type { CacheHandlerInterface, CacheInterface } from "#interfaces";
 
-import { CacheManager } from "./CacheManager";
+import { CacheManager } from "./CacheManager.ts";
 
 export class Cache<CacheType extends object> implements CacheInterface<CacheType> {
 

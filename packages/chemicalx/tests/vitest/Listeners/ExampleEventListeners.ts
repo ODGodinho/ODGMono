@@ -2,7 +2,7 @@ import { EventListenerInterface } from "@odg/events";
 import { injectable } from "inversify";
 import { vi } from "vitest";
 
-import { ODGDecorators } from "../../../src";
+import { ODGDecorators } from "../../../src/index.ts";
 
 @ODGDecorators.registerListener("ExampleEvent", "ExampleEventListeners", {})
 @ODGDecorators.registerListener("ExampleEvent", "ExampleEventListeners", {})

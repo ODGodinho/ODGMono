@@ -1,7 +1,7 @@
-export * from "./Enums/LogLevel";
+export * from "./Enums/LogLevel.ts";
 
-export type * from "./Interfaces/index";
+export type * from "./Interfaces/index.ts";
 
-export * from "./loggers/index";
+export * from "./loggers/index.ts";
 
-export * from "./Support/format-unknown";
+export * from "./Support/format-unknown.ts";

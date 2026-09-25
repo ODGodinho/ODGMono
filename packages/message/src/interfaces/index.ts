@@ -1,11 +1,11 @@
-export type * from "./headers";
+export type * from "./headers.ts";
 
-export type * from "./MessageInterface";
+export type * from "./MessageInterface.ts";
 
-export type * from "./options";
+export type * from "./options.ts";
 
-export type * from "./request";
+export type * from "./request.ts";
 
-export type * from "./response";
+export type * from "./response.ts";
 
-export type * from "./Lookup";
+export type * from "./Lookup.ts";

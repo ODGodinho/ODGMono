@@ -1,9 +1,9 @@
-export * from "./JsonLoggerPlugin";
+export * from "./JsonLoggerPlugin.ts";
 
-export * from "./GitLoggerPlugin";
+export * from "./GitLoggerPlugin.ts";
 
-export * from "./JsonLogger";
+export * from "./JsonLogger.ts";
 
-export * from "./RequestStringPlugin";
+export * from "./RequestStringPlugin.ts";
 
-export * from "./JsonLoggerString";
+export * from "./JsonLoggerString.ts";

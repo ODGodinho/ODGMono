@@ -1,5 +1,5 @@
-import { LogLevel } from "../Enums/LogLevel";
-import type { ContextType, LoggerInterface } from "../Interfaces";
+import { LogLevel } from "../Enums/LogLevel.ts";
+import type { ContextType, LoggerInterface } from "../Interfaces/index.ts";
 
 /**
  * Simple logger implementation

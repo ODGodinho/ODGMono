@@ -1,15 +1,15 @@
-export * from "./BrowserManager";
+export * from "./BrowserManager.ts";
 
-export * from "./Browser";
+export * from "./Browser.ts";
 
-export * from "./Context";
+export * from "./Context.ts";
 
-export * from "./Page";
+export * from "./Page.ts";
 
-export * from "./Handlers";
+export * from "./Handlers/index.ts";
 
-export type * from "./@types";
+export type * from "./@types/index.ts";
 
-export * from "./Pages";
+export * from "./Pages/index.ts";
 
-export type * from "./Selectors/SelectorsType";
+export type * from "./Selectors/SelectorsType.ts";

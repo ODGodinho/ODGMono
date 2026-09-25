@@ -2,7 +2,7 @@ import { ESLintUtils, type TSESTree } from "@typescript-eslint/utils";
 import type { RuleContext } from "@typescript-eslint/utils/ts-eslint";
 import type { Spec } from "comment-parser";
 
-import DocblockHelper from "../helpers/DocblockHelper";
+import DocblockHelper from "../helpers/DocblockHelper.ts";
 
 const { RuleCreator: ruleCreator } = ESLintUtils;
 const createRule = ruleCreator(

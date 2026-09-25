@@ -1,1 +1,1 @@
-export * from "./OdgDecorators";
+export * from "./OdgDecorators.ts";

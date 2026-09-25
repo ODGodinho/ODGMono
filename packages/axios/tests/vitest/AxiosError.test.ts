@@ -2,8 +2,8 @@ import { Exception } from "@odg/exception";
 import { MessageException } from "@odg/message";
 import axios, { AxiosError } from "axios";
 
-import { AxiosMessage } from "../../src/AxiosMessage";
-import * as Interfaces from "../../src/Interfaces";
+import { AxiosMessage } from "../../src/AxiosMessage.ts";
+import * as Interfaces from "../../src/Interfaces/index.ts";
 
 describe("AxiosMessage", () => {
     test("Test is Axios Error", async () => {

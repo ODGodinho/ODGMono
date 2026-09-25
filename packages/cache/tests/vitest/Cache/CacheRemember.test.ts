@@ -11,7 +11,7 @@ import {
     createMemoryHandler,
     sleepTest,
     type TestCacheSchema,
-} from "./setup";
+} from "./setup.ts";
 
 describe("Cache - Remember Operations", () => {
     let cache: Cache<TestCacheSchema>;

@@ -1,15 +1,15 @@
-import "./register";
+import "./register.ts";
 
-export type * from "./Interfaces";
+export type * from "./Interfaces/index.ts";
 
-export * from "./interceptors/AxiosInterceptor";
+export * from "./interceptors/AxiosInterceptor.ts";
 
-export * from "./interceptors/AxiosInterceptorRequest";
+export * from "./interceptors/AxiosInterceptorRequest.ts";
 
-export * from "./interceptors/AxiosInterceptorResponse";
+export * from "./interceptors/AxiosInterceptorResponse.ts";
 
-export * from "./parser/AxiosRequestParser";
+export * from "./parser/AxiosRequestParser.ts";
 
-export * from "./parser/AxiosResponseParser";
+export * from "./parser/AxiosResponseParser.ts";
 
-export * from "./AxiosMessage";
+export * from "./AxiosMessage.ts";

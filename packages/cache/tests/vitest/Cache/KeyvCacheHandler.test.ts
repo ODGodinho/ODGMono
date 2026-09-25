@@ -14,7 +14,7 @@ import {
     cacheKeyUser2,
     sleepTest,
     type TestCacheSchema,
-} from "./setup";
+} from "./setup.ts";
 
 describe("KeyvCacheHandler - Batch Operations", () => {
     let handler: KeyvCacheHandler<TestCacheSchema>;

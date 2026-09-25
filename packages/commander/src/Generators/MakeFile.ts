@@ -1,10 +1,10 @@
 import { Str } from "@odg/chemical-x";
 import type { LoggerInterface } from "@odg/log";
 
-import { registerArtifact } from "../Registrations/register";
-import type { RegistrationTargets } from "../Registrations/types";
+import { registerArtifact } from "../Registrations/register.ts";
+import type { RegistrationTargets } from "../Registrations/types.ts";
 
-import StubCreator from "./StubCreator";
+import StubCreator from "./StubCreator.ts";
 
 interface RegistrationOptions {
     register?: boolean;

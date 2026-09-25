@@ -1,9 +1,9 @@
-import type { CloneableInterface, NativeInterface } from "..";
-import { MoneyNotFoundException } from "../Exceptions";
-import { MoneyMultipleResultException } from "../Exceptions/MoneyMultipleResultException";
+import { MoneyNotFoundException } from "../Exceptions/index.ts";
+import { MoneyMultipleResultException } from "../Exceptions/MoneyMultipleResultException.ts";
+import type { CloneableInterface, NativeInterface } from "../index.ts";
 
-import { Arr } from "./Arr";
-import { Num } from "./Num";
+import { Arr } from "./Arr.ts";
+import { Num } from "./Num.ts";
 
 /**
  * Class Helper to manipulate string

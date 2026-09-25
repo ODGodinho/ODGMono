@@ -1,5 +1,5 @@
-export * from "./ExampleHandler";
+export * from "./ExampleHandler.ts";
 
-export * from "./ExampleFailedAttemptHandler";
+export * from "./ExampleFailedAttemptHandler.ts";
 
-export * from "./FailedIgnoreHandler";
+export * from "./FailedIgnoreHandler.ts";

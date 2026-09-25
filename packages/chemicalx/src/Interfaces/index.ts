@@ -1,15 +1,15 @@
-export type * from "./CloneableInterface";
+export type * from "./CloneableInterface.ts";
 
-export type * from "./NativeInterface";
+export type * from "./NativeInterface.ts";
 
-export type * from "./RetryInterface";
+export type * from "./RetryInterface.ts";
 
-export type * from "./GetterInterface";
+export type * from "./GetterInterface.ts";
 
-export type * from "./TimeoutInterface";
+export type * from "./TimeoutInterface.ts";
 
-export type * from "./AttemptableFlow";
+export type * from "./AttemptableFlow.ts";
 
-export type * from "./UserAgentInterface";
+export type * from "./UserAgentInterface.ts";
 
-export type * from "../crawler/Interfaces";
+export type * from "../crawler/Interfaces/index.ts";

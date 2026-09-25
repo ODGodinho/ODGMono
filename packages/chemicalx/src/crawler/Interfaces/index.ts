@@ -1,3 +1,3 @@
-export type * from "./PageInterface";
+export type * from "./PageInterface.ts";
 
-export type * from "./HandlerInterface";
+export type * from "./HandlerInterface.ts";

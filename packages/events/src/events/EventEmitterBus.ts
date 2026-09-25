@@ -1,4 +1,4 @@
-import EventEmitter2, { type ListenerFn } from "eventemitter2";
+import eventemitter2, { type EventEmitter2, type ListenerFn } from "eventemitter2";
 
 import type {
     EventBusInterface,
@@ -6,14 +6,14 @@ import type {
     EventObjectType,
     EventOptions,
     HandlerEventCallback,
-} from "../interfaces";
+} from "../interfaces/index.ts";
 
 export class EventEmitterBus<Events extends EventObjectType> implements EventBusInterface<Events> {
 
     protected readonly eventEmitter: EventEmitter2;
 
     public constructor() {
-        this.eventEmitter = new EventEmitter2();
+        this.eventEmitter = new eventemitter2.EventEmitter2(); // CJS: no static named exports under ESM;
     }
 
     public async subscribe<Key extends keyof Events>(

@@ -1,13 +1,13 @@
-export * from "./Support";
+export * from "./Support/index.ts";
 
-export * from "./Helpers/index";
+export * from "./Helpers/index.ts";
 
-export * from "./crawler/index";
+export * from "./crawler/index.ts";
 
-export type * from "./Interfaces";
+export type * from "./Interfaces/index.ts";
 
-export * from "./Exceptions";
+export * from "./Exceptions/index.ts";
 
-export * from "./Enums";
+export * from "./Enums/index.ts";
 
-export * from "./Container";
+export * from "./Container.ts";

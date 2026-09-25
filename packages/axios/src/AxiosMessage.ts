@@ -14,11 +14,11 @@ import axios, {
     type AxiosResponse,
 } from "axios";
 
-import { AxiosInterceptorRequest } from "./interceptors/AxiosInterceptorRequest";
-import { AxiosInterceptorResponse } from "./interceptors/AxiosInterceptorResponse";
-import { AxiosParser } from "./parser/AxiosParser";
-import { AxiosRequestParser } from "./parser/AxiosRequestParser";
-import { AxiosResponseParser } from "./parser/AxiosResponseParser";
+import { AxiosInterceptorRequest } from "./interceptors/AxiosInterceptorRequest.ts";
+import { AxiosInterceptorResponse } from "./interceptors/AxiosInterceptorResponse.ts";
+import { AxiosParser } from "./parser/AxiosParser.ts";
+import { AxiosRequestParser } from "./parser/AxiosRequestParser.ts";
+import { AxiosResponseParser } from "./parser/AxiosResponseParser.ts";
 
 export class AxiosMessage<
     RequestData,

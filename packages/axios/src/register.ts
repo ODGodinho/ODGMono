@@ -2,8 +2,8 @@ import { Exception } from "@odg/exception";
 import { MessageException } from "@odg/message";
 import axios from "axios";
 
-import { AxiosRequestParser } from "./parser/AxiosRequestParser";
-import { AxiosResponseParser } from "./parser/AxiosResponseParser";
+import { AxiosRequestParser } from "./parser/AxiosRequestParser.ts";
+import { AxiosResponseParser } from "./parser/AxiosResponseParser.ts";
 
 Exception.$parsers.add((exception, original) => {
     if (axios.isAxiosError(original)) {

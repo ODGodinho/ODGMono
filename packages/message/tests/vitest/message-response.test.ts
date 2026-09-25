@@ -1,4 +1,4 @@
-import { MessageResponse, Methods, ODGMessage } from "../../src";
+import { MessageResponse, Methods, ODGMessage } from "../../src/index.ts";
 
 describe("Teste MessageResponse class", () => {
     test("Teste Instance", () => {

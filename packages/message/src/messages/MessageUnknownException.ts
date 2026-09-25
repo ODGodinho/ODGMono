@@ -1,8 +1,8 @@
 import { UnknownException } from "@odg/exception";
 
-import type { RequestInterface, ResponseInterface } from "../interfaces";
+import type { RequestInterface, ResponseInterface } from "../interfaces/index.ts";
 
-import { MessageResponse } from "./MessageResponse";
+import { MessageResponse } from "./MessageResponse.ts";
 
 export class MessageUnknownException<RequestData, ResponseData = unknown> extends UnknownException {
 

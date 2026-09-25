@@ -1,11 +1,11 @@
 import { Exception } from "@odg/exception";
 import axios from "axios";
 
-import type { TlsAxiosRequestConfigExtra } from "./interfaces/TlsOptionsInterface";
-import { TlsMessage } from "./messages/TlsMessage";
-import { TlsMessageException } from "./messages/TlsMessageException";
-import { TlsAxiosRequestParser } from "./parser/TlsAxiosRequestParser";
-import { TlsAxiosResponseParser } from "./parser/TlsAxiosResponseParser";
+import type { TlsAxiosRequestConfigExtra } from "./interfaces/TlsOptionsInterface.ts";
+import { TlsMessage } from "./messages/TlsMessage.ts";
+import { TlsMessageException } from "./messages/TlsMessageException.ts";
+import { TlsAxiosRequestParser } from "./parser/TlsAxiosRequestParser.ts";
+import { TlsAxiosResponseParser } from "./parser/TlsAxiosResponseParser.ts";
 
 Exception.$parsers.add((exception, original) => {
     if (TlsMessage.isAxiosMessageToTlsError(exception) && axios.isAxiosError(original)) {

@@ -4,7 +4,7 @@ import { type Mock, vi } from "vitest";
 import { RetryAction } from "#enums";
 import type { HandlerSolutionType } from "#interfaces";
 
-import { WithoutFunctionHandler } from "./mocks/WithoutFunctionHandler";
+import { WithoutFunctionHandler } from "./mocks/WithoutFunctionHandler.ts";
 
 describe("Handler success Function", () => {
     let handler: WithoutFunctionHandler;

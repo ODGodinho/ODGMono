@@ -1,4 +1,4 @@
-import { MessageException, MessageUnknownException, ODGMessage } from "../../src/index";
+import { MessageException, MessageUnknownException, ODGMessage } from "../../src/index.ts";
 
 describe.each([
     MessageUnknownException,

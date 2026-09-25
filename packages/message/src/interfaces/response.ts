@@ -1,4 +1,4 @@
-import type { HttpHeadersInterface } from "./headers";
+import type { HttpHeadersInterface } from "./headers.ts";
 
 export type ResponseType = "arraybuffer" | "blob" | "document" | "json" | "stream" | "text";
 

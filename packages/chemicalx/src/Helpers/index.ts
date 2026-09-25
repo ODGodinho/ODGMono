@@ -1,9 +1,9 @@
-export * from "./sleep";
+export * from "./sleep.ts";
 
-export * from "./retry";
+export * from "./retry.ts";
 
-export * from "./timeout";
+export * from "./timeout.ts";
 
-export * from "./detach";
+export * from "./detach.ts";
 
-export * from "./throw-if";
+export * from "./throw-if.ts";

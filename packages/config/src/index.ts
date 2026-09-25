@@ -1,3 +1,3 @@
-export type * from "./Interfaces";
+export type * from "./Interfaces/index.ts";
 
-export * from "./configs";
+export * from "./configs/index.ts";

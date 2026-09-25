@@ -1,4 +1,4 @@
-import { sleep } from "../../../src/Helpers/index";
+import { sleep } from "../../../src/Helpers/index.ts";
 
 describe("Sleep Testes", () => {
     test("Sleep Test 300ms", async () => {

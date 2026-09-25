@@ -2,7 +2,7 @@ import type { Exception } from "@odg/exception";
 
 import type { RetryAction } from "#enums";
 
-import type { AttemptableInterface } from "../../Interfaces/AttemptableFlow";
+import type { AttemptableInterface } from "../../Interfaces/AttemptableFlow.ts";
 
 /**
  * Represents the possible return types from a handler function's execution.

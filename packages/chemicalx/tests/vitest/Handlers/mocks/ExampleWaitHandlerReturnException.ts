@@ -6,7 +6,7 @@ import {
     RetryAction,
 } from "#app";
 
-import type { PageClassEngine } from "../../playwright/engine";
+import type { PageClassEngine } from "../../playwright/engine.ts";
 
 export class ExampleWaitHandlerReturnException extends BaseHandler<PageClassEngine> {
 

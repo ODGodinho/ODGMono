@@ -8,7 +8,7 @@ import {
     isPascalCase,
     rule,
     toDotCase,
-} from "../../../src/rules/enum-key-value-convention";
+} from "../../../src/rules/enum-key-value-convention.ts";
 
 const ruleTester = new RuleTester({
     languageOptions: {

@@ -1,6 +1,6 @@
 import { JSONParserUnknownException } from "#app";
 
-import type { ExceptionType } from "../../../@types/Exceptions";
+import type { ExceptionType } from "../../../@types/Exceptions.ts";
 
 export const globalException: ExceptionType = {
     exception: new JSONParserUnknownException("anything"),

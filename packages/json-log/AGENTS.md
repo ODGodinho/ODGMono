@@ -1,6 +1,6 @@
 # @odg/json-log - Consumer Guide
 
-To understand the standard structure of all logs, refer to the contract for the `./dist/Interfaces/LoggerObjectInterface.d.ts`
+To understand the standard structure of all logs, refer to the `LoggerObjectInterface` types exported from `@odg/json-log` (doc: `./dist/Interfaces/LoggerObjectInterface.d.ts`)
 
 ## 🎯 Purpose
 

@@ -2,11 +2,11 @@ import type { Agent as HttpAgent } from "node:http";
 import type { Agent as HttpsAgent } from "node:https";
 import type { LookupFunction } from "node:net";
 
-import type { Methods } from "../MethodsEnum";
+import type { Methods } from "../MethodsEnum.ts";
 
-import type { HttpHeadersInterface } from "./headers";
-import type { ProxyConfigInterface } from "./options";
-import type { ResponseType } from "./response";
+import type { HttpHeadersInterface } from "./headers.ts";
+import type { ProxyConfigInterface } from "./options.ts";
+import type { ResponseType } from "./response.ts";
 
 export interface ParametersInterface extends Record<string, unknown> {
 

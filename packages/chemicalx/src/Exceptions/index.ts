@@ -1,11 +1,11 @@
-export * from "./MoneyNotFoundException";
+export * from "./MoneyNotFoundException.ts";
 
-export * from "./MoneyMultipleResultException";
+export * from "./MoneyMultipleResultException.ts";
 
-export * from "./InvalidArgumentException";
+export * from "./InvalidArgumentException.ts";
 
-export * from "./TimeoutException";
+export * from "./TimeoutException.ts";
 
-export * from "./RetryException";
+export * from "./RetryException.ts";
 
-export * from "../crawler/Exceptions";
+export * from "../crawler/Exceptions/index.ts";

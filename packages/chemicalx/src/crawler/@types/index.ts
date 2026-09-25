@@ -1,7 +1,7 @@
-export type * from "./Browser";
+export type * from "./Browser.ts";
 
-export type * from "./Context";
+export type * from "./Context.ts";
 
-export type * from "./Page";
+export type * from "./Page.ts";
 
-export type * from "./ManagerBrowserType";
+export type * from "./ManagerBrowserType.ts";

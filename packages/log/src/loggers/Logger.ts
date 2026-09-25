@@ -1,12 +1,12 @@
-import type { LogLevel } from "../Enums/LogLevel";
+import type { LogLevel } from "../Enums/LogLevel.ts";
 import type {
     ContextType,
     LoggerInterface,
     LoggerParserInterface,
     LoggerPluginInterface,
-} from "../Interfaces";
+} from "../Interfaces/index.ts";
 
-import { AbstractLogger } from "./AbstractLogger";
+import { AbstractLogger } from "./AbstractLogger.ts";
 
 export class Logger extends AbstractLogger {
 

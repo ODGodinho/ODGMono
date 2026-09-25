@@ -5,16 +5,15 @@ import {
     type ContextChemicalXInterface,
     type CreateContextFactoryType,
     type CreatePageFactoryType,
-} from "../../../src";
+} from "../../../src/index.ts";
 
 import type {
     BrowserClassEngine,
     ContextClassEngine,
     MyBrowser,
     PageClassEngine,
-} from "./engine";
-
-import { Browser, Context, Page } from "./index";
+} from "./engine.ts";
+import { Browser, Context, Page } from "./index.ts";
 
 function injectPage(context: ContextChemicalXInterface<ContextClassEngine>, page: PageClassEngine): Page {
     return new Page(context, page);

@@ -2,10 +2,10 @@ import { Exception } from "@odg/exception";
 
 import { JSONLoggerPlugin } from "#app";
 
-import type { ExceptionType } from "../../../../@types/Exceptions";
-import exceptionsCascade from "../../Helpers/exceptions-cascade";
-import { functionException } from "../../Helpers/function-exception";
-import { globalException } from "../../Helpers/global-exception";
+import type { ExceptionType } from "../../../../@types/Exceptions.ts";
+import exceptionsCascade from "../../Helpers/exceptions-cascade.ts";
+import { functionException } from "../../Helpers/function-exception.ts";
+import { globalException } from "../../Helpers/global-exception.ts";
 
 const exceptionCases: ExceptionType[] = [
     functionException(),

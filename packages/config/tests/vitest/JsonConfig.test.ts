@@ -2,7 +2,7 @@ import * as zod from "zod";
 
 import type { ConfigInterface } from "#interfaces";
 
-import { JsonConfig } from "../../src";
+import { JsonConfig } from "../../src/index.ts";
 
 describe("Example Teste", () => {
     const validator = zod.object({

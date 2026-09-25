@@ -2,7 +2,7 @@ import type {
     ContextChemicalXInterface,
     ContextEngineInterface,
     ContextOptionsLibraryInterface,
-} from "./Context";
+} from "./Context.ts";
 
 export interface BrowserOptionsLibraryInterface {
 

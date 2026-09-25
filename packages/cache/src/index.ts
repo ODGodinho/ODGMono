@@ -1,6 +1,6 @@
 // Cache
-export * from "./Exceptions";
+export * from "./Exceptions/index.ts";
 
-export * from "./Cache/index";
+export * from "./Cache/index.ts";
 
-export type * from "./Interfaces/index";
+export type * from "./Interfaces/index.ts";

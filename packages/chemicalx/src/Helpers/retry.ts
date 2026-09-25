@@ -8,8 +8,8 @@ import type {
     RetryWhenResolveInterface,
 } from "#interfaces";
 
-import { sleep } from "./sleep";
-import { throwIf } from "./throw-if";
+import { sleep } from "./sleep.ts";
+import { throwIf } from "./throw-if.ts";
 
 interface RetryHelperOptions<ReturnType> extends RetryOptionsInterface<ReturnType> {
     attempt: number;

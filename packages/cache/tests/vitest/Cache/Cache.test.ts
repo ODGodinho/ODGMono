@@ -16,7 +16,7 @@ import {
     type TestCacheSchema,
     user1Data,
     user2Data,
-} from "./setup";
+} from "./setup.ts";
 
 describe("Cache - Basic Operations", () => {
     let cache: Cache<TestCacheSchema>;

@@ -1,9 +1,9 @@
 import { AxiosResponseParser } from "@odg/axios";
 import type { AxiosResponse } from "axios";
 
-import { TlsMessageResponse } from "../messages/TlsMessageResponse";
+import { TlsMessageResponse } from "../messages/TlsMessageResponse.ts";
 
-import { TlsAxiosRequestParser } from "./TlsAxiosRequestParser";
+import { TlsAxiosRequestParser } from "./TlsAxiosRequestParser.ts";
 
 export class TlsAxiosResponseParser extends AxiosResponseParser {
 

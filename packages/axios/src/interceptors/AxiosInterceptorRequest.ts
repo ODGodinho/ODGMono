@@ -7,10 +7,10 @@ import type {
 } from "@odg/message";
 import type { AxiosInterceptorManager, AxiosRequestConfig } from "axios";
 
-import type { AxiosRequestConfigExtra } from "../Interfaces";
-import { AxiosRequestParser } from "../parser/AxiosRequestParser";
+import type { AxiosRequestConfigExtra } from "../Interfaces/index.ts";
+import { AxiosRequestParser } from "../parser/AxiosRequestParser.ts";
 
-import { AxiosInterceptor } from "./AxiosInterceptor";
+import { AxiosInterceptor } from "./AxiosInterceptor.ts";
 
 export class AxiosInterceptorRequest<
     RequestData,

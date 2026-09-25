@@ -1,7 +1,7 @@
 import { MessageUnknownException } from "@odg/message";
 import axios from "axios";
 
-import { AxiosInterceptorResponse } from "../../src/interceptors/AxiosInterceptorResponse";
+import { AxiosInterceptorResponse } from "../../src/interceptors/AxiosInterceptorResponse.ts";
 
 describe("AxiosInterceptorResponse", () => {
     test("Teste intercept", async () => {

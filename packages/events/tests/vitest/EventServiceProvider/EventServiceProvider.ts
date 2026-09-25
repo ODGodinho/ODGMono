@@ -2,9 +2,9 @@ import {
     type EventBusInterface,
     type EventListener,
     EventServiceProvider as EventServiceProviderBase,
-} from "../../../src/index";
+} from "../../../src/index.ts";
 
-import { TestEventListeners } from "./TestEventListeners";
+import { TestEventListeners } from "./TestEventListeners.ts";
 
 export class EventServiceProvider extends EventServiceProviderBase<Record<string, unknown>> {
 

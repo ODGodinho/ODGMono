@@ -5,7 +5,7 @@ import { Exception } from "@odg/exception";
 
 import type { LookupCacheType, LookupKeyType } from "#app";
 
-import { CacheableLookup } from "../../src/messages/CacheableLookup";
+import { CacheableLookup } from "../../src/messages/CacheableLookup.ts";
 
 function createCache(): {
     cache: CacheInterface<LookupCacheType & Record<string, unknown>>;

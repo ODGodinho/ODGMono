@@ -12,7 +12,7 @@ import { describe, expect, test } from "vitest";
 import MakeFile from "#app/Generators/MakeFile";
 import { registerArtifact } from "#app/Registrations/register";
 
-import { emptyEventBaseInterfaceWithImport } from "../../helpers/dts-stub-contents";
+import { emptyEventBaseInterfaceWithImport } from "../../helpers/dts-stub-contents.ts";
 
 describe("Registrations - event", () => {
     const make = new MakeFile(new NullLogger());

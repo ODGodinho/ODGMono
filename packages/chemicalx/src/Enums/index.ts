@@ -1,5 +1,5 @@
-export * from "./RetryAction";
+export * from "./RetryAction.ts";
 
-export * from "./UserAgentPlatform";
+export * from "./UserAgentPlatform.ts";
 
-export * from "./UserAgentVersionType";
+export * from "./UserAgentVersionType.ts";

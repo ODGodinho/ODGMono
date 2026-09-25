@@ -5,7 +5,7 @@ import type {
     GitLoggerInterface,
     LoggerObjectInterface,
     LoggerObjectRequestInterface,
-} from "..";
+} from "../index.ts";
 
 /**
  * {@link JSONLogger} as a plain object; {@link LoggerObjectInterface.createdAt} is an ISO-8601 string.

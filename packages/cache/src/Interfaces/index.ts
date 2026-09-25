@@ -1,3 +1,3 @@
-export type * from "./CacheHandlerInterface";
+export type * from "./CacheHandlerInterface.ts";
 
-export type * from "./CacheInterface";
+export type * from "./CacheInterface.ts";

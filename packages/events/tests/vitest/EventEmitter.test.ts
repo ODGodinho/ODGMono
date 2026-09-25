@@ -1,7 +1,7 @@
 import EventEmitter2 from "eventemitter2";
 import { vi } from "vitest";
 
-import { EventEmitterBus } from "../../src/index";
+import { EventEmitterBus } from "../../src/index.ts";
 
 describe("Test EventEmitterBus", () => {
     const eventName = "test";

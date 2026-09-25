@@ -12,13 +12,13 @@ import {
 } from "@odg/message";
 import ErrorStackParser from "error-stack-parser";
 
-import { JSONParserUnknownException } from "../Exceptions/JsonParserUnknownException";
+import { JSONParserUnknownException } from "../Exceptions/JsonParserUnknownException.ts";
 import type {
     ExceptionObjectLoggerInterface,
     LoggerObjectRequestInterface,
-} from "../Interfaces";
+} from "../Interfaces/index.ts";
 
-import { JSONLogger } from "./JsonLogger";
+import { JSONLogger } from "./JsonLogger.ts";
 
 export class JSONLoggerPlugin implements LoggerPluginInterface {
 

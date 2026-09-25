@@ -4,7 +4,7 @@ import type {
     MessageResponse,
 } from "@odg/message";
 
-import { TlsAxiosResponseParser } from "../parser/TlsAxiosResponseParser";
+import { TlsAxiosResponseParser } from "../parser/TlsAxiosResponseParser.ts";
 
 export class TlsAxiosInterceptorResponse<
     RequestData,

@@ -10,10 +10,10 @@ import {
     type CreatePageFactoryType,
 } from "#app";
 
-import { ExamplePage } from "../Pages/mocks/ExamplePage";
-import { ExamplePageTwoAttempt } from "../Pages/mocks/ExamplePageTwoAttempt";
-import { ExamplePageWithFinish } from "../Pages/mocks/ExamplePageWithFinish";
-import { ExamplePageWithoutFailure } from "../Pages/mocks/ExamplePageWithoutFailure";
+import { ExamplePage } from "../Pages/mocks/ExamplePage.ts";
+import { ExamplePageTwoAttempt } from "../Pages/mocks/ExamplePageTwoAttempt.ts";
+import { ExamplePageWithFinish } from "../Pages/mocks/ExamplePageWithFinish.ts";
+import { ExamplePageWithoutFailure } from "../Pages/mocks/ExamplePageWithoutFailure.ts";
 
 import type {
     BrowserClassEngine,
@@ -22,9 +22,8 @@ import type {
     MyContext,
     MyPage,
     PageClassEngine,
-} from "./engine";
-
-import { Browser, Context, Page } from ".";
+} from "./engine.ts";
+import { Browser, Context, Page } from "./index.ts";
 
 function injectPage(context: ContextChemicalXInterface<ContextClassEngine>, pageEngine: PageClassEngine): Page {
     return new Page(context, pageEngine);

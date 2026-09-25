@@ -1,9 +1,9 @@
-import "./register";
+import "./register.ts";
 
-export * from "./messages/TlsMessage";
+export * from "./messages/TlsMessage.ts";
 
-export * from "./messages/TlsMessageResponse";
+export * from "./messages/TlsMessageResponse.ts";
 
-export * from "./messages/TlsMessageException";
+export * from "./messages/TlsMessageException.ts";
 
-export type * from "./interfaces/TlsOptionsInterface";
+export type * from "./interfaces/TlsOptionsInterface.ts";

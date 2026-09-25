@@ -1,6 +1,6 @@
 import { InvalidArgumentException } from "#exceptions";
 
-import { Arr } from "../../../../src";
+import { Arr } from "../../../../src/index.ts";
 
 describe("Arr.random", () => {
     describe("default parameter (no argument)", () => {

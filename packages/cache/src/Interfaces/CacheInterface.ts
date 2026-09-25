@@ -1,4 +1,4 @@
-import type { CacheHandlerInterface } from "./CacheHandlerInterface";
+import type { CacheHandlerInterface } from "./CacheHandlerInterface.ts";
 
 /**
  * High-level cache contract used by app code.

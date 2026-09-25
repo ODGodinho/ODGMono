@@ -8,8 +8,8 @@ import type {
     HandlerSolutionType,
 } from "#interfaces";
 
-import type { PageEngineInterface } from "../@types";
-import type { SelectorType } from "../Selectors/SelectorsType";
+import type { PageEngineInterface } from "../@types/index.ts";
+import type { SelectorType } from "../Selectors/SelectorsType.ts";
 
 export abstract class BaseHandler<
     PageClassEngine extends PageEngineInterface,

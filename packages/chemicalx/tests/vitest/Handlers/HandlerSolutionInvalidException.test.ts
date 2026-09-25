@@ -4,7 +4,7 @@ import { type Mock, vi } from "vitest";
 import { RetryAction } from "#enums";
 import type { HandlerFunction, HandlerSolutionType } from "#interfaces";
 
-import { ExampleFailedAttemptHandler, ExampleHandler } from "./mocks";
+import { ExampleFailedAttemptHandler, ExampleHandler } from "./mocks/index.ts";
 
 describe("Handler Test Invalid Exception", () => {
     let handler: ExampleHandler;

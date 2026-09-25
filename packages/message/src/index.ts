@@ -1,15 +1,15 @@
-export type * from "./interfaces";
+export type * from "./interfaces/index.ts";
 
-export * from "./messages/MessageException";
+export * from "./messages/MessageException.ts";
 
-export * from "./messages/MessageUnknownException";
+export * from "./messages/MessageUnknownException.ts";
 
-export * from "./messages/OdgMessage";
+export * from "./messages/OdgMessage.ts";
 
-export * from "./messages/MessageResponse";
+export * from "./messages/MessageResponse.ts";
 
-export * from "./MethodsEnum";
+export * from "./MethodsEnum.ts";
 
-export * from "./ProxyManager";
+export * from "./ProxyManager.ts";
 
-export * from "./Validators";
+export * from "./Validators/index.ts";

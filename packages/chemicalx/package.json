@@ -2,6 +2,7 @@
     "name": "@odg/chemical-x",
     "version": "0.0.0",
     "description": "Chemical-X Project It's the basis of everything",
+    "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "homepage": "https://github.com/ODGodinho/ODGMono/tree/main/packages/chemicalx",

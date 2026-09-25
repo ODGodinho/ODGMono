@@ -8,17 +8,17 @@ import type {
     AxiosRequestConfig,
 } from "axios";
 
-import { TlsAxiosInterceptorRequest } from "../interceptors/TlsAxiosInterceptorRequest";
-import { TlsAxiosInterceptorResponse } from "../interceptors/TlsAxiosInterceptorResponse";
+import { TlsAxiosInterceptorRequest } from "../interceptors/TlsAxiosInterceptorRequest.ts";
+import { TlsAxiosInterceptorResponse } from "../interceptors/TlsAxiosInterceptorResponse.ts";
 import type {
     TlsOptionsConstructorInterface,
     TlsRequestInterface,
-} from "../interfaces/TlsOptionsInterface";
-import { TlsAxiosRequestParser } from "../parser/TlsAxiosRequestParser";
-import { TlsAxiosResponseParser } from "../parser/TlsAxiosResponseParser";
+} from "../interfaces/TlsOptionsInterface.ts";
+import { TlsAxiosRequestParser } from "../parser/TlsAxiosRequestParser.ts";
+import { TlsAxiosResponseParser } from "../parser/TlsAxiosResponseParser.ts";
 
-import type { TlsMessageException } from "./TlsMessageException";
-import type { TlsMessageResponse } from "./TlsMessageResponse";
+import type { TlsMessageException } from "./TlsMessageException.ts";
+import type { TlsMessageResponse } from "./TlsMessageResponse.ts";
 
 /**
  * TLS Message class

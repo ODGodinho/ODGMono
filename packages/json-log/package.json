@@ -2,8 +2,15 @@
     "name": "@odg/json-log",
     "version": "0.0.1",
     "description": "parse your log in JSON formatter",
+    "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
     "homepage": "https://github.com/ODGodinho/ODGMono/tree/main/packages/json-log",
     "repository": {
         "type": "git",

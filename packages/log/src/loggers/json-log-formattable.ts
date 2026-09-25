@@ -1,4 +1,4 @@
-import type { LogLevel } from "../Enums/LogLevel";
+import type { LogLevel } from "../Enums/LogLevel.ts";
 
 export interface JSONLogFormattable {
     "type": LogLevel;

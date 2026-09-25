@@ -1,4 +1,4 @@
-import type { RequestInterface, ResponseInterface } from "../interfaces";
+import type { RequestInterface, ResponseInterface } from "../interfaces/index.ts";
 
 /**
  * @template {unknown} ResponseData

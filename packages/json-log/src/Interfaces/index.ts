@@ -1,1 +1,1 @@
-export type * from "./LoggerObjectInterface";
+export type * from "./LoggerObjectInterface.ts";

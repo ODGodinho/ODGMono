@@ -13,7 +13,7 @@ import type {
     LookupCacheType,
     LookupKeyType,
     LookupPromiseResult,
-} from "../interfaces";
+} from "../interfaces/index.ts";
 
 export class CacheableLookup {
 

@@ -1,4 +1,4 @@
-import type { CloneableInterface, NativeInterface } from "../Interfaces";
+import type { CloneableInterface, NativeInterface } from "../Interfaces/index.ts";
 
 /**
  * Class Helper to manipulate number

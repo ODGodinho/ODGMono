@@ -1,6 +1,6 @@
 import { JSONParserUnknownException } from "#app";
 
-import type { ExceptionType } from "../../../@types/Exceptions";
+import type { ExceptionType } from "../../../@types/Exceptions.ts";
 
 const exceptionsCascade = ((): ExceptionType[] => {
     const baseException1 = new JSONParserUnknownException("anything1");

@@ -1,8 +1,8 @@
 import type { Exception } from "@odg/exception";
 
-import type { PageInterface, RetryAction } from "../..";
-import type { PageEngineInterface } from "../index";
-import type { SelectorType } from "../Selectors/SelectorsType";
+import type { PageInterface, RetryAction } from "../../index.ts";
+import type { PageEngineInterface } from "../index.ts";
+import type { SelectorType } from "../Selectors/SelectorsType.ts";
 
 export abstract class BasePage<
     PageClassEngine extends PageEngineInterface,

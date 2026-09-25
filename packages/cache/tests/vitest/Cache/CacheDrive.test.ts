@@ -22,7 +22,7 @@ import {
     user2Data,
     user3Data,
     type UserCacheValue,
-} from "./setup";
+} from "./setup.ts";
 
 const nonExistentHandlerName = "non-existent";
 

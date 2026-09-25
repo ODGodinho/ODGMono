@@ -6,8 +6,8 @@ import type {
     PageChemicalXInterface,
     PageEngineInterface,
     PageOptionsLibraryInterface,
-} from "..";
-import { ODGDecorators } from "../Support/Decorators/OdgDecorators";
+} from "../index.ts";
+import { ODGDecorators } from "../Support/Decorators/OdgDecorators.ts";
 
 @ODGDecorators.getterAccess()
 export class Context<

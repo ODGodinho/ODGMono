@@ -5,7 +5,7 @@ import type {
     ContextEngineInterface,
     PageChemicalXInterface,
     PageEngineInterface,
-} from "..";
+} from "../index.ts";
 
 export type CreatePageFactoryType<
     ContextClassEngine extends ContextChemicalXInterface<ContextEngineInterface>,

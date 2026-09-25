@@ -1,3 +1,3 @@
-export * from "./index";
+export * from "./index.ts";
 
-export * from "./messages/CacheableLookup";
+export * from "./messages/CacheableLookup.ts";

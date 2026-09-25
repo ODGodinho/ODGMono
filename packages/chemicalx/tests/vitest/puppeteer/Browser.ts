@@ -1,6 +1,6 @@
 import {
     Browser as BrowserBase,
-} from "../../../src/crawler/index";
+} from "../../../src/crawler/index.ts";
 
 import type {
     BrowserClassEngine,
@@ -8,7 +8,7 @@ import type {
     ContextClassEngine,
 
     PageClassEngine,
-} from "./engine";
+} from "./engine.ts";
 
 export class Browser extends BrowserBase<
     BrowserClassEngine,

@@ -22,7 +22,7 @@ import {
     user1Data,
     user2Data,
     type UserCacheValue,
-} from "./setup";
+} from "./setup.ts";
 
 describe("Cache - Edge Cases & Special Scenarios", () => {
     let cache: Cache<TestCacheSchema>;

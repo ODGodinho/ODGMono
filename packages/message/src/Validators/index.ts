@@ -1,1 +1,1 @@
-export * from "./ProxyValidator";
+export * from "./ProxyValidator.ts";

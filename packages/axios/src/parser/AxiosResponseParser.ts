@@ -5,8 +5,8 @@ import type {
 } from "axios";
 import httpStatus from "http-status";
 
-import { AxiosParser } from "./AxiosParser";
-import { AxiosRequestParser } from "./AxiosRequestParser";
+import { AxiosParser } from "./AxiosParser.ts";
+import { AxiosRequestParser } from "./AxiosRequestParser.ts";
 
 export class AxiosResponseParser {
 

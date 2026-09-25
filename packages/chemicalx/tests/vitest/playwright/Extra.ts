@@ -1,6 +1,6 @@
-import type { Browser as BrowserBase } from "./Browser";
-import type { Context as ContextBase } from "./Context";
-import type { Page as PageBase } from "./Page";
+import type { Browser as BrowserBase } from "./Browser.ts";
+import type { Context as ContextBase } from "./Context.ts";
+import type { Page as PageBase } from "./Page.ts";
 
 declare module "playwright" {
     interface Page extends PageBase {

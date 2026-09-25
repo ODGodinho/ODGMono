@@ -1,11 +1,11 @@
 import type { LoggerParserInterface, LoggerPluginInterface } from "@odg/log";
 import type { ResponseInterface } from "@odg/message";
 
-import { JSONParserException, JSONParserUnknownException } from "../Exceptions";
-import type { LoggerObjectRequestInterface, LoggerRequestStringInterface } from "../Interfaces";
+import { JSONParserException, JSONParserUnknownException } from "../Exceptions/index.ts";
+import type { LoggerObjectRequestInterface, LoggerRequestStringInterface } from "../Interfaces/index.ts";
 
-import { JSONLogger } from "./JsonLogger";
-import { JSONLoggerString } from "./JsonLoggerString";
+import { JSONLogger } from "./JsonLogger.ts";
+import { JSONLoggerString } from "./JsonLoggerString.ts";
 
 export class RequestStringPlugin implements LoggerPluginInterface {
 

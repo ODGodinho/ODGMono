@@ -4,7 +4,7 @@ import { AxiosRequestParser } from "@odg/axios";
 import type { ProxyConfigInterface } from "@odg/message";
 import type { AxiosRequestConfig } from "axios";
 
-import type { TlsAxiosRequestConfigExtra, TlsRequestInterface } from "../interfaces/TlsOptionsInterface";
+import type { TlsAxiosRequestConfigExtra, TlsRequestInterface } from "../interfaces/TlsOptionsInterface.ts";
 
 export class TlsAxiosRequestParser extends AxiosRequestParser {
 

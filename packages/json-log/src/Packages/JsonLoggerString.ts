@@ -5,7 +5,7 @@ import type {
     GitLoggerInterface,
     LoggerRequestStringInterface,
     LoggerStringInterface,
-} from "..";
+} from "../index.ts";
 
 export class JSONLoggerString {
 

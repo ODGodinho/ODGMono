@@ -1,5 +1,5 @@
-import type { ProxyAuthInterface, ProxyObjectInterface } from "./interfaces";
-import { ProxyValidator } from "./Validators/ProxyValidator";
+import type { ProxyAuthInterface, ProxyObjectInterface } from "./interfaces/index.ts";
+import { ProxyValidator } from "./Validators/ProxyValidator.ts";
 
 /**
  * Proxy manager for handling proxy configurations.

@@ -1,4 +1,4 @@
-import { ContainerMetadataClass } from "./ContainerMetadataClass";
+import { ContainerMetadataClass } from "./ContainerMetadataClass.ts";
 
 describe("Container Test", () => {
     test("Test new Container", async () => {

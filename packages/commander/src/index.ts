@@ -9,7 +9,7 @@ import MakeFile, {
     type MakeListenerOptions,
     type MakePageOptions,
     type MakeSelectorOptions,
-} from "./Generators/MakeFile";
+} from "./Generators/MakeFile.ts";
 
 const make = new MakeFile(new ConsoleLogger());
 

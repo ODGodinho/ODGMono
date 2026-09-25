@@ -1,3 +1,3 @@
-export * from "./CacheIteratorException";
+export * from "./CacheIteratorException.ts";
 
-export * from "./CacheHandlerException";
+export * from "./CacheHandlerException.ts";

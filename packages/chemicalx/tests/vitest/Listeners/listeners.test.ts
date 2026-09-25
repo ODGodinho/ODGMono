@@ -2,7 +2,7 @@ import { TypedContainer } from "@inversifyjs/strongly-typed";
 
 import { ODGDecorators } from "#app";
 
-import { ExampleEventListeners } from "./ExampleEventListeners";
+import { ExampleEventListeners } from "./ExampleEventListeners.ts";
 
 describe("Container Test", () => {
     test("Test event listner notation", async () => {

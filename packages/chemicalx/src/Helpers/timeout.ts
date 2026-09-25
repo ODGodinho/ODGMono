@@ -4,7 +4,7 @@ import type {
     TimeoutOptionsInterface,
 } from "#interfaces";
 
-import { sleep } from "./sleep";
+import { sleep } from "./sleep.ts";
 
 export async function timeout<ReturnType>(
     options: TimeoutOptionsInterface<ReturnType>,

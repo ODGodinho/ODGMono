@@ -1,4 +1,4 @@
-import type { ExceptionObjectLoggerInterface, JSONParserUnknownException } from "..";
+import type { ExceptionObjectLoggerInterface, JSONParserUnknownException } from "../src/index.ts";
 
 export type ExceptionType = {
     data: Partial<ExceptionObjectLoggerInterface>;

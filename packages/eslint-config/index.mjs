@@ -334,7 +334,7 @@ export default defineConfig([
     ...getOwnBarrelImportBlocks(),
 
     {
-        files: [ "src/Configs/**/*.ts", "src/app/Configs/**/*.ts", "src/app/Container.ts" ],
+        files: [ "src/Configs/**/*.ts", "src/app/Configs/**/*.ts", "src/app/Container.ts", "environment.ts" ],
         rules: {
             "n/no-process-env": [ "off" ],
         },

@@ -3,7 +3,7 @@ import { type Mock, vi } from "vitest";
 
 import type { HandlerSolutionType } from "#interfaces";
 
-import { ExampleSolutionReturnErrorHandler } from "./mocks/ExampleSolutionReturnErrorHandler";
+import { ExampleSolutionReturnErrorHandler } from "./mocks/ExampleSolutionReturnErrorHandler.ts";
 
 describe("Handler Retry tests", () => {
     let handler: ExampleSolutionReturnErrorHandler;

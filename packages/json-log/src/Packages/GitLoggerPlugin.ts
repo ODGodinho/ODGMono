@@ -1,9 +1,9 @@
 import type { LoggerParserInterface, LoggerPluginInterface } from "@odg/log";
 
-import { JSONParserException } from "../Exceptions";
-import type { GitLoggerInterface } from "../Interfaces";
+import { JSONParserException } from "../Exceptions/index.ts";
+import type { GitLoggerInterface } from "../Interfaces/index.ts";
 
-import { JSONLogger } from "./JsonLogger";
+import { JSONLogger } from "./JsonLogger.ts";
 
 const gitDescribeCommand = "git describe --tags --abbrev=41";
 const gitRevParseCommand = "git rev-parse --abbrev-ref HEAD";

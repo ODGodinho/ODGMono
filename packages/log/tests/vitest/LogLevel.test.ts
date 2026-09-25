@@ -1,4 +1,4 @@
-import { LogLevel } from "../../src/index";
+import { LogLevel } from "../../src/index.ts";
 
 describe("LogLevel.test.ts", () => {
     test("Test LogLevel Enum Object", async () => {

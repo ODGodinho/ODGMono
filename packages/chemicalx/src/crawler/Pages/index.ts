@@ -1,3 +1,3 @@
-export * from "./BasePage";
+export * from "./BasePage.ts";
 
-export * from "./Components/BaseComponentPage";
+export * from "./Components/BaseComponentPage.ts";

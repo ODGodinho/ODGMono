@@ -1,3 +1,3 @@
-export * from "./JsonParserUnknownException";
+export * from "./JsonParserUnknownException.ts";
 
-export * from "./JsonParserException";
+export * from "./JsonParserException.ts";

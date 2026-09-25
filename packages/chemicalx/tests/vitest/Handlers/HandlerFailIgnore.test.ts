@@ -1,6 +1,6 @@
 import { type Mock, vi } from "vitest";
 
-import { FailedIgnoreHandler } from "./mocks/FailedIgnoreHandler";
+import { FailedIgnoreHandler } from "./mocks/FailedIgnoreHandler.ts";
 
 describe("Handler Attempt", () => {
     let handler: FailedIgnoreHandler;

@@ -7,9 +7,9 @@ import type {
     Page,
 } from "playwright";
 
-import type { Browser as BrowserClass } from "./Browser";
-import type { Context as ContextClass } from "./Context";
-import type { Page as PageClass } from "./Page";
+import type { Browser as BrowserClass } from "./Browser.ts";
+import type { Context as ContextClass } from "./Context.ts";
+import type { Page as PageClass } from "./Page.ts";
 
 export type BrowserTypeEngine = BrowserType;
 

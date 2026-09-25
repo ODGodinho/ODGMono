@@ -1,3 +1,3 @@
-export * from "./BrowserException";
+export * from "./BrowserException.ts";
 
-export * from "./BrowserInstanceException";
+export * from "./BrowserInstanceException.ts";

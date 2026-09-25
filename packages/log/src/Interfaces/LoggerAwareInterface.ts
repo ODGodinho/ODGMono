@@ -1,4 +1,4 @@
-import type { LoggerInterface } from "./LoggerInterface";
+import type { LoggerInterface } from "./LoggerInterface.ts";
 
 /**
  * Describes a logger-aware instance.

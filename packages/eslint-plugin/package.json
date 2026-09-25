@@ -2,8 +2,15 @@
     "name": "@odg/eslint-plugin",
     "version": "0.0.0",
     "description": "ODG Linter custom rules plugins",
-    "main": "index.js",
+    "type": "module",
+    "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
     "homepage": "",
     "scripts": {
         "build": "rimraf dist/ && bun run tsc:build && bun run tsc:alias",
@@ -24,7 +31,6 @@
     },
     "files": [
         "./dist/",
-        "./index.js",
         "./README.md"
     ],
     "author": "Dragons Gamers <https://www.linkedin.com/in/victor-alves-odgodinho>",

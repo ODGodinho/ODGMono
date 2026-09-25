@@ -1,4 +1,4 @@
-import { Arr } from "../../../../src";
+import { Arr } from "../../../../src/index.ts";
 
 describe("Cloneable", () => {
     test("Clone", async () => {

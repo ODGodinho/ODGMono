@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ProxyManager, type ProxyObjectInterface } from "../../src";
+import { ProxyManager, type ProxyObjectInterface } from "../../src/index.ts";
 
 const proxyHost = "proxy.example.com";
 

@@ -10,7 +10,7 @@ import type {
     CreateContextFactoryType,
     CreatePageFactoryType,
     PageEngineInterface,
-} from ".";
+} from "./index.ts";
 
 @ODGDecorators.getterAccess()
 export class Browser<

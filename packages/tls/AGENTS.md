@@ -32,5 +32,5 @@
 
 - Sem import de `@odg/tls`, o parser de exceção TLS não roda; erros permanecem no formato anterior ao parse.
 - Headers `poptls-*` são detalhe de transporte; não duplicar ou conflitar manualmente sem motivo.
-- `TlsAxiosRequestConfigExtra` referencia `@odg/axios/dist/interfaces` nos `.d.ts` — acoplamento de tipos ao layout do pacote Axios ODG.
+- `TlsAxiosRequestConfigExtra` depende de `AxiosRequestConfigExtra` exportado pela raiz de `@odg/axios`; imports de `@odg/*/dist/...` não são suportados (bloqueados pelo `exports`).
 - README exemplifica proxy local; validar URL e `allowRedirect` contra o servidor TLS real em cada ambiente.

@@ -1,6 +1,6 @@
 import type { HttpHeadersInterface } from "@odg/message";
 
-import { AxiosMessage } from "../../src/AxiosMessage";
+import { AxiosMessage } from "../../src/AxiosMessage.ts";
 
 describe("Intercept Eject", () => {
     test("Teste Eject intercept header", async () => {

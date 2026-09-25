@@ -1,8 +1,8 @@
 import type { Exception } from "@odg/exception";
 
-import type { MessageResponse } from "../messages/MessageResponse";
+import type { MessageResponse } from "../messages/MessageResponse.ts";
 
-import type { RequestInterface } from "./request";
+import type { RequestInterface } from "./request.ts";
 
 export type onFulfilledType<Data> = (value: Data) => Data | Promise<Data>;
 

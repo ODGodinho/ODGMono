@@ -1,6 +1,6 @@
 import { MessageException } from "@odg/message";
 
-import { AxiosMessage } from "../../src";
+import { AxiosMessage } from "../../src/index.ts";
 
 describe("Axios Default Params test", () => {
     test("Test Create default", async () => {

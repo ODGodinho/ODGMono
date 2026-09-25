@@ -1,6 +1,6 @@
 import { JSONLoggerPlugin } from "#app";
 
-import exceptionsCascade from "../../Helpers/exceptions-cascade";
+import exceptionsCascade from "../../Helpers/exceptions-cascade.ts";
 
 describe("Test Previous Exception Parser", () => {
     test("Test Base Exception Limit 3", async () => {

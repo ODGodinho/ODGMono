@@ -1,6 +1,6 @@
-import { MessageException } from "./MessageException";
-import { MessageResponse } from "./MessageResponse";
-import { MessageUnknownException } from "./MessageUnknownException";
+import { MessageException } from "./MessageException.ts";
+import { MessageResponse } from "./MessageResponse.ts";
+import { MessageUnknownException } from "./MessageUnknownException.ts";
 
 export abstract class ODGMessage {
 

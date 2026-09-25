@@ -3,7 +3,7 @@ import { vi } from "vitest";
 import { ConsoleLogger, LogLevel } from "#app";
 import { Logger } from "#app/loggers/Logger";
 
-import { TestPluginLogger } from "./TestPluginLogger";
+import { TestPluginLogger } from "./TestPluginLogger.ts";
 
 describe("Logger class test", () => {
     const logger = new Logger();

@@ -1,6 +1,6 @@
-import type { LogLevel } from "../Enums/LogLevel";
+import type { LogLevel } from "../Enums/LogLevel.ts";
 
-import type { ContextType } from "./LoggerInterface";
+import type { ContextType } from "./LoggerInterface.ts";
 
 /**
  * Logger Plugin return parser

@@ -6,9 +6,9 @@ import {
     type InternalAxiosRequestConfig,
 } from "axios";
 
-import "../../src/register";
-import { AxiosMessage } from "../../src/AxiosMessage";
-import { AxiosResponseParser } from "../../src/parser/AxiosResponseParser";
+import "../../src/register.ts";
+import { AxiosMessage } from "../../src/AxiosMessage.ts";
+import { AxiosResponseParser } from "../../src/parser/AxiosResponseParser.ts";
 
 describe("AxiosMessage", () => {
     const headerName = "teste";

@@ -24,7 +24,7 @@ import {
     user1Data,
     user2Data,
     user3Data,
-} from "./setup";
+} from "./setup.ts";
 
 const nonExistentHandlerName = "non-existent";
 const callbackFailedMessage = "Callback failed";

@@ -1,4 +1,4 @@
-import type { EventObjectType } from ".";
+import type { EventObjectType } from "./index.ts";
 
 /**
  * Event Listeners interface
