@@ -385,6 +385,15 @@ export default {
         "unicorn/prefer-math-constants": [ "error" ], // Use Math.PI nao 3.14
         "unicorn/prefer-promise-with-resolvers": [ "error" ], // Use Promise.withResolvers ao invés de new Promise
         "unicorn/prefer-while-loop-condition": [ "error" ], // Prefira while com condição ao invés de if break
+        "unicorn/prefer-combined-guards": [
+            "error",
+            { checkMultiStatementBodies: true },
+        ], // Prefira combined guards ao invés de vários ifs
+        "unicorn/prefer-iterator-zip": [ "error" ], // Prefira iterator zip ao invés de Math.min(...array)
+        "unicorn/prefer-json-import": [ "error" ], // Use import JSON
+        "unicorn/prefer-temporal-conversion": [ "error" ], // Use Temporal .toInstant() no lugar de Temporal.Instant
+        "unicorn/no-using-resource-escape": [ "error" ],
+        "unicorn/prefer-uint8array-hex": [ "error" ], // Unit prefer toHex
         "no-shadow": [ "error" ], // Erro caso ja esteja declarado escopo a cima
         "no-delete-var": [ "error" ], // Não delete variáveis
         "no-lone-blocks": [ "error" ], // Não crie bloco desnecessários

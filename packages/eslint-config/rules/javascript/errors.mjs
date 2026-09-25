@@ -13,6 +13,9 @@ export default {
         // "promise/spec-only": [ "error" ], // Promise bloqueia itens nao existentes // ? Promise.try not working
         "promise/valid-params": [ "error" ], // Promise valida parâmetros
         "unicorn/no-unsafe-property-key": [ "error" ], // Não use tipos inválidos como chave de propriedade
+        "unicorn/no-unused-iterator-helper": [ "error" ], // Não use iterator helper que nao salva retorno
+        "unicorn/no-unused-builtin-method-return": [ "error" ], // Não use builtin method que nao salva retorno
+        "unicorn/no-useless-set-construction": [ "error" ], // Não use set desnecessários
         /*
          * "import/namespace": [ "error" ], // Import namespace errors // ? slower
          */

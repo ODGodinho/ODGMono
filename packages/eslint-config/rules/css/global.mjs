@@ -23,5 +23,14 @@ export default {
         "unicorn/no-shorthand-property-overrides": [ "error" ], // Faça CSS override na ordem certa
         "unicorn/no-transition-all": [ "error" ], // Não use transition all CSS
         "unicorn/prefer-explicit-viewport-units": [ "error" ], // Use unidades de viewport explicitas
+        "unicorn/no-deprecated-css-features": [ "error" ], // Não use features CSS depreciadas
+        "unicorn/no-unscoped-css-nesting-selector": [ "error" ], // Não use selector CSS '& .class' sem escopo
+        "unicorn/no-duplicate-css-selectors": [ "error" ], // Não use seletores CSS duplicados
+        "unicorn/no-unknown-pseudo-selectors": [ "error" ], // Não use pseudo-selectors CSS desconhecidos
+        "unicorn/no-invalid-media-features": [ "error" ], // Não use media features CSS inválidas
+        "unicorn/no-unknown-css-annotations": [ "error" ], // Não use annotations CSS desconhecidos
+        "unicorn/prefer-media-feature-range-syntax": [ "error" ], // Use range syntax para media features
+        "unicorn/no-duplicate-font-family-names": [ "error" ], // Não use font-family duplicado
+        "unicorn/no-redundant-nested-style-rules": [ "error" ], // Não use & {} desnecessários
     },
 };
