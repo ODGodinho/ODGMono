@@ -22,11 +22,7 @@ async function fileExists(filePath) {
 async function checkCwdEslint() {
     const cwdNodeModulesEslint = resolve(process.cwd(), ESLINT_CLI_RELATIVE_PATH);
 
-    if (await fileExists(cwdNodeModulesEslint)) {
-        return cwdNodeModulesEslint;
-    }
-
-    return null;
+    return await fileExists(cwdNodeModulesEslint) ? cwdNodeModulesEslint : null;
 }
 
 async function checkAncestorEslint() {
@@ -53,11 +49,7 @@ async function checkLocalEslint() {
     const packageDirectory = import.meta.dirname;
     const localNodeModulesEslint = resolve(packageDirectory, ESLINT_CLI_RELATIVE_PATH);
 
-    if (await fileExists(localNodeModulesEslint)) {
-        return localNodeModulesEslint;
-    }
-
-    return null;
+    return await fileExists(localNodeModulesEslint) ? localNodeModulesEslint : null;
 }
 
 async function checkPnpmEslint() {

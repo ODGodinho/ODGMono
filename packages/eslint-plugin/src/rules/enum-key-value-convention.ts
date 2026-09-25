@@ -29,9 +29,7 @@ export function isConstCase(value: string): boolean {
 }
 
 export function isKeyValid(key: string, convention: KeyConvention): boolean {
-    if (convention === "PASCAL_CASE") return isPascalCase(key);
-
-    return isConstCase(key);
+    return (convention === "PASCAL_CASE" ? isPascalCase : isConstCase)(key);
 }
 
 export function toDotCase(key: string): string {
@@ -54,9 +52,7 @@ export function toDotCase(key: string): string {
 }
 
 export function isValueValid(key: string, value: string, convention: ValueConvention): boolean {
-    if (convention === "MIRROR_KEY") return value === key;
-
-    return value === toDotCase(key);
+    return value === (convention === "MIRROR_KEY" ? key : toDotCase(key));
 }
 
 export function getEnumMemberKey(member: TSESTree.TSEnumMember): string | undefined {
@@ -70,11 +66,9 @@ export function getEnumMemberValue(member: TSESTree.TSEnumMember): string | unde
 
     if (!initializer) return undefined;
 
-    if (initializer.type === AST_NODE_TYPES.Literal && typeof initializer.value === "string") {
-        return initializer.value;
-    }
-
-    return undefined;
+    return initializer.type === AST_NODE_TYPES.Literal && typeof initializer.value === "string"
+        ? initializer.value
+        : undefined;
 }
 
 export function checkEnumMember(
@@ -102,24 +96,26 @@ export function checkEnumMember(
         return;
     }
 
-    if (!isValueValid(key, value, convention.value)) {
-        const expected = convention.value === "MIRROR_KEY" ? key : toDotCase(key);
-        const expectation = convention.value === "MIRROR_KEY"
-            ? "mirror its key"
-            : "be the dot.case transformation of its key";
-
-        context.report({
-            node: member,
-            messageId: "invalidValue",
-            data: {
-                enumName,
-                key,
-                value,
-                expected,
-                expectation,
-            },
-        });
+    if (isValueValid(key, value, convention.value)) {
+        return;
     }
+
+    const expected = convention.value === "MIRROR_KEY" ? key : toDotCase(key);
+    const expectation = convention.value === "MIRROR_KEY"
+        ? "mirror its key"
+        : "be the dot.case transformation of its key";
+
+    context.report({
+        node: member,
+        messageId: "invalidValue",
+        data: {
+            enumName,
+            key,
+            value,
+            expected,
+            expectation,
+        },
+    });
 }
 
 export const rule = createRule<Options, "invalidKey" | "invalidValue">({

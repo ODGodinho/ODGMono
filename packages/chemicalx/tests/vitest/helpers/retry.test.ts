@@ -55,13 +55,7 @@ describe("Retry Test", () => {
         const testCallback = vi.fn(() => {
             throw errorInstance;
         });
-        const when = vi.fn((_exception, times) => {
-            if (times === 3) {
-                return RetryAction.Throw;
-            }
-
-            return RetryAction.Default;
-        });
+        const when = vi.fn((_exception, times) => RetryAction[times === 3 ? "Throw" : "Default"]);
 
         await expect(retry({
             "times": 5,

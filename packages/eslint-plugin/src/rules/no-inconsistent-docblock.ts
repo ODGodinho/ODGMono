@@ -19,9 +19,7 @@ export function doesReturnNotMatch(
     const parameterTypeRange = codeReturn.typeAnnotation.range;
     const unionTokenReturn = content.slice(parameterTypeRange[0], parameterTypeRange[1]);
 
-    if (!docblockParameter[0]) return false;
-
-    return unionTokenReturn !== docblockParameter[0].type;
+    return docblockParameter[0] ? unionTokenReturn !== docblockParameter[0].type : false;
 }
 
 export function doesParameterNotMatch(

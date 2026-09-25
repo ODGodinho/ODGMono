@@ -265,11 +265,11 @@ export class Str implements CloneableInterface, NativeInterface<string> {
             .replaceAll(/[^0-9A-Za-z]+/g, " ")
             .trim();
 
-        if (!normalized) return [];
-
         return normalized
-            .toLowerCase()
-            .split(/\s+/);
+            ? normalized
+                .toLowerCase()
+                .split(/\s+/)
+            : [];
     }
 
 }

@@ -123,9 +123,7 @@ export class Exception extends Error {
      * @returns {string}
      */
     private static messageToString(message: unknown): string {
-        if (typeof message === "string") return message;
-
-        return JSON.stringify(message);
+        return typeof message === "string" ? message : JSON.stringify(message);
     }
 
     private static parseObject<T extends Record<string, unknown>>(exception: T): Exception & T {
@@ -150,14 +148,12 @@ export class Exception extends Error {
     }
 
     private static getExceptionClass(exception: unknown): typeof Exception {
-        if (
-            exception
+        return exception
             && typeof exception === "object"
             && "name" in exception
             && exception.name === "AbortError"
-        ) return AbortException;
-
-        return UnknownException;
+            ? AbortException
+            : UnknownException;
     }
 
 }

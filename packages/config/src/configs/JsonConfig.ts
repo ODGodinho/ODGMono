@@ -27,11 +27,7 @@ export class JsonConfig<
             return this.configs![$key];
         }
 
-        if ($default !== undefined) {
-            return Promise.resolve($default());
-        }
-
-        return this.configs![$key];
+        return $default === undefined ? this.configs![$key] : Promise.resolve($default());
     }
 
     public async all(): Promise<ConfigTypes> {

@@ -115,22 +115,14 @@ export abstract class BaseHandler<
                 ++this.currentAttempt;
                 const waitHandler = await this.waitForHandler();
 
-                if (waitHandler instanceof Exception) {
-                    return waitHandler;
-                }
-
-                return waitHandler.call(this);
+                return waitHandler instanceof Exception ? waitHandler : waitHandler.call(this);
             },
             times: await this.attempt(),
             sleep: await this.sleep?.(),
             when: this.retrying?.bind(this),
         });
 
-        if (handlerSolution === RetryAction.Retry) {
-            return this.executeHandlerFunction();
-        }
-
-        return handlerSolution;
+        return handlerSolution === RetryAction.Retry ? this.executeHandlerFunction() : handlerSolution;
     }
 
     /**

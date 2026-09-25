@@ -29,11 +29,7 @@ describe("KeyvCacheHandler - Batch Operations", () => {
     });
 
     function getStoreKey(key: string): string {
-        if (!keyv.useKeyPrefix || !keyv.namespace) {
-            return key;
-        }
-
-        return `${keyv.namespace}:${key}`;
+        return !keyv.useKeyPrefix || !keyv.namespace ? key : `${keyv.namespace}:${key}`;
     }
 
     async function writeRawStoreValue(key: string, value: unknown): Promise<void> {

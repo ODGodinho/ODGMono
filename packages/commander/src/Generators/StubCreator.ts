@@ -74,11 +74,9 @@ export default class StubCreator {
         const stubPathLocal = `${nodePath.resolve("./stubs")}/${name}.stub`;
         const fileInstance = new File(stubPathLocal);
 
-        if (await fileInstance.exists()) {
-            return nodePath.resolve("./stubs");
-        }
-
-        return nodePath.join(process.cwd(), "node_modules/@odg/command/stubs");
+        return await fileInstance.exists()
+            ? nodePath.resolve("./stubs")
+            : nodePath.join(process.cwd(), "node_modules/@odg/command/stubs");
     }
 
     private async appendToIndexIfExists(indexFile: string, name: string): Promise<void> {

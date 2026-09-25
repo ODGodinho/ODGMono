@@ -9,11 +9,7 @@ export class StringMessageFormatter {
     public format(message: JSONLogFormattable): string {
         if (message.request) return this.formatRequester(message);
 
-        if (message.exception) {
-            return `${ansis.whiteBright.bold("Exception -")} ${message.exception.stack}`;
-        }
-
-        return formatUnknown(message.message || message);
+        return message.exception ? `${ansis.whiteBright.bold("Exception -")} ${message.exception.stack}` : formatUnknown(message.message || message);
     }
 
     private formatRequester(message: JSONLogFormattable): string {
@@ -43,9 +39,7 @@ export class StringMessageFormatter {
 
         const httpStatus2XX = 200;
 
-        if (statusCode >= httpStatus2XX) return "#00FF00";
-
-        return "#FFA500";
+        return statusCode >= httpStatus2XX ? "#00FF00" : "#FFA500";
     }
 
 }

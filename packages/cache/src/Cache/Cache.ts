@@ -53,11 +53,7 @@ export class Cache<CacheType extends object> implements CacheInterface<CacheType
     ): Promise<CacheType[K] | undefined> {
         const value = await this.getFirstValueFromHandlers(key);
 
-        if (value !== undefined) {
-            return value;
-        }
-
-        return defaultValue?.();
+        return value ?? defaultValue?.();
     }
 
     public async set<K extends keyof CacheType>(
@@ -80,11 +76,7 @@ export class Cache<CacheType extends object> implements CacheInterface<CacheType
     ): Promise<boolean> {
         const hasKey = await this.has(key);
 
-        if (hasKey) {
-            return false;
-        }
-
-        return this.set(key, value, ttl);
+        return !hasKey && this.set(key, value, ttl);
     }
 
     public async remember<K extends keyof CacheType>(

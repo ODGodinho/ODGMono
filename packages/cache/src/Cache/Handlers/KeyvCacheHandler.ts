@@ -94,11 +94,9 @@ export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerI
             return false;
         }
 
-        if (Object.hasOwn(record, "expires")) {
-            return Object.keys(record).length === keyvEnvelopeWithExpiresKeys;
-        }
-
-        return Object.keys(record).length === keyvEnvelopeWithoutExpiresKeys;
+        return Object.hasOwn(record, "expires")
+            ? Object.keys(record).length === keyvEnvelopeWithExpiresKeys
+            : Object.keys(record).length === keyvEnvelopeWithoutExpiresKeys;
     }
 
     private normalizeRawGetValue(value: unknown): unknown {
@@ -106,11 +104,7 @@ export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerI
             return undefined;
         }
 
-        if (this.isKeyvEnvelope(value)) {
-            return value.value;
-        }
-
-        return value;
+        return this.isKeyvEnvelope(value) ? value.value : value;
     }
 
 }

@@ -20,8 +20,7 @@ export function isJSONLogFormattable(message: unknown): message is JSONLogFormat
 
     const messageTyped = message as Record<string, unknown>;
 
-    if (typeof messageTyped.index !== "string") return false;
-    if (typeof messageTyped.message !== "string") return false;
-
-    return typeof messageTyped.request === "object" || !messageTyped.request;
+    return typeof messageTyped.index === "string"
+        && typeof messageTyped.message === "string"
+        && (typeof messageTyped.request === "object" || !messageTyped.request);
 }

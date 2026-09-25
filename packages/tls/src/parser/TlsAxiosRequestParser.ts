@@ -86,11 +86,7 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
     private static getUrlParams<RequestD = unknown>(
         options: Partial<TlsRequestInterface<RequestD>>,
     ): string {
-        if (!options.params) {
-            return "";
-        }
-
-        return `?${querystring.stringify(options.params as Record<string, string>)}`;
+        return options.params ? `?${querystring.stringify(options.params as Record<string, string>)}` : "";
     }
 
     private static getProxyUrl(proxy: ProxyConfigInterface | false | undefined): string | undefined {
@@ -98,11 +94,7 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
 
         const proxyPort = proxy.port ? `:${proxy.port}` : "";
 
-        if (proxy.auth?.username) {
-            return `${proxy.protocol}://${proxy.auth.username}:${proxy.auth.password}@${proxy.host}${proxyPort}`;
-        }
-
-        return `${proxy.protocol}://${proxy.host}${proxyPort}`;
+        return proxy.auth?.username ? `${proxy.protocol}://${proxy.auth.username}:${proxy.auth.password}@${proxy.host}${proxyPort}` : `${proxy.protocol}://${proxy.host}${proxyPort}`;
     }
 
     private static isAllowRedirect<RequestD = unknown>(

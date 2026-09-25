@@ -16,11 +16,9 @@ describe("Handler Retry tests", () => {
     });
 
     test("Test Retry Solution 3 times", async () => {
-        handlerSolutionMock.mockImplementation(async () => {
-            if (handlerSolutionMock.mock.calls.length < 3) return RetryAction.Retry;
-
-            return handler.successSolution();
-        });
+        handlerSolutionMock.mockImplementation(
+            async () => handlerSolutionMock.mock.calls.length < 3 ? RetryAction.Retry : handler.successSolution(),
+        );
         handlerAttemptMock.mockImplementation(async () => Promise.resolve(4));
 
         await expect(handler.execute()).resolves.toBeUndefined();

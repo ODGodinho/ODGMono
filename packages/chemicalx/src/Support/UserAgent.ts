@@ -328,9 +328,7 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
      * @returns {string} The complete version, or only its release number.
      */
     private versionFor(versionType: UserAgentVersionType): string {
-        if (versionType === UserAgentVersionType.Full) return this.version();
-
-        return this.majorVersion();
+        return this[versionType === UserAgentVersionType.Full ? "version" : "majorVersion"]();
     }
 
     /**

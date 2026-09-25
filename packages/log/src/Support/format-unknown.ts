@@ -9,9 +9,8 @@ function describeNonJsonValue(value: unknown): string | undefined {
     if (typeof value === "function") return `[Function: ${value.name || "anonymous"}]`;
     if (typeof value === "bigint") return `${value}n`;
     if (typeof value === "symbol") return value.toString();
-    if (typeof value === "undefined") return "[undefined]";
 
-    return undefined;
+    return typeof value === "undefined" ? "[undefined]" : undefined;
 }
 
 /**

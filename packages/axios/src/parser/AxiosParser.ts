@@ -10,11 +10,9 @@ export class AxiosParser {
      * @returns {HttpHeadersInterface}
      */
     public static parseHeaders(headers?: unknown): HttpHeadersInterface {
-        if (this.isAxiosHeaders(headers) && typeof headers.toJSON === "function") {
-            return (headers.toJSON as (json: boolean) => unknown)(true) as HttpHeadersInterface;
-        }
-
-        return headers as HttpHeadersInterface;
+        return this.isAxiosHeaders(headers) && typeof headers.toJSON === "function"
+            ? ((headers.toJSON as (json: boolean) => unknown)(true) as HttpHeadersInterface)
+            : (headers as HttpHeadersInterface);
     }
 
     /**

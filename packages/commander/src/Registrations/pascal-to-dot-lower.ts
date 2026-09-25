@@ -23,9 +23,5 @@ export function resolveContainerEnumMemberValue(
     override: string | undefined,
     containerEnumMember: string,
 ): string {
-    if (override !== undefined) {
-        return override;
-    }
-
-    return pascalCaseToDotLower(containerEnumMember);
+    return override ?? pascalCaseToDotLower(containerEnumMember);
 }

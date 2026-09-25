@@ -68,9 +68,9 @@ vi.mock("node:child_process", async (importOriginal) => {
                 return Promise.resolve({ stdout: mockGitBranchStdout, stderr: emptyExecStderr });
             }
 
-            if (origCustom) return origCustom.call(origExec, command, options ?? {});
-
-            return Promise.reject(new Error("exec promisify fallback missing"));
+            return origCustom
+                ? origCustom.call(origExec, command, options ?? {})
+                : Promise.reject(new Error("exec promisify fallback missing"));
         },
     });
 
