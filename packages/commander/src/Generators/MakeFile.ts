@@ -1,7 +1,10 @@
+import { join, normalize, relative } from "node:path";
+
 import { Str } from "@odg/chemical-x";
 import type { LoggerInterface } from "@odg/log";
 
-import { registerArtifact } from "../Registrations/register.ts";
+import { registerArtifact, registerService } from "../Registrations/register.ts";
+import { didEnsureBarrelLine } from "../Registrations/ts-mutators.ts";
 import type { RegistrationTargets } from "../Registrations/types.ts";
 
 import StubCreator from "./StubCreator.ts";
@@ -71,6 +74,38 @@ export interface MakeConfigOptions extends RegistrationOptions {
 
     /** Path to the file that exports `configValidator = zod.object({...})`. */
     configValidatorPath?: string;
+}
+
+export interface MakeServiceOptions {
+    path: string;
+    testPath: string;
+    containerEnumPath: string;
+    containerInterfacePath: string;
+
+    /** The class injects something the RequestContainer binds: no scope instead of `"Singleton"`. */
+    request?: boolean;
+}
+
+export type HttpMethodType = "DELETE" | "GET" | "PATCH" | "POST" | "PUT";
+
+export interface MakeRouteOptions {
+    method: HttpMethodType;
+
+    /** HTTP path of the procedure. Default: `/<feature>` */
+    path?: string;
+
+    /** Also scaffold `<Feature>Service`, typed by the feature's Interface. */
+    service?: boolean;
+    serviceOptions: MakeServiceOptions;
+    routesPath: string;
+    validatorsPath: string;
+    interfacesPath: string;
+    testPath: string;
+}
+
+export interface MakeMiddlewareOptions {
+    path: string;
+    testPath: string;
 }
 
 export default class MakeFile {
@@ -229,6 +264,202 @@ export default class MakeFile {
         });
 
         await this.logger.info(`Exception created successfully in : ${filePath}`);
+    }
+
+    /**
+     * Service of an ODG API: enum → ContainerInterface → barrel → class, plus its unit test.
+     *
+     * @param {string} serviceName Base name, without the `Service` suffix
+     * @param {MakeServiceOptions} options Paths and scope
+     * @returns {Promise<void>}
+     */
+    public async generateService(serviceName: string, options: MakeServiceOptions): Promise<void> {
+        const name = new Str(serviceName).pascalCase().toString();
+
+        await this.stubCreator.assertAbsent(await this.serviceFiles(name, options));
+
+        const filePath = await this.createService(name, options, "service");
+
+        await this.logger.info(`Service created successfully in : ${normalize(filePath)}`);
+    }
+
+    /**
+     * Feature of an ODG API (oRPC): route file exporting only procedures, validator, interface, their
+     * barrels, the router line and a route test. Nothing is written when any file already exists.
+     *
+     * @param {string} featureName Feature name; camelCase is the router namespace
+     * @param {MakeRouteOptions} options Method, path, folders and whether to chain make:service
+     * @returns {Promise<void>}
+     */
+    public async generateRoute(featureName: string, options: MakeRouteOptions): Promise<void> {
+        const feature = new Str(featureName).camelCase().toString();
+        const name = new Str(featureName).pascalCase().toString();
+        const procedures: Record<HttpMethodType, string> = {
+            DELETE: "destroy",
+            GET: "show",
+            PATCH: "update",
+            POST: "store",
+            PUT: "update",
+        };
+        const variables = {
+            "FeatureName:UCFirst": name,
+            "FeatureName:LCFirst": feature,
+            "Procedure": procedures[options.method],
+            "Method": options.method,
+            "Path": options.path ?? `/${feature}`,
+            "TestSetupPath": this.setupPath(options.testPath),
+        };
+        const files = [
+            [ options.service ? "route-service" : "route", feature, options.routesPath ],
+            [ "route.test", `${feature}.test`, options.testPath ],
+            [ "validator", `${name}Validator`, options.validatorsPath ],
+            [ "interface", `${name}Interface`, options.interfacesPath ],
+        ] as const;
+
+        await this.stubCreator.assertAbsent([
+            ...await Promise.all(files.map(async ([ , file, path ]) => this.stubCreator.getPath(file, path))),
+            ...options.service ? await this.serviceFiles(name, options.serviceOptions) : [],
+        ]);
+
+        await Promise.all(files.map(async ([ stub, file, path ]) => this.stubCreator.write(
+            stub,
+            file,
+            path,
+            variables,
+        )));
+        await this.registerRoute(feature, name, options);
+
+        await this.logger.info([
+            `Route ${feature}.${variables.Procedure} created successfully in : ${join(options.routesPath, feature)}.ts`,
+            "The path stays in the route file; move it to src/Http/paths.ts only when a second file needs it.",
+        ].join("\n"));
+    }
+
+    /**
+     * Pipeline middleware of an ODG API (`MiddlewareInterface`), its barrel line and its test. It is
+     * **not** added to `HttpServer.create()`: its place in the array is the composer's decision, so
+     * the command prints the line and the criterion instead.
+     *
+     * @param {string} middlewareName Base name, without the `Middleware` suffix
+     * @param {MakeMiddlewareOptions} options Folders
+     * @returns {Promise<void>}
+     */
+    public async generateMiddleware(middlewareName: string, options: MakeMiddlewareOptions): Promise<void> {
+        const name = new Str(middlewareName).pascalCase().toString();
+        const className = `${name}Middleware`;
+        const variables = { MiddlewareName: name };
+
+        await this.stubCreator.assertAbsent(await Promise.all([
+            this.stubCreator.getPath(className, options.path),
+            this.stubCreator.getPath(`${className}.test`, options.testPath),
+        ]));
+
+        const filePath = await this.stubCreator.write("middleware", className, options.path, variables);
+
+        await this.stubCreator.write("middleware.test", `${className}.test`, options.testPath, variables);
+        await didEnsureBarrelLine({
+            barrelPath: join(options.path, "index.ts"),
+            line: `export * from "./${className}.js";`,
+        });
+
+        await this.logger.info([
+            `Middleware created successfully in : ${normalize(filePath)}`,
+            "Not added to the pipeline: its place is the composer's decision. In src/Http/HttpServer.ts:",
+            `    import { ${className} } from "./Middlewares/${className}.js";`,
+            `    new ${className}(),   // in the middlewares array of create()`,
+            "Above ErrorBoundaryMiddleware: its `await next()` sees every response, errors and 404 included",
+            "    (timing, logging).",
+            "Below it: only requests that reach the transports, and what it throws gets serialized",
+            "    (auth, rate limit).",
+            "Always above the transports (OpenApiDocument, Rpc, OpenApi): they answer and never call next.",
+        ].join("\n"));
+    }
+
+    /**
+     * Barrel lines of a route feature, in wiring order: contracts, the service when chained, and
+     * the router line last.
+     *
+     * @param {string} feature Router namespace (camelCase)
+     * @param {string} name PascalCase name of the feature
+     * @param {MakeRouteOptions} options Folders and whether to chain make:service
+     * @returns {Promise<void>}
+     */
+    private async registerRoute(feature: string, name: string, options: MakeRouteOptions): Promise<void> {
+        await didEnsureBarrelLine({
+            barrelPath: join(options.validatorsPath, "index.ts"),
+            line: `export * from "./${name}Validator.js";`,
+        });
+        await didEnsureBarrelLine({
+            barrelPath: join(options.interfacesPath, "index.ts"),
+            line: `export type * from "./${name}Interface.js";`,
+        });
+
+        if (options.service) {
+            await this.createService(name, options.serviceOptions, "service-route");
+        }
+
+        await didEnsureBarrelLine({
+            barrelPath: join(options.routesPath, "index.ts"),
+            line: `export * as ${feature} from "./${feature}.js";`,
+        });
+    }
+
+    private async serviceFiles(name: string, options: MakeServiceOptions): Promise<string[]> {
+        return Promise.all([
+            this.stubCreator.getPath(`${name}Service`, options.path),
+            this.stubCreator.getPath(`${name}Service.test`, options.testPath),
+        ]);
+    }
+
+    private async createService(
+        name: string,
+        options: MakeServiceOptions,
+        stub: "service-route" | "service",
+    ): Promise<string> {
+        const className = `${name}Service`;
+        const scope = options.request
+            ? {
+                ServiceScope: "",
+                ServiceScopeDoc: "No scope: a new instance per injection, built with the objects of its request",
+                TestResolver: "forRequest",
+                TestResolverCall: "()",
+            }
+            : {
+                ServiceScope: ", \"Singleton\"",
+                ServiceScopeDoc: "Singleton: one per process; drop the scope once it injects a request binding",
+                TestResolver: "container",
+                TestResolverCall: "",
+            };
+        const variables = {
+            ...scope,
+            ServiceName: name,
+            TestSetupPath: this.setupPath(options.testPath),
+        };
+
+        const filePath = await this.stubCreator.write(stub, className, options.path, variables);
+
+        await this.stubCreator.write(`${stub}.test`, `${className}.test`, options.testPath, variables);
+        await registerService({
+            className,
+            containerEnumPath: options.containerEnumPath,
+            containerInterfacePath: options.containerInterfacePath,
+        });
+        await didEnsureBarrelLine({
+            barrelPath: join(options.path, "index.ts"),
+            line: `export * from "./${className}.js";`,
+        });
+
+        return filePath;
+    }
+
+    /**
+     * Relative specifier from a test folder to `tests/setup`, where the template keeps `container.js`.
+     *
+     * @param {string} testPath Folder of the generated test
+     * @returns {string} e.g. `../../setup`
+     */
+    private setupPath(testPath: string): string {
+        return relative(testPath, "tests/setup");
     }
 
     private buildRegistrationTargets(options: RegistrationOptions): RegistrationTargets {

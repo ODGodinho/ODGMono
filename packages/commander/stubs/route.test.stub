@@ -1,0 +1,14 @@
+import { call } from "@orpc/server";
+import { describe, expect, test } from "vitest";
+
+import * as {{ FeatureName:LCFirst }} from "#http/Routes/{{ FeatureName:LCFirst }}.js";
+
+import { forRequest } from "{{ TestSetupPath }}/container.js";
+
+describe("{{ FeatureName:LCFirst }} routes", () => {
+    test("{{ Procedure }} answers with the output contract", async () => {
+        const context = { container: forRequest(), requestId: "request-1" };
+
+        expect(await call({{ FeatureName:LCFirst }}.{{ Procedure }}, {}, { context })).toEqual({});
+    });
+});

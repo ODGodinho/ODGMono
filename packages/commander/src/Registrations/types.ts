@@ -56,3 +56,20 @@ export interface ArtifactDescriptor {
     // Optional: zod validator expression for make:config
     configValidatorType?: string;
 }
+
+export interface ServiceRegistrationInterface {
+
+    /** Class name, suffix included (`ClockService`). */
+    className: string;
+    containerEnumPath: string;
+    containerInterfacePath: string;
+}
+
+export interface BarrelLineInterface {
+
+    /** Path of the `index.ts`. */
+    barrelPath: string;
+
+    /** Full export line, e.g. `export * from "./ClockService.js";`. */
+    line: string;
+}

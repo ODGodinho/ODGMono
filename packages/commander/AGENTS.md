@@ -327,6 +327,106 @@ yarn odg make:exception Login
 yarn odg make:exception RequestFailure --isUnknown
 ```
 
+## API Commands (Stanley-API layout)
+
+`make:service`, `make:route` and `make:middleware` target an ODG API (the Stanley-API template layout).
+Unlike the crawler commands they:
+
+- **always wire** (no `--register`): the wiring is the point of the command;
+- **never overwrite**: if any file they would create already exists, they abort with
+  `Nothing was written, already exists: <paths>` before writing anything;
+- are **idempotent** on the wiring: re-running after deleting a generated file recreates the file
+  and never duplicates an enum entry, an interface entry, a barrel line or a router line;
+- write barrels in the API style: `.js` extension and a blank line between exports.
+
+### make:service
+
+Purpose:
+
+- Scaffold a Service in wiring order: `ContainerName.<Name>Service = "<name>.service"` inside the
+  `// Services` section → `[ContainerName.<Name>Service]: <Name>Service;` inside `// Services` of
+  `ContainerInterface` plus the `import type ... from "#services"` → `src/app/Services/index.ts` →
+  the class → `tests/unit/Services/<Name>Service.test.ts`.
+
+Syntax:
+
+```bash
+yarn odg make:service <serviceName> [--request]
+```
+
+Flags:
+
+- `--request` → the class injects something the `RequestContainer` binds (`Request`, `RequestId`,
+  the request `Logger`): generated **without scope** (`@ODGDecorators.injectable(Name)`) and its test
+  resolves it through `forRequest()`. Default: `"Singleton"`. The docblock states which one and why.
+- `-p, --path` → Services folder. Default: `./src/app/Services/`
+- `--containerEnumPath`, `--containerInterfacePath` → same as the other `make:*` commands.
+
+Examples:
+
+```bash
+# src/app/Services/ClockService.ts (Singleton) + wiring + tests/unit/Services/ClockService.test.ts
+yarn odg make:service Clock
+
+# SessionService without scope: it depends on the request
+yarn odg make:service Session --request
+```
+
+### make:route
+
+Purpose:
+
+- Scaffold an oRPC feature: `src/Http/Routes/<feature>.ts` exporting **only procedures**,
+  `src/Validators/<Feature>Validator.ts` (namespace with `inputValidator`/`outputValidator`),
+  `src/Interfaces/<Feature>Interface.ts` (`Input`/`Output` via `zod.infer`), their barrel lines,
+  `export * as <feature> from "./<feature>.js";` in `src/Http/Routes/index.ts`, and
+  `tests/unit/Http/Routes/<feature>.test.ts`.
+
+Syntax:
+
+```bash
+yarn odg make:route <feature> [--service] [--method GET|POST|PUT|PATCH|DELETE] [--path /x]
+```
+
+Flags:
+
+- `--service` → also `make:service <Feature>`, with `execute(input: <Feature>Interface.Input)` typed by
+  the feature Interface; the route resolves it from `context.container`.
+- `--method` → Default: `GET`. Names the procedure: GET `show`, POST `store`, PUT/PATCH `update`,
+  DELETE `destroy`.
+- `--path` → HTTP path. Default: `/<feature>`. It stays in the route file; move it to
+  `src/Http/paths.ts` only when a second file needs it (a route file must export only procedures).
+
+Examples:
+
+```bash
+# Routes/order.ts (show → GET /order) + OrderValidator + OrderInterface + OrderService + tests
+yarn odg make:route order --service
+
+yarn odg make:route order --method POST --path /orders
+```
+
+### make:middleware
+
+Purpose:
+
+- Scaffold a pipeline stage: `src/Http/Middlewares/<Name>Middleware.ts` implementing
+  `MiddlewareInterface` from `@odg/http`, its barrel line and `tests/unit/Http/<Name>Middleware.test.ts`.
+
+Syntax:
+
+```bash
+yarn odg make:middleware <middlewareName>
+```
+
+Operational notes:
+
+- It does **not** edit the `middlewares` array of `HttpServer.create()`. The position is the
+  composer's decision: above `ErrorBoundaryMiddleware` the stage sees every response (errors and 404
+  included); below it, only the requests that reach the transports. The command prints the import,
+  the line to insert and this criterion.
+- No `ContainerName` entry: pipeline middlewares are built by `HttpServer.create()`, not resolved.
+
 ## Naming Rules
 
 ### Event and listener input

@@ -13,6 +13,7 @@ Treat @odg/command as a CLI contract. Choose commands from the real artifact bei
   - `Login` not `LoginHandler`
   - `Login` not `LoginEventListener`
   - `Login` not `LoginSelector`
+  - `Login` not `LoginService`
 - Examples **SHOULD** be derived from the official CLI help via `$$PM odg --help` or `$$PM odg make:* --help`.
 - If path-flag behavior is ambiguous, developers **MUST** verify the CLI help output before suggesting any split-command workaround.
 
@@ -25,9 +26,19 @@ $$PM odg make:event <Name> [flags]      # Creates EventName enum entry + payload
 $$PM odg make:listener <Name> [flags]   # Creates Listener class
 $$PM odg make:selector <Name> [flags]   # Creates Selector file
 $$PM odg make:config <Name> [flags]     # Mutates config wiring (no standalone file created)
+$$PM odg make:service <Name> [--request]                       # Service + enum (// Services) + ContainerInterface + barrel + test
+$$PM odg make:route <feature> [--service] [--method] [--path]  # API: procedures-only route + validator + interface + barrels + router line + test
+$$PM odg make:middleware <Name>                                # API: MiddlewareInterface class + barrel + test (not wired)
 ```
 
 **No command exists for Components** — they are created manually (see execution.md).
+
+### API commands (Stanley-API layout)
+
+- They always wire (no `--register`) and never overwrite: if any file they would create exists, they abort before writing anything. Re-running never duplicates an enum entry, a barrel line or a router line.
+- `make:service` is `"Singleton"` by default. Pass `--request` when the class injects anything the `RequestContainer` binds (`Request`, `RequestId`, the request `Logger`): it is generated without scope, and `Container.warm()` fails the boot if such a class is left `"Singleton"`.
+- `make:route <feature> --service` is the whole feature in one command; the procedure is named by method (GET `show`, POST `store`, PUT/PATCH `update`, DELETE `destroy`). The HTTP path stays in the route file; move it to `src/Http/paths.ts` only when a second file needs it.
+- `make:middleware` does **not** edit `HttpServer.create()`: the position in the array is the composer's decision (above `ErrorBoundaryMiddleware` it sees every response, errors included; below it, only what reaches the transports). The command prints the line and the criterion — add it by hand.
 
 ## Known Local Limitation
 

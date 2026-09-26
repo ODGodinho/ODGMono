@@ -19,6 +19,7 @@ Do not continue to business logic while the generated structure is still broken.
 3. make:handler --register when only a handler is missing.
 4. make:event --register when only the event contract (enum + EventsInterface) is missing; make:listener --register when only a listener class is missing.
 5. make:selector --register when only selectors are missing.
+6. API: make:route <feature> --service for a new procedure and its Service; make:service (`--request` if it injects a RequestContainer binding) when only the Service is missing; make:middleware for a pipeline stage, then add the printed line to `HttpServer.create()` yourself.
 
 ## Structural Validation Checklist
 

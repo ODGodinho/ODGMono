@@ -1,0 +1,9 @@
+import type * as zod from "zod";
+
+import type { {{ FeatureName:UCFirst }}Validator } from "#validators";
+
+export namespace {{ FeatureName:UCFirst }}Interface {
+    export type Input = zod.infer<typeof {{ FeatureName:UCFirst }}Validator.inputValidator>;
+
+    export type Output = zod.infer<typeof {{ FeatureName:UCFirst }}Validator.outputValidator>;
+}

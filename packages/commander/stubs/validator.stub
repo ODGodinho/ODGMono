@@ -1,0 +1,8 @@
+import * as zod from "zod";
+
+export namespace {{ FeatureName:UCFirst }}Validator {
+
+    export const inputValidator = zod.object({});
+
+    export const outputValidator = zod.object({});
+}

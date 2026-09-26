@@ -1,0 +1,25 @@
+import { ODGDecorators } from "@odg/chemical-x";
+
+import { ContainerName } from "#enums";
+import type { {{ ServiceName }}Interface } from "#interfaces";
+
+/**
+ * {{ ServiceName }} service.
+ *
+ * {{ ServiceScopeDoc }}
+ */
+@ODGDecorators.injectable(ContainerName.{{ ServiceName }}Service{{ ServiceScope }})
+export class {{ ServiceName }}Service {
+
+    /**
+     * Answers the {{ ServiceName }} route.
+     *
+     * @param {{{ ServiceName }}Interface.Input} input Input, already validated by the route
+     * @returns {Promise<{{ ServiceName }}Interface.Output>} Output the route validates and returns
+     */
+    public async execute(input: {{ ServiceName }}Interface.Input): Promise<{{ ServiceName }}Interface.Output> {
+        // Echoes the input while both validators are empty: write the orchestration here and remove this comment
+        return input;
+    }
+
+}

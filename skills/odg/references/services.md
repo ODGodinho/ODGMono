@@ -44,12 +44,12 @@ protected async runCrawler(): Promise<void> {
 
 ## Creation
 
-Services are created **manually** — no scaffold command exists.
+Use `$$PM odg make:service <Name>` (`--request` when it injects a `RequestContainer` binding). It does steps 1–5 and writes `tests/unit/Services/<Name>Service.test.ts`; only step 6 is manual. By hand, the order is:
 
-1. Create `src/app/Services/<Name>Service.ts`
-2. Add `ContainerName.<Name>Service = "<name>.service"` entry under `// Services`
-3. Add type entry in `@types/ContainerInterface.d.ts`
-4. Export from `src/app/Services/index.ts` barrel
+1. Add `ContainerName.<Name>Service = "<name>.service"` entry under `// Services`
+2. Add type entry in `@types/ContainerInterface.d.ts`
+3. Export from `src/app/Services/index.ts` barrel
+4. Create `src/app/Services/<Name>Service.ts`
 5. Decorate with `@ODGDecorators.injectable(ContainerName.<Name>Service, "Singleton")`
 6. Inject via `@$inject(ContainerName.EventBus)`, `@$inject(ContainerName.BrowserManager)`, etc.
 

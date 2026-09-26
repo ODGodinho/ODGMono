@@ -1,0 +1,9 @@
+import { {{ FeatureName:UCFirst }}Validator } from "#validators";
+
+import { base } from "../context.js";
+
+export const {{ Procedure }} = base
+    .route({ method: "{{ Method }}", path: "{{ Path }}" })
+    .input({{ FeatureName:UCFirst }}Validator.inputValidator)
+    .output({{ FeatureName:UCFirst }}Validator.outputValidator)
+    .handler(() => ({}));

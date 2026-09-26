@@ -1,0 +1,23 @@
+import type { HttpDispatchType, HttpRequestInterface, MiddlewareInterface } from "@odg/http";
+
+/**
+ * {{ MiddlewareName }} middleware.
+ *
+ * Its place in the `middlewares` array of `HttpServer.create()` is part of what it does: above
+ * `ErrorBoundaryMiddleware` its `await next(...)` sees every response, the serialized errors and
+ * the 404 included; below it, only the requests that reach the transports. Say here which one and why.
+ */
+export class {{ MiddlewareName }}Middleware implements MiddlewareInterface {
+
+    /**
+     * Hands the request down the pipeline.
+     *
+     * @param {HttpRequestInterface} context The request and its correlation id
+     * @param {HttpDispatchType} next The rest of the pipeline
+     * @returns {Promise<Response>} The response of the rest of the pipeline
+     */
+    public async handle(context: HttpRequestInterface, next: HttpDispatchType): Promise<Response> {
+        return next(context);
+    }
+
+}

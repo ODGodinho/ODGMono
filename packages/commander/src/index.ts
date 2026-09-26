@@ -1,7 +1,8 @@
 import { ConsoleLogger } from "@odg/log";
-import { program } from "commander";
+import { Option, program } from "commander";
 
 import MakeFile, {
+    type HttpMethodType,
     type MakeConfigOptions,
     type MakeEventOptions,
     type MakeExceptionOptions,
@@ -9,6 +10,7 @@ import MakeFile, {
     type MakeListenerOptions,
     type MakePageOptions,
     type MakeSelectorOptions,
+    type MakeServiceOptions,
 } from "./Generators/MakeFile.ts";
 
 const make = new MakeFile(new ConsoleLogger());
@@ -245,5 +247,77 @@ program
     .action(
         async (exceptionName: string, options: MakeExceptionOptions) => make.generateException(exceptionName, options),
     );
+
+/** Folders of an ODG API (Stanley-API template). */
+const apiLayout = {
+    services: "./src/app/Services/",
+    servicesTests: "./tests/unit/Services/",
+    routes: "./src/Http/Routes/",
+    routesTests: "./tests/unit/Http/Routes/",
+    validators: "./src/Validators/",
+    interfaces: "./src/Interfaces/",
+    middlewares: "./src/Http/Middlewares/",
+    middlewaresTests: "./tests/unit/Http/",
+};
+
+program
+    .command("make:service")
+    .name("make:service")
+    .argument("<serviceName>", "Service base name (Clock → ClockService)")
+    .option(pathOption, "Destination Service Path", apiLayout.services)
+    .option("--request", "The class injects a RequestContainer binding: no scope instead of Singleton", false)
+    .option(
+        "--containerEnumPath <containerEnumPath>",
+        "ContainerName enum path",
+        registrationDefaults.containerEnumPath,
+    )
+    .option(
+        "--containerInterfacePath <containerInterfacePath>",
+        "ContainerInterface path",
+        registrationDefaults.containerInterfacePath,
+    )
+    .description("API: Service class + ContainerName (// Services) + ContainerInterface + barrel + unit test")
+    .action(async (serviceName: string, options: Omit<MakeServiceOptions, "testPath">) => make.generateService(
+        serviceName,
+        { ...options, testPath: apiLayout.servicesTests },
+    ));
+
+program
+    .command("make:route")
+    .name("make:route")
+    .argument("<feature>", "Feature name (router namespace, camelCase: order → Routes/order.ts)")
+    .option("--service", "Also scaffold <Feature>Service (make:service), typed by the feature Interface", false)
+    .addOption(
+        new Option("--method <method>", "HTTP method of the procedure")
+            .choices([ "GET", "POST", "PUT", "PATCH", "DELETE" ])
+            .default("GET"),
+    )
+    .option("--path <path>", "HTTP path of the procedure (default: /<feature>)")
+    .description("API: oRPC route (procedures only) + validator + interface + barrels + router line + test")
+    .action(async (feature: string, options: { method: HttpMethodType; path?: string; service: boolean }) => {
+        await make.generateRoute(feature, {
+            ...options,
+            routesPath: apiLayout.routes,
+            validatorsPath: apiLayout.validators,
+            interfacesPath: apiLayout.interfaces,
+            testPath: apiLayout.routesTests,
+            serviceOptions: {
+                path: apiLayout.services,
+                testPath: apiLayout.servicesTests,
+                containerEnumPath: registrationDefaults.containerEnumPath,
+                containerInterfacePath: registrationDefaults.containerInterfacePath,
+            },
+        });
+    });
+
+program
+    .command("make:middleware")
+    .name("make:middleware")
+    .argument("<middlewareName>", "Middleware base name (RequestTiming → RequestTimingMiddleware)")
+    .description("API: pipeline MiddlewareInterface class + barrel + test; prints where to add it in HttpServer")
+    .action(async (middlewareName: string) => make.generateMiddleware(middlewareName, {
+        path: apiLayout.middlewares,
+        testPath: apiLayout.middlewaresTests,
+    }));
 
 program.parse();

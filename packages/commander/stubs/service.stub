@@ -1,0 +1,17 @@
+import { ODGDecorators } from "@odg/chemical-x";
+
+import { ContainerName } from "#enums";
+
+/**
+ * {{ ServiceName }} service.
+ *
+ * {{ ServiceScopeDoc }}
+ */
+@ODGDecorators.injectable(ContainerName.{{ ServiceName }}Service{{ ServiceScope }})
+export class {{ ServiceName }}Service {
+
+    public async execute(): Promise<void> {
+        // Write the orchestration here and remove this comment
+    }
+
+}

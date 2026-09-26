@@ -1,0 +1,13 @@
+import { describe, expect, test } from "vitest";
+
+import { ContainerName } from "#enums";
+
+import { {{ TestResolver }} } from "{{ TestSetupPath }}/container.js";
+
+describe("{{ ServiceName }}Service", () => {
+    test("answers with the output contract", async () => {
+        const service = {{ TestResolver }}{{ TestResolverCall }}.get(ContainerName.{{ ServiceName }}Service);
+
+        expect(await service.execute({})).toEqual({});
+    });
+});

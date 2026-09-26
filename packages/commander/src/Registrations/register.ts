@@ -13,7 +13,7 @@ import {
     didEnsureValueNamedImport,
     didEnsureZodObjectEntry,
 } from "./ts-mutators.ts";
-import type { ArtifactDescriptor, RegistrationTargets } from "./types.ts";
+import type { ArtifactDescriptor, RegistrationTargets, ServiceRegistrationInterface } from "./types.ts";
 
 /** TypeScript path alias for the listeners barrel (see tsconfig paths). */
 const listenersTypeModuleSpecifier = "@listeners";
@@ -307,6 +307,39 @@ async function registerConfig(descriptor: ArtifactDescriptor, targets: Registrat
             propertyValue: descriptor.configValidatorType ?? "zod.string()",
         });
     }
+}
+
+/**
+ * Wires a Service the ODG API way: `ContainerName` and `ContainerInterface` entries inside their
+ * `// Services` section, and the class in the `import type ... from "#services"` of the interface.
+ *
+ * @param {ServiceRegistrationInterface} service What to wire
+ * @returns {Promise<void>}
+ */
+export async function registerService(service: ServiceRegistrationInterface): Promise<void> {
+    const section = "Services";
+
+    await didEnsureEnumMember({
+        filePath: service.containerEnumPath,
+        enumName: "ContainerName",
+        memberName: service.className,
+        memberValue: resolveContainerEnumMemberValue(undefined, service.className),
+        section,
+    });
+
+    await didEnsureTypeNamedImport({
+        filePath: service.containerInterfacePath,
+        moduleSpecifier: "#services",
+        name: service.className,
+    });
+
+    await didEnsureInterfaceProperty({
+        filePath: service.containerInterfacePath,
+        interfaceName: "ContainerInterface",
+        propertyName: `[ContainerName.${service.className}]`,
+        propertyType: service.className,
+        section,
+    });
 }
 
 export async function registerArtifact(descriptor: ArtifactDescriptor, targets: RegistrationTargets): Promise<void> {

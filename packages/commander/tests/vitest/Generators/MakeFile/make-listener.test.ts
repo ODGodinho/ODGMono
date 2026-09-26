@@ -7,7 +7,7 @@ import {
 
 import { File } from "@odg/chemical-x";
 import { NullLogger } from "@odg/log";
-import { vi } from "vitest";
+import { describe, test, vi } from "vitest";
 
 import MakeFile from "#app/Generators/MakeFile";
 

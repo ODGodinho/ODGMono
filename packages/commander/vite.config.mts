@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 const coverage100 = 100;
 const vite = defineConfig({
@@ -10,6 +10,9 @@ const vite = defineConfig({
         globals: true,
         pool: "forks",
         maxWorkers: 1,
+
+        // Fixtures of make:* write real `*.test.ts` files here.
+        exclude: [ ...configDefaults.exclude, "tests/vitest/cache/**" ],
         coverage: {
             enabled: true,
             provider: "istanbul",

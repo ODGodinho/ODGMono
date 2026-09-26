@@ -1,0 +1,16 @@
+import { describe, expect, test } from "vitest";
+
+import { ContainerName } from "#enums";
+import { {{ ServiceName }}Service } from "#services";
+
+import { {{ TestResolver }} } from "{{ TestSetupPath }}/container.js";
+
+describe("{{ ServiceName }}Service", () => {
+    test("executes", async () => {
+        const service = {{ TestResolver }}{{ TestResolverCall }}.get(ContainerName.{{ ServiceName }}Service);
+
+        await service.execute();
+
+        expect(service).toBeInstanceOf({{ ServiceName }}Service);
+    });
+});

@@ -1,0 +1,14 @@
+import { ContainerName } from "#enums";
+import { {{ FeatureName:UCFirst }}Validator } from "#validators";
+
+import { base } from "../context.js";
+
+export const {{ Procedure }} = base
+    .route({ method: "{{ Method }}", path: "{{ Path }}" })
+    .input({{ FeatureName:UCFirst }}Validator.inputValidator)
+    .output({{ FeatureName:UCFirst }}Validator.outputValidator)
+    .handler(async ({ context, input }) => {
+        const service = context.container.get(ContainerName.{{ FeatureName:UCFirst }}Service);
+
+        return service.execute(input);
+    });

@@ -1,0 +1,13 @@
+import { describe, expect, test } from "vitest";
+
+import { {{ MiddlewareName }}Middleware } from "#http/Middlewares/{{ MiddlewareName }}Middleware.js";
+
+describe("{{ MiddlewareName }}Middleware", () => {
+    test("hands the request down the pipeline", async () => {
+        const response = new Response();
+        const context = { request: new Request("http://localhost/"), requestId: "request-1" };
+        const middleware = new {{ MiddlewareName }}Middleware();
+
+        expect(await middleware.handle(context, async () => response)).toBe(response);
+    });
+});
