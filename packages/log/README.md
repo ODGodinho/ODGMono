@@ -152,6 +152,39 @@ export class ConsoleLogger extends AbstractLogger {
 }
 ```
 
+#### 🧷 Shared Context
+
+Like Laravel's `Log::withContext`: set it once and every later call carries it in its third
+parameter. A key passed by the call itself wins.
+
+In a browser, or a robot that runs one thing at a time, it belongs to the whole logger:
+
+```typescript
+const logger = new Logger();
+
+logger.withContext({ userId: "42" });
+
+await logger.info("order created");                 // context: { userId: "42" }
+await logger.info("order paid", { orderId: "42" }); // context: { userId: "42", orderId: "42" }
+```
+
+On a server, one logger serves every request: give it an `AsyncLocalStorage` and open a scope per
+request. `withContext` inside the scope reaches only that request's logs, and is gone when it ends.
+
+```typescript
+import { AsyncLocalStorage } from "node:async_hooks";
+
+const logger = new Logger({ scopes: new AsyncLocalStorage() });
+
+logger.withContext({ app: "api" });                      // outside any scope: every request
+
+await logger.scope(async () => {                         // once per request, at the entry point
+    logger.withContext({ requestId });                   // this request only
+    logger.withContext({ userId });                      // keeps adding up
+    await logger.info("paid");                           // { app, requestId, userId }
+});
+```
+
 ## 💻 Prepare To Develop
 
 Copy `.env.example` to `.env` and add the values according to your needs.

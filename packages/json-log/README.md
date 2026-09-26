@@ -90,6 +90,9 @@ logger.pushProcessor(processor);
 logger.pushProcessor(RequestStringPlugin);
 
 plugin.setIdentifier(randomUUID());
+
+// Or a function, asked again for every line: one plugin follows whichever request is logging
+plugin.setIdentifier(() => requestContext.getStore()?.requestId);
 ```
 
 #### 💌 Send Log

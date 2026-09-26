@@ -15,6 +15,12 @@ export type LoggerObjectRequestInterface = RequestInterface<unknown> & {
     response?: ResponseInterface<unknown>;
 };
 
+/**
+ * What `JSONLoggerPlugin.setIdentifier` takes: a fixed identifier, or a function asked again for
+ * every line, so one plugin can follow whichever request or job is logging.
+ */
+export type LoggerIdentifierType = string | (() => string | undefined);
+
 export interface GitLoggerInterface {
     release?: string;
     branch?: string;

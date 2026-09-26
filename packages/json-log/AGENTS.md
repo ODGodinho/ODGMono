@@ -9,8 +9,8 @@ To understand the standard structure of all logs, refer to the `LoggerObjectInte
 
 ## 📜 Contracts
 
-- `JSONLoggerPlugin(appName, maxExceptionPrevious?, instanceId?)`: `parser` replaces `message` with `JSONLogger`; `logJSON(level, message)` builds the same object; setters `setIdentifier`, `setInstance`, `setGitRelease`, `setGitBranch`.
-- Exported types: `LoggerObjectInterface`, `LoggerStringInterface`, `LoggerObjectRequestInterface`, `LoggerRequestStringInterface`, `LoggerRequestStringInterfaceOmit`, `GitLoggerInterface`, `ExceptionObjectLoggerInterface`.
+- `JSONLoggerPlugin(appName, maxExceptionPrevious?, instanceId?)`: `parser` replaces `message` with `JSONLogger`; `logJSON(level, message)` builds the same object; setters `setIdentifier`, `setInstance`, `setGitRelease`, `setGitBranch`. `setIdentifier` takes a string or a function (`LoggerIdentifierType`); a function is called again for every line, and `getIdentifier()` returns what the next line will carry.
+- Exported types: `LoggerIdentifierType`, `LoggerObjectInterface`, `LoggerStringInterface`, `LoggerObjectRequestInterface`, `LoggerRequestStringInterface`, `LoggerRequestStringInterfaceOmit`, `GitLoggerInterface`, `ExceptionObjectLoggerInterface`.
 
 ## Rules
 

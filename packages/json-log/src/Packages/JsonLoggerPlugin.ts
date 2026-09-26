@@ -15,6 +15,7 @@ import ErrorStackParser from "error-stack-parser";
 import { JSONParserUnknownException } from "../Exceptions/JsonParserUnknownException.ts";
 import type {
     ExceptionObjectLoggerInterface,
+    LoggerIdentifierType,
     LoggerObjectRequestInterface,
 } from "../Interfaces/index.ts";
 
@@ -23,11 +24,11 @@ import { JSONLogger } from "./JsonLogger.ts";
 export class JSONLoggerPlugin implements LoggerPluginInterface {
 
     /**
-     * Identifier for the current log
+     * Identifier for the current log: fixed, or a function asked again for every line
      *
-     * @type {string}
+     * @type {LoggerIdentifierType}
      */
-    protected identifier?: string;
+    protected identifier?: LoggerIdentifierType;
 
     public constructor(
         protected readonly appName: string,
@@ -68,7 +69,7 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
             instance: this.getInstance(),
             message: newMessage,
             createdAt: new Date(),
-            identifier: this.identifier,
+            identifier: this.getIdentifier(),
             exception,
             exceptionPrevious: previousException,
             request,
@@ -76,23 +77,26 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
     }
 
     /**
-     * Define a unique identifier for the current request, for
+     * Define the identifier every line carries, for
      * Example: Request ID, Transaction ID, Crawler Process, etc
      *
-     * @param {string} identifier Unique identifier
+     * A function is called again for every line instead of once: a single plugin then follows
+     * whichever request or job is logging, for example by reading an `AsyncLocalStorage`.
+     *
+     * @param {LoggerIdentifierType} identifier Unique identifier, or the function that answers it
      */
-    public setIdentifier(identifier: string): void {
+    public setIdentifier(identifier: LoggerIdentifierType): void {
         this.identifier = identifier;
     }
 
     /**
-     * Get unique identifier for the current process
+     * The identifier the next line will carry
      * Example: Request ID, Transaction ID, Crawler Process, etc
      *
      * @returns {string | undefined}
      */
     public getIdentifier(): string | undefined {
-        return this.identifier;
+        return typeof this.identifier === "function" ? this.identifier() : this.identifier;
     }
 
     /**
