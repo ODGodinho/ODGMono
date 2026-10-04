@@ -9,6 +9,7 @@ export default {
         "@typescript-eslint/no-unsafe-member-access": [ "error" ], // Não acesse any sem tipa
         "@typescript-eslint/no-unsafe-enum-comparison": [ "error" ], // Compare enum com enum
         "@typescript-eslint/no-unnecessary-parameter-property-assignment": [ "error" ], // Construtor atribui apenas 1x
+        "@typescript-eslint/no-unsafe-enum-assignment": [ "error" ], // Previne criação de enum com valor invalido
         "@typescript-eslint/no-misused-spread": [ "error" ], // Não faça ... errado
         "@typescript-eslint/no-mixed-enums": [ "error" ], // Coloque índice e value na enum
         "@typescript-eslint/no-confusing-void-expression": [ "error" ], // Não atribua void a variáveis

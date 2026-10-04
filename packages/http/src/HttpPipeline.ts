@@ -27,20 +27,6 @@ export class HttpPipeline {
     }
 
     /**
-     * Whether a header value is a usable correlation id: present, not just whitespace, and not so
-     * long it stops being an identifier. A blank id would correlate every request with every other,
-     * which is worse than generating one.
-     *
-     * @param {string | null} value Raw header value
-     * @returns {value is string} True when the value can be used as-is (after trimming)
-     */
-    private static isUsableRequestId(value: string | null): value is string {
-        const maxRequestIdLength = 200;
-
-        return value !== null && value.trim().length > 0 && value.length <= maxRequestIdLength;
-    }
-
-    /**
      * Answers one request, whatever happens inside.
      *
      * @param {Request} request The incoming request
@@ -53,6 +39,20 @@ export class HttpPipeline {
         response.headers.set(this.header, context.requestId);
 
         return response;
+    }
+
+    /**
+     * Whether a header value is a usable correlation id: present, not just whitespace, and not so
+     * long it stops being an identifier. A blank id would correlate every request with every other,
+     * which is worse than generating one.
+     *
+     * @param {string | null} value Raw header value
+     * @returns {value is string} True when the value can be used as-is (after trimming)
+     */
+    private isUsableRequestId(value: string | null): value is string {
+        const maxRequestIdLength = 200;
+
+        return value !== null && value.trim().length > 0 && value.length <= maxRequestIdLength;
     }
 
     /**
@@ -88,7 +88,7 @@ export class HttpPipeline {
     private resolveRequestId(request: Request): string {
         const candidate = request.headers.get(this.header);
 
-        return HttpPipeline.isUsableRequestId(candidate) ? candidate.trim() : crypto.randomUUID();
+        return this.isUsableRequestId(candidate) ? candidate.trim() : crypto.randomUUID();
     }
 
 }

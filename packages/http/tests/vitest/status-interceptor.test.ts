@@ -53,4 +53,14 @@ describe("statusInterceptor", () => {
 
         expect(failure).toMatchObject({ code: "SERVICE_UNAVAILABLE", status: 503 });
     });
+
+    test("a thrown value that is not an Error is stringified into the message", async () => {
+        const thrown = await intercept({ statusCode: httpStatus.BAD_REQUEST });
+
+        expect(thrown).toMatchObject({ message: "[object Object]", status: httpStatus.BAD_REQUEST });
+    });
+
+    test("throw null is rethrown untouched", async () => {
+        expect(await intercept(null)).toBeNull();
+    });
 });

@@ -56,4 +56,14 @@ describe("CorsMiddleware", () => {
         expect(response.headers.get(allowOriginHeader)).toBeNull();
         expect(response.headers.get("vary")).toBe("Origin");
     });
+
+    test("a preflight that asks for no headers gets no allow-headers", async () => {
+        const response = await run(middleware, createRequest(path, {
+            method: "OPTIONS",
+            headers: { origin, "access-control-request-method": "GET" },
+        }));
+
+        expect(response.status).toBe(httpStatus.NO_CONTENT);
+        expect(response.headers.has("access-control-allow-headers")).toBe(false);
+    });
 });

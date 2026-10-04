@@ -1,4 +1,4 @@
-import { ConsoleLogger, LogLevel, type LogLevelType } from "#app";
+import { ConsoleLogger, LogLevel, type LogLevelType } from "../../src/index.js";
 
 describe("ConsoleLogger.test.ts", () => {
     const consoleLogger = new ConsoleLogger();
@@ -14,7 +14,7 @@ describe("ConsoleLogger.test.ts", () => {
     }
 
     test("UnknownLevel", async () => {
-        const level = "unknown" as LogLevel;
+        const level = "unknown" as unknown as LogLevel;
 
         await expect(consoleLogger.log(level, "anything")).resolves.toBeUndefined();
     });

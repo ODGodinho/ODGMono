@@ -91,4 +91,22 @@ describe("oRPC surfaces", () => {
 
         expect(response.status).toBe(httpStatus.INTERNAL_SERVER_ERROR);
     });
+
+    test("a path outside every prefix, or unmatched under /rpc, reaches the pipeline's 404", async () => {
+        const elsewhere = await pipeline.fetch(createRequest("/elsewhere"));
+        const rpcUnknown = await pipeline.fetch(createRequest("/rpc/nope", { method: "POST", body: "{}" }));
+
+        expect(elsewhere.status).toBe(httpStatus.NOT_FOUND);
+        expect(rpcUnknown.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    test("RpcMiddleware takes the interceptors it is given", async () => {
+        const bare = new HttpPipeline({
+            middlewares: [ new RpcMiddleware(router, { context: createContext, interceptors: [] }) ],
+        });
+
+        const response = await bare.fetch(createRequest("/rpc/ping", { method: "POST", body: "{}" }));
+
+        expect(response.status).toBe(httpStatus.OK);
+    });
 });
