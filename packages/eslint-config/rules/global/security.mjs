@@ -17,6 +17,7 @@ export default {
         "security/detect-non-literal-require": [ "error" ], // Require Protect
         "security/detect-possible-timing-attacks": [ "error" ], // Previne Tokens no código
         "security/detect-bidi-characters": [ "error" ], // Anti Trojan code program
+        "security/detect-invisible-characters": [ "error" ], // Não use caracteres invisíveis
         "import/no-dynamic-require": [ "error", { "esmodule": true } ], // Sem import dinâmicos
         "no-prototype-builtins": [ "error" ], // Object.prototype.hasOwnProperty.call no lugar obj.hasOwnProperty
         "sonarjs/aws-apigateway-public-api": [ "error" ], // Bloqueia API Gateway público

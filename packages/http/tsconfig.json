@@ -1,0 +1,24 @@
+{
+    "extends": "@odg/tsconfig/tsconfig.node.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "tsBuildInfoFile": "dist/tsconfig.build.tsbuildinfo",
+        "rootDir": ".",
+
+        /*
+         * TODO [2027-03-01]: revisit. Removing it surfaces errors inside `@orpc/*` and
+         * `@odg/chemical-x` `.d.ts` files under TS 6.x — none are ours. Re-measure once those
+         * publish TS 6-clean types.
+         */
+        "skipLibCheck": true,
+        "types": [
+            "node",
+            "vitest/globals"
+        ]
+    },
+    "exclude": [
+        "node_modules/",
+        "dist/"
+    ],
+    "include": [ "." ]
+}
