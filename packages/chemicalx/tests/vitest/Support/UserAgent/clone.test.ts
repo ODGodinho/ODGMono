@@ -1,5 +1,7 @@
 import { UserAgent } from "#app";
 
+import { expandedLanguages, expandedLanguagesHeader } from "../../internal/UserAgentLanguages.js";
+
 const chromeVersion = "124.0.6367.60";
 const edgeBrand = "Microsoft Edge";
 const edgeVersion = "124.0.2478.51";
@@ -37,5 +39,16 @@ describe("UserAgent.clone", () => {
 
         expect(copy.brands()).toContainEqual({ brand: edgeBrand, version: "124" });
         expect(userAgent.brands()).toContainEqual({ brand: "Mutated Brand", version: "124" });
+    });
+
+    test("stops sharing the language list with the original", () => {
+        const languages = [ ...expandedLanguages ];
+        const userAgent = new UserAgent({ version: chromeVersion, languages });
+        const copy = userAgent.clone();
+
+        languages.push("fr");
+
+        expect(copy.acceptLanguageHeader()).toBe(expandedLanguagesHeader);
+        expect(userAgent.acceptLanguageHeader()).toBe(`${expandedLanguagesHeader},fr;q=0.6`);
     });
 });

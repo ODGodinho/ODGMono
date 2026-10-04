@@ -218,12 +218,22 @@ export interface UserAgentOptionsInterface {
     shouldIncludeFormFactors?: boolean;
 
     /**
-     * Value forwarded as `acceptLanguage` to the CDP override payload.
+     * The browser's native `intl.accept_languages` preference, the source Chrome derives
+     * `navigator.languages` and the `Accept-Language` header from.
      *
-     * @type {string}
+     * Expected values: bare language tags, in priority order, one per item, no q-values and
+     * no commas (`["pt-BR", "pt", "en-US", "en"]`). Chrome keeps at most ten
+     * (`GetLanguagesWithMaxCount`) and expands the list (`ExpandLanguageList`). Nothing is cut
+     * or corrected: an empty list, more than ten tags, a malformed tag, or a list that is not
+     * already expanded (after a region tag like `pt-BR` its base `pt` must follow, unless the
+     * next tag is the same family) throws.
+     *
+     * The header value comes from `acceptLanguageHeader()`, never from this list.
+     *
+     * @type {string[]}
      * @memberof UserAgentOptionsInterface
      */
-    acceptLanguage?: string;
+    languages?: string[];
 
     /**
      * Overrides what `navigator.platform` reports. Only the frozen values are
@@ -348,7 +358,8 @@ export interface UserAgentOverrideInterface {
     userAgent: string;
 
     /**
-     * Language list sent as `Accept-Language`, left untouched when not configured.
+     * Comma-separated list without q-values, the CDP input; never the header value.
+     * Chrome generates the `q=` weights itself. Left untouched when not configured.
      *
      * @type {string}
      * @memberof UserAgentOverrideInterface

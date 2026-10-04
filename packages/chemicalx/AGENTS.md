@@ -67,7 +67,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 | `Num` | Wrapper numérico com `toNative()` e `clone()` |
 | `Arr<Type>` | Wrapper de array com `random(length?)` e `clone()` |
 | `File` | Verificação de existência de arquivo via `exists()` |
-| `UserAgent` | Identidade de navegador: `toString()` (UA string), `brands()`, `fullVersionList()`, `headers()`, `metadata()`, `cdpParams()` |
+| `UserAgent` | Identidade de navegador: `toString()` (UA string), `brands()`, `fullVersionList()`, `headers()`, `acceptLanguageHeader()`, `metadata()`, `cdpParams()` |
 
 **Enums:**
 
@@ -113,6 +113,8 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 10. **`UserAgent` — seed é sempre o major**: A marca GREASE deriva da versão maior declarada, nunca de `Math.random()`. Isso faz a marca girar uma vez por release e ficar estável no ciclo, como o Chromium nativo — uma marca que não bate com o major declarado é, ela própria, um sinal de automação. Aplique tudo de uma vez com `Emulation.setUserAgentOverride` e `cdpParams()`, para o UA string e os client hints contarem a mesma história.
 
 11. **`UserAgent` — os dois `platform` do CDP são valores diferentes**: `userAgentMetadata.platform` é o token de `Sec-CH-UA-Platform` (`Windows`, `macOS`, `Chrome OS`); o `platform` de primeiro nível é o que `navigator.platform` vai reportar, congelado pelo Chromium em apenas quatro valores (`Win32`, `MacIntel`, `Linux x86_64`, `Linux armv81`). Mandar o token do hint ali entrega o override, porque nenhum navegador real reporta `Windows` em `navigator.platform`. `cdpParams()` já resolve os dois — não montar o payload à mão.
+
+12. **`UserAgent` — `cdpParams().acceptLanguage` é entrada do CDP, não header**: `languages` é a pref nativa `intl.accept_languages` (lista sem pesos). Header de request HTTP é `acceptLanguageHeader()`. O override do CDP não chega em Workers: eles mantêm a lista do próprio navegador (em contexto anônimo, `language::GetIncognitoLanguageList`, ex. pt-BR → `pt-BR,pt,en-US,en`), então envie o mesmo `cdpParams()` aos targets `worker`/`service_worker`. No contexto anônimo, `languages` precisa ser a lista anônima do Chrome para o primeiro idioma (pt-BR → `pt-BR,pt,en-US,en`), porque o override nos targets não cobre o request do script do service worker. A lib exige a lista já expandida como o Chrome faz (`pt-BR,pt,en-US,en`) e lança `InvalidArgumentException` caso contrário: lista vazia, mais de 10 tags, tag malformada (vírgula, `q=`, espaço) ou lista não expandida. Nada é cortado nem corrigido.
 
 ## 💥 Critical Exceptions
 

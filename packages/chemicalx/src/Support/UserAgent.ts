@@ -130,6 +130,35 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
      */
     private static readonly MAJOR_VERSION_REGEX = /^(?<major>\d+)/;
 
+    /**
+     * How many entries of `intl.accept_languages` Chrome keeps; also the steps of the `q` scale
+     * in `GenerateAcceptLanguageHeader`, so the last tag is exactly `q=0.1`. More throws.
+     *
+     * @memberof UserAgent
+     */
+    private static readonly MAX_LANGUAGES = 10;
+
+    /**
+     * One subtag of a bare language tag: no comma, no q-value, no whitespace.
+     *
+     * @memberof UserAgent
+     */
+    private static readonly LANGUAGE_SUBTAG_REGEX = /^[0-9A-Za-z]{1,8}$/;
+
+    /**
+     * The primary subtag of a language tag: letters only.
+     *
+     * @memberof UserAgent
+     */
+    private static readonly LANGUAGE_PRIMARY_REGEX = /^[A-Za-z]{1,8}$/;
+
+    /**
+     * Primary subtags `ExpandLanguageList` never appends on their own (RFC 5646 `x` and `i`).
+     *
+     * @memberof UserAgent
+     */
+    private static readonly UNEXPANDED_SUBTAGS = new Set([ "x", "i" ]);
+
     public constructor(
         private readonly options: UserAgentOptionsInterface,
     ) {
@@ -233,6 +262,20 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
     }
 
     /**
+     * `Accept-Language` header built from `languages` the way Chrome weights it
+     * (`GenerateAcceptLanguageHeader` in `net/http/http_util.cc`): the first tag bare, then
+     * `q=0.9` down to `q=0.1`. `languages` must already be what Chrome's `ExpandLanguageList`
+     * yields; nothing is cut or corrected. It is the only value that belongs in an HTTP request header.
+     *
+     * @throws {InvalidArgumentException} If `languages` is empty, has more than ten tags, has a
+     * malformed tag, or is not what Chrome's expansion yields.
+     * @returns {string | undefined} The header value, or `undefined` without `languages`.
+     */
+    public acceptLanguageHeader(): string | undefined {
+        return this.languageList()?.map((language, index) => this.weighted(language, index)).join(",");
+    }
+
+    /**
      * Payload for `Emulation.setUserAgentOverride`, the single call that keeps the
      * User-Agent string and the client hints telling the same story.
      *
@@ -240,13 +283,20 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
      * carries the frozen value and never the `Sec-CH-UA-Platform` token that goes
      * into `userAgentMetadata.platform`.
      *
-     * @throws {InvalidArgumentException} If the configured version has no leading digits.
+     * `acceptLanguage` is the CDP input, the list without q-values; it is not
+     * the header value (see `acceptLanguageHeader()`). The override does not reach Workers,
+     * which keep the browser's own list (the incognito list in an incognito context); send
+     * these params to worker targets too; the service worker script request still uses the
+     * browser's own list, so in an incognito context pass Chrome's incognito list.
+     *
+     * @throws {InvalidArgumentException} If the configured version has no leading digits,
+     * or `languages` is invalid (see `acceptLanguageHeader()`).
      * @returns {UserAgentOverrideInterface} Parameters for the CDP command.
      */
     public cdpParams(): UserAgentOverrideInterface {
         return {
             userAgent: this.toString(),
-            acceptLanguage: this.options.acceptLanguage,
+            acceptLanguage: this.languageList()?.join(","),
             platform: this.navigatorPlatform(),
             userAgentMetadata: this.metadata(),
         };
@@ -280,13 +330,87 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
     /**
      * Clone This Object
      *
-     * @returns {UserAgent} A copy that no longer shares the additional brand list.
+     * @returns {UserAgent} A copy that no longer shares the additional brand or language lists.
      */
     public clone(): UserAgent {
         return new UserAgent({
             ...this.options,
             additionalBrands: this.options.additionalBrands?.map((brand) => ({ ...brand })),
+            languages: this.options.languages?.slice(),
         });
+    }
+
+    /**
+     * Validate `languages` as is: Chrome keeps at most ten tags and expands each region tag with
+     * its base (`ExpandLanguageList`, `net/http/http_util.cc`), so anything else would make the
+     * identity differ between page and workers. Nothing is cut or corrected.
+     *
+     * @throws {InvalidArgumentException} If the list is empty, longer than ten, has a malformed
+     * tag, or is not already expanded.
+     * @returns {string[] | undefined} The list as given, or `undefined` when not configured.
+     */
+    private languageList(): string[] | undefined {
+        const { languages } = this.options;
+
+        if (languages === undefined) {
+            return undefined;
+        }
+
+        if (languages.length === 0 || languages.length > UserAgent.MAX_LANGUAGES) {
+            throw new InvalidArgumentException(
+                `Invalid languages, expected 1 to ${UserAgent.MAX_LANGUAGES} tags, got ${languages.length}`,
+            );
+        }
+
+        const malformed = languages.find((tag) => {
+            const [ primary, ...rest ] = tag.split("-");
+
+            return !UserAgent.LANGUAGE_PRIMARY_REGEX.test(primary)
+                || rest.some((subtag) => !UserAgent.LANGUAGE_SUBTAG_REGEX.test(subtag));
+        });
+
+        if (malformed !== undefined) {
+            throw new InvalidArgumentException(`Invalid language tag "${malformed}", expected a bare tag like "pt-BR"`);
+        }
+
+        const expanded = this.expandedLanguages(languages).join(",");
+
+        if (expanded !== languages.join(",")) {
+            throw new InvalidArgumentException(
+                `Chrome expands the languages to "${expanded}", pass a list this expansion leaves unchanged`,
+            );
+        }
+
+        return languages;
+    }
+
+    /**
+     * Port of `ExpandLanguageList` (`net/http/http_util.cc`): each tag followed by its primary
+     * subtag, unless the next tag shares it or it is `x`/`i`; duplicates dropped.
+     *
+     * @param {string[]} tags Preference, at most ten tags.
+     * @returns {string[]} The list Chrome weights into the header.
+     */
+    private expandedLanguages(tags: string[]): string[] {
+        const expanded = tags.flatMap((tag, index) => {
+            const [ primary ] = tag.split("-", 1);
+            const [ nextPrimary ] = (tags.at(index + 1) ?? "").split("-", 1);
+
+            return primary === nextPrimary || UserAgent.UNEXPANDED_SUBTAGS.has(primary) ? [ tag ] : [ tag, primary ];
+        });
+
+        return [ ...new Set(expanded) ];
+    }
+
+    /**
+     * Attach Chrome's q-value to a tag: none for the first, then `0.9` down to `0.1` for the tenth.
+     *
+     * @param {string} language Tag of the list.
+     * @param {number} index Position of the tag in the list.
+     * @returns {string} The tag as it appears in the header.
+     */
+    private weighted(language: string, index: number): string {
+        return index === 0 ? language : `${language};q=0.${UserAgent.MAX_LANGUAGES - index}`;
     }
 
     /**
