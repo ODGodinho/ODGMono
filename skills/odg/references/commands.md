@@ -31,8 +31,6 @@ $$PM odg make:route <feature> [--service] [--method] [--path]  # API: procedures
 $$PM odg make:middleware <Name>                                # API: MiddlewareInterface class + barrel + test (not wired)
 ```
 
-**No command exists for Components** — they are created manually (see execution.md).
-
 ### API commands (Stanley-API layout)
 
 - They always wire (no `--register`) and never overwrite: if any file they would create exists, they abort before writing anything. Re-running never duplicates an enum entry, a barrel line or a router line.

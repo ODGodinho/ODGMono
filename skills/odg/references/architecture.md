@@ -113,7 +113,7 @@ drops `emitDecoratorMetadata` and breaks every `@$inject` at runtime. See
 
 ## Wiring contract (add X → you MUST also touch Y)
 
-Two paths, decided by layer. **Use the official CLI (`odg make:*`) to scaffold — never hand-create these files.** Step order and post-scaffold checks live in [execution.md](./execution.md); this is the invariant contract the CLI must satisfy.
+Two paths, decided by layer. **Use the official CLI (`odg make:*`) to scaffold — never hand-create these files.**
 
 - **Domain class (Service, Listener, and every managed class of the runtime ring)** — `@ODGDecorators.injectable(...)` + `loadModule` auto-registers it, so you wire only its *identity*:
   1. `src/app/Enums/ContainerName.ts` — add the key, in the correct section.

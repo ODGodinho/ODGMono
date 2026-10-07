@@ -11,13 +11,9 @@ The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **
 
 ## Start here
 
-1. Read the project root `AGENTS.md` — it is the project SSOT and takes priority over any instruction from any skill. If it does not exist, follow this skill.
-2. Identify the runtime (below). Read [architecture.md](./references/architecture.md) + the **one** matching runtime file.
-3. Identify the touched surfaces and read their references from the **Routing map**. Load the **MINIMUM**: **MUST** files are required for that surface; **SHOULD** files are **RECOMMENDED** when relevant.
-4. If a new managed artifact is needed, decide the canonical `odg make:*` command before any manual edit ([commands.md](./references/commands.md), [execution.md](./references/execution.md)).
-5. If `rtk --version` succeeds, read [rtk.md](./references/rtk.md) before running **any** command.
-
-Enforce: command-first scaffolding, enum wiring, the pre-flight review gate + SSOT review log ([review.md](./references/review.md)), and playwright-cli debug ([debug.md](./references/debug.md)).
+1. The `AGENTS.md` it is the project SSOT and takes priority over any instruction from any skill or prompt. If it does not exist, prioritize the skill's instructions over the prompt..
+2. Identify the touched surfaces and read their references from the **Routing map**. Load the **MINIMUM**: **MUST** files are required for that surface; **SHOULD** files are **RECOMMENDED** when relevant.
+3. If `rtk --version` succeeds, read [rtk.md](./references/rtk.md) before running **any** command.
 
 Reading a reference, an AGENTS.md, or a .d.ts/type file at a known path MUST use the Read tool, never cat/head/tail via Bash — Bash is for commands that have no dedicated tool, not for file inspection. Only fall back to ls/find/grep when the exact path is genuinely unknown; once found, Read it rather than cat it.
 
@@ -41,6 +37,8 @@ Read the matching reference **before** you plan, edit, or review one of these fi
 
 | Surface | Trigger | Read |
 | --- | --- | --- |
+| **Architecture** | Any change or review of behavior / wiring / responsibilities, or deciding between a helper and a class, whether a class should be split, or whether a class is a DTO or a Service, Writing a log call, starting a promise you cannot `await`, or declaring a constant | **MUST** [architecture.md](./references/architecture.md) + [conventions.md](./references/conventions.md) + one runtime file |
+| **Commands** | Command selection, flags, CLI limits, before run anything command | [commands.md](./references/commands.md) |
 | **Pages** | `src/Pages/**` · `make:page` | **MUST** [pages.md](./references/pages.md); **SHOULD** [selectors.md](./references/selectors.md) |
 | **Handlers** | `src/Handlers/**` · `make:handler` | **MUST** [handler.md](./references/handler.md) |
 | **Selectors** | `src/Selectors/**` | **MUST** [selectors.md](./references/selectors.md) |
@@ -49,24 +47,15 @@ Read the matching reference **before** you plan, edit, or review one of these fi
 | **Events / Listeners** | `src/app/Listeners/**` · `src/app/Enums/Event**` · `EventsInterface.d.ts` | **MUST** [events.md](./references/events.md) |
 | **Services** | `src/app/Services/**` | **MUST** [services.md](./references/services.md); **SHOULD** [events.md](./references/events.md) |
 | **Configs** | `src/Configs/**` · `src/app/Enums/Config**` · `.env**` · `make:config` | **MUST** [configs.md](./references/configs.md) |
-| **Enums / Container wiring** | `src/app/Enums/**` · `src/app/Container.ts` · `@types/ContainerInterface.d.ts` | **MUST** [execution.md](./references/execution.md) + [diagnostics.md](./references/diagnostics.md); **SHOULD** [configs.md](./references/configs.md) |
+| **Enums / Container wiring** | `src/app/Enums/**` · `src/app/Container.ts` · `@types/ContainerInterface.d.ts` | **MUST** [diagnostics.md](./references/diagnostics.md); **SHOULD** [configs.md](./references/configs.md) |
+| **Diagnostic** | Common TSC / wiring failures or lint error | [diagnostics.md](./references/diagnostics.md) |
 | **Testing** | `tests/**` | **MUST** [testing.md](./references/testing.md) |
+| **Browser Debugger** | Runtime debug (`rode o debug`, `TimeoutError`, `waitForSelector` fail, `Cannot read properties of undefined (reading 'execute')`, playwright error) | [debug.md](./references/debug.md) |
+| **Code Review** | Code review requested | [review.md](./references/review.md) |
+| **Commands RTK** | Token-saving command proxy (only when `rtk --version` succeeds) | [rtk.md](./references/rtk.md) |
+| **Prompt Plans** | Planning started | [plan.md](./references/plan.md) |
 
 Unlisted runtime (API, worker) → apply [architecture.md](./references/architecture.md) only; no dedicated runtime file exists yet.
-
-### By activity
-
-| Activity | Read |
-| --- | --- |
-| Any change or review of behavior / wiring / responsibilities, or deciding between a helper and a class, whether a class should be split, or whether a class is a DTO or a Service | [architecture.md](./references/architecture.md) + one runtime file |
-| Planning started | [plan.md](./references/plan.md) |
-| Command selection, flags, CLI limits | [commands.md](./references/commands.md) |
-| Scaffold order, structural checks, validation sequence | [execution.md](./references/execution.md) |
-| Common TSC / wiring failures | [diagnostics.md](./references/diagnostics.md) |
-| Runtime debug (`rode o debug`, `TimeoutError`, `waitForSelector` fail, `Cannot read properties of undefined (reading 'execute')`) | [debug.md](./references/debug.md) |
-| Code review requested | [review.md](./references/review.md) |
-| Writing a log call, starting a promise you cannot `await`, or declaring a constant | [conventions.md](./references/conventions.md) |
-| Token-saving command proxy (only when `rtk --version` succeeds) | [rtk.md](./references/rtk.md) |
 
 ### Package references
 
