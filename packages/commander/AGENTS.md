@@ -295,7 +295,7 @@ yarn odg make:config ZECA_URL --register
 yarn odg make:config USE_HEADLESS --register --validator "CustomValidator.zodStringToBoolean()"
 
 # Custom config validator path
-yarn odg make:config APP_URL --register --configValidatorPath src/Config/index.ts
+yarn odg make:config APP_URL --register --configValidatorPath src/Configs/Config.ts
 ```
 
 ### make:exception

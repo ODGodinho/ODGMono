@@ -228,7 +228,7 @@ program
     .option(
         "--configValidatorPath <configValidatorPath>",
         "Path to file with configValidator = zod.object({...})",
-        "./src/Configs/index.ts",
+        "./src/Configs/Config.ts",
     )
     .option("--envExamplePath <envExamplePath>", ".env.example path", registrationDefaults.envExamplePath)
     .option("--typeImport <statement>", "Explicit import statement to insert (repeatable)", collect, [])
