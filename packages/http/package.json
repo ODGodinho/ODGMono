@@ -69,6 +69,28 @@
         "@odg/exception": "workspace:^",
         "@odg/json-log": "workspace:^",
         "@odg/log": "workspace:^",
+        "@orpc/client": "^1.15.0",
+        "@orpc/contract": "^1.15.0",
+        "@orpc/openapi": "^1.15.0",
+        "@orpc/server": "^1.15.0",
+        "@orpc/zod": "^1.15.0",
         "zod": "*"
+    },
+    "peerDependenciesMeta": {
+        "@orpc/client": {
+            "optional": true
+        },
+        "@orpc/contract": {
+            "optional": true
+        },
+        "@orpc/openapi": {
+            "optional": true
+        },
+        "@orpc/server": {
+            "optional": true
+        },
+        "@orpc/zod": {
+            "optional": true
+        }
     }
 }

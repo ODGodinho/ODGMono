@@ -104,12 +104,12 @@ do consumidor asserta nele.
    reconstrói como `ORPCError`. Só `/api` usa o contrato estruturado.
 6. **Um path sob um prefixo que não casa procedure cai pro próximo estágio**, não vira 404 do
    transporte — é o que deixa montar outra superfície depois de `/api`.
-7. **`@orpc/*` está pinado em `1.15.0` exato, e isso não é capricho.** O pacote faz
-   `instanceof ORPCError` e recebe o `router` do app: se o app resolver uma versão diferente da que
-   o pacote resolveu, são duas classes fisicamente distintas, o `instanceof` dá falso e um
-   `ORPCError` lançado numa rota do app volta como 500 em vez do status dele. Enquanto o pacote for
-   consumido por `bun link`, as duas pontas **MUST** resolver a mesma versão. Publicado, o caminho
-   certo é `@orpc/*` virar `peerDependencies` — decisão ainda aberta.
+7. **`@orpc/*` é `peerDependency` (`^1.15.0`).** O pacote faz `instanceof ORPCError` e recebe o
+   `router` do app. Uma dependência própria instalaria outra cópia da classe: o `instanceof` dá
+   falso e um `ORPCError` lançado numa rota volta como 500 em vez do status dele (401, 422, …).
+   A aplicação instala os `@orpc/*`; instalado de verdade, o pacote usa essa cópia. Com `bun link`
+   a resolução sobe pelo diretório real do monorepo, então as duas pontas ainda precisam da mesma
+   versão (a do `devDependency`, `1.15.0`).
 8. **Limite de corpo e drain são da aplicação.** `Bun.serve` aceita 128 MB por padrão, e `stop()`
    drena enquanto `stop(true)` aborta as requests em voo.
 
