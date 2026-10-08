@@ -74,11 +74,20 @@ describe("HttpPipeline", () => {
         expect(blank.headers.get(HttpPipeline.requestIdHeader)).toMatch(requestIdPattern);
     });
 
-    test("an unmatched request reaches the last stage as a 404", async () => {
-        const pipeline = new HttpPipeline({ middlewares: [] });
+    test("an unmatched request reaches the last stage as a 404, recorded as notice", async () => {
+        const logger = createLogger();
+        const notice = vi.spyOn(logger, "notice").mockResolvedValue();
+        const error = vi.spyOn(logger, "error").mockResolvedValue();
+        const pipeline = new HttpPipeline({ logger, middlewares: [] });
         const response = await pipeline.fetch(createRequest("/nowhere"));
 
         expect(response.status).toBe(404);
+        expect(notice).toHaveBeenCalledWith("No route matches /nowhere", {
+            exception: { type: "NotFoundException" },
+            requestId: response.headers.get(HttpPipeline.requestIdHeader),
+            status: response.status,
+        });
+        expect(error).not.toHaveBeenCalled();
     });
 
     test("the last resort answers a status without a body, and records it", async () => {

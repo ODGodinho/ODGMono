@@ -36,7 +36,7 @@ const pipeline = new HttpPipeline({
     logger,
     middlewares: [
         new ErrorBoundaryMiddleware({ logger, serializer }),
-        new CorsMiddleware({ origins: [ "https://app.example.com" ] }),
+        new CorsMiddleware({ origins: [ "https://app.example.com", "https://admin.example.com" ] }),
         new OpenApiDocumentMiddleware(router, { path: "/api/openapi", title: "My API" }),
         new RpcMiddleware(router, { context, prefix: "/rpc" }),
         new OpenApiMiddleware(router, { context, prefix: "/api", serializer }),
@@ -45,6 +45,8 @@ const pipeline = new HttpPipeline({
 
 Bun.serve({ fetch: async (request) => pipeline.fetch(request), port: 3000 });
 ```
+
+`origins` is that list, or `["*"]` when every browser is allowed (credentials are omitted in that mode). An API with no browser client leaves `CorsMiddleware` out of the array.
 
 `pipeline.fetch(request)` is the very function the runtime receives — a test calls it directly, with
 no socket and no parallel code path.

@@ -1,9 +1,9 @@
-import { detach } from "@odg/chemical-x";
 import httpStatus from "http-status";
 
 import { NotFoundException } from "./exceptions/NotFoundException.ts";
 import type { HttpPipelineOptionsInterface } from "./interfaces/HttpOptionsInterface.ts";
 import type { HttpDispatchType, HttpRequestInterface } from "./interfaces/HttpRequestInterface.ts";
+import { reportException } from "./report-exception.ts";
 import { statusOf } from "./status-of.ts";
 
 export class HttpPipeline {
@@ -71,11 +71,11 @@ export class HttpPipeline {
         try {
             return await this.dispatch(context);
         } catch (exception) {
-            const { logger } = this.options;
+            const response = new Response(null, { status: statusOf(exception) ?? httpStatus.INTERNAL_SERVER_ERROR });
 
-            void detach(logger?.error(exception as Error, { requestId: context.requestId }), logger ?? null);
+            reportException(this.options.logger, exception, response, context.requestId);
 
-            return new Response(null, { status: statusOf(exception) ?? httpStatus.INTERNAL_SERVER_ERROR });
+            return response;
         }
     }
 

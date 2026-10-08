@@ -63,9 +63,10 @@ export interface ErrorBoundaryOptionsInterface {
 export interface CorsOptionsInterface {
 
     /**
-     * Browser origins allowed to read a response. The matching origin is echoed back rather than
-     * answered with `*`, which is illegal together with `Access-Control-Allow-Credentials: true` —
-     * the browser would drop the session cookie.
+     * Browser origins allowed to read a response. The matching origin is echoed back and
+     * credentials are allowed. The single entry `"*"` allows every origin and omits credentials,
+     * because `*` together with `Access-Control-Allow-Credentials: true` is illegal — the browser
+     * would drop the session cookie.
      */
     origins: string[];
 

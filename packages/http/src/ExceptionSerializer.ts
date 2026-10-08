@@ -24,8 +24,8 @@ export class ExceptionSerializer {
      *
      * @param {boolean} isVerbose Whether bodies may include stack and source location. Source
      * paths, line numbers and stack frames describe the server's internals, so outside development
-     * a response carries only `type` and `message`; the full exception still reaches the logger,
-     * correlated by the correlation header.
+     * a response carries only `type` and `message`. Outside a procedure, a 5xx reaches the logger
+     * as the exception and a 4xx as notice without a stack. Correlation stays on the request id.
      */
     public constructor(
         private readonly isVerbose: boolean,

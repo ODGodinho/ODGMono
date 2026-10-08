@@ -21,7 +21,7 @@ Dependencies point **inward only**.
 
 **An ENTRY artifact MUST NOT contain business logic.** A Page, an HTTP controller, a queue consumer and an `ipcMain.handle` callback are the same thing — a different way to invoke the application. They translate an external event into a Service call and translate the result back. Nothing else.
 
-Read exactly one: [crawler](./runtimes/crawler.md) · [electron](./runtimes/electron.md) · [api](./runtimes/api.md).
+Read exactly one: [crawler](./runtimes/crawler.md) · [electron](./runtimes/electron.md) · [frontend](./runtimes/frontend.md) · [api](./runtimes/api.md).
 
 ## Universal spine
 
@@ -50,7 +50,7 @@ src/ or $$PROJECT_ROOT
         DatabaseSeeder.ts       registry of seeders (ordered runUp / reversed runDown)
         Seeders/<Name>Seeder.ts idempotent, minimum initial data, no logging
     app/
-        Container.ts            composition root — the ONLY place for manual bindings
+        Container.ts            composition root — manual bindings (or Kernel.ts for a lazy bind)
         ContainerInject.ts      typed @$inject / @$multiInject (wraps inversify)
         Enums/                  name SSOTs: ContainerName · EventName · ConfigName (+ barrel)
         Dtos/<Name>Dto.ts       payload data built with `new` — see "DTO" below
@@ -109,7 +109,7 @@ Two paths, decided by layer. **Use the official CLI (`odg make:*`) to scaffold �
   1. `src/app/Enums/ContainerName.ts` — add the key, in the correct section.
   2. `@types/ContainerInterface.d.ts` — add `[ContainerName.X]: Type;` **and** its `import type`.
   3. The folder's `index.ts` barrel — export the new file.
-- **Infra / factory / lib (Config, Logger, EventBus, Requester, dynamic values)** — no decorator; **manually bind** in `src/app/Container.ts`, plus the same enum + `ContainerInterface` entries.
+- **Infra / factory / lib (Config, Logger, EventBus, Requester, dynamic values)** — no decorator; **manually bind** in `src/app/Container.ts` (or `Kernel.ts` for a lazy bind), plus the same enum + `ContainerInterface` entries.
 - **Event** adds a parallel chain: `EventName` key + payload in `@types/EventsInterface.d.ts` + the Listener. See [events.md](./events.md).
 - **Config key**: `ConfigName` + `configValidator` + `.env.example` + test default. See [configs.md](./configs.md).
 
@@ -125,7 +125,7 @@ TSC/wiring failures (missing `ContainerInterface` entry, section drift, barrel g
 | Listener | decorator (auto) | `@ODGDecorators.injectable(ContainerName.X, "Singleton")` + `@registerListener(EventName.X, ContainerName.X, {})` |
 | Runtime-ring managed class | decorator (auto) | see the runtime file — usually `@injectable(ContainerName.X)` with no singleton |
 | `Kernel`, `ProcessKernel`, seeders, HTTP adapter | decorator (auto) | `@ODGDecorators.injectable(ContainerName.X, "Singleton")`; the barrel is imported for side-effect in `Container.ts` |
-| Config, Logger, EventBus, Requester, DB handle, external SDK clients, factories | **manual** in `Container.ts` | `toDynamicValue` / `toConstantValue` |
+| Config, Logger, EventBus, Requester, DB handle, external SDK clients, factories | **manual** in `Container.ts` (or `Kernel.ts` for a lazy bind) | `toDynamicValue` / `toConstantValue` |
 
 Domain classes are discovered by `ODGDecorators.loadModule` (invoked in `setUp`); their barrels are imported for side-effect in `Container.ts`. Only infra/factories/libs are bound by hand.
 
@@ -166,7 +166,7 @@ skill does not restate them.
 
 ## Container rules
 
-- Manual bindings **MUST** live only in `src/app/Container.ts` Or `Kernel.ts` if lazy bind.
+- Manual bindings **MUST** live only in `src/app/Container.ts` or `Kernel.ts` if lazy bind.
 - An injected primitive (`Logger`, `Config`, requester, `EventBus`) **MUST** be used directly at the call site. **MUST NOT** wrap it in a bespoke function or class that only forwards to it without adding behavior.
 
 ## Helper classes
@@ -183,7 +183,7 @@ skill does not restate them.
 Construction that needs `await` is **`new` + a lifecycle method**, never `static async create()`. The constructor is `public` and does everything synchronous; the awaited part goes to a method the host calls on the next line — the pattern of `Container.setUp()`, `Kernel.init()` and `ProcessKernel.register()`.
 
 - A `private` constructor **MUST NOT** be used: it closes the class to the Container and to the test.
-- **Better still is not needing it:** compute on demand instead of in a warm-up step. The API ENTRY ring has no `init()` at all — `HttpServer.create()` is a plain instance method that builds the pipeline when asked, and the OpenAPI document is generated per request.
+- **Better still is not needing it:** compute on demand instead of in a warm-up step. The API ENTRY ring has no `init()` at all — `HttpServer.create()` is a plain instance method that builds the pipeline when asked, and the OpenAPI document is generated on the first request that asks for it.
 
 ## One class, one job
 

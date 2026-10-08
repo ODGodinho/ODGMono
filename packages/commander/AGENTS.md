@@ -263,7 +263,7 @@ Flags:
 - `-v, --validator <validator>` → zod validator expression. Default: `zod.string()`
 - `--register` → enable registration. Default: `true` (`make:config` creates no file, so registration is its only effect and is on by default)
 - `--configEnumPath` → custom ConfigName enum path. Default: `./src/app/Enums/ConfigName.ts`
-- `--configValidatorPath` → path to the file containing `configValidator = zod.object({...})`. Default: `./src/Configs/index.ts`
+- `--configValidatorPath` → path to the file containing `configValidator = zod.object({...})`. Default: `./src/Configs/Config.ts`
 - `--envExamplePath` → custom `.env.example` path. Default: `./.env.example`
 - `--typeImport <statement>` → explicit top-level import statement to inject. Repeatable.
 

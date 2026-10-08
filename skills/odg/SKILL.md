@@ -11,7 +11,7 @@ The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **
 
 ## Start here
 
-1. The `AGENTS.md` it is the project SSOT and takes priority over any instruction from any skill or prompt. If it does not exist, prioritize the skill's instructions over the prompt..
+1. The root `AGENTS.md` is the project SSOT and takes priority over any instruction from any skill or prompt. If it does not exist, the skill's instructions take priority over the prompt.
 2. Identify the touched surfaces and read their references from the **Routing map**. Load the **MINIMUM**: **MUST** files are required for that surface; **SHOULD** files are **RECOMMENDED** when relevant.
 3. If `rtk --version` succeeds, read [rtk.md](./references/rtk.md) before running **any** command.
 

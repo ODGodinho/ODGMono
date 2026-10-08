@@ -1,8 +1,7 @@
-import { detach } from "@odg/chemical-x";
-
 import type { ErrorBoundaryOptionsInterface } from "../interfaces/HttpOptionsInterface.ts";
 import type { HttpDispatchType, HttpRequestInterface } from "../interfaces/HttpRequestInterface.ts";
 import type { MiddlewareInterface } from "../interfaces/MiddlewareInterface.ts";
+import { reportException } from "../report-exception.ts";
 
 /**
  * The error contract: everything thrown below this stage comes back as a structured response, and
@@ -32,15 +31,11 @@ export class ErrorBoundaryMiddleware implements MiddlewareInterface {
         try {
             return await next(context);
         } catch (exception) {
-            const { logger, serializer } = this.options;
+            const response = this.options.serializer.toResponse(exception);
 
-            /*
-             * Detached: the response must not wait on the log transport, and a log transport that
-             * is itself down must not turn a handled 422 into a crash.
-             */
-            void detach(logger.error(exception as Error, { requestId: context.requestId }), logger);
+            reportException(this.options.logger, exception, response, context.requestId);
 
-            return serializer.toResponse(exception);
+            return response;
         }
     }
 

@@ -23,7 +23,7 @@ src/
         Seeders/<Name>Seeder.ts
 ```
 
-**The pipeline is a package, not repo code.** `@odg/http` answers *how a request becomes a response* — correlation, error contract, CORS, access log, routing — identical in every ODG API. `HttpServer` owns only what is a deploy decision: port, hostname, max body size, what "close" means, and which procedures, handlers and origins this API has. A package **MUST NOT** open a server.
+**The pipeline is a package, not repo code.** `@odg/http` answers *how a request becomes a response* (see its `AGENTS.md`), identical in every ODG API. `HttpServer` owns only what is a deploy decision: port, hostname, max body size, what "close" means, and which procedures, middlewares and origins this API has. A package **MUST NOT** open a server.
 
 `HttpServer.create()` is the composition point and the object the test suite drives — the same one `listen()` hands to the runtime, with no port and no parallel path.
 
@@ -38,7 +38,7 @@ src/
 | `/api/health/live` | liveness, no I/O | — |
 
 - Success returns the procedure payload **raw** — no `success`, no `data` wrapper.
-- `APP_ENV=production` strips stack and paths from the error body.
+- Only `APP_ENV=development` exposes stack and paths in the error body.
 - Correlation is the `x-request-id` **header**, never the body.
 - Liveness **MUST NOT** touch the database: a DB outage takes pods out of rotation (readiness), it does not restart them.
 
@@ -84,7 +84,7 @@ The logger is **not** per request: it is one process `Logger` built with `scopes
 | --- | --- |
 | rate limit, IP allowlist, maintenance mode, tracing | `middlewares` in `HttpServer.create()` |
 | authorization, tenancy, RBAC, input shaping | oRPC middleware (`base.use(...)`), sees the typed context |
-| new protocol with its own prefix (webhook, upload) | `HttpHandlerInterface` in `handlers` |
+| new protocol with its own prefix (webhook, upload) | a `MiddlewareInterface` class in the `HttpServer.create()` array |
 
 None of them edits the pipeline — that is what lets the API scale without forking `@odg/http`.
 

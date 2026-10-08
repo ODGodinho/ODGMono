@@ -1,3 +1,4 @@
+import { Exception } from "@odg/exception";
 import httpStatus from "http-status";
 
 import type { CorsOptionsInterface } from "../interfaces/HttpOptionsInterface.ts";
@@ -5,11 +6,12 @@ import type { HttpDispatchType, HttpRequestInterface } from "../interfaces/HttpR
 import type { MiddlewareInterface } from "../interfaces/MiddlewareInterface.ts";
 
 /**
- * Decides what cross-origin headers each response carries, for a fixed set of trusted browser
- * origins.
+ * Decides what cross-origin headers each response carries.
  *
- * The matching origin is echoed back rather than answered with `*` because `*` is illegal together
- * with `Access-Control-Allow-Credentials: true` — the browser would drop the session cookie.
+ * A list of origins is echoed back, with credentials, because `*` is illegal together with
+ * `Access-Control-Allow-Credentials: true` — the browser would drop the session cookie. The
+ * single entry `"*"` is the other mode: every origin is allowed, credentials are omitted, and
+ * the response does not vary by `Origin`.
  *
  * Placed above the surfaces rather than inside one: an oRPC plugin would only cover the procedures,
  * leaving a mounted SDK and the 404 path without headers, which a browser reads as a network
@@ -17,6 +19,12 @@ import type { MiddlewareInterface } from "../interfaces/MiddlewareInterface.ts";
  * class out of the array, and then no response carries `Vary: Origin` to fragment upstream caches.
  */
 export class CorsMiddleware implements MiddlewareInterface {
+
+    private static readonly wildcard = "*";
+
+    private static readonly allowOriginHeader = "access-control-allow-origin";
+
+    private readonly isWildcard: boolean;
 
     private readonly allowedOrigins: Set<string>;
 
@@ -27,6 +35,12 @@ export class CorsMiddleware implements MiddlewareInterface {
     public constructor(options: CorsOptionsInterface) {
         const defaultMethods = [ "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS" ];
         const defaultMaxAgeSeconds = 86_400;
+
+        this.isWildcard = options.origins.length === 1 && options.origins[0] === CorsMiddleware.wildcard;
+
+        if (!this.isWildcard && options.origins.includes(CorsMiddleware.wildcard)) {
+            throw new Exception(`CORS origin "${CorsMiddleware.wildcard}" cannot be combined with other origins`);
+        }
 
         this.allowedOrigins = new Set(options.origins);
         this.allowedMethods = (options.methods ?? defaultMethods).join(", ");
@@ -88,6 +102,12 @@ export class CorsMiddleware implements MiddlewareInterface {
      * @returns {void}
      */
     private decorate(request: Request, headers: Headers): void {
+        if (this.isWildcard) {
+            headers.set(CorsMiddleware.allowOriginHeader, CorsMiddleware.wildcard);
+
+            return;
+        }
+
         const origin = request.headers.get("origin");
 
         headers.append("vary", "Origin");
@@ -96,7 +116,7 @@ export class CorsMiddleware implements MiddlewareInterface {
             return;
         }
 
-        headers.set("access-control-allow-origin", origin);
+        headers.set(CorsMiddleware.allowOriginHeader, origin);
         headers.set("access-control-allow-credentials", "true");
     }
 

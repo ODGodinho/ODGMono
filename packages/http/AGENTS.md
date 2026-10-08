@@ -18,14 +18,14 @@ import {
     HttpPipeline, OpenApiDocumentMiddleware, OpenApiMiddleware, RpcMiddleware,
 } from "@odg/http";
 
-const serializer = new ExceptionSerializer(environment !== "production");
+const serializer = new ExceptionSerializer(environment === "development");
 
 const pipeline = new HttpPipeline({
     logger,
     middlewares: [
         new AccessLogMiddleware(logger, probePaths),          // classe do app, acima do boundary
         new ErrorBoundaryMiddleware({ logger, serializer }),
-        new CorsMiddleware({ origins: [ webUrl ] }),          // não quer CORS? apaga a linha
+        new CorsMiddleware({ origins }),                      // lista ou ["*"]; sem browser, apaga a linha
         auth,                                                 // classe do app com handle()
         new OpenApiDocumentMiddleware(router, { path: "/api/openapi", title: appName }),
         new RpcMiddleware(router, { context, prefix: "/rpc" }),
