@@ -7,7 +7,6 @@ import {
 } from "vitest";
 
 import { KeyvCacheHandler } from "#app/Cache/Handlers/KeyvCacheHandler";
-import { CacheIteratorException } from "#app/Exceptions";
 
 import {
     cacheKeyUser1,
@@ -29,7 +28,7 @@ describe("KeyvCacheHandler - Batch Operations", () => {
     });
 
     function getStoreKey(key: string): string {
-        return !keyv.useKeyPrefix || !keyv.namespace ? key : `${keyv.namespace}:${key}`;
+        return keyv.namespace ? `${keyv.namespace}:${key}` : key;
     }
 
     async function writeRawStoreValue(key: string, value: unknown): Promise<void> {
@@ -312,29 +311,6 @@ describe("KeyvCacheHandler - Batch Operations", () => {
             }
 
             expect(entries).toHaveLength(0);
-        });
-
-        it("should throw exception if iterator not supported", async () => {
-            const keyvNoIterator = new Keyv();
-
-            // Mock iterator as undefined
-            delete keyvNoIterator.iterator;
-
-            const handlerNoIterator = new KeyvCacheHandler<TestCacheSchema>(keyvNoIterator, "test");
-
-            await expect(async () => {
-                for await (const entry of handlerNoIterator) {
-                    // Iterate
-                    expect(entry).toBeDefined();
-                }
-            }).rejects.toThrow(CacheIteratorException);
-
-            await expect(async () => {
-                for await (const entry of handlerNoIterator) {
-                    // Iterate
-                    expect(entry).toBeDefined();
-                }
-            }).rejects.toThrow("The provided Keyv instance does not support iteration.");
         });
 
         it("should track entries correctly after modifications", async () => {

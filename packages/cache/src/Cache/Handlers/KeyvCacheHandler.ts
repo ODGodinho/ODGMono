@@ -1,6 +1,5 @@
 import type Keyv from "keyv";
 
-import { CacheIteratorException } from "#exceptions";
 import type { CacheHandlerInterface } from "#interfaces/CacheHandlerInterface";
 
 export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerInterface<CacheType> {
@@ -15,7 +14,7 @@ export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerI
     }
 
     public async get<K extends keyof CacheType>(key: K): Promise<CacheType[K] | undefined> {
-        const rawValue = await this.keyv.get<unknown>(String(key), { raw: true });
+        const rawValue = await this.keyv.getRaw<unknown>(String(key));
 
         return this.normalizeRawGetValue(rawValue) as CacheType[K] | undefined;
     }
@@ -43,7 +42,7 @@ export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerI
     }
 
     public async getMany<K extends keyof CacheType>(keys: K[]): Promise<Array<CacheType[K] | undefined>> {
-        const rawValues = await this.keyv.getMany<unknown>(keys as string[], { raw: true });
+        const rawValues = await this.keyv.getManyRaw<unknown>(keys as string[]);
 
         return rawValues.map((value) => this.normalizeRawGetValue(value) as CacheType[K] | undefined);
     }
@@ -72,11 +71,7 @@ export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerI
     }
 
     public async *[Symbol.asyncIterator](): AsyncGenerator<[keyof CacheType, CacheType[keyof CacheType]]> {
-        if (!this.keyv.iterator) {
-            throw new CacheIteratorException("The provided Keyv instance does not support iteration.");
-        }
-
-        for await (const [ key, value ] of this.keyv.iterator("*")) {
+        for await (const [ key, value ] of this.keyv.iterator()) {
             yield [ key as keyof CacheType, value as CacheType[keyof CacheType] ];
         }
     }
