@@ -21,7 +21,7 @@ Dependencies point **inward only**.
 
 **An ENTRY artifact MUST NOT contain business logic.** A Page, an HTTP controller, a queue consumer and an `ipcMain.handle` callback are the same thing — a different way to invoke the application. They translate an external event into a Service call and translate the result back. Nothing else.
 
-Read exactly one: [crawler](./runtimes/crawler.md) · [electron](./runtimes/electron.md).
+Read exactly one: [crawler](./runtimes/crawler.md) · [electron](./runtimes/electron.md) · [api](./runtimes/api.md).
 
 ## Universal spine
 
@@ -66,19 +66,11 @@ src/ or $$PROJECT_ROOT
 
 `ContainerInject.ts` lives in `src/app/` (as shown above) and is imported through the `#app/*` alias (`#app/ContainerInject.js`).
 
-### Naming
-
-- `app/` is lowercase — a namespace, not a class bucket.
-
 ### `index.ts`
 
-A barrel: re-exports only, no declarations. Every sibling in the folder is exported, including base classes.
-
-A file **MUST** import its own siblings by relative path, never through the folder's own barrel or alias. `SearchPage.ts` imports `BasePage` as `../BasePage`, not as `#pages`. The barrel is for external consumers; importing it from inside its own folder turns the re-export into a cycle.
+A barrel: re-exports only, no declarations. **Every** sibling in the folder is exported — base classes and sub-folders with their own barrel included. A forgotten sibling is not a type error: the decorated class is never evaluated and its binding silently does not exist at runtime.
 
 `Configs/Config.ts` holds `configValidator` and its inferred type together — the type is `zod.infer<typeof configValidator>`, not an independent contract, so it stays with the schema. A project needing more than one schema names each scope explicitly: `Configs/MainConfig.ts`, `Configs/RendererConfig.ts`.
-
-Do not name the inferred type `ConfigInterface` — `@odg/config` already exports a generic `ConfigInterface<T>`. Use `ConfigType` or `MyConfig`.
 
 ## The alias contract
 
@@ -105,9 +97,7 @@ resolves them correctly on its own under `moduleResolution` `nodenext` or `bundl
 exception in the project `AGENTS.md`.
 
 The `extends` target **MUST** be a relative path (`../../node_modules/@odg/tsconfig/tsconfig.node.json`),
-not the `@odg/tsconfig/...` package specifier: Bun ignores specifier-based `extends`, which silently
-drops `emitDecoratorMetadata` and breaks every `@$inject` at runtime. See
-[diagnostics.md](./diagnostics.md).
+never the package specifier — why: [diagnostics.md](./diagnostics.md) → *missing metadata*.
 
 > Nothing checks the two files against each other automatically. When a task touches either file, diff the two maps key by key.
 
@@ -174,12 +164,9 @@ caller of it, read `@odg/chemical-x`'s `AGENTS.md` and follow it to `docs/attemp
 That document owns the public-surface contract, the lifecycle order, and the decorator's traps — this
 skill does not restate them.
 
-## Container & Enums rules
+## Container rules
 
-- Developers **MUST** use `ContainerName`, `EventName`, and `ConfigName` enums instead of loose strings.
-- Manual bindings **MUST** be maintained strictly inside `src/app/Container.ts`.
-- Barrel files **MUST** be kept updated whenever files are added or removed from a directory.
-- **MUST NOT** disable ESLint for an entire file when a narrower occurrence-level disable is enough.
+- Manual bindings **MUST** live only in `src/app/Container.ts` Or `Kernel.ts` if lazy bind.
 - An injected primitive (`Logger`, `Config`, requester, `EventBus`) **MUST** be used directly at the call site. **MUST NOT** wrap it in a bespoke function or class that only forwards to it without adding behavior.
 
 ## Helper classes
@@ -188,7 +175,15 @@ skill does not restate them.
 - A `Helpers/` folder holds **pure functions only**. A class that is `@injectable` is a Service, not a helper, and belongs in `Services/`.
 - A helper file **MUST** expose exactly **one** helper. A factory that closes over state and returns an object whose properties are methods (`return { decorate, preflight }`) is an object simulated with closures — it **MUST** be a `class` with `public` and `private` methods. Convert when **either** holds: the factory returns **2+** callables, or the entry point needs auxiliary functions that exist only to serve it in the same file. Those auxiliaries are private methods, not module functions.
 - A function called from **2+** places is a genuine helper: it stays a function and **MUST** live where every call site imports the **same** one. Copying it, or burying it in the single file that happens to use it today, is the violation.
-- **Not covered by the rule above:** a factory returning a **single** callable, or a third-party handle it only configures (`createDatabase`, `createAuth`) — nothing is being simulated. A `static async create()` returning an instance of its **own** class is also correct: it is the idiom for construction that needs `await`, and the constructor **MUST** then be `private`.
+- **Not covered by the rule above:** a factory returning a **single** callable, or a third-party handle it only configures (`createDatabase`, `createAuth`) — nothing is being simulated.
+- **Several helpers of one subject become one class.** The trigger is the **count per subject**, not the shape of each helper: when **2+** loose functions, constants or types exist to serve a single subject (auth, login, billing), they **MUST** become one class that centralizes it — even if each one alone would be a legitimate exception above. The decisive signal is **one fact repeated in two places that nothing forces to agree** (an env var read in `Container` and again in the server; a base path imported only to re-implement a match its owner could answer). The class exposes the questions (`canHandle`, `handle`), not the pieces.
+
+## Async construction
+
+Construction that needs `await` is **`new` + a lifecycle method**, never `static async create()`. The constructor is `public` and does everything synchronous; the awaited part goes to a method the host calls on the next line — the pattern of `Container.setUp()`, `Kernel.init()` and `ProcessKernel.register()`.
+
+- A `private` constructor **MUST NOT** be used: it closes the class to the Container and to the test.
+- **Better still is not needing it:** compute on demand instead of in a warm-up step. The API ENTRY ring has no `init()` at all — `HttpServer.create()` is a plain instance method that builds the pipeline when asked, and the OpenAPI document is generated per request.
 
 ## One class, one job
 
@@ -205,21 +200,7 @@ The host **constructs and composes** the extracted classes; it **MUST NOT** reac
 
 ## DTO
 
-A DTO is the data a flow carries, in object form. It is created with `new`, filled by whoever owns the flow, and knows how to render its external shape (`toJson()`). `src/app/Dtos/<Name>Dto.ts` is its folder.
-
-```typescript
-// WRONG — src/app/Services/Server/UserInfo.ts
-export class UserInfo {
-    public cardNumber?: string;
-    public toJson(): UserInfoInterface { /* ... */ }
-}
-
-// RIGHT — src/app/Dtos/UserInfoDto.ts
-export class UserInfoDto {
-    public cardNumber?: string;
-    public toJson(): UserInfoInterface { /* ... */ }
-}
-```
+A DTO is the data a flow carries, in object form: created with `new`, filled by whoever owns the flow, rendering its external shape (`toJson()`). The Container decides, not the shape — a class under `Services/` that is **not** `@injectable` is a DTO and **MUST** move to `src/app/Dtos/<Name>Dto.ts`. (The inverse, an injectable DTO, is lint-enforced.)
 
 ## Text as data
 

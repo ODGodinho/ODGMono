@@ -26,6 +26,7 @@ Decide once, from the project root, cheapest signal first. Read exactly one runt
 | `electron` in `package.json` dependencies, or `electron/` + `resources/` folders | Electron | [runtimes/electron.md](./references/runtimes/electron.md) |
 | `src/Pages/` + `src/Selectors/`, or `playwright`/`puppeteer` dependency | Crawler | [runtimes/crawler.md](./references/runtimes/crawler.md) |
 | `react` dependency with no `electron` | Frontend | [runtimes/frontend.md](./references/runtimes/frontend.md) |
+| `@odg/http` dependency, or `src/Http/Routes/` | API | [runtimes/api.md](./references/runtimes/api.md) |
 
 An Electron project carries the Frontend ring inside `resources/` — read [runtimes/frontend.md](./references/runtimes/frontend.md) too, but only when the task touches the renderer.
 
@@ -43,6 +44,7 @@ Read the matching reference **before** you plan, edit, or review one of these fi
 | **Handlers** | `src/Handlers/**` · `make:handler` | **MUST** [handler.md](./references/handler.md) |
 | **Selectors** | `src/Selectors/**` | **MUST** [selectors.md](./references/selectors.md) |
 | **Windows / Tray / preload / IPC** | `electron/**` · `preload.ts` · IPC channel enums | **MUST** [runtimes/electron.md](./references/runtimes/electron.md) |
+| **HTTP routes / RequestContainer** | `src/Http/**` · `src/app/RequestContainer.ts` · `src/database/**` · `make:route` · `make:middleware` | **MUST** [runtimes/api.md](./references/runtimes/api.md) |
 | **React UI** | `resources/**` · `src/components/**` · `src/hooks/**` · `src/features/**` | **MUST** [runtimes/frontend.md](./references/runtimes/frontend.md) |
 | **Events / Listeners** | `src/app/Listeners/**` · `src/app/Enums/Event**` · `EventsInterface.d.ts` | **MUST** [events.md](./references/events.md) |
 | **Services** | `src/app/Services/**` | **MUST** [services.md](./references/services.md); **SHOULD** [events.md](./references/events.md) |
@@ -55,7 +57,7 @@ Read the matching reference **before** you plan, edit, or review one of these fi
 | **Commands RTK** | Token-saving command proxy (only when `rtk --version` succeeds) | [rtk.md](./references/rtk.md) |
 | **Prompt Plans** | Planning started | [plan.md](./references/plan.md) |
 
-Unlisted runtime (API, worker) → apply [architecture.md](./references/architecture.md) only; no dedicated runtime file exists yet.
+Unlisted runtime (worker) → apply [architecture.md](./references/architecture.md) only; no dedicated runtime file exists yet.
 
 ### Package references
 

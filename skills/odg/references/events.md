@@ -4,22 +4,10 @@ An event only takes effect when at least one listener is registered for it.
 
 ## Rules
 
-- Event names live in `src/app/Enums/EventName.ts` by default.
-- Event payload `EventTypes` live in `@types/EventsInterface.d.ts` by default.
-- Every event **MUST** have a payload type declared in `@types/EventsInterface.d.ts` extending `EventBrowserParameters` (which always carries `page: PageClassEngine` if page is required).
-- Inject the event bus with `@$inject(ContainerName.EventBus) protected bus: EventBusInterface<EventTypes>,`
-- Dispatch events with `await this.bus.dispatch(EventName.CustomEvent, { page, ...extraParams });`
+- Every event **MUST** have a payload in `@types/EventsInterface.d.ts` extending `EventBrowserParameters` (pattern below).
 - Events **MUST NOT** have a transaction handler — only a validation handler. The transaction handler is called inside the Service, not the Listener.
-- Therefore an event without a listener is a no-op, and declaring one is a violation
-- **WHEN** a change removes the last listener of an event, the event, its payload entry and its enum member go with it.
-
-## Who Can Dispatch Events
-
-| Caller | Allowed | Notes |
-| --- | --- | --- |
-| **Service** | ✅ | Primary dispatcher; owns the browser context lifecycle |
-| **Handler** | ✅ | Use to trigger a retry path (always throw after dispatch — see handler.md) |
-| **Listener** | ✅ | Use to chain to the next step in a composed flow |
+- An event without a listener is a no-op, so declaring one is a violation. **WHEN** a change removes the last listener of an event, the event, its payload entry and its enum member go with it.
+- Service, Handler and Listener may all dispatch; a Handler that dispatches **MUST** then throw (see [handler.md](./handler.md)).
 
 ## Payload Type Pattern
 
@@ -47,45 +35,18 @@ export type EventTypes<T = EventBaseInterface> = T;
 
 ## Create an Event
 
-- If you need a page and its event together, prefer `$$PM odg make:page PageName --event EventName`.
+Page + event together: `$$PM odg make:page <Name> --event <Name>`. Event alone:
 
 ```bash
-$$PM odg make:event <eventName>
-# or
-$$PM odg make:event --help
+$$PM odg make:event <Name>
 ```
 
 ## Listeners
 
-A listener is a class registered for 1+ events.
-
-### Decorator Pattern
-
-```typescript
-@ODGDecorators.injectable(ContainerName.SearchEventListener, "Singleton")
-@ODGDecorators.registerListener(EventName.SearchEvent, ContainerName.SearchEventListener, {})
-export class SearchEventListener implements EventListenerInterface<EventTypes, EventName.SearchEvent> {
-    public constructor(
-        @$inject(ContainerName.Logger) public readonly log: LoggerInterface,
-        @$inject(ContainerName.SearchPage) public readonly searchPage: SearchPage,
-    ) {}
-
-    public async handler({ page }: EventBrowserParameters): Promise<void> {
-        await this.searchPage.setPage(page).execute();
-    }
-}
-```
-
-- `@ODGDecorators.registerListener(EventName.X, ContainerName.X, {})` auto-registers the listener in `EventServiceProvider` via `ODGDecorators.getEvents(container)` — **no manual Provider change needed** for the standard case.
-
-### Make listeners
-
-- If you need a listener tied to a page, prefer `$$PM odg make:listener ListenerName --event EventName`.
+A listener is a class registered for 1+ events. Create it with the CLI — the generated `@ODGDecorators.registerListener(...)` auto-registers it in `EventServiceProvider`, **no Provider change needed**:
 
 ```bash
-$$PM odg make:listener <listenerName> --event <eventName>
-# or
-$$PM odg make:listener --help
+$$PM odg make:listener <Name> --event <EventName>
 ```
 
 ## Register Event Listeners Manually

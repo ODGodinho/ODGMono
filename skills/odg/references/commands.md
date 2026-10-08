@@ -34,7 +34,7 @@ $$PM odg make:middleware <Name>                                # API: Middleware
 ### API commands (Stanley-API layout)
 
 - They always wire (no `--register`) and never overwrite: if any file they would create exists, they abort before writing anything. Re-running never duplicates an enum entry, a barrel line or a router line.
-- `make:service` is `"Singleton"` by default. Pass `--request` when the class injects anything the `RequestContainer` binds (`Request`, `RequestId`, the request `Logger`): it is generated without scope, and `Container.warm()` fails the boot if such a class is left `"Singleton"`.
+- `make:service` is `"Singleton"` by default. Pass `--request` when the class injects anything the `RequestContainer` binds (`Request`, `RequestId`, `Server`): it is generated without scope, and `Container.warm()` fails the boot if such a class is left `"Singleton"`.
 - `make:route <feature> --service` is the whole feature in one command; the procedure is named by method (GET `show`, POST `store`, PUT/PATCH `update`, DELETE `destroy`). The HTTP path stays in the route file; move it to `src/Http/paths.ts` only when a second file needs it.
 - `make:middleware` does **not** edit `HttpServer.create()`: the position in the array is the composer's decision (above `ErrorBoundaryMiddleware` it sees every response, errors included; below it, only what reaches the transports). The command prints the line and the criterion — add it by hand.
 

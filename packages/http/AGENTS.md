@@ -122,7 +122,7 @@ do consumidor asserta nele.
 | `HttpDispatchType` | Passa a request ao próximo estágio |
 | `HttpPipelineOptionsInterface` | `middlewares`, `requestIdHeader?`, `logger?` |
 | `ErrorBoundaryOptionsInterface` | `serializer`, `logger` |
-| `CorsOptionsInterface` | `origins`, `methods?`, `maxAgeSeconds?` |
+| `CorsOptionsInterface` | `origins` (lista ecoada com credencial, ou `["*"]` sem credencial), `methods?`, `maxAgeSeconds?` |
 | `OrpcTransportOptionsInterface` | `context`, `prefix?`, `interceptors?` |
 | `OpenApiOptionsInterface` | O anterior, mais `serializer` |
 | `OpenApiDocumentOptionsInterface` | `path`, `title`, `version?`, `schemaConverters?` |

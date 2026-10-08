@@ -7,45 +7,24 @@ Pages **MUST**:
 - navigate, fill, click, and wait for the immediate action they own
 - consume typed state required for that step
 - set up any request/selector waits that the Handler will resolve
-- encapsulate exactly **one** primary user intent (e.g. "Fill Form Page", "Fill Login Page", "Fill checkout")
+- encapsulate exactly **one** primary user intent (e.g. "Fill Login", "Fill checkout") — never a `LoginAndSearchPage`
 
 Pages **MUST NOT**:
 
-- orchestrate multiple intents in sequence (e.g. "login" **and then** "search")
 - decide whether the flow succeeded
 - dispatch the next step of the flow
 - hide business routing inside conditional page code
 - hide flow routing by navigating across unrelated domains as part of the same intent
-- chain multiple business steps inside `execute()` as a mini-service
 
-## Rules
-
-Ask internally or outwardly, as needed:
-
-- If the crawler uses a browser, it is **RECOMMENDED** to use the --selectors flag when scaffolding the page.
-- If the step crosses domains (e.g. `accounts.google.com` → `youtube.com`) or contains 2+ primary verbs ("login", "search", "checkout"), split it into 3+ Pages and orchestrate them in a Service or Listener.
-- If a page uses selectors, it **SHOULD** use typed selectors and the scaffold **SHOULD** include --selectors.
-- If a handler is needed, the command **SHOULD** include --handler for a default `<PageName>Handler`, or --handler-from and/or --handler-to for transition handlers.
-- When flag meaning is unclear, agents **MUST** read `$$PM odg make:page --help` and **MUST NOT** guess semantics.
-- **MUST NOT** create OneAndOtherPage-style classes, because each page must represent one intention.
-- **MUST** use **setPage()** in page before use **IF** your crawler using browser.
-
-## Naming Convention
-
-| Object | Name Convention | Description |
-| --------- | --------- | --------- |
-| Class | {{PascalCase}} + `Page` | `ExamplePage`, `LoginPage` |
-| File | {{PascalCase}} + `Page.ts` | `ExamplePage.ts`, `LoginPage.ts` |
+A step that crosses domains (`accounts.google.com` → `youtube.com`) or has 2+ primary verbs ("login", "search") **MUST** be split into one Page per intent, orchestrated by a Service or Listener.
 
 ## How to Create a Page
 
-You **MUST** use the official scaffolding command to create pages.
+**MUST** use the CLI — one `make:page` for the whole step. Read `$$PM odg make:page --help` when a flag's meaning is unclear; **MUST NOT** guess.
 
 ```bash
-$$PM odg make:page --help
+$$PM odg make:page <Name> --selectors --event <Name> --listeners   # + --handler, or --handler-from/--handler-to for a transition
 ```
-
-> When creating a page together with handler, selectors, event contract, and listener class, you **SHOULD** prefer a single `make:page` with `--selectors`, `--event`, `--listeners`, and `--register` (see [events.md](./events.md)) unless a documented exception applies.
 
 ## BasePage Injected Properties
 
@@ -60,7 +39,5 @@ $$PM odg make:page --help
 
 `Pages/Components/` holds reusable page sub-elements (e.g., `AcceptCookieComponent`) that encapsulate UI logic used across multiple pages.
 
-- Components are **NOT** top-level steps of the flow — they are called inside `Page.execute()` or as injected helpers
-- Components **MUST** follow the same injectable pattern as Pages
-- Components created with `make:page` but in folder component --path=src/Pages/Components
-- Components **MUST** be placed in `src/Pages/Components/index.ts` and exported in the barrel
+- Components are **NOT** top-level steps of the flow — they are called inside `Page.execute()` or injected.
+- Create with `$$PM odg make:page <Name> --path src/Pages/Components`.

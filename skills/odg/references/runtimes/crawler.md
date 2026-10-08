@@ -20,8 +20,6 @@ src/
         <?Group>/<Name>Selector.ts
 ```
 
-**Selectors are never inlined.** A CSS or XPath string **MUST NOT** appear in a Page or Handler.
-
 ## Runtime lifecycle
 
 ```text

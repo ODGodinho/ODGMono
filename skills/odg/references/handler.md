@@ -1,6 +1,6 @@
 # Handlers
 
-Handlers validate whether a step or transition really succeeded when **one action can produce 2 or more distinct outcomes**.
+A Handler exists only when **one action can produce 2+ distinct outcomes** that must be identified and routed at runtime. If the bot can safely assume success (a simple login), no handler.
 
 Prefer strong observable identifiers in this order:
 
@@ -9,11 +9,7 @@ Prefer strong observable identifiers in this order:
 3. visible selector from the next state
 4. disappearance of the old state plus presence of the new state
 
-## When to Create a Handler
-
-Create a Handler when **one action can produce 2 or more distinct outcomes** that must be identified and routed at runtime. If the bot can safely assume success and move on, no handler is needed.
-
-> Simple bots that assume (login or other page) always worked do **NOT** need a handler. Only create one when 2+ outcomes must be distinguished.
+## Typical cases
 
 ### Scenario 1 — Multi-outcome step (e.g., login)
 
@@ -33,8 +29,6 @@ On a single screen, something *may or may not* appear, such as an alert modal or
 
 | Object | Name Convention | Description |
 | --------- | --------- | --------- |
-| Class | {{PascalCase}} + `Handler` | `ExampleHandler`, `HomeToLoginHandler`, `ModalErrorHandler` |
-| File | {{PascalCase}}Handler.ts | `ExampleHandler.ts`, `HomeToLoginHandler.ts` |
 | Identify Method | `identify<Outcome>()` | `identifySuccess()`, `identifyNoResult()` |
 | Solution Method | `<outcome>Solution()` | `successSolution()`, `noResultSolution()` |
 
@@ -53,10 +47,6 @@ On a single screen, something *may or may not* appear, such as an alert modal or
 
 ## Rules
 
-Ask internally or outwardly, as needed:
-
-- Handlers live in `src/Handlers/` by default.
-- Handlers **MUST** extend `BaseHandler`.
 - All core interaction and business logic within a Handler **MUST** be encapsulated exclusively inside the solution() method.
 
 ### Handlers **MUST NOT**
@@ -68,9 +58,7 @@ Ask internally or outwardly, as needed:
 ### **WHEN** writing a `waitForHandler()` that waits for a specific request or response
 
 - `waitForHandler()` has **exactly two** shapes. A third shape — `try`/`catch`, `if/else` over an awaited call, or invoking the action itself — is a violation, not a variant.
-- **MUST** use `Promise.race([ identify1(), identify2(), ... ])` when the elements occur in parallel
-- **MUST** chain with `??` when the elements occur in sequence
-  - Example: `identifyCaptchaBlock ?? identifyLoginBlocked ?? identifySiteError ?? successSolution.bind(this)`
+- **MUST** use `Promise.race([...])` when the outcomes occur in parallel, and a `??` chain when they occur in sequence (see *Examples*).
 - `waitForHandler()` is the orchestration boundary. Keep branching and outcome competition there, not buried inside helper methods.
 - **MUST NOT** call `execute()` on a Page, Component, or Service — a Handler observes an outcome, never triggers it
 
@@ -87,24 +75,19 @@ Ask internally or outwardly, as needed:
 
 ### **WHEN** writing a `*Solution()` that cannot recover and needs to trigger a retry
 
-- You **MAY** dispatch the page event again (e.g., `await this.bus.dispatch(EventName.MyPageEvent, { page: this.page })`).
-- It is **NOT RECOMMENDED** to return `RetryAction.Retry` after dispatching the event internally, as this bypasses the attempt counter and creates an infinite loop.
-  - **INSTEAD**, you **MUST** throw an exception (e.g., `throw new Exception("Login failed, because <reason>")`). This forces the flow into the `retrying()` method, which safely relies on the `@attemptableFlow` counter.
+- You **MAY** dispatch the page event again, but then **MUST** throw instead of returning `RetryAction.Retry` — `Retry` bypasses the `@attemptableFlow` counter and loops forever; the throw goes through `retrying()` (anti-loop example below).
 - All solution functions **MUST** have the suffix `*Solution`
 - **RECOMMENDED** derive solution name from the identify name: drop the `identify` prefix
   - `identifyLoginBlocked` → `loginBlockedSolution`
   - `identifyMfaRequest` → `mfaRequestSolution`
   - `identifyCaptchaBlock` → `captchaBlockSolution`
-- If you create a custom solution, you **MAY** read the interface documentation in [@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts]($$PROJECT_ROOT/node_modules/@odg/chemical-x/dist/crawler/Interfaces/HandlerInterface.d.ts).
 
 ## How to Create a Handler
 
-- If you are creating a page with a handler, prefer `$$PM odg make:page PageName --handler` to create both together.
+Page + handler together: `$$PM odg make:page <Name> --handler`. Handler alone:
 
 ```bash
-$$PM odg make:handler <handlerName>
-# or
-$$PM odg make:handler --help
+$$PM odg make:handler <Name>
 ```
 
 ## Examples
