@@ -26,6 +26,7 @@ $$PM odg make:event <Name> [flags]      # Creates EventName enum entry + payload
 $$PM odg make:listener <Name> [flags]   # Creates Listener class
 $$PM odg make:selector <Name> [flags]   # Creates Selector file
 $$PM odg make:config <Name> [flags]     # Mutates config wiring (no standalone file created)
+$$PM odg remove:config <KEY...> [flags] # Removes keys from enum, validator, test defaults, .env.example, .env; refuses while code reads them
 $$PM odg make:service <Name> [--request]                       # Service + enum (// Services) + ContainerInterface + barrel + test
 $$PM odg make:route <feature> [--service] [--method] [--path]  # API: procedures-only route + validator + interface + barrels + router line + test
 $$PM odg make:middleware <Name>                                # API: MiddlewareInterface class + barrel + test (not wired)

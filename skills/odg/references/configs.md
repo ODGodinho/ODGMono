@@ -24,7 +24,7 @@ Application config, environments, database, and other service settings.
 - **MUST NOT** group by environment (`PROD_`/`STAGING_`) or create inverted affixes (`_DISABLED`, `_OFF`, `_NO`).
 - `_TOKEN`, `_PASSWORD`, `_SECRET`, `_KEY` **MUST NOT** be logged
 - **MUST NOT** merge `_LIMIT`, `_ATTEMPT` with `MIN` / `MAX`
-- New key **MUST** land in .env.example; a dead key **MUST** be removed everywhere (enum, validator, .env.example).
+- New key **MUST** land in .env.example; a dead key **MUST** be removed everywhere (enum, validator, test defaults, .env.example, .env) with `$$PM odg remove:config <KEY...>`. It refuses while code still reads `ConfigName.KEY` and then reports, without editing, what still mentions the key (CI, docs, tests): fix those by hand.
 
 ## Usage
 

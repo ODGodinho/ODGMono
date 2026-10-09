@@ -17,7 +17,7 @@ src/
             <feature>.ts    procedures only — `show` · `store` · `update` · `destroy`
             index.ts        barrel: one `export * as <feature>` line per feature
         index.ts        barrel
-    database/
+    database/       Optional database mysql,postgresql etc.
         schema/         Drizzle schema — the schema SSOT
         DatabaseSeeder.ts
         Seeders/<Name>Seeder.ts
@@ -34,7 +34,7 @@ src/
 | `/rpc/*` | oRPC native | oRPC native frame (what `@orpc/client` rebuilds as `ORPCError`) |
 | `/api/*` | REST/OpenAPI | `ExceptionObjectLoggerInterface` from `@odg/json-log` |
 | `/api/openapi` | JSON spec | — |
-| `/api/health` | readiness (DB probe, 1 s timeout) | 503 when degraded |
+| `/api/health` | readiness (DB probe, redis and anything dependency services) if not exists use `/api/health/live` only | 503 when degraded |
 | `/api/health/live` | liveness, no I/O | — |
 
 - Success returns the procedure payload **raw** — no `success`, no `data` wrapper.
@@ -110,7 +110,7 @@ index.ts
 
 `close()` waits for `stop()` to drain within `HTTP_SHUTDOWN_TIMEOUT`; on timeout **or** failure the error is logged via `detach` and the server is aborted with `stop(true)`. The Container only **builds** infra; listeners on infra are registered in `boot()`, so a standalone script that does not boot (seed) has none.
 
-## Database
+## Database (optional)
 
 - Connection is separate fields (`DB_HOST`, `DB_PORT`, …), **never** a `DATABASE_URL`.
 - `src/database/schema/index.ts` starts empty, so `src/database/index.ts` does **not** re-export it (an export-less barrel is a lint error). Add the line back with the first table.

@@ -13,5 +13,5 @@ RTK supports all commands, flags, and parameters; you simply need to match the s
 | `$$PM eslint ...` | `rtk lint eslint ...` | run eslint, get errors only |
 | `$$PM lint ...` | `rtk lint eslint ...` | run eslint, get errors only |
 | `$$PM lint:fix ...` | `rtk lint eslint --fix ...` | run eslint, get errors and apply fixes |
-| `$$PM test:watch ...` | `rtk vitest run --watch ...` | run tests in vitest |
-| `$$PM test:ci ...` | `rtk vitest run --passWithNoTests ...` | run the CI suite |
+| `$$PM test:watch ...` | `rtk proxy $$PM vitest run --reporter=dot --watch ...` | run tests in vitest |
+| `$$PM test:ci ...` | `rtk proxy $$PM vitest run --reporter=dot --passWithNoTests ...` | run the CI suite |
