@@ -1,10 +1,17 @@
-import { join, normalize, relative } from "node:path";
+import {
+    basename,
+    join,
+    normalize,
+    relative,
+} from "node:path";
 
 import { Str } from "@odg/chemical-x";
+import { InvalidArgumentException } from "@odg/exception";
 import type { LoggerInterface } from "@odg/log";
 
+import { didRemoveEnvironmentVariable, findProjectLines, hasWord } from "../Registrations/config-removal.ts";
 import { registerArtifact, registerService } from "../Registrations/register.ts";
-import { didEnsureBarrelLine } from "../Registrations/ts-mutators.ts";
+import { didEnsureBarrelLine, didRemoveEnumMember, didRemoveObjectProperty } from "../Registrations/ts-mutators.ts";
 import type { RegistrationTargets } from "../Registrations/types.ts";
 
 import StubCreator from "./StubCreator.ts";
@@ -74,6 +81,24 @@ export interface MakeConfigOptions extends RegistrationOptions {
 
     /** Path to the file that exports `configValidator = zod.object({...})`. */
     configValidatorPath?: string;
+}
+
+export interface RemoveConfigOptions {
+    configEnumPath?: string;
+    configValidatorPath?: string;
+    envExamplePath?: string;
+
+    /** The local `.env`, which the dev edits and the repo does not track. */
+    envPath?: string;
+
+    /** File with the test defaults, `[ConfigName.KEY]: "..."`. */
+    testSetupPath?: string;
+
+    /** Folder scanned for readers of the key and for leftover mentions. */
+    rootPath?: string;
+
+    /** Remove even when code still reads `ConfigName.KEY`. */
+    force?: boolean;
 }
 
 export interface MakeServiceOptions {
@@ -253,6 +278,48 @@ export default class MakeFile {
         await this.logger.info(`Config "${configKey}" registered successfully`);
     }
 
+    /**
+     * The inverse of `generateConfig`: takes each key out of the `ConfigName` enum, out of
+     * `configValidator`, out of the test defaults and out of `.env.example` and `.env`.
+     *
+     * Nothing is written if code still reads a key (unless `force`), and what still mentions it
+     * afterwards (CI, docs, comments) is reported, since those are not edited blindly.
+     *
+     * @param {string[]} configNames Keys, in the same spelling `make:config` takes
+     * @param {RemoveConfigOptions} options Paths of the files to edit
+     * @throws {InvalidArgumentException} When a key is still read by code and `force` is off
+     * @returns {Promise<void>}
+     */
+    public async removeConfig(configNames: string[], options: RemoveConfigOptions): Promise<void> {
+        const keys = configNames.map((name) => new Str(name).constCase().toString());
+        const root = options.rootPath ?? ".";
+        const edited = [ options.configEnumPath, options.configValidatorPath, options.testSetupPath ]
+            .filter((path) => path !== undefined);
+        const readers = await findProjectLines({
+            root,
+            skip: edited,
+            matches: (text) => keys.some((key) => hasWord(text, `ConfigName.${key}`)),
+        });
+
+        if (readers.length > 0 && options.force !== true) {
+            const listing = readers.map(({ file, line, text }) => `  ${file}:${line}  ${text}`).join("\n");
+
+            throw new InvalidArgumentException(
+                `Config still read by code, nothing was removed (use --force to remove anyway):\n${listing}`,
+            );
+        }
+
+        for (const key of keys) {
+            const removed = await this.removeConfigKey(key, options);
+
+            await (removed.length > 0
+                ? this.logger.info(`Config "${key}" removed from: ${removed.join(", ")}`)
+                : this.logger.warning(`Config "${key}" was not found in any file`));
+        }
+
+        await this.warnLeftoverMentions(keys, root, edited);
+    }
+
     public async generateException(exceptionName: string, options: MakeExceptionOptions): Promise<void> {
         const exceptionNameString = new Str(exceptionName);
         const exceptionClassName = exceptionNameString.pascalCase().toString();
@@ -373,6 +440,66 @@ export default class MakeFile {
             "    (auth, rate limit).",
             "Always above the transports (OpenApiDocument, Rpc, OpenApi): they answer and never call next.",
         ].join("\n"));
+    }
+
+    private async removeConfigKey(key: string, options: RemoveConfigOptions): Promise<string[]> {
+        const propertyName = `[ConfigName.${key}]`;
+        const removals = [
+            {
+                filePath: options.configEnumPath,
+                remove: async (filePath: string): Promise<boolean> => didRemoveEnumMember({
+                    filePath,
+                    enumName: "ConfigName",
+                    memberName: key,
+                }),
+            },
+            {
+                filePath: options.configValidatorPath,
+                remove: async (filePath: string): Promise<boolean> => didRemoveObjectProperty({
+                    filePath,
+                    propertyName,
+                }),
+            },
+            {
+                filePath: options.testSetupPath,
+                remove: async (filePath: string): Promise<boolean> => didRemoveObjectProperty({
+                    filePath,
+                    propertyName,
+                }),
+            },
+            {
+                filePath: options.envExamplePath,
+                remove: async (filePath: string): Promise<boolean> => didRemoveEnvironmentVariable({ filePath, key }),
+            },
+            {
+                filePath: options.envPath,
+                remove: async (filePath: string): Promise<boolean> => didRemoveEnvironmentVariable({ filePath, key }),
+            },
+        ];
+        const removed: string[] = [];
+
+        for (const { filePath, remove } of removals) {
+            if (filePath !== undefined && await remove(filePath)) {
+                removed.push(filePath);
+            }
+        }
+
+        return removed;
+    }
+
+    private async warnLeftoverMentions(keys: string[], root: string, edited: string[]): Promise<void> {
+        const mentions = await findProjectLines({
+            root,
+            skip: edited,
+            matches: (text) => keys.some((key) => hasWord(text, key)),
+        });
+
+        // The dotenv files are the dev's own copies (`.env.local`, `.env.test`), not docs to fix.
+        const leftovers = mentions.filter(({ file }) => !basename(file).startsWith(".env"));
+
+        for (const { file, line, text } of leftovers) {
+            await this.logger.warning(`Still mentioned, check by hand: ${file}:${line}  ${text}`);
+        }
     }
 
     /**

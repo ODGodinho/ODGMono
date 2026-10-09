@@ -11,6 +11,7 @@ import MakeFile, {
     type MakePageOptions,
     type MakeSelectorOptions,
     type MakeServiceOptions,
+    type RemoveConfigOptions,
 } from "./Generators/MakeFile.ts";
 
 const make = new MakeFile(new ConsoleLogger());
@@ -235,6 +236,25 @@ program
     .description("Register a new config entry in ConfigName enum, configValidator object and .env.example")
     .version("0.1.1")
     .action(async (configName: string, options: MakeConfigOptions) => make.generateConfig(configName, options));
+
+program
+    .command("remove:config")
+    .name("remove:config")
+    .argument("<configNames...>", "Config keys to remove, spelled as in make:config")
+    .option("--configEnumPath <configEnumPath>", "ConfigName enum path", registrationDefaults.configEnumPath)
+    .option(
+        "--configValidatorPath <configValidatorPath>",
+        "Path to file with configValidator = zod.object({...})",
+        "./src/Configs/Config.ts",
+    )
+    .option("--envExamplePath <envExamplePath>", ".env.example path", registrationDefaults.envExamplePath)
+    .option("--envPath <envPath>", "Local .env path", "./.env")
+    .option("--testSetupPath <testSetupPath>", "File with the test defaults", "./tests/setup/bootstrap.ts")
+    .option("--rootPath <rootPath>", "Folder scanned for readers and leftover mentions", ".")
+    .option("--force", "Remove even when code still reads ConfigName.KEY", false)
+    .description("Remove config keys from ConfigName, configValidator, test defaults, .env.example and .env")
+    .version("0.1.1")
+    .action(async (configNames: string[], options: RemoveConfigOptions) => make.removeConfig(configNames, options));
 
 program
     .command("make:exception")

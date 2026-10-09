@@ -298,6 +298,51 @@ yarn odg make:config USE_HEADLESS --register --validator "CustomValidator.zodStr
 yarn odg make:config APP_URL --register --configValidatorPath src/Configs/Config.ts
 ```
 
+### remove:config
+
+Purpose:
+
+- The inverse of `make:config`: take one or more config keys out of every place the wiring keeps them.
+
+Syntax:
+
+```bash
+yarn odg remove:config <configNames...>
+```
+
+Flags:
+
+- `--configEnumPath` → ConfigName enum path. Default: `./src/app/Enums/ConfigName.ts`
+- `--configValidatorPath` → path to the file containing `configValidator = zod.object({...})`. Default: `./src/Configs/Config.ts`
+- `--testSetupPath` → file with the test defaults (`[ConfigName.KEY]: "..."`). Default: `./tests/setup/bootstrap.ts`
+- `--envExamplePath` → `.env.example` path. Default: `./.env.example`
+- `--envPath` → local `.env` path. Default: `./.env`
+- `--rootPath` → folder scanned for readers and leftover mentions. Default: `.`
+- `--force` → remove even when code still reads `ConfigName.KEY`. Default: `false`
+
+Operational notes:
+
+- Accepts several keys, in the same spelling as `make:config` (`DbHost` → `DB_HOST`).
+- Removes, per key: the `ConfigName` member, `[ConfigName.KEY]` from `configValidator` and from the test defaults, and the variable from `.env.example` and `.env`.
+- A missing file, or a key that is not in it, is a no-op: no file is ever created.
+- Before writing anything, it scans the project for `ConfigName.KEY` (whole word: `DB_HOST` does not match `DB_HOST_REPLICA`), ignoring the files it edits. If code still reads a key, it throws `InvalidArgumentException` listing `file:line  text` and changes **no** file, for any key of the call. `--force` skips the refusal.
+- dotenv: the `#` comment right above the variable goes with it only when the next line is blank or the end of the file (the comment is its own). When another variable follows, the comment is a group header and stays until the group's last variable goes. The blank separator left doubled is removed.
+- After removing, every remaining whole-word mention (CI, docs, comments, other tests) is logged as `Still mentioned, check by hand: file:line  text`. Those files are **not** edited; `.env*` files are not reported.
+- Scans `.ts .tsx .mts .cts .cjs .mjs .json .md .yml .yaml .toml` and `.env*`, skipping `.git .review .vitest cache coverage dist node_modules out`.
+
+Examples:
+
+```bash
+# Drop Postgres: removes both keys from the 5 places, then reports e.g. .github/ci.yml
+yarn odg remove:config DB_HOST DB_PORT
+
+# PascalCase input → DB_PASSWORD
+yarn odg remove:config DbPassword
+
+# Code still reads ConfigName.DB_HOST but the reader is going away in the same change
+yarn odg remove:config DB_HOST --force
+```
+
 ### make:exception
 
 Purpose:

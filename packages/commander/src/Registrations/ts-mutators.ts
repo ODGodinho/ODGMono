@@ -6,6 +6,7 @@ import {
     Node,
     type ObjectLiteralExpression,
     Project,
+    type PropertyAssignment,
     QuoteKind,
     ScriptKind,
     type SourceFile,
@@ -200,6 +201,11 @@ function hasObjectPropertyByNamePrefix(
     propertyName: string,
 ): boolean {
     return objectLiteral.getProperties().some((property) => property.getText().startsWith(propertyName));
+}
+
+function findPropertyAssignment(sourceFile: SourceFile, propertyName: string): PropertyAssignment | undefined {
+    return sourceFile.getDescendantsOfKind(SyntaxKind.PropertyAssignment)
+        .find((property) => property.getNameNode().getText() === propertyName);
 }
 
 export async function didEnsureEnumMember(parameters: {
@@ -414,4 +420,58 @@ export async function didEnsureValueNamedImport(parameters: {
     name: string;
 }): Promise<boolean> {
     return didCommitNamedImport(parameters, false);
+}
+
+// Removes a member from an enum; a missing file, enum or member leaves the project untouched.
+export async function didRemoveEnumMember(parameters: {
+    filePath: string;
+    enumName: string;
+    memberName: string;
+}): Promise<boolean> {
+    const sourceFile = createProject().addSourceFileAtPathIfExists(parameters.filePath);
+    const members = sourceFile?.getEnum(parameters.enumName)?.getMembers() ?? [];
+    const member = members.find((candidate) => candidate.getName().replaceAll("\"", "") === parameters.memberName);
+
+    if (!sourceFile || !member) {
+        return false;
+    }
+
+    member.remove();
+    await sourceFile.save();
+
+    return true;
+}
+
+/*
+ * Removes every object-literal property with that exact name (brackets of a computed key
+ * included), wherever it is in the file: the `[ConfigName.KEY]` of `configValidator` and the one
+ * of the test defaults are the same call.
+ */
+export async function didRemoveObjectProperty(parameters: {
+    filePath: string;
+    propertyName: string;
+}): Promise<boolean> {
+    const sourceFile = createProject().addSourceFileAtPathIfExists(parameters.filePath);
+    let property = sourceFile && findPropertyAssignment(sourceFile, parameters.propertyName);
+
+    if (!sourceFile || !property) {
+        return false;
+    }
+
+    while (property) {
+        // Cut with its own comma, so the trailing comma of a multiline object survives.
+        const comma = property.getNextSiblingIfKind(SyntaxKind.CommaToken);
+
+        if (comma) {
+            sourceFile.removeText(property.getPos(), comma.getEnd());
+        } else {
+            property.remove();
+        }
+
+        property = findPropertyAssignment(sourceFile, parameters.propertyName);
+    }
+
+    await sourceFile.save();
+
+    return true;
 }
