@@ -59,6 +59,7 @@ On a single screen, something *may or may not* appear, such as an alert modal or
 
 - `waitForHandler()` has **exactly two** shapes. A third shape — `try`/`catch`, `if/else` over an awaited call, or invoking the action itself — is a violation, not a variant.
 - **MUST** use `Promise.race([...])` when the outcomes occur in parallel, and a `??` chain when they occur in sequence (see *Examples*).
+- **MUST NOT** race two `identify*()` that await the **same** request or promise: the race settles by input order, not by which outcome actually happened, so the result is nondeterministic. Coalesce them into one `identify*()` with `locator().or()`/a selector union, or check them with a `??` chain.
 - `waitForHandler()` is the orchestration boundary. Keep branching and outcome competition there, not buried inside helper methods.
 - **MUST NOT** call `execute()` on a Page, Component, or Service — a Handler observes an outcome, never triggers it
 
@@ -66,7 +67,7 @@ On a single screen, something *may or may not* appear, such as an alert modal or
 
 - All identify functions **MUST** have the prefix `identify*`
 - Each `identify*()` **MUST** detect exactly one semantic outcome.
-- If the same outcome can be recognized by more than one selector, prefer a single locator composed with `locator(a).or(locator(b))` or an equivalent selector union, instead of a nested `Promise.race()` inside `identify*()`.
+- One outcome recognized by more than one selector stays one `identify*()`, coalesced as in *waitForHandler()* above, never a nested `Promise.race()`. How the browser API is used inside it (arming the wait, the predicate, the timeout): [browser-automation.md](./browser-automation.md).
 - Create multiple identify functions only when the outcomes are behaviorally different and map to different solution functions.
 
 ### **WHEN** defining attemptable flow behavior

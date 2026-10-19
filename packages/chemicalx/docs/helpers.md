@@ -56,6 +56,8 @@ async function retry<ReturnType>(options: {
 4. Se todas tentativas esgotam → lança `RetryException`
 5. Entre tentativas, aguarda `sleep` ms (se definido)
 
+**A reação à falha mora no `when`:** o que muda entre tentativas por causa de uma falha (renovar a sessão, trocar o proxy) é feito dentro do `when`, que recebe a exceção. Não duplique essa reação com um `.catch` ou um helper em volta da operação dentro do `callback`: as duas rodariam para a mesma falha. Numa classe com `@attemptableFlow`, o `when` é o `retrying()` ([attemptable-flow.md](./attemptable-flow.md)).
+
 **Exemplo:**
 
 ```typescript

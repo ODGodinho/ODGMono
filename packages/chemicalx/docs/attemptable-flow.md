@@ -77,6 +77,10 @@ What the interface cannot express, and this decorator decides:
 - `attempt()` and `sleep()` are resolved **once**, before the loop; their values are fixed for the
   whole run.
 - The order the hooks run in, below.
+- **One owner per outcome.** Exactly one class reports the terminal outcome of a run (success,
+  failure) through these hooks. Before adding a report to `success()`, `failure()` or `retrying()`,
+  read the same hooks of the base class, and of any decorated class that runs inside this one's
+  `execute()` (a Page that runs a Handler): two owners report the same outcome twice.
 
 ### Lifecycle order
 
@@ -91,7 +95,9 @@ execute()
                              exhausted?        → finish(exception) → failure(exception) | throw
 ```
 
-`finish()` runs **before** `success()` and before `failure()`, on both paths.
+`finish()` runs **before** `success()` and before `failure()`, on both paths. It runs **once per
+run**, after the loop, success included — never between attempts. Work that only matters for the next
+attempt, or for the decision to retry, belongs in `retrying()`, not in `finish()`.
 
 ---
 
@@ -121,7 +127,9 @@ The decorator resolves `await this.sleep?.()` **before** the loop and passes a f
 **3. `retrying()` also runs on the last attempt.**
 `getWhen()` calls `when` **before** checking whether attempts ran out (`dist/Helpers/retry.d.ts`). With
 `times: 3`, `retrying()` runs 3 times — not 2. Do not use its call count as "how many retries
-happened".
+happened". Work in `retrying()` that only prepares the next attempt (reset the screen, renew a
+session) first checks that there will be one — `this.currentAttempt < await this.attempt()` — or it
+runs for nothing after the last failure.
 
 **4. `RetryAction.Retry` ignores `times` — this is the infinite loop.**
 The exhaustion check is `times <= 1 && ![Retry, Resolve].includes(when)`. Returning `Retry` skips that
@@ -147,6 +155,12 @@ is never called. A signal aborted mid-loop also becomes an `AbortException`, eve
 `execute()` reaches `retrying()`, `finish()` and `failure()` as **the same instance**. Only a
 non-`Exception` throw becomes an `UnknownException`. Consequence: when attempts run out, what
 propagates is the **original exception**, not a `RetryException`.
+
+**9. Every attempt runs on the same instance.**
+The loop calls `super.execute()` again on the same object. Fields written by the previous attempt are
+still set, and a Page's browser page still shows whatever that attempt left on screen (an open modal,
+a half-finished navigation). Reset per-attempt state at the start of `execute()` and never assume a
+clean screen: a value carried over from a previous attempt is reported as if it belonged to this one.
 
 ---
 

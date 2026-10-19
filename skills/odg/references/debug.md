@@ -92,4 +92,4 @@ The agent **MUST NOT** propose a selector fix without confirming that the candid
 ## Constraints reminder
 
 - `$$SKILL_DIR/configs/playwright-cli.config.json` — shared, **MUST NOT** be edited in place; copy to a temp folder if a change is needed (Phase 1).
-- All `$$SKILL_DIR` occurrences above **MUST** be expanded to the absolute skill directory before execution; see the Path convention in `SKILL.md`.
+- All `$$SKILL_DIR` occurrences above **MUST** be expanded to the absolute skill directory before execution; see the Alias convention in `SKILL.md`.

@@ -145,3 +145,5 @@ out/
 
 # Code review reports (skills/odg/scripts/review.sh)
 .review/
+
+skills/odg-workspace/

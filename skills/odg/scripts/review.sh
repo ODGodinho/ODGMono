@@ -1,15 +1,31 @@
 #!/usr/bin/env bash
+# review.sh <outdir> [all|staged|commits]
+#
+# Escreve <outdir>/index.md (escopo, tabela, pacotes, partes) e
+# <outdir>/part-N.md (diffs, cortados só em fronteira de arquivo).
+#
+# Um único `git diff` por modo, com par fixo de refs:
+#   all      merge-base -> working tree (+ untracked)      [padrão]
+#   staged   HEAD       -> índice
+#   commits  merge-base -> HEAD
+#
+# Knobs: REVIEW_BASE, REVIEW_CONTEXT_LINES (1), REVIEW_MAX_DIFF_LINES_PER_FILE (1200),
+#        REVIEW_MAX_LINES_PER_PART (1500), REVIEW_MAX_FILES (200).
 set -euo pipefail
 
-ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null)"
+OUTDIR="${1:?usage: review.sh <outdir> [all|staged|commits]}"
+MODE="${2:-all}"
+
+case "$MODE" in
+    all|staged|commits) ;;
+    *)
+        printf 'review.sh: modo inválido "%s" (all|staged|commits)\n' "$MODE" >&2
+        exit 2
+        ;;
+esac
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
 cd "$ROOT_DIR"
-
-BASE_REF="${REVIEW_BASE:-}"
-HEAD_REF="${REVIEW_HEAD:-HEAD}"
-
-CONTEXT_LINES="${REVIEW_CONTEXT_LINES:-1}"
-MAX_DIFF_LINES_PER_FILE="${REVIEW_MAX_DIFF_LINES_PER_FILE:-1200}"
-MAX_FILES="${REVIEW_MAX_FILES:-200}"
 
 # Estes knobs alimentam flags do git (`--unified=N`). Um valor não-numérico
 # faz o git falhar e o diff desaparecer do relatório sem aviso, então o
@@ -25,569 +41,133 @@ require_positive_int() {
     fi
 
     printf 'review.sh: %s inválido (%s); usando %s\n' "$name" "$value" "$fallback" >&2
-
     printf '%s' "$fallback"
 }
 
-CONTEXT_LINES="$(require_positive_int REVIEW_CONTEXT_LINES "$CONTEXT_LINES" 1)"
-MAX_DIFF_LINES_PER_FILE="$(require_positive_int REVIEW_MAX_DIFF_LINES_PER_FILE "$MAX_DIFF_LINES_PER_FILE" 1200)"
-MAX_FILES="$(require_positive_int REVIEW_MAX_FILES "$MAX_FILES" 200)"
+CONTEXT_LINES="$(require_positive_int REVIEW_CONTEXT_LINES "${REVIEW_CONTEXT_LINES:-1}" 1)"
+MAX_DIFF_LINES_PER_FILE="$(require_positive_int REVIEW_MAX_DIFF_LINES_PER_FILE "${REVIEW_MAX_DIFF_LINES_PER_FILE:-1200}" 1200)"
+MAX_LINES_PER_PART="$(require_positive_int REVIEW_MAX_LINES_PER_PART "${REVIEW_MAX_LINES_PER_PART:-1500}" 1500)"
+MAX_FILES="$(require_positive_int REVIEW_MAX_FILES "${REVIEW_MAX_FILES:-200}" 200)"
 
 IGNORE_REGEX='(^yarn.lock$|^pnpm-lock.yaml$|^package-lock.json$|^.review/|^dist/|^.next/|^coverage/|^.turbo/|^.git/|^.yarn/|\.snap$|\.min\.|bun.lock$|bun.lockb$|.yarn|.claude)'
 
 choose_base_ref() {
-    if [[ -n "$BASE_REF" ]]; then
-        printf '%s' "$BASE_REF"
+    if [[ -n "${REVIEW_BASE:-}" ]]; then
+        printf '%s' "$REVIEW_BASE"
         return
     fi
 
     local candidate
 
-    for candidate in \
-        "origin/main" \
-        "origin/master" \
-        "origin/develop" \
-        "upstream/main" \
-        "upstream/master" \
-        "main" \
-        "master" \
-        "develop"; do
-
+    for candidate in origin/main origin/master origin/develop upstream/main upstream/master main master develop HEAD~1; do
         if git rev-parse --verify --quiet "$candidate" >/dev/null; then
             printf '%s' "$candidate"
             return
         fi
     done
 
-    printf '%s' "HEAD~1"
+    # Repositório com um único commit: nada commitado para comparar,
+    # mas o modo `all` ainda cobre índice + working tree.
+    printf 'HEAD'
 }
 
-print_section() {
-    printf '\n## %s\n\n' "$1"
-}
+BASE_REF="$(choose_base_ref)"
 
-list_scopes() {
-    printf '%s\n' "commits" "staged" "worktree"
-}
+MERGE_BASE="$(
+    git merge-base "$BASE_REF" HEAD 2>/dev/null \
+    || git rev-parse "$BASE_REF"
+)"
 
-list_untracked_files() {
-    git ls-files \
-        --others \
-        --exclude-standard
-}
-
-diff_name_only_for_scope() {
-    local scope="$1"
-
-    case "$scope" in
-        worktree)
-            git diff \
-                --name-only \
-                --find-renames \
-                --find-copies
-            ;;
-        staged)
-            git diff \
-                --cached \
-                --name-only \
-                --find-renames \
-                --find-copies
-            ;;
-        commits)
-            git diff \
-                --name-only \
-                --find-renames \
-                --find-copies \
-                "$MERGE_BASE" \
-                "$HEAD_REF"
-            ;;
+# O único ponto que decide o par de refs. Tudo (name-status, numstat, patch)
+# passa por aqui, então um arquivo nunca mostra "só um lado".
+gdiff() {
+    case "$MODE" in
+        all)     git -c core.quotePath=false diff --find-renames --find-copies --no-ext-diff "$MERGE_BASE" "$@" ;;
+        staged)  git -c core.quotePath=false diff --cached --find-renames --find-copies --no-ext-diff HEAD "$@" ;;
+        commits) git -c core.quotePath=false diff --find-renames --find-copies --no-ext-diff "$MERGE_BASE" HEAD "$@" ;;
     esac
 }
 
-diff_numstat_for_scope() {
-    local scope="$1"
-
-    case "$scope" in
-        worktree)
-            git diff \
-                --numstat \
-                --find-renames \
-                --find-copies
-            ;;
-        staged)
-            git diff \
-                --cached \
-                --numstat \
-                --find-renames \
-                --find-copies
-            ;;
-        commits)
-            git diff \
-                --numstat \
-                --find-renames \
-                --find-copies \
-                "$MERGE_BASE" \
-                "$HEAD_REF"
-            ;;
-    esac
-}
-
-rename_source_for_file() {
-    local file="$1"
-
-    awk -F'\t' -v f="$file" '$2==f{print $1; exit}' <<< "$RENAME_MAP"
-}
-
-# Escreve no global PATHSPEC (array), consumido imediatamente pelo chamador
-# como `-- "${PATHSPEC[@]}"`. É global e não retorno por stdout porque um path
-# pode conter qualquer byte exceto NUL, inclusive tab e newline, o que
-# quebraria a serialização.
-PATHSPEC=()
-
-resolve_pathspec_array() {
-    local file="$1"
-    local old
-
-    old="$(rename_source_for_file "$file")"
-
-    if [[ -n "$old" && "$old" != "$file" ]]; then
-        PATHSPEC=("$old" "$file")
-    else
-        PATHSPEC=("$file")
-    fi
-}
-
-# Renomeio puro = tem origem de rename E zero linhas adicionadas/removidas.
-# Estes arquivos são omitidos de todas as seções e resumidos em uma única
-# linha por pasta em "Renamed Paths".
-is_pure_rename_file() {
-    local file="$1"
-
-    grep -Fqx -- "$file" <<< "$PURE_RENAME_FILES"
-}
-
-# Existe no baseline? `git ls-tree` sai com 0 mesmo sem match,
-# então o que vale é a saída estar não-vazia.
-exists_in_merge_base() {
-    local file="$1"
-
-    [[ -n "$(git ls-tree -r "$MERGE_BASE" -- "$file" 2>/dev/null)" ]]
-}
-
-# Aplica MAX_DIFF_LINES_PER_FILE. Usa awk em vez de `head` porque `head`
-# fecha o pipe e o SIGPIPE resultante derrubaria o script sob `pipefail`.
-cap_patch_lines() {
-    local out="$1"
-    local total
-
-    total="$(printf '%s\n' "$out" | awk 'END { print NR }')"
-
-    if (( total <= MAX_DIFF_LINES_PER_FILE )); then
-        printf '%s' "$out"
-        return
-    fi
-
-    printf '%s\n' "$out" | awk -v n="$MAX_DIFF_LINES_PER_FILE" 'NR <= n'
-
-    printf '... [truncated: %s of %s lines]' "$MAX_DIFF_LINES_PER_FILE" "$total"
-}
-
-# Primeiro patch não-vazio entre worktree, staged e commits.
-patch_for_file() {
-    local file="$1"
-    local scope
-    local out
-
-    for scope in worktree staged commits; do
-        out="$(diff_patch_for_file "$scope" "$file" 2>/dev/null | strip_diff_headers)"
-
-        if [[ -n "$out" ]]; then
-            cap_patch_lines "$out"
-            return
-        fi
-    done
-}
-
-diff_numstat_for_file() {
-    local scope="$1"
-    local file="$2"
-
-    resolve_pathspec_array "$file"
-
-    case "$scope" in
-        worktree)
-            git diff \
-                --numstat \
-                --find-renames \
-                --find-copies \
-                -- "${PATHSPEC[@]}"
-            ;;
-        staged)
-            git diff \
-                --cached \
-                --numstat \
-                --find-renames \
-                --find-copies \
-                -- "${PATHSPEC[@]}"
-            ;;
-        commits)
-            git diff \
-                --numstat \
-                --find-renames \
-                --find-copies \
-                "$MERGE_BASE" \
-                "$HEAD_REF" \
-                -- "${PATHSPEC[@]}"
-            ;;
-    esac
-}
-
-diff_name_status_for_file() {
-    local scope="$1"
-    local file="$2"
-
-    resolve_pathspec_array "$file"
-
-    case "$scope" in
-        worktree)
-            git diff \
-                --name-status \
-                --find-renames \
-                --find-copies \
-                -- "${PATHSPEC[@]}"
-            ;;
-        staged)
-            git diff \
-                --cached \
-                --name-status \
-                --find-renames \
-                --find-copies \
-                -- "${PATHSPEC[@]}"
-            ;;
-        commits)
-            git diff \
-                --name-status \
-                --find-renames \
-                --find-copies \
-                "$MERGE_BASE" \
-                "$HEAD_REF" \
-                -- "${PATHSPEC[@]}"
-            ;;
-    esac
-}
-
-diff_patch_for_file() {
-    local scope="$1"
-    local file="$2"
-
-    resolve_pathspec_array "$file"
-
-    case "$scope" in
-        worktree)
-            git diff \
-                --find-renames \
-                --find-copies \
-                --unified="$CONTEXT_LINES" \
-                --no-ext-diff \
-                -- "${PATHSPEC[@]}"
-            ;;
-        staged)
-            git diff \
-                --cached \
-                --find-renames \
-                --find-copies \
-                --unified="$CONTEXT_LINES" \
-                --no-ext-diff \
-                -- "${PATHSPEC[@]}"
-            ;;
-        commits)
-            git diff \
-                --find-renames \
-                --find-copies \
-                --unified="$CONTEXT_LINES" \
-                --no-ext-diff \
-                "$MERGE_BASE" \
-                "$HEAD_REF" \
-                -- "${PATHSPEC[@]}"
-            ;;
-    esac
-}
-
-list_reviewed_files() {
-    while IFS= read -r scope; do
-        diff_name_only_for_scope "$scope"
-    done < <(list_scopes)
-
-    list_untracked_files
-}
-
-list_unique_reviewed_files() {
-    list_reviewed_files | awk 'NF && !seen[$0]++'
-}
-
-# Igual a list_unique_reviewed_files, mas sem os renomeios puros.
-# É esta lista que alimenta Risk Areas, Changed Files, Package References
-# e os diffs — renomeio puro não é conteúdo para revisar.
-# Preenchida em REVIEWABLE_FILES antes da primeira seção ser impressa.
-list_reviewable_files() {
-    printf '%s\n' "$REVIEWABLE_FILES"
-}
+UNTRACKED=""
+if [[ "$MODE" == "all" ]]; then
+    UNTRACKED="$(git -c core.quotePath=false ls-files --others --exclude-standard)"
+fi
 
 is_untracked_file() {
-    local file="$1"
-
-    list_untracked_files | grep -Fqx -- "$file"
+    [[ -n "$UNTRACKED" ]] || return 1
+    grep -Fqx -- "$1" <<< "$UNTRACKED"
 }
 
-add_numstat_value() {
-    local total="$1"
-    local value="$2"
-
-    if [[ ! "$total" =~ ^[0-9]+$ || ! "$value" =~ ^[0-9]+$ ]]; then
-        printf '%s' "-"
-        return
-    fi
-
-    printf '%s' "$((total + value))"
-}
-
-read_numstat_totals_for_file() {
-    local file="$1"
-    local scope
-    local added=0
-    local deleted=0
-    local current_added
-    local current_deleted
-
-    while IFS= read -r scope; do
-        [[ -z "$scope" ]] && continue
-
-        if [[ "$scope" == "untracked" ]]; then
-            read -r current_added current_deleted < <(
-                git diff \
-                    --no-index \
-                    --numstat \
-                    -- /dev/null "$file" \
-                    | awk 'NR==1 {print $1 "\t" $2}' \
-                    || true
-            )
-        else
-            read -r current_added current_deleted < <(
-                diff_numstat_for_file "$scope" "$file" | awk 'NR==1 {print $1 "\t" $2}'
-            )
+# Linhas `status<TAB>old<TAB>new`. `old` vazio quando não é rename/copy.
+# Untracked entra como `A` só no modo `all`.
+NAME_STATUS="$(
+    {
+        gdiff --name-status
+        if [[ -n "$UNTRACKED" ]]; then
+            printf 'A\t%s\n' $UNTRACKED
         fi
+    } | awk -F'\t' 'BEGIN { OFS = "\t" }
+        NF == 0 { next }
+        $1 ~ /^[RC]/ { print $1, $2, $3; next }
+        { print $1, "", $2 }'
+)"
 
-        added="$(add_numstat_value "$added" "${current_added:--}")"
-        deleted="$(add_numstat_value "$deleted" "${current_deleted:--}")"
-    done < <(list_file_scopes "$file")
+status_of()      { awk -F'\t' -v f="$1" '$3 == f { print substr($1, 1, 1); exit }' <<< "$NAME_STATUS"; }
+rename_source()  { awk -F'\t' -v f="$1" '$3 == f { print $2; exit }' <<< "$NAME_STATUS"; }
 
-    printf '%s\t%s\n' "$added" "$deleted"
-}
-
-list_file_scopes() {
-    local file="$1"
-    local scope
-
-    while IFS= read -r scope; do
-        if [[ -n "$(diff_name_status_for_file "$scope" "$file")" ]]; then
-            printf '%s\n' "$scope"
-        fi
-    done < <(list_scopes)
-
-    if is_untracked_file "$file"; then
-        printf '%s\n' "untracked"
-    fi
-}
-
-format_file_details() {
-    local file="$1"
-    local added
-    local deleted
-
-    read -r added deleted < <(read_numstat_totals_for_file "$file")
-
-    printf '+%s/-%s' \
-        "${added:--}" \
-        "${deleted:--}"
-}
-
-print_review_scope() {
-    print_section "Review Scope"
-
-    printf -- '- Source: committed branch delta from `%s` to `%s`\n' "$MERGE_BASE" "$HEAD_REF"
-}
+# Renomeio puro (R100/C100): conteúdo idêntico, nada para revisar dentro.
+PURE_RENAME_PAIRS="$(awk -F'\t' '$1 == "R100" || $1 == "C100" { print $2 "\t" $3 }' <<< "$NAME_STATUS" | sort)"
 
 is_ignored_file() {
+    git check-ignore -q "$1" || [[ "$1" =~ $IGNORE_REGEX ]]
+}
+
+# Arquivos com conteúdo para revisar: nem renomeio puro, nem ignorado, nem diretório.
+REVIEWABLE_FILES="$(
+    awk -F'\t' '!($1 == "R100" || $1 == "C100") { print $3 }' <<< "$NAME_STATUS" \
+    | while IFS= read -r f; do
+        [[ -z "$f" || -d "$f" ]] && continue
+        if is_ignored_file "$f"; then continue; fi
+        printf '%s\n' "$f"
+    done
+)"
+
+IGNORED_FILES="$(
+    awk -F'\t' '{ print $3 }' <<< "$NAME_STATUS" \
+    | while IFS= read -r f; do
+        [[ -z "$f" ]] && continue
+        if is_ignored_file "$f"; then printf '%s\n' "$f"; fi
+    done
+)"
+
+# Pathspec old+new para o git detectar o rename no diff por arquivo.
+PATHSPEC=()
+resolve_pathspec() {
+    local old
+    old="$(rename_source "$1")"
+    if [[ -n "$old" && "$old" != "$1" ]]; then
+        PATHSPEC=("$old" "$1")
+    else
+        PATHSPEC=("$1")
+    fi
+}
+
+numstat_for_file() {
     local file="$1"
 
-    if git check-ignore -q "$file"; then
-        return 0
-    fi
-
-    [[ "$file" =~ $IGNORE_REGEX ]]
-}
-
-print_changed_files() {
-    print_section "Changed Files"
-
-    printf '| File | Changes |\n'
-    printf '| --- | --- |\n'
-
-    local count=0
-    local file
-
-    while IFS= read -r file; do
-        [[ -z "$file" ]] && continue
-
-        if is_ignored_file "$file"; then
-            continue
-        fi
-
-        printf '| `%s` | %s |\n' \
-            "$file" \
-            "$(format_file_details "$file")"
-
-        count=$((count + 1))
-
-        if (( count >= MAX_FILES )); then
-            printf '| ... | Truncated after %s files |\n' "$MAX_FILES"
-            break
-        fi
-    done < <(list_reviewable_files)
-
-    if (( count == 0 )); then
-        printf '_No changed files._\n'
-    fi
-}
-
-print_risk_areas() {
-    print_section "Risk Areas"
-
-    local risks=""
-
-    local changed_files
-
-    changed_files="$(list_reviewable_files)"
-
-    if grep -Eq '(Container|Provider|Kernel)' <<< "$changed_files"; then
-        risks="${risks}- Dependency Injection / Container Wiring\n"
-    fi
-
-    if grep -Eq '(Event|Listener)' <<< "$changed_files"; then
-        risks="${risks}- Event Flow / Event Dispatching\n"
-    fi
-
-    if grep -Eq '(Service)' <<< "$changed_files"; then
-        risks="${risks}- Service Behavior / Side Effects\n"
-    fi
-
-    if grep -Eq '(Config)' <<< "$changed_files"; then
-        risks="${risks}- Configuration Contracts / Runtime Configuration\n"
-    fi
-
-    if grep -Eq '(Page|Handler|Selector)' <<< "$changed_files"; then
-        risks="${risks}- Crawler Flow / Page Interaction\n"
-    fi
-
-    if [[ -z "$risks" ]]; then
-        printf '_No obvious high-risk areas detected._\n'
+    if is_untracked_file "$file"; then
+        { git diff --no-index --numstat -- /dev/null "$file" || true; } \
+            | awk 'NR == 1 { print $1 "\t" $2 }'
         return
     fi
 
-    printf '%b' "$risks"
-}
-
-parse_scoped_imports() {
-    local file="$1"
-
-    perl -0777 -ne '
-        while (/import\s+(.+?)\s+from\s+["\x27](@[a-z0-9_-]+\/[a-z0-9_-]+)["\x27]/sg) {
-            my ($body, $pkg) = ($1, $2);
-            $body =~ s/\*\s+as\s+(\w+)/$1/g;
-            $body =~ s/\b\w+\s+as\s+(\w+)\b/$1/g;
-            $body =~ s/\btype\b//g;
-            $body =~ s/[\{\}*]/ /g;
-            for my $tok (split /[,\s]+/, $body) {
-                next unless $tok =~ /^[A-Za-z_]\w*$/;
-                print "$tok\t$pkg\n";
-            }
-        }
-    ' "$file" 2>/dev/null || true
-}
-
-extract_diff_tokens() {
-    local file="$1"
-    local diff_text
-
-    diff_text="$(patch_for_file "$file")"
-
-    [[ -z "$diff_text" ]] && return
-
-    printf '%s' "$diff_text" \
-        | grep -E '^[+-]' \
-        | grep -vE '^(\+\+\+|---)' \
-        | grep -oE '[A-Za-z_][A-Za-z0-9_]*' \
-        | sort -u \
-        || true
-}
-
-detect_packages_in_file() {
-    local file="$1"
-    local imports_map
-    local tokens
-    local sym
-    local pkg
-
-    imports_map="$(parse_scoped_imports "$file")"
-    [[ -z "$imports_map" ]] && return
-
-    tokens="$(extract_diff_tokens "$file")"
-    [[ -z "$tokens" ]] && return
-
-    while IFS=$'\t' read -r sym pkg; do
-        [[ -z "$sym" || -z "$pkg" ]] && continue
-        [[ -f "node_modules/$pkg/AGENTS.md" ]] || continue
-        if grep -qxF "$sym" <<< "$tokens"; then
-            printf '%s\n' "$pkg"
-        fi
-    done <<< "$imports_map"
-}
-
-print_package_references_required() {
-    print_section "Package References Required"
-
-    local packages
-    local file
-    local pkg
-
-    packages="$(
-        while IFS= read -r file; do
-            [[ -z "$file" ]] && continue
-            if is_ignored_file "$file"; then continue; fi
-            [[ "$file" =~ \.(ts|tsx|js|jsx|mjs|cjs)$ ]] || continue
-            [[ -f "$file" ]] || continue
-            detect_packages_in_file "$file"
-        done < <(list_reviewable_files) | sort -u
-    )"
-
-    if [[ -z "$packages" ]]; then
-        printf '_No registered packages touched by the diff._\n'
-        return
-    fi
-
-    printf 'The agent **MUST** read each `AGENTS.md` below before emitting findings:\n\n'
-
-    while IFS= read -r pkg; do
-        [[ -z "$pkg" ]] && continue
-        printf -- '- `%s` — [AGENTS.md](node_modules/%s/AGENTS.md)\n' "$pkg" "$pkg"
-    done <<< "$packages"
+    resolve_pathspec "$file"
+    gdiff --numstat -- "${PATHSPEC[@]}" | awk 'NR == 1 { print $1 "\t" $2 }'
 }
 
 # Descarta o cabeçalho do patch mantendo tudo a partir do primeiro `@@`.
 # Filtrar por prefixo (`--- `, `+++ `) apagaria linhas de CONTEÚDO cujo texto
-# começa com `--`/`++` — um comentário SQL removido (`-- nota`) vira `--- nota`
-# no patch e desaparecia do relatório.
-# `Binary files ... differ` não tem `@@` e precisa sobreviver.
+# começa com `--`/`++`. `Binary files ... differ` não tem `@@` e precisa sobreviver.
 strip_diff_headers() {
     awk '
         /^Binary files / { print; next }
@@ -596,201 +176,271 @@ strip_diff_headers() {
     '
 }
 
-# Agrupa pares "old\tnew" de renomeios puros (sem mudança de conteúdo) por
-# pasta renomeada em comum, e imprime uma única linha por pasta em vez de
-# um bloco por arquivo. Ex.: 9 arquivos sob `source/` -> `src/` viram
-# "- `source` → `src` (9 files)".
-print_renamed_paths() {
-    [[ -z "$PURE_RENAME_PAIRS" ]] && return
+# Usa awk em vez de `head`: `head` fecha o pipe e o SIGPIPE derrubaria o
+# script sob `pipefail`.
+cap_patch_lines() {
+    local out="$1"
+    local total
+    total="$(printf '%s\n' "$out" | awk 'END { print NR }')"
 
-    print_section "Renamed Paths (no content changes)"
+    if (( total <= MAX_DIFF_LINES_PER_FILE )); then
+        printf '%s' "$out"
+        return
+    fi
 
-    printf 'File contents are byte-identical — there is nothing to review inside them.\n'
-    printf 'The agent **MUST** still check packaging and reference impact of the move itself\n'
-    printf '(stale paths in `package.json` `files`, imports, docs links, case-only renames on\n'
-    printf 'case-insensitive filesystems).\n\n'
-
-    printf '%s' "$PURE_RENAME_PAIRS" | awk -F'\t' '
-        NF < 2 { next }
-        {
-            old = $1; new = $2
-            n = split(old, so, "/")
-            m = split(new, sn, "/")
-
-            i = 1
-            while (i <= n && i <= m && so[i] == sn[i]) i++
-
-            j = 0
-            while (j < (n - i + 1) && j < (m - i + 1) && so[n - j] == sn[m - j]) j++
-
-            old_mid = ""
-            for (k = i; k <= n - j; k++) old_mid = old_mid (old_mid == "" ? "" : "/") so[k]
-
-            new_mid = ""
-            for (k = i; k <= m - j; k++) new_mid = new_mid (new_mid == "" ? "" : "/") sn[k]
-
-            prefix = ""
-            for (k = 1; k < i; k++) prefix = prefix (prefix == "" ? "" : "/") so[k]
-
-            key = prefix "\x1f" old_mid "\x1f" new_mid
-
-            count[key]++
-            kprefix[key] = prefix
-            koldmid[key] = old_mid
-            knewmid[key] = new_mid
-        }
-        END {
-            for (key in count) {
-                p = kprefix[key]; om = koldmid[key]; nm = knewmid[key]; c = count[key]
-
-                # Mover para uma subpasta deixa o segmento antigo vazio
-                # (`app/x.ts` -> `app/Services/x.ts`); sem este guarda a
-                # saída virava "`app/` -> `app/Services`".
-                old_full = (om == "" ? p : (p == "" ? om : p "/" om))
-                new_full = (nm == "" ? p : (p == "" ? nm : p "/" nm))
-
-                if (c == 1) {
-                    printf "- `%s` \xe2\x86\x92 `%s`\n", old_full, new_full
-                } else {
-                    printf "- `%s` \xe2\x86\x92 `%s` (%d files)\n", old_full, new_full, c
-                }
-            }
-        }
-    ' | sort
+    printf '%s\n' "$out" | awk -v n="$MAX_DIFF_LINES_PER_FILE" 'NR <= n'
+    printf '... [truncated: %s of %s lines]' "$MAX_DIFF_LINES_PER_FILE" "$total"
 }
 
-print_smart_diffs() {
-    print_section "Code Changes (Diffs)"
-    local file
+patch_for_file() {
+    resolve_pathspec "$1"
+    cap_patch_lines "$(gdiff --unified="$CONTEXT_LINES" -- "${PATHSPEC[@]}" | strip_diff_headers)"
+}
 
+# Conteúdo do lado "novo" do arquivo, no escopo do modo. É o que o revisor
+# também deve ler quando o relatório marca NEW FILE.
+read_new_side() {
+    case "$MODE" in
+        all)     cat -- "$1" ;;
+        staged)  git show ":$1" ;;
+        commits) git show "HEAD:$1" ;;
+    esac 2>/dev/null || true
+}
+
+new_file_hint() {
+    case "$MODE" in
+        all)     printf 'Read `%s`' "$1" ;;
+        staged)  printf '`git show :%s`' "$1" ;;
+        commits) printf '`git show HEAD:%s`' "$1" ;;
+    esac
+}
+
+deleted_file_hint() {
+    case "$MODE" in
+        all|commits) printf 'old body: `git show %s:%s`' "$MERGE_BASE" "$1" ;;
+        staged)      printf 'old body: `git show HEAD:%s`' "$1" ;;
+    esac
+}
+
+pkg_version() {
+    sed -nE 's/^[[:space:]]*"version":[[:space:]]*"([^"]+)".*/\1/p' "node_modules/$1/package.json" | head -n 1
+}
+
+# Pacotes `@scope/name` com AGENTS.md importados por qualquer arquivo revisado
+# (novo ou editado), e quais arquivos os importam. Sem heurística por token:
+# a regra do SKILL.md é "importa → lê o AGENTS.md".
+PACKAGE_PAIRS="$(
     while IFS= read -r file; do
         [[ -z "$file" ]] && continue
+        [[ "$file" =~ \.(ts|tsx|js|jsx|mjs|cjs)$ ]] || continue
+        [[ "$(status_of "$file")" == "D" ]] && continue
+        read_new_side "$file" \
+            | perl -ne 'while (/(?:from|import|require)\s*\(?\s*["\x27](@[a-z0-9_.-]+\/[a-z0-9_.-]+)["\x27]/g) { print "$1\n" }' \
+            | sort -u \
+            | while IFS= read -r pkg; do
+                if [[ -f "node_modules/$pkg/AGENTS.md" ]]; then printf '%s@%s\t%s\n' "$pkg" "$(pkg_version "$pkg")" "$file"; fi
+            done
+    done <<< "$REVIEWABLE_FILES"
+)"
 
-        # Filtros de segurança que já implementamos
-        if is_ignored_file "$file"; then continue; fi
-        if [[ -d "$file" ]]; then continue; fi
+# ---------------------------------------------------------------- partes --
 
-        local old
-        old="$(rename_source_for_file "$file")"
+mkdir -p "$OUTDIR"
+rm -f "$OUTDIR"/index.md "$OUTDIR"/part-*.md
 
-        printf '### `%s`\n' "$file"
+PART=0
+PART_LINES=0
+PART_FILES=0
+PARTS_SUMMARY=""
 
-        if [[ -n "$old" && "$old" != "$file" ]]; then
-            printf '> _Renamed from `%s` to `%s`_\n\n' "$old" "$file"
-        fi
-
-        # REGRA 1: Se for arquivo novo de verdade (sem origem de rename), NÃO manda o diff. Força o READ.
-        if [[ -z "$old" ]] && { is_untracked_file "$file" || ! exists_in_merge_base "$file"; }; then
-            printf '> _NEW FILE CREATED_\n\n'
-            continue
-        fi
-
-        # REGRA 2: Se for arquivo modificado, manda o diff unificado.
-        # patch_for_file cobre worktree, staged e commits, e passa o pathspec
-        # antigo+novo para que o git detecte o rename corretamente.
-        local diff_output
-        diff_output="$(patch_for_file "$file")"
-
-        if [[ -z "$diff_output" ]]; then
-            printf '> _Only metadata changes_\n\n'
-        else
-            # Imprime o diff envelopado para a IA entender que é um código de comparação
-            printf '```diff\n%s\n```\n\n' "$diff_output"
-        fi
-
-    done < <(list_reviewable_files)
+close_part() {
+    (( PART == 0 )) && return
+    PARTS_SUMMARY="${PARTS_SUMMARY}- [part-${PART}.md](part-${PART}.md) — ${PART_FILES} files, ${PART_LINES} lines\n"
 }
 
-BASE_REF="$(choose_base_ref)"
+open_part() {
+    close_part
+    PART=$((PART + 1))
+    PART_FILE="$OUTDIR/part-${PART}.md"
+    printf '# Code Changes — part %s\n\n' "$PART" > "$PART_FILE"
+    PART_LINES=2
+    PART_FILES=0
+}
 
-MERGE_BASE="$(
-    git merge-base "$BASE_REF" "$HEAD_REF" \
-    2>/dev/null \
-    || git rev-parse "$BASE_REF"
-)"
+emit_block() {
+    local block="$1"
+    local n
+    n="$(printf '%s\n' "$block" | awk 'END { print NR }')"
 
-# Um único passe de `--name-status` por escopo alimenta o mapa de renomeios
-# E a detecção de renomeio puro. A versão anterior chamava
-# read_numstat_totals_for_file por arquivo renomeado (~5 processos git cada):
-# 1297 chamadas e 10,35s para um rename de 250 arquivos.
-NAME_STATUS_ALL="$(
-    {
-        git diff --name-status --find-renames --find-copies
-        git diff --cached --name-status --find-renames --find-copies
-        git diff --name-status --find-renames --find-copies "$MERGE_BASE" "$HEAD_REF"
-    } 2>/dev/null
-)"
+    if (( PART == 0 )) || (( PART_FILES > 0 && PART_LINES + n > MAX_LINES_PER_PART )); then
+        open_part
+    fi
 
-RENAME_MAP="$(
-    printf '%s\n' "$NAME_STATUS_ALL" \
-        | awk -F'\t' '$1 ~ /^[RC]/ { print $2"\t"$3 }' \
-        | awk 'NF && !seen[$0]++'
-)"
+    printf '%s\n' "$block" >> "$PART_FILE"
+    PART_LINES=$((PART_LINES + n))
+    PART_FILES=$((PART_FILES + 1))
+}
 
-# Renomeio puro = o destino aparece como R100/C100 (git: conteúdo idêntico) e
-# nunca como M/A/D nem como rename com similaridade < 100 em nenhum escopo.
-# Cobre binário de graça: R100 não depende de numstat, que devolve `-` e
-# fazia o teste `== "0"` falhar para PNG/fontes.
-PURE_RENAME_PAIRS="$(
-    printf '%s\n' "$NAME_STATUS_ALL" \
-        | awk -F'\t' '
-            $1 ~ /^[RC]/ {
-                if ($1 == "R100" || $1 == "C100") {
-                    if (!($3 in dirty)) pure[$3] = $2
-                } else {
-                    dirty[$3] = 1
-                    delete pure[$3]
-                }
-                next
-            }
-            NF >= 2 {
-                dirty[$2] = 1
-                delete pure[$2]
+TABLE_ROWS=""
+FILE_COUNT=0
+
+while IFS= read -r file; do
+    [[ -z "$file" ]] && continue
+
+    status="$(status_of "$file")"
+    old="$(rename_source "$file")"
+    IFS=$'\t' read -r added deleted < <(numstat_for_file "$file")
+    changes="+${added:--}/-${deleted:--}"
+
+    FILE_COUNT=$((FILE_COUNT + 1))
+    if (( FILE_COUNT > MAX_FILES )); then
+        TABLE_ROWS="${TABLE_ROWS}| ... | | Truncated after ${MAX_FILES} files |\n"
+        break
+    fi
+    TABLE_ROWS="${TABLE_ROWS}| \`${file}\` | ${status} | ${changes} |\n"
+
+    block="### \`${file}\`"$'\n'
+
+    case "$status" in
+        A)
+            block+="> _NEW FILE CREATED_ (${changes}) — $(new_file_hint "$file")"$'\n'
+            ;;
+        D)
+            block+="> _FILE DELETED_ (${changes}) — $(deleted_file_hint "$file")"$'\n'
+            ;;
+        *)
+            if [[ -n "$old" && "$old" != "$file" ]]; then
+                block+="> _Renamed from \`${old}\` to \`${file}\`_"$'\n\n'
+            fi
+            diff_output="$(patch_for_file "$file")"
+            if [[ -z "$diff_output" ]]; then
+                block+="> _Only metadata changes_"$'\n'
+            else
+                block+='```diff'$'\n'"${diff_output}"$'\n''```'$'\n'
+            fi
+            ;;
+    esac
+
+    emit_block "$block"
+done <<< "$REVIEWABLE_FILES"
+
+close_part
+
+# ---------------------------------------------------------------- index --
+
+{
+    printf '# Review: `%s` (mode: %s)\n' "$(git branch --show-current 2>/dev/null || echo HEAD)" "$MODE"
+
+    printf '\n## Review Scope\n\n'
+    case "$MODE" in
+        all)     printf -- '- Diff: `%s` (merge-base with `%s`) → **working tree**, plus untracked files\n' "$MERGE_BASE" "$BASE_REF" ;;
+        staged)  printf -- '- Diff: `HEAD` → **index** (staged changes only)\n' ;;
+        commits) printf -- '- Diff: `%s` (merge-base with `%s`) → `HEAD` (committed changes only)\n' "$MERGE_BASE" "$BASE_REF" ;;
+    esac
+    printf -- '- Generated: %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+
+    if [[ -n "$PURE_RENAME_PAIRS" ]]; then
+        printf '\n## Renamed Paths (no content changes)\n\n'
+        printf 'File contents are byte-identical — there is nothing to review inside them.\n'
+        printf 'The agent **MUST** still check packaging and reference impact of the move itself\n'
+        printf '(stale paths in `package.json` `files`, imports, docs links, case-only renames on\n'
+        printf 'case-insensitive filesystems).\n\n'
+        printf '%s\n' "$PURE_RENAME_PAIRS" | awk -F'\t' '
+            NF < 2 { next }
+            {
+                old = $1; new = $2
+                n = split(old, so, "/")
+                m = split(new, sn, "/")
+                i = 1
+                while (i <= n && i <= m && so[i] == sn[i]) i++
+                j = 0
+                while (j < (n - i + 1) && j < (m - i + 1) && so[n - j] == sn[m - j]) j++
+                old_mid = ""
+                for (k = i; k <= n - j; k++) old_mid = old_mid (old_mid == "" ? "" : "/") so[k]
+                new_mid = ""
+                for (k = i; k <= m - j; k++) new_mid = new_mid (new_mid == "" ? "" : "/") sn[k]
+                prefix = ""
+                for (k = 1; k < i; k++) prefix = prefix (prefix == "" ? "" : "/") so[k]
+                key = prefix "\x1f" old_mid "\x1f" new_mid
+                count[key]++
+                kprefix[key] = prefix; koldmid[key] = old_mid; knewmid[key] = new_mid
             }
             END {
-                for (target in pure) print pure[target] "\t" target
+                for (key in count) {
+                    p = kprefix[key]; om = koldmid[key]; nm = knewmid[key]; c = count[key]
+                    old_full = (om == "" ? p : (p == "" ? om : p "/" om))
+                    new_full = (nm == "" ? p : (p == "" ? nm : p "/" nm))
+                    if (c == 1) printf "- `%s` \xe2\x86\x92 `%s`\n", old_full, new_full
+                    else        printf "- `%s` \xe2\x86\x92 `%s` (%d files)\n", old_full, new_full, c
+                }
             }
-        ' \
-        | sort
-)"
+        ' | sort
+    fi
 
-PURE_RENAME_FILES="$(
-    printf '%s' "$PURE_RENAME_PAIRS" \
-        | awk -F'\t' 'NF >= 2 { print $2 }'
-)"
+    printf '\n## Risk Areas\n\n'
+    risks=""
+    grep -Eq '(Container|Provider|Kernel)' <<< "$REVIEWABLE_FILES" && risks="${risks}- Dependency Injection / Container Wiring\n"
+    grep -Eq '(Event|Listener)'            <<< "$REVIEWABLE_FILES" && risks="${risks}- Event Flow / Event Dispatching\n"
+    grep -Eq '(Service)'                   <<< "$REVIEWABLE_FILES" && risks="${risks}- Service Behavior / Side Effects\n"
+    grep -Eq '(Config)'                    <<< "$REVIEWABLE_FILES" && risks="${risks}- Configuration Contracts / Runtime Configuration\n"
+    grep -Eq '(Page|Handler|Selector)'     <<< "$REVIEWABLE_FILES" && risks="${risks}- Crawler Flow / Page Interaction\n"
+    grep -Eiq '(Middleware|Cors|Auth|Session|RateLimit|Token|Secret|Crypt|Validator)' <<< "$REVIEWABLE_FILES" && risks="${risks}- Security / Request Boundary (CORS, auth, rate limit, input validation)\n"
+    if [[ -z "$risks" ]]; then
+        printf '_No obvious high-risk areas detected._\n'
+    else
+        printf '%b' "$risks"
+    fi
 
-# Calculada uma única vez: is_pure_rename_file forkava um grep por arquivo e
-# list_reviewable_files é consumida por 4 seções.
-REVIEWABLE_FILES="$(
-    while IFS= read -r reviewable_candidate; do
-        [[ -z "$reviewable_candidate" ]] && continue
-        if is_pure_rename_file "$reviewable_candidate"; then continue; fi
-        printf '%s\n' "$reviewable_candidate"
-    done < <(list_unique_reviewed_files)
-)"
+    printf '\n## Changed Files\n\n'
+    if [[ -z "$TABLE_ROWS" ]]; then
+        printf '_No changed files._\n'
+    else
+        printf '| File | Status | Changes |\n| --- | --- | --- |\n'
+        printf '%b' "$TABLE_ROWS"
+        printf '\nStatus: A new, M modified, D deleted, R renamed with changes, C copied with changes.\n'
+    fi
 
-BRANCH="$(
-    git branch --show-current 2>/dev/null \
-    || true
-)"
+    if [[ "$MODE" == "all" ]]; then
+        INDEX_STATE="$(git -c core.quotePath=false status --short --untracked-files=all 2>/dev/null | grep -vE '^.. \.review/' || true)"
+        if [[ -n "$INDEX_STATE" ]]; then
+            printf '\n## Index State\n\n'
+            printf '`git status --short` (index column, worktree column). A commit now takes only the first column.\n\n'
+            printf '```\n%s\n```\n' "$INDEX_STATE"
+            if grep -q '^AD ' <<< "$INDEX_STATE"; then
+                printf '\n`AD`: staged as new, deleted on disk, absent from the diff above but a commit would publish it. Unstage it or review it with `git show :<path>`.\n'
+            fi
+        fi
+    fi
 
-REMOTE_URL="$(
-    git config --get remote.origin.url \
-    || true
-)"
+    if [[ -n "$IGNORED_FILES" ]]; then
+        printf '\n## Ignored Files\n\n'
+        printf 'Changed but not diffed (lockfiles, snapshots, build output); dependency changes show in `package.json`.\n\n'
+        while IFS= read -r f; do
+            [[ -z "$f" ]] && continue
+            printf -- '- `%s` (%s)\n' "$f" "$(status_of "$f")"
+        done <<< "$IGNORED_FILES"
+    fi
 
-GENERATED_AT="$(
-    date -u '+%Y-%m-%dT%H:%M:%SZ'
-)"
+    printf '\n## Package References Required\n\n'
+    if [[ -z "$PACKAGE_PAIRS" ]]; then
+        printf '_No registered packages imported by the reviewed files._\n'
+    else
+        printf 'Candidates: before emitting findings, read the `AGENTS.md` of each package below that a changed line calls:\n\n'
+        printf '%s\n' "$PACKAGE_PAIRS" | sort -u | awk -F'\t' '
+            { files[$1] = (files[$1] == "" ? "" : files[$1] ", ") "`" $2 "`" }
+            END {
+                for (p in files) { n = p; sub(/@[^@]*$/, "", n); printf "- `%s` — [AGENTS.md](node_modules/%s/AGENTS.md) — imported by %s\n", p, n, files[p] }
+            }
+        ' | sort
+    fi
 
-print_review_scope
+    printf '\n## Parts\n\n'
+    if [[ -z "$PARTS_SUMMARY" ]]; then
+        printf '_No diff content._\n'
+    else
+        printf '%b' "$PARTS_SUMMARY"
+        printf '\nRead every part before emitting findings.\n'
+    fi
+} > "$OUTDIR/index.md"
 
-print_renamed_paths
-
-print_risk_areas
-
-print_changed_files
-
-print_package_references_required
-
-print_smart_diffs
+printf 'review.sh: %s files, %s part(s) → %s/index.md\n' "$FILE_COUNT" "$PART" "$OUTDIR" >&2

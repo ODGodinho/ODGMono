@@ -37,7 +37,7 @@ src/ or $$PROJECT_ROOT
         Config.ts               configValidator (zod) + ConfigType
         index.ts                barrel
     Interfaces/
-        <Name>Interface.ts      shared contracts (prefer zod.infer<>)
+        <Name>Interface.ts      shared contracts (zod.infer<>, see "Validators" below)
     Validators/
         CustomValidator.ts      reusable zod *helper* functions
         <Name>Validator.ts      zod schema for a domain/service/integration
@@ -141,8 +141,10 @@ await this.bindApp();                          // everything that needs an initi
 ```
 
 A class resolved in phase 2 **MUST NOT** inject a binding registered in phase 3, or boot fails with
-`No matching bindings found`. Late bindings are resolved inside the method that uses them, and the
-constraint is stated in the class docblock.
+`No matching bindings found`. It receives the late value as an argument from the caller that already
+holds it (a resolver function when the value is needed later), and it never injects the Container to
+call `get()` inside a method: that hides the real dependency, and the test has to fake the Container.
+The constraint is stated in the class docblock in one sentence.
 
 ### Typing a binding in `ContainerInterface`
 
@@ -151,6 +153,9 @@ A binding **MUST NOT** be typed as a union of an implementation and its interfac
 consumers lose the concrete API and are forced to re-resolve the binding from the Container just to
 reach it. Declare the concrete type when the app depends on its methods (`Logger` already satisfies
 `LoggerInterface`); declare the interface when it is genuinely swappable.
+
+The same holds for parameters and payload interfaces: a parameter typed `Proxy | ProxyConfigInterface`
+(class or its JSON) forces a conversion at every call. Accept one form.
 
 ## Managed artifacts
 
@@ -164,10 +169,17 @@ caller of it, read `@odg/chemical-x`'s `AGENTS.md` and follow it to `docs/attemp
 That document owns the public-surface contract, the lifecycle order, and the decorator's traps — this
 skill does not restate them.
 
+**WHEN** the diff changes the exception an entrypoint throws — its type, its message, or its base
+class — read the base's `retrying()` and `failure()` before judging it: the retry decision is made
+there, keyed on the exception, not at the throw site. An exception the base does not retry turns a
+retry into a terminal failure, so the change is a flow change even when it compiles.
+
 ## Container rules
 
 - Manual bindings **MUST** live only in `src/app/Container.ts` or `Kernel.ts` if lazy bind.
 - An injected primitive (`Logger`, `Config`, requester, `EventBus`) **MUST** be used directly at the call site. **MUST NOT** wrap it in a bespoke function or class that only forwards to it without adding behavior.
+- An SDK client (S3, Redis, a TLS requester) is built in the composition root and injected; it is never constructed in a static field or at module load.
+- A binding that an opt-in feature needs is registered only when that feature's config exists. A consumer that did not opt in keeps its old boot.
 
 ## Helper classes
 
@@ -177,6 +189,53 @@ skill does not restate them.
 - A function called from **2+** places is a genuine helper: it stays a function and **MUST** live where every call site imports the **same** one. Copying it, or burying it in the single file that happens to use it today, is the violation.
 - **Not covered by the rule above:** a factory returning a **single** callable, or a third-party handle it only configures (`createDatabase`, `createAuth`) — nothing is being simulated.
 - **Several helpers of one subject become one class.** The trigger is the **count per subject**, not the shape of each helper: when **2+** loose functions, constants or types exist to serve a single subject (auth, login, billing), they **MUST** become one class that centralizes it — even if each one alone would be a legitimate exception above. The decisive signal is **one fact repeated in two places that nothing forces to agree** (an env var read in `Container` and again in the server; a base path imported only to re-implement a match its owner could answer). The class exposes the questions (`canHandle`, `handle`), not the pieces.
+
+## Validators
+
+A payload from outside the process (HTTP response, error body, intercepted response, message, env, file) has an unknown shape until a zod schema parses it.
+
+- **Parse before reading.** Read an external payload only through its validator's `parse`/`safeParse`. Never narrow it with `typeof`/`in`, and never cast `response.data` or `await response.json()` with `as`: a cast also hides this consumer from whoever removes a field later.
+- **Return the parsed value.** A method that validates returns the parsed result. Validating and then returning the raw response is a violation.
+- **Types are inferred.** The type of a payload is `zod.infer<typeof schema>`: never a hand-written interface, never `zod.input`. Before creating a type, find the existing `infer` of the same schema and reuse it.
+- **One pair of files per subject.** `Validators/<Subject>Validator.ts` exports `namespace <Subject>Validator` with every schema of that integration; `Interfaces/<Subject>Interface.ts` exports `namespace <Subject>Interface` with the inferred type of each of those schemas. Both files have the same shape: when the subject has several areas, each area is a nested namespace with the same name on both sides (`<Subject>Validator.Search.productValidator` ↔ `<Subject>Interface.Search.Product`). Never one file per schema, never a loose exported type outside the namespace, never a schema declared in a Service or Page.
+- **Coerce in the schema.** A number an external API sends as a string is converted in the schema (`CustomValidator.zodStringToNumber()`); consumers receive `number`, never `number | string` converted at the call site.
+- **Optionality mirrors the producer.** `.optional()` when the producer omits the field, `.nullable()` only when it sends `null`. A field the producer always sends is required (`.min(1)` for strings).
+
+```typescript
+// src/Validators/CatalogValidator.ts
+import * as zod from "zod";
+
+export namespace CatalogValidator {
+
+    export namespace Search {
+
+        export const productValidator = zod.looseObject({
+            id: zod.string().trim().min(1),
+            price: zod.number(),
+        });
+
+        export const searchResponseValidator = zod.looseObject({
+            products: zod.array(productValidator),
+        });
+    }
+}
+```
+
+```typescript
+// src/Interfaces/CatalogInterface.ts
+import type * as zod from "zod";
+
+import type { CatalogValidator } from "#validators";
+
+export namespace CatalogInterface {
+
+    export namespace Search {
+        export type Product = zod.infer<typeof CatalogValidator.Search.productValidator>;
+
+        export type SearchResponse = zod.infer<typeof CatalogValidator.Search.searchResponseValidator>;
+    }
+}
+```
 
 ## Async construction
 
@@ -219,3 +278,4 @@ const sections = [
 ];
 
 return sections.filter(Boolean).join("\n\n");
+```

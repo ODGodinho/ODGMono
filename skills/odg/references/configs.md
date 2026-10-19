@@ -24,6 +24,7 @@ Application config, environments, database, and other service settings.
 - **MUST NOT** group by environment (`PROD_`/`STAGING_`) or create inverted affixes (`_DISABLED`, `_OFF`, `_NO`).
 - `_TOKEN`, `_PASSWORD`, `_SECRET`, `_KEY` **MUST NOT** be logged
 - **MUST NOT** merge `_LIMIT`, `_ATTEMPT` with `MIN` / `MAX`
+- A key a shared package already exports (its `ConfigName`/config enums) is imported from that package, never redeclared in the consumer's `ConfigName` or validator.
 - New key **MUST** land in .env.example; a dead key **MUST** be removed everywhere (enum, validator, test defaults, .env.example, .env) with `$$PM odg remove:config <KEY...>`. It refuses while code still reads `ConfigName.KEY` and then reports, without editing, what still mentions the key (CI, docs, tests): fix those by hand.
 
 ## Usage
@@ -39,7 +40,7 @@ Application config, environments, database, and other service settings.
 | `_ENABLED` | Suffix | `zod.boolean()` | Enables a sub-feature or optional capability within an existing service/domain | `REDIS_TLS_ENABLED`, `CACHE_COMPRESSION_ENABLED`, `LOG_COLOR_ENABLED`, `HTTP_RETRY_ENABLED` | `USE_REDIS_TLS`, `REDIS_TLS_DISABLE`, `REDIS_TLS_DISABLED`, `REDIS_TLS_ON` |
 | `_DRIVER` | Suffix | `zod.enum([...])` | Selects an infrastructure driver or engine implementation / adapter | `SESSION_DRIVER`, `CACHE_DRIVER`, `QUEUE_DRIVER`, `MAIL_DRIVER`, `STORAGE_DRIVER` | `SESSION_TYPE`, `CACHE_ENGINE`, `MAIL_SERVICE`, `QUEUE_PROVIDER` |
 | `_TYPE` | Suffix | `zod.enum([...])` | variant of one behavior — same class, different mode | `AUTH_TYPE`, `PAYMENT_TYPE`, `ENCRYPTION_TYPE`, `PARSER_TYPE`, `PROXY_TYPE` | `AUTH_DRIVER`, `PAYMENT_MODE`, `ENCRYPTION_ENGINE`, `PARSER_DRIVER` |
-| `_URL` | Suffix | `zod.url()` | full scheme-bearing locator | `REDIS_URL`, `WEBSITE_URL`, `DATABASE_URL`, `API_BASE_URL` | `REDIS_LINK`, `REDIS_URL="http://redis:6379/"` (com `/`), `REDIS_URI` |
+| `_URL` | Suffix | `zod.url()` | full scheme-bearing locator | `REDIS_URL`, `WEBSITE_URL`, `WEBHOOK_URL`, `API_BASE_URL` | `REDIS_LINK`, `REDIS_URL="http://redis:6379/"` (com `/`), `REDIS_URI` |
 | `_HOST` | Suffix | `zod.string()` | host name or IP (`DB_HOST`) | `DB_HOST`, `REDIS_HOST`, `SMTP_HOST`, `RABBITMQ_HOST` | `DB_SERVER`, `DB_IP`, `HOST` (sem dono), `DATABASE_HOSTNAME` |
 | `_PORT` | Suffix | `zod.number().int().min(1).max(65535)` | port of a **named** service | `DB_PORT`, `REDIS_PORT`, `HTTP_PORT`, `SMTP_PORT` | `PORT` (sem dono), `LOCAL_PORT`, `MY_PORT`, `DB_PORT_NUMBER` |
 | `_PATH` | Suffix | `zod.string()` | filesystem or URL path segment | `LOG_DIRECTORY_PATH`, `UPLOADS_PATH`, `METRICS_PATH`, `STATIC_FILES_PATH` | `LOG_DIRECTORY`, `UPLOADS_LOCATION`, `STATIC_FILES_FOLDER` |
