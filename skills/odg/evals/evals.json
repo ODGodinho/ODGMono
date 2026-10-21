@@ -199,6 +199,59 @@
                 "A resposta recomenda o comando do AGENTS.md (`npm run scaffold:page`), NAO o `yarn odg make:page` da skill.",
                 "A resposta NAO descarta o AGENTS.md em favor da skill nem trata `yarn odg make:page` como default."
             ]
+        },
+        {
+            "id": 19,
+            "prompt": "Em SeatsPage.ts vi `baggageBuyRegex.storePageUrl.test(this.page.url())`. Sugiro `this.$$s`?",
+            "expected_output": "Nao. Layer first (review.md / pages.md): Page MUST NOT validar URL da proxima pagina.",
+            "files": [],
+            "expectations": [
+                "A resposta recusa sugerir `this.$$s.baggageBuyRegex` dentro de SeatsPage.",
+                "A resposta identifica que validar a chegada na proxima pagina pertence ao Handler de transicao.",
+                "A resposta aplica Layer first: nao emitir 💡 cosmetico para codigo que esta na camada errada."
+            ]
+        },
+        {
+            "id": 20,
+            "prompt": "Na review, o fix muda quem reporta sucesso/falha ou divide um Service. Como formatar o bloco?",
+            "expected_output": "Strategy change (review.md): usa icone ⚠️, termina com `Decisao: <A> vs <B>` e sem 💡.",
+            "files": [],
+            "expectations": [
+                "A resposta identifica o caso como Strategy change de review.md.",
+                "A resposta exige terminar o bloco com `Decisao: <A> vs <B>` descrevendo o custo de cada opcao.",
+                "A resposta proibe incluir codigo em 💡 para mudancas de estrategia."
+            ]
+        },
+        {
+            "id": 21,
+            "prompt": "Revise: `await loc.isVisible().catch(() => false); await btn.click(); await waitForResponse()`",
+            "expected_output": "browser-automation.md: armar waitForResponse antes do click; isVisible nao rejeita.",
+            "files": [],
+            "expectations": [
+                "A resposta aponta que `waitForResponse` precisa ser armado antes do `click()`.",
+                "A resposta aponta que `.catch(() => false)` em `isVisible()` e Defensive excess.",
+                "A resposta referencia browser-automation.md ou os itens equivalentes do checklist."
+            ]
+        },
+        {
+            "id": 22,
+            "prompt": "Vi `x instanceof Proxy ? x.toJSON() : x` 4x e `ConfigName.USERS_API_PATH` no `.env`.",
+            "expected_output": "Padronizar `proxy?: Proxy` sem Helper; URL paths ficam no codigo, nao no `.env`.",
+            "files": [],
+            "expectations": [
+                "A resposta rejeita criar um helper para a uniao e manda padronizar o tipo na interface.",
+                "A resposta rejeita criar `ConfigName` para path de URL e mantem apenas a base URL em config."
+            ]
+        },
+        {
+            "id": 23,
+            "prompt": "No `retrying()`: `this.finalBalance = false; if (!ok) return; logger.error(Exception.parse(e))`",
+            "expected_output": "Tri-state (`undefined` = nao tentou, `false` = erro) e sem `Exception.parse` no log.",
+            "files": [],
+            "expectations": [
+                "A resposta explica o tri-state (`undefined` | `false` | valor) e aponta o erro de setar `false`.",
+                "A resposta proibe usar `Exception.parse(e)` antes de `this.logger.error(e)`."
+            ]
         }
     ]
 }

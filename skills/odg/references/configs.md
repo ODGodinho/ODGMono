@@ -19,12 +19,12 @@ Application config, environments, database, and other service settings.
 - **MUST** be encoded as a JSON array string and parsed via a zod `string → JSON.parse → zod.array`. **MUST NOT** parse arrays with `.split()`
 - Env values are strings → Booleans **MUST** accept `"true"`/`"false"` (`CustomValidator.zodStringToBoolean()`).
 - Durations default to **milliseconds**; non-ms units **MUST** use explicit plural suffixes (`_SECONDS`, `_MINUTES` and others).
-- `_URL` **MUST NOT** end with `/` — enforce via `.refine()`.
+- `_URL` holds only the base origin (`https://host`) and **MUST NOT** end with `/` — enforce via `.refine()`. HTTP route and page URL paths (`/api/v1/...`, `/home`) live as constants in code, never in `.env`/`ConfigName`; conversely, production domains **MUST NOT** be hardcoded in code.
 - Env key carries toggle (`USE_`/`_ENABLED`).
 - **MUST NOT** group by environment (`PROD_`/`STAGING_`) or create inverted affixes (`_DISABLED`, `_OFF`, `_NO`).
 - `_TOKEN`, `_PASSWORD`, `_SECRET`, `_KEY` **MUST NOT** be logged
 - **MUST NOT** merge `_LIMIT`, `_ATTEMPT` with `MIN` / `MAX`
-- A key a shared package already exports (its `ConfigName`/config enums) is imported from that package, never redeclared in the consumer's `ConfigName` or validator.
+- A key a shared package already exports (its `ConfigName`/config enums) is imported from that package, never redeclared in the consumer's `ConfigName` or validator; when those keys live in a sub-validator of the shared package, the consumer's strict `configValidator` extends its `.shape` so the keys are not stripped at boot.
 - New key **MUST** land in .env.example; a dead key **MUST** be removed everywhere (enum, validator, test defaults, .env.example, .env) with `$$PM odg remove:config <KEY...>`. It refuses while code still reads `ConfigName.KEY` and then reports, without editing, what still mentions the key (CI, docs, tests): fix those by hand.
 
 ## Usage
@@ -43,7 +43,7 @@ Application config, environments, database, and other service settings.
 | `_URL` | Suffix | `zod.url()` | full scheme-bearing locator | `REDIS_URL`, `WEBSITE_URL`, `WEBHOOK_URL`, `API_BASE_URL` | `REDIS_LINK`, `REDIS_URL="http://redis:6379/"` (com `/`), `REDIS_URI` |
 | `_HOST` | Suffix | `zod.string()` | host name or IP (`DB_HOST`) | `DB_HOST`, `REDIS_HOST`, `SMTP_HOST`, `RABBITMQ_HOST` | `DB_SERVER`, `DB_IP`, `HOST` (sem dono), `DATABASE_HOSTNAME` |
 | `_PORT` | Suffix | `zod.number().int().min(1).max(65535)` | port of a **named** service | `DB_PORT`, `REDIS_PORT`, `HTTP_PORT`, `SMTP_PORT` | `PORT` (sem dono), `LOCAL_PORT`, `MY_PORT`, `DB_PORT_NUMBER` |
-| `_PATH` | Suffix | `zod.string()` | filesystem or URL path segment | `LOG_DIRECTORY_PATH`, `UPLOADS_PATH`, `METRICS_PATH`, `STATIC_FILES_PATH` | `LOG_DIRECTORY`, `UPLOADS_LOCATION`, `STATIC_FILES_FOLDER` |
+| `_PATH` | Suffix | `zod.string()` | filesystem path | `LOG_DIRECTORY_PATH`, `UPLOADS_PATH`, `STATIC_FILES_PATH` | `LOG_DIRECTORY`, `UPLOADS_LOCATION`, `STATIC_FILES_FOLDER`, `USERS_API_PATH` (URL path belongs in code) |
 | `_FILE` | Suffix | `zod.string()` | path to a file (incl. a secret file) | `SSL_CERT_FILE`, `LOG_OUTPUT_FILE`, `GCP_CREDENTIALS_FILE`, `ENV_FILE` | `SSL_CERT_PATH` (if file), `LOG_FILENAME`, `GCP_CREDENTIALS` |
 | `_TIMEOUT` | Suffix | `zod.number().positive()` | ms to wait before **giving up** | `HTTP_CLIENT_TIMEOUT`, `DB_CONNECT_TIMEOUT`, `SOCKET_TIMEOUT`, `READ_TIMEOUT`, `EXAMPLE_REQUEST_TIMEOUT` | `HTTP_TIMEOUT_MS`, `TIMEOUT` (sem dono), `HTTP_WAIT_TIME` |
 | `_TTL` | Suffix | `zod.number()` | ms until a stored value **expires** | `CACHE_TTL`, `SESSION_TTL`, `DNS_CACHE_TTL`, `JWT_TTL` | `CACHE_EXPIRATION`, `CACHE_LIFETIME`, `CACHE_TTL_MS` |

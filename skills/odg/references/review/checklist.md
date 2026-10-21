@@ -62,7 +62,7 @@ Evaluate **Always**, then **Declaration** and **Contract** whenever the diff cha
   - **Silent fallback** A branch that continues without the thing it needed (`?? {}`, a catch that returns `true`/`[]`/`null`, a lock that proceeds unlocked) is a catch in disguise. It is allowed only when the card asks for that degradation, and then it logs once ([conventions.md](../conventions.md) → *Logging*). Otherwise the failure propagates.
   - **Expected error only** A catch around an operation that may legitimately fail catches that failure's type (`TimeoutError`; a 404 mapped to a domain exception) and rethrows the rest. A broad catch around a whole method, there for one optional call, swallows programming errors.
   - **Capture, then validate** For a request whose failure is part of the flow, capture the outcome first and validate it in sequence outside the catch: `.catch` only hands the error back. **MUST NOT** branch, throw or decide inside the `.catch` callback.
-  - **Context in the exception** An exception thrown because a response failed carries the response's status and body, or the upstream error. `undefined` in its place leaves the log without the reason.
+  - **Context in the exception** An unclassified/unknown exception thrown from a raw response that no requester logged (e.g. a browser `waitForResponse`) carries the response text (`await response.text().catch((e) => e)`) or the upstream `Error` instance as `previous` — never `undefined`, and never a plain object on a known domain alert whose requester already logged the response.
   - **retry owns the reaction** [helpers.md]($$PROJECT_ROOT/node_modules/@odg/chemical-x/docs/helpers.md) → *`retry(options)`* → *A reação à falha mora no `when`*.
   - **Fire-and-forget promises** [conventions.md](../conventions.md) → *Fire-and-forget promises*.
 - **Defensive excess** A guard, branch, or handler for what cannot occur by construction → violation: revalidating what the schema or type guarantees; 2+ branches with the same outcome; parsing an error body to refine a message; a `try`/retry/cache/fallback/retro-compat branch the card never asked for. Also: a fallback to an alternative dependency (`?? this.consoleLogger`), to a required env (`process.env.X || "x"`) or to a required config key (`config.get(key, () => [])`); a guard for a field the producer's validator already requires (read the producer's schema); a re-check of what the dependency's contract guarantees; normalizing an input format with no evidence (log, contract) that it occurs.
@@ -70,7 +70,7 @@ Evaluate **Always**, then **Declaration** and **Contract** whenever the diff cha
 
 ## Config — config, env, toggle, enum, validator, or schema touched; field added as or made optional or nullable
 
-- **Config surface** A new key **MUST** carry a scope comment in `.env.example` and reach every surface that consumes it (deploy, consumers). Base URL and path **MUST NOT** share one key.
+- **Config surface** A new key **MUST** carry a scope comment in `.env.example` and reach every surface that consumes it (deploy manifests, consumer schemas). Config keys hold only the base URL (`*_URL`); URL paths live in code, never in `.env`/config ([configs.md](../configs.md) → *Rules*).
 - **External Validators Schema** An external-payload schema **SHOULD** declare only the fields the consumer reads and stay loose. How the schema is written, parsed and typed: [architecture.md](../architecture.md) → *Validators*.
   - **looseObject corollary** In an already loose schema (`looseObject`, `.passthrough()`, `.unknown(true)`, any alias), a required field nothing reads → violation naming the payload that now fails to parse; the fix is deleting it.
 - **Optional vs Domain** A field optional (`?`, `.optional()`) because one flow lacks the data, not because the domain allows absence → violation. For an external payload: [architecture.md](../architecture.md) → *Validators* → *Optionality mirrors the producer*.
@@ -87,9 +87,9 @@ Evaluate **Always**, then **Declaration** and **Contract** whenever the diff cha
   - **Orphan writer** When the diff removes a method, boot step, or listener, grep each field it alone wrote across `src/` and consuming repos; no writer left with 1+ readers → violation naming the value readers lose.
 - **Toggle must survive being off** When a flow starts depending on what an existing toggle (`USE_`, `_ENABLED`, `_DRIVER`, `_TYPE` `OFF`) disables, trace the off branch to its end; one that raises, leaves a name unbound, or skips a later step → violation, fixed by a working off branch or by removing the toggle everywhere.
 
-## Dependency — `package.json` or lockfile changed
+## Dependency — `package.json`, lockfile, `.husky/**`, `Dockerfile`, or `.gitlab-ci.yml` changed
 
-- **Dependency hygiene** [build.md](../build.md) → *Dependencies*.
+- **Dependency hygiene** [build.md](../build.md) → *Dependencies* and *Hooks and CI*.
   - **Package hygiene and security** [build.md](../build.md) → *Dependencies*.
 
 ## Mechanism — hand-rolled retry, polling, wait, loop, parse, format/convert (date, URL, string), cache, conditional throw, or sequential `await`s

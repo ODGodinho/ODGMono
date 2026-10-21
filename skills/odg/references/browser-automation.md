@@ -54,7 +54,7 @@ When the outcome depends on the body, read it after the wait resolves, in the co
 
 ## Required step waits
 
-`isVisible()`, `isEnabled()` and `count()` answer **now**; they do not wait. `if (await locator.isVisible())` is right only for an element that is truly optional, such as a cookie banner. A required step acts on the locator (`click()` and `fill()` wait for it) or awaits `locator.waitFor()`. An instant check around a required click skips it on a slow page, and the flow continues in the wrong state.
+`isVisible()`, `isEnabled()` and `count()` answer **now**; they do not wait. `if (await locator.isVisible())` is right only for an element that is truly optional, such as a cookie banner. A required step acts on the locator (`click()` and `fill()` wait for it) or awaits `locator.waitFor()`. An instant check around a required click skips it on a slow page, and the flow continues in the wrong state. They also never reject when the element is absent or detached — wrapping `isVisible()`, `isEnabled()` or `count()` in `try`/`catch` or `.catch(() => false)` is a **Defensive excess** violation.
 
 ## No polling loop
 
@@ -80,3 +80,11 @@ For `page.route()` handlers:
 ## Browser state comes from the browser
 
 Cookies, storage and session are read from the browser context (`context.cookies()`, `storageState()`), never from infrastructure state that a toggle can switch off.
+
+## Input clearing on retry
+
+Unlike `fill()`, `pressSequentially()` (`type()`) appends to whatever value is already in the field. In a retryable step (`@attemptableFlow`), a retry that does not reload the document — or a browser that restores form state on reload — leaves the previous attempt's text in the input. Call `await locator.clear()` before `pressSequentially()`, or use `fill()`.
+
+## Preserve the evidence page
+
+When a crawler captures end-of-run screenshots and HTML from `this.page` (`mainPage`) for failure triage, **MUST NOT** navigate `this.page` to another URL inside `retrying()` or `failure()` when the flow may terminate: that overwrites the error screen in the evidence log. Open a separate tab (`await this.page.context().newPage()`) and close it in `finally`, or skip the navigation on the last attempt.

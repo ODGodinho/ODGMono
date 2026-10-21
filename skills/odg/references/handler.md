@@ -1,6 +1,6 @@
 # Handlers
 
-A Handler exists only when **one action can produce 2+ distinct outcomes** that must be identified and routed at runtime. If the bot can safely assume success (a simple login), no handler.
+A Handler exists only when **one action can produce 2+ distinct outcomes** that must be identified and routed at runtime. If the bot can safely assume success (a simple login), or if a step only awaits a single HTTP response where `status === 200` is success and any other status throws one exception ([pages.md](./pages.md) → *Pages MUST NOT*), no handler.
 
 Prefer strong observable identifiers in this order:
 
@@ -54,6 +54,7 @@ On a single screen, something *may or may not* appear, such as an alert modal or
 - contain `try`/`catch` — if you need one, the producer stored the wrong thing
 - perform the request or interaction whose result it classifies
 - write domain state (store, OutputPayload) — that belongs to the Page/Component
+- mix a DOM selector check with an authoritative HTTP response in the same Handler — when the request alone decides success vs. error, validate only the response
 
 ### **WHEN** writing a `waitForHandler()` that waits for a specific request or response
 

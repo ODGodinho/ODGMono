@@ -14,7 +14,7 @@ process.on("session-refreshed", () => {
 
 ## Logging
 
-Pass the error object first, context second — the logger resolves and formats any object; flattening it by hand loses its shape.
+Pass the error object first, context second — the logger resolves and formats any object; flattening it by hand loses its shape. **MUST NOT** `error` in `Exception.parse(error)` before passing it to the logger, as the logging tool already handles the standard `Error` class.
 
 ```typescript
 logger?.error(error, { message: "Updater error" });

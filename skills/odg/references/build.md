@@ -9,5 +9,11 @@ Rules for `package.json` scripts and dependencies, `.husky/**`, lint-staged, the
 - A package the deployed runtime never imports at execution time (`eslint`, `typescript`, `prettier`, `vitest`, `jest`, `tsc-alias`, `husky`, `concurrently`, `lint-staged`, `@types/*`, build orchestrators) is a devDependency, never under `dependencies`.
 - A new package **MUST** be secure, widely adopted, maintained, and not rival an installed one unless worth the migration.
 - `scripts` keep alphabetical order.
+- Browser engine versions (`playwright`/`puppeteer`) stay aligned across `package.json`, the shared SDK, and the `Dockerfile` base image.
+
+## Hooks and CI
+
+- `lint-staged` uses `"*": "$$PM lint:fix"`, never `"*.{ts,tsx,js}"`, so `@odg/eslint-config` reaches config, CI, `.env.example` and style files.
+- When `.gitlab-ci.yml` or deployment manifests maintain an explicit `VARIABLES:` allowlist, every new required env key lands there in the same change.
 
 Lint-bound: most bullets above leave this file when the lint rules ship.

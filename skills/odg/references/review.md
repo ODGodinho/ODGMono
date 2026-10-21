@@ -18,7 +18,7 @@ Placeholders (`$$SKILL_DIR`, `$$GIT_BRANCH`) are defined in [SKILL.md](../SKILL.
 
 1. From the project root run `$$SKILL_DIR/scripts/review.sh .review/$$GIT_BRANCH $$MODE`. Its output is the only diff source: never run `git diff`, `git show`, `git log -p` or `git blame`, except the `git show` a marker prints.
 2. Read `index.md` and every part it lists. Read each `_NEW FILE CREATED_` in full before judging it; a `_FILE DELETED_` only when a finding depends on the old body; open the rest of a file only for a symbol the changed lines read or write.
-3. Read the reference the [Routing map](../SKILL.md#routing-map) names for each surface a changed file belongs to, then the `AGENTS.md` of each package a changed line calls — `index.md` lists the candidates under "Package References Required". Nothing else.
+3. Read [architecture.md](./architecture.md) and [conventions.md](./conventions.md) whenever the diff changes source code, plus the reference the [Routing map](../SKILL.md#routing-map) names for each surface a changed file belongs to, then the `AGENTS.md` of each package a changed line calls — `index.md` lists the candidates under "Package References Required". Nothing else.
 4. Evaluate [checklist.md](./review/checklist.md): **Always**, then **Declaration** and **Contract** whenever the diff changes source code, then every other section whose trigger the diff shows. Repo-wide searches use the Grep tool, or `grep -rn` with quoted globs.
 5. Write the output to `.review/$$GIT_BRANCH/output.md`, run `$$SKILL_DIR/scripts/review-check.sh < .review/$$GIT_BRANCH/output.md`, fix what it prints until it exits 0. Then print only the path of `output.md` and the count of findings per icon (❌, ⚠️, 💬); do not reprint the file.
 
