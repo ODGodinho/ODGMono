@@ -81,6 +81,13 @@ if (anyParser && !anyParser.meta) {
     };
 }
 
+/*
+ * Inside @odg/config the base selector list drops the ConfigInterface entry (see the
+ * configPackage block below). A folder-scoped block that comes after it replaces the whole
+ * rule, so it starts from the same base or it brings that entry back.
+ */
+const baseSyntaxContext = isOdgConfigPackage ? "configPackage" : "default";
+
 export default defineConfig([
 
     // Base configuration
@@ -156,6 +163,9 @@ export default defineConfig([
             parserOptions: {
                 sourceType: "module",
             },
+        },
+        linterOptions: {
+            reportUnusedDisableDirectives: "error", // eslint-disable que não desliga nada é erro
         },
         plugins: {
             "progress": fileProgress,
@@ -352,6 +362,22 @@ export default defineConfig([
         files: [ "src/app/Dtos/**/*.ts" ],
         rules: {
             "no-restricted-syntax": [ "error", ...restrictSyntax([ "default", "dtos" ]) ],
+        },
+    },
+
+    /* A Service logs through the Logger and receives its collaborators from the Container */
+    {
+        files: [ "src/app/Services/**/*.ts" ],
+        rules: {
+            "no-restricted-syntax": [ "error", ...restrictSyntax([ baseSyntaxContext, "services" ]) ],
+        },
+    },
+
+    /* An Interface carries the type its Validator infers (architecture.md → Types are inferred) */
+    {
+        files: [ "src/Interfaces/**/*.ts" ],
+        rules: {
+            "no-restricted-syntax": [ "error", ...restrictSyntax([ baseSyntaxContext, "interfaces" ]) ],
         },
     },
 

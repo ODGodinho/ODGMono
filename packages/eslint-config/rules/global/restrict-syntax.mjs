@@ -156,11 +156,13 @@ const requirePredicateRules = buildReturnTypeRules(
  *   - "pages"        src/Pages/**  (index.mjs)
  *   - "handlers"     src/Handlers/** (index.mjs)
  *   - "dtos"         src/app/Dtos/** (index.mjs)
+ *   - "services"     src/app/Services/** (index.mjs)
+ *   - "interfaces"   src/Interfaces/** (index.mjs)
  *
  * Sem `contexts` explícito = vale em todos (regra "sempre ligada").
  * ---------------------------------------------------------------------------------------------
  */
-const ALL_CONTEXTS = [ "default", "test", "configPackage", "pages", "handlers", "dtos" ];
+const ALL_CONTEXTS = [ "default", "test", "configPackage", "pages", "handlers", "dtos", "services", "interfaces" ];
 
 const restrictSyntaxRules = [
     {
@@ -320,6 +322,65 @@ const restrictSyntaxRules = [
                 + " move it to src/app/Services/ with the *Service suffix.",
         },
     },
+    {
+
+        // O stdout só serve ao boot, antes de o Logger existir; o resto do fluxo loga pelo Logger.
+        contexts: [ "services", "pages", "handlers" ],
+        entry: {
+            "selector": "MemberExpression[object.type='ThisExpression'][property.name='consoleLogger']",
+            "message": "Services, Pages and Handlers log through the injected Logger, never"
+                + " `this.consoleLogger`: stdout is only for boot code that runs before the Logger is bound.",
+        },
+    },
+    {
+
+        // O corpo de uma resposta é entrada externa: valida-se com o Validator, não com `as`.
+        contexts: [ "default" ],
+        entry: {
+            "selector": "TSAsExpression > AwaitExpression > CallExpression[callee.property.name='json']",
+            "message": "Do not cast a response body with `as`: parse it with its Validator, so the payload"
+                + " is checked at the boundary.",
+        },
+    },
+    {
+
+        // `parse()` devolve o dado validado; descartá-lo e seguir com o dado cru anula a validação.
+        contexts: [ "default" ],
+        entry: {
+            "selector": "ExpressionStatement > CallExpression[callee.property.name=/^parse(Async)?$/]"
+                + "[callee.object.property.name=/Validator$/],"
+                + " ExpressionStatement > CallExpression[callee.property.name=/^parse(Async)?$/]"
+                + "[callee.object.name=/Validator$/],"
+                + " ExpressionStatement > AwaitExpression > CallExpression[callee.property.name='parseAsync']"
+                + "[callee.object.property.name=/Validator$/],"
+                + " ExpressionStatement > AwaitExpression > CallExpression[callee.property.name='parseAsync']"
+                + "[callee.object.name=/Validator$/]",
+            "message": "Use the value a Validator's parse() returns: discarding it validates the payload"
+                + " and keeps reading the unvalidated input.",
+        },
+    },
+    {
+
+        // Em testing.md: o dublê entra pelo construtor ou pelo container, nunca alterando o protótipo.
+        contexts: [ "test" ],
+        entry: {
+            "selector": "AssignmentExpression > MemberExpression.left[object.property.name='prototype'],"
+                + " AssignmentExpression > MemberExpression.left[property.name='prototype']",
+            "message": "Do not patch a prototype in a test: pass a double through the constructor or"
+                + " rebind it in the container.",
+        },
+    },
+    {
+
+        // `retry({ times: 1 })` faz uma tentativa só: não há o que repetir.
+        contexts: [ "default" ],
+        entry: {
+            "selector": "CallExpression[callee.name='retry'] > ObjectExpression"
+                + " > Property[key.name='times'][value.value=1]",
+            "message": "`retry({ times: 1 })` makes a single attempt and retries nothing: call the"
+                + " operation directly, or set the number of attempts the flow needs.",
+        },
+    },
 ];
 
 /**
@@ -327,8 +388,8 @@ const restrictSyntaxRules = [
  * A rule is included if it applies to ANY of the requested contexts — no duplicate entries even
  * when several requested contexts share a rule.
  *
- * @param {("default" | "test" | "configPackage" | "pages" | "handlers" | "dtos")[]} contexts Consumer
- * contexts — see table comment above. Example: `restrictSyntax(["default", "pages", "handlers"])`.
+ * @param {typeof ALL_CONTEXTS} contexts Consumer contexts, each one of `ALL_CONTEXTS` (see table comment
+ * above). Example: `restrictSyntax(["default", "pages", "handlers"])`.
  * @returns {object[]} The `no-restricted-syntax` entries active for that set of contexts.
  */
 export function restrictSyntax(contexts) {
