@@ -39,6 +39,14 @@ describe("enum-key-value-convention", () => {
                 options,
             },
 
+            // ContainerName com dígito seguido de maiúscula: o dígito fecha a palavra.
+            {
+                code: `enum ContainerName {
+                    "Pm2Service" = "pm2.service",
+                }`,
+                options,
+            },
+
             // 4. EventName com value == key.
             {
                 code: `enum EventName {
@@ -89,6 +97,26 @@ describe("enum-key-value-convention", () => {
                 }`,
                 options,
                 errors: [ { messageId: "invalidValue" } ],
+            },
+
+            // ContainerName que cola a palavra depois do dígito.
+            {
+                code: `enum ContainerName {
+                    "Pm2Service" = "pm2service",
+                }`,
+                options,
+                errors: [
+                    {
+                        messageId: "invalidValue",
+                        data: {
+                            enumName: "ContainerName",
+                            key: "Pm2Service",
+                            value: "pm2service",
+                            expected: "pm2.service",
+                            expectation: "be the dot.case transformation of its key",
+                        },
+                    },
+                ],
             },
 
             // 3. ContainerName com key fora de PASCAL_CASE.
@@ -144,6 +172,11 @@ describe("enum-key-value-convention", () => {
         expect(toDotCase("JSONLogger")).toBe("json.logger");
         expect(toDotCase("HTTPSProxyHandler")).toBe("https.proxy.handler");
         expect(toDotCase("JSON")).toBe("json");
+        expect(toDotCase("Pm2Service")).toBe("pm2.service");
+        expect(toDotCase("S3UploadHandler")).toBe("s3.upload.handler");
+        expect(toDotCase("Base64Encoder")).toBe("base64.encoder");
+        expect(toDotCase("SearchV2")).toBe("search.v2");
+        expect(toDotCase("Http2")).toBe("http2");
     });
 
     test("getEnumMemberKey / getEnumMemberValue return undefined for non literal nodes", () => {

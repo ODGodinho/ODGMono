@@ -33,22 +33,10 @@ export function isKeyValid(key: string, convention: KeyConvention): boolean {
 }
 
 export function toDotCase(key: string): string {
-    let result = "";
-
-    for (let index = 0; index < key.length; index += 1) {
-        const char = key[index];
-        const previous = index > 0 ? key[index - 1] : "";
-        const next = index + 1 < key.length ? key[index + 1] : "";
-        const isUpper = char >= "A" && char <= "Z";
-        const isCamelBoundary = isUpper && previous >= "a" && previous <= "z";
-        const isAcronymBoundary = isUpper
-            && previous >= "A" && previous <= "Z"
-            && next >= "a" && next <= "z";
-
-        result += isCamelBoundary || isAcronymBoundary ? `.${char}` : char;
-    }
-
-    return result.toLowerCase();
+    return key
+        .replaceAll(/(?<=[\da-z])(?=[A-Z])/gu, ".")
+        .replaceAll(/(?<=[A-Z])(?=[A-Z][a-z])/gu, ".")
+        .toLowerCase();
 }
 
 export function isValueValid(key: string, value: string, convention: ValueConvention): boolean {
