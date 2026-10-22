@@ -37,4 +37,4 @@ index.ts
 
 **Lifecycle contract:** managed artifacts (Page/Handler) are always driven as `.setPage(page).execute()`. Calling `execute()` before `setPage()` is a bug (`Cannot read properties of undefined`).
 
-**Logging before boot:** work that logs runs only after `Kernel.boot()` has given the logger its identity (`bootLogs()`); before that, the json-log plugin and the identifier are missing and the log reaches Graylog/Kibana broken. An action that must start early (a capacity scale-up) runs right after `bootLogs()`, not after the whole boot.
+**Logging before boot:** work that logs runs only after `Kernel.boot()` has given the logger its identity in its logging step; before that, the json-log plugin and the identifier are missing and the log reaches Graylog/Kibana broken. An action that must start early (a capacity scale-up) runs right after that logging step, not after the whole boot.

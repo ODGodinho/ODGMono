@@ -252,6 +252,61 @@
                 "A resposta explica o tri-state (`undefined` | `false` | valor) e aponta o erro de setar `false`.",
                 "A resposta proibe usar `Exception.parse(e)` antes de `this.logger.error(e)`."
             ]
+        },
+        {
+            "id": 24,
+            "prompt": "Revise: `/** Falha no upload nao pode derrubar o fluxo principal. */ try { await this.storage.put(file); return true; } catch (error) { if (error.code === \"ETIMEDOUT\") return true; this.logger.error(error); return false; }` (o card nao pede degradar o upload)",
+            "expected_output": "Silent fallback: o catch que devolve `false` e o timeout contado como sucesso; a docblock nao vale como pedido do card, a falha propaga.",
+            "files": [],
+            "expectations": [
+                "A resposta aponta Silent fallback no `catch` que devolve `false` e no `ETIMEDOUT` tratado como sucesso.",
+                "A resposta recusa a docblock como justificativa: so o card pode pedir essa degradacao.",
+                "A resposta manda tirar o fallback e deixar a falha propagar, com 💡 de codigo e sem `Decisao`, porque o card nao pede a degradacao; manter o catch so trocando por um log unico nao passa."
+            ]
+        },
+        {
+            "id": 25,
+            "prompt": "Revise: num projeto que consome uma lib compartilhada, a MR cria `ProcessPoolService`, que sobe e derruba processos conforme a fila, sem nenhuma regra de negocio do projeto. Os outros consumidores da lib vao precisar do mesmo.",
+            "expected_output": "Shared-layer first: a logica pertence a lib compartilhada; mover de repositorio e Strategy change, entao `Decisao: <A> vs <B>` sem 💡 de codigo.",
+            "files": [],
+            "expectations": [
+                "A resposta aplica Shared-layer first: logica sem regra do projeto que outros consumidores vao precisar fica na lib compartilhada.",
+                "A resposta trata mover o codigo para a lib como Strategy change e termina com `Decisao: <A> vs <B>`, com o custo de cada opcao.",
+                "A resposta nao inclui codigo no 💡 desse achado."
+            ]
+        },
+        {
+            "id": 26,
+            "prompt": "Na review, a correcao de um achado precisa mudar `src/Configs/index.ts` e `src/app/Services/ReportService.ts` juntos. Como escrevo o 💡?",
+            "expected_output": "Um unico bloco ```diff unificado, com `--- a/<path>` e `+++ b/<path>` por arquivo; o `review-check.sh --apply` aplica e roda eslint e tsc.",
+            "files": [],
+            "expectations": [
+                "A resposta manda escrever o 💡 como um unico bloco ```diff unificado, com cabecalho `--- a/<path>` e `+++ b/<path>` para cada arquivo.",
+                "A resposta explica que o `review-check.sh --apply` aplica esse diff numa copia e roda eslint e tsc, reportando so o que o 💡 introduz.",
+                "A resposta nao aceita um 💡 em prosa, que so indica a direcao, no lugar do codigo final."
+            ]
+        },
+        {
+            "id": 27,
+            "prompt": "Revise: `this.logger.info(\"Relatorio enviado\", { appName: this.config.get(ConfigName.APP_NAME), identifier: payload.identifier, response: await response.text() })` (o card so pede registrar o envio)",
+            "expected_output": "Log content: tirar `appName` e `identifier`, que o indice do json-log ja identifica, e o corpo da resposta, que vai alem do que o card valida.",
+            "files": [],
+            "expectations": [
+                "A resposta aponta Log content: campos que o indice do json-log ja identifica (app name, identifier) nao entram no log.",
+                "A resposta aponta que o corpo da resposta e detalhe alem do que o card valida.",
+                "A resposta traz um 💡 com um log simples do envio, sem `appName`, `identifier` nem o corpo da resposta."
+            ]
+        },
+        {
+            "id": 28,
+            "prompt": "Revisa de novo a branch: ja existem `.review/<branch>/output.md` e `.review/<branch>/state`; o dev corrigiu dois dos achados e criou um arquivo novo.",
+            "expected_output": "Re-review (review.md): `review.sh` em modo `delta`, status de cada achado anterior em `### Previous findings` e revisao so do delta com o checklist inteiro.",
+            "files": [],
+            "expectations": [
+                "A resposta roda o `review.sh` em modo `delta`, ou `review-task.sh --delta` numa tarefa com MRs, em vez de revisar tudo de novo.",
+                "A resposta da a cada achado anterior um status (resolvido, aberto ou resolvido com problema novo), lido do codigo atual, numa secao `### Previous findings`.",
+                "A resposta revisa so o delta com o checklist inteiro e nao revisa de novo codigo que o delta nao tocou, salvo o que o delta afeta (Cross-file trace pass)."
+            ]
         }
     ]
 }

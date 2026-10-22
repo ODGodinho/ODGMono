@@ -1,25 +1,27 @@
 #!/usr/bin/env bash
-# review.sh <outdir> [all|staged|commits]
+# review.sh <outdir> [all|staged|commits|delta]
 #
-# Escreve <outdir>/index.md (escopo, tabela, pacotes, partes) e
-# <outdir>/part-N.md (diffs, cortados só em fronteira de arquivo).
+# Escreve <outdir>/index.md (escopo, tabela, pacotes, partes),
+# <outdir>/part-N.md (diffs, cortados só em fronteira de arquivo) e
+# <outdir>/state (modo, base e o tree que a revisão viu, para a re-revisão).
 #
 # Um único `git diff` por modo, com par fixo de refs:
 #   all      merge-base -> working tree (+ untracked)      [padrão]
 #   staged   HEAD       -> índice
 #   commits  merge-base -> HEAD
+#   delta    tree gravado no state da revisão anterior -> working tree (+ untracked)
 #
 # Knobs: REVIEW_BASE, REVIEW_CONTEXT_LINES (1), REVIEW_MAX_DIFF_LINES_PER_FILE (1200),
 #        REVIEW_MAX_LINES_PER_PART (1500), REVIEW_MAX_FILES (200).
 set -euo pipefail
 
-OUTDIR="${1:?usage: review.sh <outdir> [all|staged|commits]}"
+OUTDIR="${1:?usage: review.sh <outdir> [all|staged|commits|delta]}"
 MODE="${2:-all}"
 
 case "$MODE" in
-    all|staged|commits) ;;
+    all|staged|commits|delta) ;;
     *)
-        printf 'review.sh: modo inválido "%s" (all|staged|commits)\n' "$MODE" >&2
+        printf 'review.sh: modo inválido "%s" (all|staged|commits|delta)\n' "$MODE" >&2
         exit 2
         ;;
 esac
@@ -78,6 +80,48 @@ MERGE_BASE="$(
     || git rev-parse "$BASE_REF"
 )"
 
+# Tree do working tree inteiro (rastreados e não rastreados, respeitando o .gitignore), montado num
+# índice temporário: o índice real, as refs e os arquivos não mudam.
+snapshot_tree() {
+    local dir tree
+    dir="$(mktemp -d)"
+    GIT_INDEX_FILE="$dir/index" git read-tree HEAD
+    GIT_INDEX_FILE="$dir/index" git add -A
+    GIT_INDEX_FILE="$dir/index" git rm -r -q --cached --ignore-unmatch .review
+    tree="$(GIT_INDEX_FILE="$dir/index" git write-tree)"
+    rm -rf "$dir"
+    printf '%s' "$tree"
+}
+
+# O tree que esta revisão vê; vai para o state e é a base do próximo `delta`.
+reviewed_tree() {
+    local dir tree
+    case "$MODE" in
+        all|delta) snapshot_tree ;;
+        staged)
+            dir="$(mktemp -d)"
+            cp "$(git rev-parse --git-path index)" "$dir/index"
+            tree="$(GIT_INDEX_FILE="$dir/index" git write-tree)"
+            rm -rf "$dir"
+            printf '%s' "$tree"
+            ;;
+        commits) git rev-parse 'HEAD^{tree}' ;;
+    esac
+}
+
+PREVIOUS_TREE=""
+if [[ "$MODE" == "delta" ]]; then
+    if [[ -f "$OUTDIR/state" ]]; then
+        PREVIOUS_TREE="$(sed -n 's/^tree=//p' "$OUTDIR/state" | awk 'NR == 1')"
+    fi
+    if [[ -z "$PREVIOUS_TREE" ]] || ! git cat-file -e "${PREVIOUS_TREE}^{tree}" 2> /dev/null; then
+        printf 'review.sh: o modo delta precisa do state de uma revisão anterior em %s; ' "$OUTDIR" >&2
+        printf 'rode antes o modo all, staged ou commits\n' >&2
+        exit 2
+    fi
+fi
+REVIEWED_TREE="$(reviewed_tree)"
+
 # O único ponto que decide o par de refs. Tudo (name-status, numstat, patch)
 # passa por aqui, então um arquivo nunca mostra "só um lado".
 gdiff() {
@@ -85,6 +129,10 @@ gdiff() {
         all)     git -c core.quotePath=false diff --find-renames --find-copies --no-ext-diff "$MERGE_BASE" "$@" ;;
         staged)  git -c core.quotePath=false diff --cached --find-renames --find-copies --no-ext-diff HEAD "$@" ;;
         commits) git -c core.quotePath=false diff --find-renames --find-copies --no-ext-diff "$MERGE_BASE" HEAD "$@" ;;
+        delta)
+            git -c core.quotePath=false diff --find-renames --find-copies --no-ext-diff \
+                "$PREVIOUS_TREE" "$REVIEWED_TREE" "$@"
+            ;;
     esac
 }
 
@@ -201,7 +249,7 @@ patch_for_file() {
 # também deve ler quando o relatório marca NEW FILE.
 read_new_side() {
     case "$MODE" in
-        all)     cat -- "$1" ;;
+        all|delta) cat -- "$1" ;;
         staged)  git show ":$1" ;;
         commits) git show "HEAD:$1" ;;
     esac 2>/dev/null || true
@@ -209,7 +257,7 @@ read_new_side() {
 
 new_file_hint() {
     case "$MODE" in
-        all)     printf 'Read `%s`' "$1" ;;
+        all|delta) printf 'Read `%s`' "$1" ;;
         staged)  printf '`git show :%s`' "$1" ;;
         commits) printf '`git show HEAD:%s`' "$1" ;;
     esac
@@ -219,6 +267,7 @@ deleted_file_hint() {
     case "$MODE" in
         all|commits) printf 'old body: `git show %s:%s`' "$MERGE_BASE" "$1" ;;
         staged)      printf 'old body: `git show HEAD:%s`' "$1" ;;
+        delta)       printf 'old body: `git show %s:%s`' "$PREVIOUS_TREE" "$1" ;;
     esac
 }
 
@@ -352,6 +401,10 @@ skill_version() {
         all)     printf -- '- Diff: `%s` (merge-base with `%s`) → **working tree**, plus untracked files\n' "$MERGE_BASE" "$BASE_REF" ;;
         staged)  printf -- '- Diff: `HEAD` → **index** (staged changes only)\n' ;;
         commits) printf -- '- Diff: `%s` (merge-base with `%s`) → `HEAD` (committed changes only)\n' "$MERGE_BASE" "$BASE_REF" ;;
+        delta)
+            printf -- '- Diff: tree `%s` of the previous review (`state`) → **working tree**, ' "${PREVIOUS_TREE:0:12}"
+            printf 'plus untracked files: only what changed since that review\n'
+            ;;
     esac
     printf -- '- Generated: %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
     printf -- '- Skill: odg %s\n' "$(skill_version || printf 'desconhecida')"
@@ -459,5 +512,13 @@ skill_version() {
         printf '\nRead every part before emitting findings.\n'
     fi
 } > "$OUTDIR/index.md"
+
+{
+    printf 'mode=%s\n' "$MODE"
+    printf 'base=%s\n' "$MERGE_BASE"
+    printf 'head=%s\n' "$(git rev-parse HEAD)"
+    printf 'tree=%s\n' "$REVIEWED_TREE"
+    printf 'generated=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+} > "$OUTDIR/state"
 
 printf 'review.sh: %s files, %s part(s) → %s/index.md\n' "$FILE_COUNT" "$PART" "$OUTDIR" >&2

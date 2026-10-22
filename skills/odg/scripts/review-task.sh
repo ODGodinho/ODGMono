@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# review-task.sh [--discard] <repo-path>:<branch>...
-# review-task.sh --local <repo-path>...
+# review-task.sh [--discard] [--delta] <repo-path>:<branch>...
+# review-task.sh --local [--delta] <repo-path>...
 #
 # Modo MR (padrão): prepara cada repo local na branch pedida e roda review.sh
 # em modo commits. Árvore suja interrompe tudo, a menos que --discard seja
@@ -11,19 +11,24 @@
 # Modo --local: revisa o working tree de cada repo em modo all, na branch em
 # que ele está. Sem checkout, sem fetch, sem descartar nada.
 #
+# --delta (re-revisão, nos dois modos): depois de preparar cada repo, roda review.sh em modo
+# delta contra o state da revisão anterior. Repo sem state recebe a revisão completa, com aviso.
+#
 # Ao final imprime, por repo, HEAD, diretório do relatório e se existe AGENTS.md
 # raiz, e a lista de AGENTS.md de pacote sem repetir pacote@versão entre repos.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-USAGE='uso: review-task.sh [--discard] <repo-path>:<branch>... | review-task.sh --local <repo-path>...'
+USAGE='uso: review-task.sh [--discard] [--delta] <repo-path>:<branch>... | review-task.sh --local [--delta] <repo-path>...'
 DISCARD=0
 LOCAL=0
+DELTA=0
 TARGETS=()
 for arg in "$@"; do
     case "$arg" in
         --discard) DISCARD=1 ;;
         --local) LOCAL=1 ;;
+        --delta) DELTA=1 ;;
         -*) printf '%s\n' "$USAGE" >&2; exit 2 ;;
         *) TARGETS+=("$arg") ;;
     esac
@@ -45,6 +50,19 @@ branch_of() {
 
 out_of() {
     printf '.review/%s' "${1//\//-}"
+}
+
+# Modo do review.sh, rodado na raiz do repo: delta só com --delta e com o state de uma revisão anterior.
+mode_for() {
+    local out="$1" full="$2"
+    if (( DELTA )); then
+        if [[ -f "$out/state" ]]; then
+            printf 'delta'
+            return
+        fi
+        printf 'review-task: sem state em %s/%s; revisão completa em %s\n' "$PWD" "$out" "$full" >&2
+    fi
+    printf '%s' "$full"
 }
 
 # Grava <out>/discussions.md da MR aberta de <branch>. Só leitura no GitLab.
@@ -125,13 +143,13 @@ for t in "${TARGETS[@]}"; do
     (
         cd "$repo"
         if (( LOCAL )); then
-            "$SCRIPT_DIR/review.sh" "$out" all >/dev/null
+            "$SCRIPT_DIR/review.sh" "$out" "$(mode_for "$out" all)" >/dev/null
         else
             (( DISCARD )) && { git reset -q --hard; git clean -qfd; }
             base="$(git symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null || true)"
             git fetch -q origin "$branch" ${base:+"${base#origin/}"}
             git checkout -q --detach "origin/$branch"
-            "$SCRIPT_DIR/review.sh" "$out" commits >/dev/null
+            "$SCRIPT_DIR/review.sh" "$out" "$(mode_for "$out" commits)" >/dev/null
             write_discussions "$branch" "$out"
         fi
     )

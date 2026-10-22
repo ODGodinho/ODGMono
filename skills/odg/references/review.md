@@ -4,13 +4,14 @@ Placeholders (`$$SKILL_DIR`, `$$GIT_BRANCH`) are defined in [SKILL.md](../SKILL.
 
 ## Scope
 
-`$$MODE` defaults to `all`; the other two only when the request says **only**.
+`$$MODE` defaults to `all`; `staged` and `commits` only when the request says **only**, and `delta` only for another review of a branch already reviewed (*Re-review*).
 
 | Request says | `$$MODE` | Diff |
 | --- | --- | --- |
 | "review", "revisa", nothing specific | `all` | merge-base with the remote default branch → working tree, index and untracked included |
 | "só o que está em stage" | `staged` | `HEAD` → index |
 | "só os commits", "a branch", "unpushed" | `commits` | merge-base with the remote default branch → `HEAD` |
+| "revisa de novo", "novo review", "nova revisão", with `.review/$$GIT_BRANCH/state` on disk | `delta` | the tree the previous review saw → working tree, untracked included |
 
 `REVIEW_BASE=<ref>` overrides the base when the request names one ("desde o commit X").
 
@@ -30,12 +31,23 @@ Only when the request names a card or an MR/PR that already has discussion; run 
 
 A finding or 💡 **MUST NOT** reverse a decision the lead already took in the MR threads, or an author's contestation backed by proof (code, runtime, spec), unless the diff changed its premise. Cite the thread when a finding touches it.
 
+## Re-review
+
+**WHEN** `$$MODE` is `delta`. Every run of `review.sh` writes `.review/$$GIT_BRANCH/state` with the tree that review saw, so a new chat re-reviews as well as the same one: everything it needs is on disk.
+
+1. Step 1 runs in `delta` mode; for a task with MRs, `review-task.sh --delta` updates each checkout first. The diff is exactly what changed since the previous review, untracked files included. A `delta` with no `state` stops with an error: run a full review instead.
+2. Read the previous `.review/$$GIT_BRANCH/output.md` before writing the new one, and give each of its findings a status: **resolved**, **open**, or **resolved with a new problem**. Read the status from the current code, not from a commit message or a reply.
+3. Review the delta with the full checklist: **Always**, **Declaration**, **Contract** and every section whose trigger the delta shows. **Review-fix code** names where second-round problems come from.
+4. Code the delta does not touch is not reviewed again; the previous review owns it. Exception: when the delta changes behavior that untouched code depends on (a caller, a contract, a shared value), follow it there with the **Cross-file trace pass**.
+5. Output: a `### Previous findings` section before `### GitLab Comments`, one line per previous finding (`` - `path:LINE` — status — why ``), then the new findings in the usual format.
+
 ## Multi-repo task
 
 A card that touches 2+ repos is reviewed as one task, even before its MRs exist:
 
-- MRs open: `$$SKILL_DIR/scripts/review-task.sh [--discard] <repo-path>:<branch>...` checks out every branch and runs step 1 per repo in `commits` mode.
-- Before the push: `$$SKILL_DIR/scripts/review-task.sh --local <repo-path>...` reviews each repo's working tree in `all` mode, without checking anything out.
+- MRs open: `$$SKILL_DIR/scripts/review-task.sh [--discard] [--delta] <repo-path>:<branch>...` checks out every branch and runs step 1 per repo in `commits` mode.
+- Before the push: `$$SKILL_DIR/scripts/review-task.sh --local [--delta] <repo-path>...` reviews each repo's working tree in `all` mode, without checking anything out.
+- `--delta` runs step 1 in `delta` mode instead, per repo, after the checkout (*Re-review*); a repo without `state` gets the full mode and a warning.
 
 Review each repo into its own output, then make **one** pass over all of them. That pass is where rules duplicated between repos and consumers left behind are found; a single-repo review cannot see them:
 
@@ -49,7 +61,7 @@ Markdown only, no conversational filler, in the language of the project's `AGENT
 
 ### Review Summary
 
-One or two sentences: what the change implements and whether its architecture is sound. Last line, fixed: `Lint e tsc: rodados só sobre os 💡; testes não executados pela review.`
+One or two sentences: what the change implements and whether its architecture is sound. Last line, fixed: `Lint e tsc: rodados só sobre os 💡; testes não executados pela review.` When no 💡 carries a `suggestion` or `diff` block, nothing ran, and the line reads `Lint e tsc: não rodados, nenhum 💡 com código; testes não executados pela review.`
 
 ### GitLab Comments
 
@@ -74,7 +86,7 @@ No violation → exactly `No issues found. The code adheres to the project stand
   - which class reports a step's success or failure;
   - when and how a process or a browser ends;
   - the retry or attempt policy;
-  - a mechanism the card did not ask for (lock, cache, toggle, fallback, idle timeout, retry wrapper);
+  - a mechanism the card did not ask for (lock, cache, toggle, fallback, idle timeout, retry wrapper) that the 💡 would add; taking out one that the diff added without the card asking is an ordinary finding with its 💡;
   - a required value or field made optional;
   - a class split or merged;
   - code moved between repos or into a shared package;
