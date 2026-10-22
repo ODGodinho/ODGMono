@@ -24,7 +24,7 @@ Application config, environments, database, and other service settings.
 - **MUST NOT** group by environment (`PROD_`/`STAGING_`) or create inverted affixes (`_DISABLED`, `_OFF`, `_NO`).
 - `_TOKEN`, `_PASSWORD`, `_SECRET`, `_KEY` **MUST NOT** be logged
 - **MUST NOT** merge `_LIMIT`, `_ATTEMPT` with `MIN` / `MAX`
-- A key a shared package already exports (its `ConfigName`/config enums) is imported from that package, never redeclared in the consumer's `ConfigName` or validator; when those keys live in a sub-validator of the shared package, the consumer's strict `configValidator` extends its `.shape` so the keys are not stripped at boot.
+- Before adding a key or reading `process.env`, look for the value in the shared package's config validators (the SDK's base `configValidator` already requires `APP_NAME` in every robot). A key a shared package already exports (its `ConfigName`/config enums) is imported from that package and read through `Config`, never redeclared in the consumer's `ConfigName` or validator; when those keys live in a sub-validator of the shared package, the consumer's strict `configValidator` extends its `.shape` so the keys are not stripped at boot.
 - New key **MUST** land in .env.example; a dead key **MUST** be removed everywhere (enum, validator, test defaults, .env.example, .env) with `$$PM odg remove:config <KEY...>`. It refuses while code still reads `ConfigName.KEY` and then reports, without editing, what still mentions the key (CI, docs, tests): fix those by hand.
 
 ## Usage

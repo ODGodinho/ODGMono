@@ -1,6 +1,7 @@
 ---
 name: odg
 description: "Use whenever the user works in an ODG codebase (@odg/** packages, commands, playwright-cli, Pages, Handlers, Selectors, Events, Listeners, Configs, Services, Container, ContainerName, EventName, ConfigName, naming, lifecycle, or transitions). The assistant MUST trigger on: (1) Scaffolding — `odg make:*` (yarn/bun). (2) Conceptual questions (what/why/when/how) about any ODG concept. (3) Code review of a branch, PR, commit, diff, or of a whole task spanning several MRs (a card link, an MR link, 'revise a tarefa'). (4) Runtime debug — debug requests or symptoms (TimeoutError, waitForSelector fail, undefined-property errors, stuck page, retry loop). (5) Wiring/tsc — `Property X does not exist on ContainerInterface`, edits to `Container.ts` or `@types/*.d.ts`, missing enum entry."
+version: 0.0.1
 ---
 
 # ODG
@@ -51,7 +52,7 @@ Read the matching reference **before** you plan, edit, or review one of these fi
 | **React UI** | `resources/**` · `src/components/**` · `src/hooks/**` · `src/features/**` | **MUST** [runtimes/frontend.md](./references/runtimes/frontend.md) |
 | **Events / Listeners** | `src/app/Listeners/**` · `src/app/Enums/Event**` · `EventsInterface.d.ts` | **MUST** [events.md](./references/events.md) |
 | **Services Crawlers** | `src/app/Services/**` | **MUST** [services.md](./references/runtimes/crawler/services.md); **SHOULD** [events.md](./references/events.md) |
-| **Configs** | `src/Configs/**` · `src/app/Enums/Config**` · `.env**` · `make:config` | **MUST** [configs.md](./references/configs.md) |
+| **Configs** | `src/Configs/**` · `src/app/Enums/Config**` · `.env**` · `make:config` · code that reads `process.env` | **MUST** [configs.md](./references/configs.md) |
 | **Enums / Container wiring** | `src/app/Enums/**` · `src/app/Container.ts` · `@types/ContainerInterface.d.ts` | **MUST** [diagnostics.md](./references/diagnostics.md); **SHOULD** [configs.md](./references/configs.md) |
 | **Diagnostic** | Common TSC / wiring failures or lint error | [diagnostics.md](./references/diagnostics.md) |
 | **Testing** | `tests/**` | **MUST** [testing.md](./references/testing.md) |
@@ -89,8 +90,8 @@ Before you report a coding task as done, commit, or push:
 **WHEN** you apply findings from a review (pasted from another chat, read from GitLab, or from `.review/<branch>/output.md`):
 
 1. Read every finding before editing and group them by cause. Two or more findings on the same flow mean the flow needs a plan, not a series of patches: re-plan with [plan.md](./references/plan.md) first. Applying 💡 one by one is how the fix for one finding becomes the next finding.
-2. Before changing code for a finding, read the rule it cites (the checklist item and its `source:line`). Your fix must satisfy that rule and every rule your new lines trigger.
-3. Apply a 💡 as written. Do **NOT** apply a 💡 that changes the strategy ([review.md](./references/review.md) → *Strategy change*): answer it with the trade-off and wait for the lead's decision.
+2. Before changing code for a finding, read the rule it cites (its checklist item, or the heading its `source:line` points to). Your fix must satisfy that rule and every rule your new lines trigger.
+3. Apply a 💡 as written only when it satisfies step 2 and the result passes lint and tsc (*Before you deliver*); answer a 💡 that fails with the failure instead of applying it. Do **NOT** apply a 💡 that changes the strategy ([review.md](./references/review.md) → *Strategy change*): answer it with the trade-off and wait for the lead's decision.
 4. When you disagree with a finding, reply with the reason (the card, the code, the rule). Do not skip it silently.
 5. Fix code is judged as new code: [review/checklist.md](./references/review/checklist.md) → **Review-fix code** names how fixes usually go wrong.
 6. After the batch, run *Before you deliver* (it re-checks the card's criteria too), then request a new review.

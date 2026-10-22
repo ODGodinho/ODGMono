@@ -18,9 +18,9 @@ Placeholders (`$$SKILL_DIR`, `$$GIT_BRANCH`) are defined in [SKILL.md](../SKILL.
 
 1. From the project root run `$$SKILL_DIR/scripts/review.sh .review/$$GIT_BRANCH $$MODE`. Its output is the only diff source: never run `git diff`, `git show`, `git log -p` or `git blame`, except the `git show` a marker prints.
 2. Read `index.md` and every part it lists. Read each `_NEW FILE CREATED_` in full before judging it; a `_FILE DELETED_` only when a finding depends on the old body; open the rest of a file only for a symbol the changed lines read or write.
-3. Read [architecture.md](./architecture.md) and [conventions.md](./conventions.md) whenever the diff changes source code, plus the reference the [Routing map](../SKILL.md#routing-map) names for each surface a changed file belongs to, then the `AGENTS.md` of each package a changed line calls — `index.md` lists the candidates under "Package References Required". Nothing else.
+3. Read the references [checklist.md](./review/checklist.md) names before its first section, then the `AGENTS.md` of each package a changed line calls — `index.md` lists the candidates under "Package References Required". Nothing else.
 4. Evaluate [checklist.md](./review/checklist.md): **Always**, then **Declaration** and **Contract** whenever the diff changes source code, then every other section whose trigger the diff shows. Repo-wide searches use the Grep tool, or `grep -rn` with quoted globs.
-5. Write the output to `.review/$$GIT_BRANCH/output.md`, run `$$SKILL_DIR/scripts/review-check.sh < .review/$$GIT_BRANCH/output.md`, fix what it prints until it exits 0. Then print only the path of `output.md` and the count of findings per icon (❌, ⚠️, 💬); do not reprint the file.
+5. Write the output to `.review/$$GIT_BRANCH/output.md`, run `$$SKILL_DIR/scripts/review-check.sh --apply < .review/$$GIT_BRANCH/output.md`, fix what it prints until it exits 0. `--apply` applies every 💡 `suggestion` or `diff` block to a scratch copy of the tree and runs the project's eslint and tsc there, reporting only what the 💡 introduce; it is the only lint and tsc the review runs. Then print only the path of `output.md` and the count of findings per icon (❌, ⚠️, 💬); do not reprint the file.
 
 The card gives the intent; the diff gives the facts. Ask the tracker only for the fields the review needs — summary, description, status, comments. Derive every finding from the diff and the references, never from session memory.
 
@@ -41,7 +41,7 @@ Review each repo into its own output, then make **one** pass over all of them. T
 
 - **Repeated rule** — a rule that appears in 2+ repos is stated once, in the repo whose `AGENTS.md` owns it, and only cited in the others.
 - **Shared change** — when one repo changes a shared package's export, every repo that pins that package, inside the task or not, is a consumer; report, per consumer, its pinned version and the `path:line` that uses the changed export, and **prove** the pinned version carries the change (`git -C <lib-repo> tag --contains <merge-sha> | sort -V | head -1` against the consumer's lock entry) instead of assuming it. A consumer left on the old behavior is a finding.
-- **Shared logic** — logic that serves 2+ repos belongs to the shared package, not copied into each. (If exist shared package)
+- **Shared logic** — checklist **Shared-layer first**, applied across the repos of the task.
 
 ## Output
 
@@ -49,7 +49,7 @@ Markdown only, no conversational filler, in the language of the project's `AGENT
 
 ### Review Summary
 
-One or two sentences: what the change implements and whether its architecture is sound. Last line, fixed: `Lint, tsc e testes: não executados pela review.`
+One or two sentences: what the change implements and whether its architecture is sound. Last line, fixed: `Lint e tsc: rodados só sobre os 💡; testes não executados pela review.`
 
 ### GitLab Comments
 
@@ -61,11 +61,15 @@ No violation → exactly `No issues found. The code adheres to the project stand
     - 💡 Correction in 1–x lines.
 ```
 
-- **Rule Name**: the bold item of [checklist.md](./review/checklist.md) the finding violates, verbatim, without its trailing parenthetical; or `Agent Found` for a regression reproduced by running a command, the reproduction being the citation.
-- **source:line**: optional, pipe-separated: a repo `path:line`, a skill reference (`conventions.md:81`), the project or a package `AGENTS.md:LINE`. Never a checklist line, never a whole file.
+- **Rule Name**: the name of the rule the finding violates, verbatim, without its trailing parenthetical: the bold item of [checklist.md](./review/checklist.md); or, for a rule that a skill reference, an `AGENTS.md` or a package doc states and no checklist item names, the heading or bold lead that names it in that file, with its line in **source:line**. `Agent Found` is a finding of the agent's own, which nothing in the skill, the `AGENTS.md` files or the code prescribes; it needs no **source:line**.
+- **source:line**: pipe-separated: a repo `path:line`, a skill reference (`conventions.md:81`), the project or a package `AGENTS.md:LINE` or doc, by its path from the project root (`node_modules/@odg/chemical-x/docs/helpers.md:40`). Required when the Rule Name comes from one of those files; optional otherwise. Never a checklist line, never a whole file.
 - **Anchor**: an MR/PR line comment anchors to `path/to/file.ts:LINE`; a card comment with no line anchors to the `path` alone or to the symbol.
 - **ICON**: one per block. ❌ structural error or ODG pattern violation · ⚠️ side effect, infinite loop, DI edge case, or a design change beyond the card (any item of *Strategy change* below) · 💬 style, naming, trivial rule.
-- **💡**: the concrete correction, code or the symbol to use, that passes the project's lint and every skill or `AGENTS.md` rule. With `node_modules` present, check a snippet with `node_modules/.bin/eslint --stdin --stdin-filename <path>`; that is the only command the review runs. Never `confirmar com`, `decidir entre/com`, `avaliar se`, `ver com o time`, `alinhar com`. Layer first: when the commented code sits in the wrong layer (a Page validating the next page's transition, a Component that only classifies a response), the finding reports the layer violation; a 💡 that polishes code that must move or be deleted is wrong.
+- **💡**: the final code, not a direction; it passes the project's lint and tsc and every skill or `AGENTS.md` rule.
+  - When the fix replaces the commented lines, write it as a GitLab suggestion block, indented under the 💡: a fence opened with ```` ```suggestion:-N+M ```` (N and M count the lines replaced above and below `LINE`; `-0+0` for `LINE` alone) holding the exact lines after the fix. The author applies it with one click, and step 5 applies it to a scratch copy and runs eslint and tsc on the result. A fix that also changes other lines or other files is written as one ```` ```diff ```` block in unified format instead: a `--- a/<path>` and `+++ b/<path>` header per file, then its hunks (a new file starts from `--- /dev/null`); step 5 applies it the same way. Any other 💡 names the exact code or library symbol to use.
+  - Before writing a 💡, evaluate it as new code against the checklist sections it triggers: a 💡 that adds a log meets **Duplicate logging** and **Log content**, one that adds a catch meets **Error boundary placement**, one that adds a comment meets **Comments and docblocks**, one that adds a function meets **Unjustified abstraction**. A 💡 that would itself be a finding is wrong.
+  - Layer first: when the commented code sits in the wrong layer (a Page validating the next page's transition, a Component that only classifies a response), the finding reports the layer violation; a 💡 that polishes code that must move or be deleted is wrong.
+  - Never `confirmar com`, `decidir entre/com`, `avaliar se`, `ver com o time`, `alinhar com`.
 - **Strategy change.** A finding whose fix changes any of the following ends with `Decisão: <A> vs <B>`, each option with what it costs, and carries **no** 💡 code:
   - which class reports a step's success or failure;
   - when and how a process or a browser ends;

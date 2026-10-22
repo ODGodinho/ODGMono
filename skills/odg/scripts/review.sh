@@ -326,6 +326,22 @@ done <<< "$REVIEWABLE_FILES"
 
 close_part
 
+# Identifica a skill que gerou esta revisão: hash do conteúdo e, numa cópia git da skill,
+# o último commit dela e se há mudanças locais.
+skill_version() {
+    local dir hash commit dirty
+    dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+    hash="$(cd "$dir" && find . -type f \( -name '*.md' -o -name '*.sh' -o -name '*.json' \) \
+        -not -path './.playwright-cli/*' -print0 | LC_ALL=C sort -z | xargs -0 cat \
+        | { if command -v shasum > /dev/null; then shasum -a 256; else sha256sum; fi; } | cut -c1-12)"
+    printf '`%s`' "$hash"
+    commit="$(git -C "$dir" log -1 --format=%h -- . 2> /dev/null || true)"
+    if [[ -n "$commit" ]]; then
+        dirty="$(git -C "$dir" status --porcelain -- . 2> /dev/null || true)"
+        printf ' (commit `%s`%s)' "$commit" "${dirty:+, com mudanças locais}"
+    fi
+}
+
 # ---------------------------------------------------------------- index --
 
 {
@@ -338,6 +354,7 @@ close_part
         commits) printf -- '- Diff: `%s` (merge-base with `%s`) → `HEAD` (committed changes only)\n' "$MERGE_BASE" "$BASE_REF" ;;
     esac
     printf -- '- Generated: %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+    printf -- '- Skill: odg %s\n' "$(skill_version || printf 'desconhecida')"
 
     if [[ -n "$PURE_RENAME_PAIRS" ]]; then
         printf '\n## Renamed Paths (no content changes)\n\n'

@@ -259,7 +259,7 @@ The host **constructs and composes** the extracted classes; it **MUST NOT** reac
 
 ## DTO
 
-A DTO is the data a flow carries, in object form: created with `new`, filled by whoever owns the flow, rendering its external shape (`toJson()`). The Container decides, not the shape — a class under `Services/` that is **not** `@injectable` is a DTO and **MUST** move to `src/app/Dtos/<Name>Dto.ts`. (The inverse, an injectable DTO, is lint-enforced.)
+A DTO is the data a flow carries, in object form: created with `new`, filled by whoever owns the flow, rendering its external shape (`toJson()`). The Container decides, not the shape — a class under `Services/` that is **not** `@injectable` is a DTO and **MUST** move to `src/app/Dtos/<Name>Dto.ts`. (The inverse, an injectable DTO, is lint-enforced.) A DTO **MUST NOT** read infrastructure it was never handed (Config, the Container, a requester): whoever builds it passes the values in.
 
 ## Text as data
 
