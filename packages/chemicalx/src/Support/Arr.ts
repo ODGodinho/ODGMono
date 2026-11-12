@@ -12,8 +12,7 @@ import type { CloneableInterface } from "../Interfaces/index.ts";
  */
 export class Arr<Type extends unknown[]> implements CloneableInterface {
 
-    /** How many values one `Uint32Array` sample can take: 2^32. */
-    private static readonly sampleRange = 4_294_967_296;
+    private static readonly uint32Range = 0x1_00_00_00_00;
 
     public constructor(
         private readonly subject: Type,
@@ -75,7 +74,7 @@ export class Arr<Type extends unknown[]> implements CloneableInterface {
      * @returns {number}
      */
     private randomBelow(limit: number): number {
-        const unbiasedCeiling = Arr.sampleRange - Arr.sampleRange % limit;
+        const unbiasedCeiling = Arr.uint32Range - Arr.uint32Range % limit;
         const [ sample ] = crypto.getRandomValues(new Uint32Array(1));
 
         return sample < unbiasedCeiling ? sample % limit : this.randomBelow(limit);

@@ -259,14 +259,9 @@ describe("Arr.random", () => {
         });
 
         test("draws again a sample that would bias the result towards the low values", () => {
-            const highestSample = 0xFF_FF_FF_FF;
-            const samples = [ highestSample, 2 ];
             const getRandomValues = vi.spyOn(crypto, "getRandomValues")
-                .mockImplementation(<Type extends ArrayBufferView | null>(array: Type): Type => {
-                    (array as unknown as Uint32Array).set([ samples.shift() ?? 0 ]);
-
-                    return array;
-                });
+                .mockReturnValueOnce(new Uint32Array([ 0xFF_FF_FF_FF ]))
+                .mockReturnValueOnce(new Uint32Array([ 2 ]));
 
             expect(new Arr([ "a", "b", "c" ]).random(1)).toStrictEqual([ "c" ]);
             expect(getRandomValues).toHaveBeenCalledTimes(2);

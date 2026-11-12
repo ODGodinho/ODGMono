@@ -132,7 +132,8 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 
 ## ⚠️ Integration Pitfalls
 
-1. **Node 24+ obrigatório**: `engines.node >= 24.0` no package.json; versões anteriores não são suportadas.
+1. **Node 24+ obrigatório** na entrada principal; versões anteriores não são suportadas. A entrada `/portable` roda
+   também fora do Node (veja *Entry Points*).
 2. **Puppeteer/Playwright NÃO incluído**: Crawler APIs requerem driver de browser, mas o consumidor **deve instalar separadamente**. Helpers e Decorators funcionam sem driver.
 3. **DI é responsabilidade do consumidor**: Chemical-X usa Inversify mas **não auto-wira**. Consumidor deve registrar bindings e chamar `Container.loadModule()`.
 4. **Driver não é auto-selecionado**: Consumer configura qual driver usar via binding no Container ou construtor do `BrowserManager`. Puppeteer e Playwright são intercambiáveis via configuração.
@@ -175,5 +176,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 - **Main**: `import { retry, sleep, BrowserManager, BasePage, ... } from "@odg/chemical-x"`
 - **Container only**: `import { Container } from "@odg/chemical-x/container"`
 - **Portable**: `import { ODGDecorators, detach } from "@odg/chemical-x/portable"` — everything except `File`, with
-  no `node:*` anywhere in its import graph. For code that also runs outside Node/Bun (React Native, browser).
-  Same modules as the main entry, so the decorator registry is shared with it.
+  no `node:*` anywhere in its import graph, types included. For code that also runs outside Node/Bun (React Native,
+  browser). `Arr.random` (and `Str`, which uses it) needs a global `crypto.getRandomValues`: on React Native load a
+  polyfill (`react-native-get-random-values`) before the first import. The decorator registry lives in `Reflect`
+  metadata, so the two entries share it.
