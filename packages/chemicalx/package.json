@@ -13,7 +13,8 @@
     },
     "exports": {
         ".": "./dist/index.js",
-        "./container": "./dist/Container.js"
+        "./container": "./dist/Container.js",
+        "./portable": "./dist/portable.js"
     },
     "scripts": {
         "build": "rimraf dist/ && bun run tsc:build && bun run tsc:alias",

@@ -66,7 +66,7 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 | `Str` | Manipulação de string: extração monetária (`money()`, `moneys()`), `onlyNumbers()`, `ucFirst()`, `isJson()`, `formatUnicorn()` |
 | `Num` | Wrapper numérico com `toNative()` e `clone()` |
 | `Arr<Type>` | Wrapper de array com `random(length?)` e `clone()` |
-| `File` | Verificação de existência de arquivo via `exists()` |
+| `File` | Verificação de existência de arquivo via `exists()`. Só Node/Bun: fica fora de `@odg/chemical-x/portable` |
 | `UserAgent` | Identidade de navegador: `toString()` (UA string), `brands()`, `fullVersionList()`, `headers()`, `acceptLanguageHeader()`, `metadata()`, `cdpParams()` |
 
 **Enums:**
@@ -174,3 +174,6 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 
 - **Main**: `import { retry, sleep, BrowserManager, BasePage, ... } from "@odg/chemical-x"`
 - **Container only**: `import { Container } from "@odg/chemical-x/container"`
+- **Portable**: `import { ODGDecorators, detach } from "@odg/chemical-x/portable"` — everything except `File`, with
+  no `node:*` anywhere in its import graph. For code that also runs outside Node/Bun (React Native, browser).
+  Same modules as the main entry, so the decorator registry is shared with it.
