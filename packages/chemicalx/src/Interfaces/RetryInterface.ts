@@ -31,10 +31,10 @@ export interface RetryOptionsInterface<ReturnType = undefined> {
     /**
      * An AbortSignal to prematurely stop the retry process.
      *
-     * @type {AbortSignal}
+     * @type {AbortSignal | undefined}
      * @memberof RetryOptionsInterface
      */
-    signal?: AbortSignal;
+    signal?: AbortSignal | undefined;
 
     /**
      * The function to execute and retry on failure.

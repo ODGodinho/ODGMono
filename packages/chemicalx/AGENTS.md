@@ -177,6 +177,6 @@ import { BrowserManager, BasePage, BaseHandler, Container } from "@odg/chemical-
 - **Container only**: `import { Container } from "@odg/chemical-x/container"`
 - **Portable**: `import { ODGDecorators, detach } from "@odg/chemical-x/portable"` — everything except `File`, with
   no `node:*` anywhere in its import graph, types included. For code that also runs outside Node/Bun (React Native,
-  browser). `Arr.random` (and `Str`, which uses it) needs a global `crypto.getRandomValues`: on React Native load a
+  browser). `Arr.random` needs a global `crypto.getRandomValues`: on React Native load a
   polyfill (`react-native-get-random-values`) before the first import. The decorator registry lives in `Reflect`
   metadata, so the two entries share it.
