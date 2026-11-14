@@ -10,12 +10,6 @@ import { GelfLogLevels } from "#enums/GelfLogLevels";
 import { GraylogException } from "#exceptions/GraylogException";
 import type { GraylogOptionsInterface } from "#interfaces/GraylogOptionsInterface";
 
-/**
- * Classe responsável por salvar os arquivos de logs do GrayLog
- *
- * @task [INI-5035](https://grupo123.atlassian.net/browse/INI-5035)
- * @task [INI-2505](https://grupo123.atlassian.net/browse/INI-2505)
- */
 export class GraylogLogger extends AbstractLogger implements LoggerInterface {
 
     private logger?: typeof Gelf;

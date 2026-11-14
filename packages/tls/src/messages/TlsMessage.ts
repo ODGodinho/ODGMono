@@ -1,14 +1,6 @@
 import { AxiosMessage } from "@odg/axios";
-import type {
-    InterceptorsInterface,
-    ProxyConfigInterface,
-} from "@odg/message";
-import type {
-    AxiosInterceptorManager,
-    AxiosRequestConfig,
-} from "axios";
+import type { InterceptorsInterface } from "@odg/message";
 
-import { TlsAxiosInterceptorRequest } from "../interceptors/TlsAxiosInterceptorRequest.ts";
 import { TlsAxiosInterceptorResponse } from "../interceptors/TlsAxiosInterceptorResponse.ts";
 import type {
     TlsOptionsConstructorInterface,
@@ -26,7 +18,11 @@ import type { TlsMessageResponse } from "./TlsMessageResponse.ts";
  * @template {any} RequestData Request body to send in the request
  * @template {any} ResponseData Response body of the request
  */
-export class TlsMessage<RequestData, ResponseData> extends AxiosMessage<RequestData, ResponseData> {
+export class TlsMessage<RequestData, ResponseData> extends AxiosMessage<
+    RequestData,
+    ResponseData,
+    TlsOptionsConstructorInterface<RequestData>
+> {
 
     public override readonly interceptors: InterceptorsInterface<RequestData, ResponseData>;
 
@@ -34,19 +30,11 @@ export class TlsMessage<RequestData, ResponseData> extends AxiosMessage<RequestD
 
     protected override readonly responseParser = TlsAxiosResponseParser;
 
-    protected config: TlsOptionsConstructorInterface<RequestData>;
-
-    protected proxy?: ProxyConfigInterface | false;
-
     public constructor(config: TlsOptionsConstructorInterface<RequestData>) {
-        super({});
-        this.proxy = config.proxy;
-        this.config = config;
+        super(config);
 
         this.interceptors = Object.freeze({
-            request: new TlsAxiosInterceptorRequest<RequestData>(
-                this.client.interceptors.request as AxiosInterceptorManager<AxiosRequestConfig<RequestData>>,
-            ),
+            request: this.requestInterceptor,
             response: new TlsAxiosInterceptorResponse<RequestData, ResponseData>(
                 this.client.interceptors.response,
             ),
@@ -71,35 +59,27 @@ export class TlsMessage<RequestData, ResponseData> extends AxiosMessage<RequestD
             && !!message.request.tls;
     }
 
-    public override setDefaultOptions(config: TlsOptionsConstructorInterface<RequestData>): this {
-        this.config = config;
-
-        return this;
-    }
-
+    /**
+     * The constructor and setDefaultOptions require the `tls` field, so the defaults always carry it
+     *
+     * @returns {TlsOptionsConstructorInterface<RequestData>}
+     */
     public override getDefaultOptions(): TlsOptionsConstructorInterface<RequestData> {
-        return {
-            ...this.config,
-        };
+        return super.getDefaultOptions() as TlsOptionsConstructorInterface<RequestData>;
     }
 
+    /**
+     * Same as AxiosMessage.request, typed for TLS
+     *
+     * @template {any} RequestD Request Data
+     * @template {any} ResponseD Response Data
+     * @param {TlsRequestInterface<RequestD>} options What this request sends
+     * @returns {Promise<TlsMessageResponse<RequestD, ResponseD>>}
+     */
     public override async request<RequestD = RequestData, ResponseD = ResponseData>(
         options: TlsRequestInterface<RequestD>,
     ): Promise<TlsMessageResponse<RequestD, ResponseD>> {
-        return super.request<RequestD, ResponseD>(await this.getNewOptions(options));
-    }
-
-    private async getNewOptions<RequestD = RequestData>(
-        options: TlsRequestInterface<RequestD>,
-    ): Promise<TlsRequestInterface<RequestD>> {
-        return {
-            ...this.config as TlsRequestInterface<RequestD>,
-            ...options,
-            headers: {
-                ...this.config.headers,
-                ...options.headers,
-            },
-        };
+        return super.request<RequestD, ResponseD>(options);
     }
 
 }

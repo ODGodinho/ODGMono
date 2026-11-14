@@ -36,6 +36,7 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
             url: options.tls!.url,
             proxy: undefined,
             baseURL: undefined,
+            maxRedirects: 0,
             headers: {
                 ...options.headers,
                 "poptls-url": this.getUrl<RequestD>(options),
@@ -108,7 +109,7 @@ export class TlsAxiosRequestParser extends AxiosRequestParser {
     ): number | undefined {
         const { timeout } = options;
 
-        if (typeof timeout === "number") {
+        if (timeout) {
             const miliSecondsToSeconds = 1000;
 
             const newTimeout = Math.trunc(timeout / miliSecondsToSeconds);

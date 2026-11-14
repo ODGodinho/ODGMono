@@ -4,55 +4,54 @@ import { AxiosError, AxiosHeaders, type InternalAxiosRequestConfig } from "axios
 
 import { TlsMessage, TlsMessageException } from "#app";
 
+import { startTlsServers, type TlsServersInterface } from "../../tls-server.ts";
+
 describe("Tls Message", () => {
     const tlsHeader = "response.status";
-    const tlsUrl = "https://1.1.1.2/";
-    const cloudFlareIp = "https://1.1.1.1";
     const baseUrlField = "request.baseURL";
+    let servers: TlsServersInterface;
 
-    test.concurrent("Teste request without url and BaseURL Instance", async () => {
-        const messageTls = new TlsMessage({
-            tls: {
-                url: tlsUrl,
-            },
-            baseURL: cloudFlareIp,
-        });
-        const tlsResponse = messageTls.request({});
-
-        await Promise.all([
-            expect(tlsResponse).resolves.toHaveProperty(tlsHeader),
-            expect(tlsResponse).resolves.toHaveProperty(tlsHeader, 200),
-        ]);
+    beforeAll(async () => {
+        servers = await startTlsServers();
     });
 
-    test.concurrent("Teste request with url and BaseUrl Instance", async () => {
-        const messageTls = new TlsMessage({
-            tls: {
-                url: tlsUrl,
-            },
-            baseURL: cloudFlareIp,
-        });
-        const tlsResponse = messageTls.request({
-            url: "/dns",
-        });
-
-        await Promise.all([
-            expect(tlsResponse).resolves.toHaveProperty(tlsHeader),
-            expect(tlsResponse).resolves.toHaveProperty(tlsHeader, 200),
-        ]);
+    afterAll(() => {
+        servers.close();
     });
 
-    test.concurrent("Test add default Headers", async () => {
+    test("Teste request without url and BaseURL Instance", async () => {
         const messageTls = new TlsMessage({
             tls: {
-                url: tlsUrl,
+                url: servers.proxyUrl,
+            },
+            baseURL: servers.targetUrl,
+        });
+
+        await expect(messageTls.request({})).resolves.toHaveProperty(tlsHeader, 200);
+    });
+
+    test("Teste request with url and BaseUrl Instance", async () => {
+        const messageTls = new TlsMessage({
+            tls: {
+                url: servers.proxyUrl,
+            },
+            baseURL: servers.targetUrl,
+        });
+
+        await expect(messageTls.request({ url: "/dns" })).resolves.toHaveProperty(tlsHeader, 200);
+    });
+
+    test("Test add default Headers", async () => {
+        const messageTls = new TlsMessage({
+            tls: {
+                url: servers.proxyUrl,
             },
             headers: {
                 "test1": "test1",
             },
         });
         const tlsResponse = messageTls.request({
-            baseURL: cloudFlareIp,
+            baseURL: servers.targetUrl,
             url: "/dns",
             headers: {
                 "test2": "test2",
@@ -65,65 +64,62 @@ describe("Tls Message", () => {
         ]);
     });
 
-    test.concurrent("Teste request with timeout", async () => {
+    test("Teste request with timeout", async () => {
         const messageTls = new TlsMessage({
             tls: {
-                url: tlsUrl,
+                url: servers.proxyUrl,
             },
-            baseURL: cloudFlareIp,
+            baseURL: "https://unused.test",
         });
         const tlsResponse = messageTls.request({
-            baseURL: "https://github.com",
+            baseURL: servers.targetUrl,
             timeout: 10_000,
         });
 
         await Promise.all([
-            expect(tlsResponse).resolves.toHaveProperty(baseUrlField, "https://github.com"),
-            expect(tlsResponse).resolves.toHaveProperty(tlsHeader),
+            expect(tlsResponse).resolves.toHaveProperty(baseUrlField, servers.targetUrl),
             expect(tlsResponse).resolves.toHaveProperty(tlsHeader, 200),
         ]);
     });
 
-    test.concurrent("Teste request error", async () => {
-        const url404 = "https://reqres.in/api/unknown/23";
+    test("Teste request error", async () => {
         const messageTls = new TlsMessage({
             tls: {
-                url: url404,
+                url: servers.proxyUrl,
             },
         });
         const tlsResponse = messageTls.request({
-            baseURL: url404,
-            url: "zeze",
+            baseURL: servers.targetUrl,
+            url: "/404",
             timeout: 10_000,
         });
 
         await Promise.all([
-            expect(tlsResponse).rejects.toHaveProperty(baseUrlField, url404),
-            expect(tlsResponse).rejects.toHaveProperty("request.url", "zeze"),
-            expect(tlsResponse).rejects.toHaveProperty("request.tls.url", url404),
+            expect(tlsResponse).rejects.toHaveProperty(baseUrlField, servers.targetUrl),
+            expect(tlsResponse).rejects.toHaveProperty("request.url", "/404"),
+            expect(tlsResponse).rejects.toHaveProperty("request.tls.url", servers.proxyUrl),
         ]);
 
         expect(TlsMessage.isMessageError(await tlsResponse.catch((error: unknown) => error))).toBeTruthy();
     });
 
-    test.concurrent("Teste request timeout", async () => {
-        const url404 = "https://reqres.in/api/unknown/23";
+    test("Teste request timeout", async () => {
         const messageTls = new TlsMessage({
             tls: {
-                url: url404,
+                url: servers.proxyUrl,
             },
         });
 
         const tlsResponse = messageTls.request({
-            baseURL: tlsUrl,
-            url: "/zeze",
+            baseURL: servers.targetUrl,
+            url: "/slow",
             timeout: 10,
         });
 
         await Promise.all([
-            expect(tlsResponse).rejects.toHaveProperty(baseUrlField, tlsUrl),
-            expect(tlsResponse).rejects.toHaveProperty("request.url", "/zeze"),
-            expect(tlsResponse).rejects.toHaveProperty("request.tls.url", url404),
+            expect(tlsResponse).rejects.toHaveProperty(baseUrlField, servers.targetUrl),
+            expect(tlsResponse).rejects.toHaveProperty("request.url", "/slow"),
+            expect(tlsResponse).rejects.toHaveProperty("request.tls.url", servers.proxyUrl),
             expect(tlsResponse).rejects.toHaveProperty("response", undefined),
         ]);
 

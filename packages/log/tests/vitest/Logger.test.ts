@@ -90,7 +90,6 @@ describe("Logger withContext, without scopes (browser, robot)", () => {
         expect(logger.getContext()).toEqual({});
     });
 
-    // The shape of `alkhema-sdk`'s logger: a subclass with its own `options`, built with `super()`.
     test("Lets a subclass declare its own options and context", () => {
         class ProjectLogger extends Logger {
 

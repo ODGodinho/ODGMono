@@ -19,7 +19,7 @@
 
 - Instalar e declarar peers: `axios`, `@odg/axios`, `@odg/exception`, `@odg/message` (versões compatíveis com o monorepo).
 - Construtor: sempre fornecer `tls.url` (endpoint do serviço TLS/PopTLS).
-- `request()`: mesclar opções com a config base; não passar `tls: undefined` (sobrescreve o `tls` da base e pode quebrar o parser que exige `tls.url`).
+- `request()`: a config base (construtor/`setDefaultOptions`) entra depois dos interceptors, como no `AxiosMessage`. `tls` na request substitui o `tls` da base inteiro (merge raso): se passar `tls`, inclua `url`.
 - Guardas: `TlsMessage.isMessageError` exige `request.tls` truthy; `isAxiosMessageToTlsError` exige `request.$tlsOptions` (erro ainda no formato Axios interno). Escolher conforme a origem do valor.
 
 ## 💥 Exceptions
@@ -32,5 +32,7 @@
 
 - Sem import de `@odg/tls`, o parser de exceção TLS não roda; erros permanecem no formato anterior ao parse.
 - Headers `poptls-*` são detalhe de transporte; não duplicar ou conflitar manualmente sem motivo.
+- A chamada ao servidor TLS vai com `maxRedirects: 0`: quem segue redirect é o servidor TLS (`poptls-allowredirect`). Com `allowRedirect: false` o 3xx do site volta como resposta, sem o axios seguir o `location` (o que iria direto ao site, fora do TLS).
+- Sem `timeout` na request nem na instância, vale o do `ODGMessage.defaultOptions` (60 s → `poptls-timeout: 60`). `timeout: 0` é "sem timeout": não envia `poptls-timeout`.
 - `TlsAxiosRequestConfigExtra` depende de `AxiosRequestConfigExtra` exportado pela raiz de `@odg/axios`; imports de `@odg/*/dist/...` não são suportados (bloqueados pelo `exports`).
 - README exemplifica proxy local; validar URL e `allowRedirect` contra o servidor TLS real em cada ambiente.

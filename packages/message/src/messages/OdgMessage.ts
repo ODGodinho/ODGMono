@@ -1,8 +1,28 @@
+import type { RequestOptionsParametersInterface } from "../interfaces/request.ts";
+import { Methods } from "../MethodsEnum.ts";
+
 import { MessageException } from "./MessageException.ts";
 import { MessageResponse } from "./MessageResponse.ts";
 import { MessageUnknownException } from "./MessageUnknownException.ts";
 
+const firstSuccessStatus = 200;
+const firstRedirectStatus = 300;
+
 export abstract class ODGMessage {
+
+    /**
+     * Lowest priority options, below the constructor and setDefaultOptions.
+     * Implementations merge them with the instance defaults after the request interceptors, right before sending.
+     * `timeout: 0` means no timeout and `-1` means no size limit.
+     */
+    public static readonly defaultOptions: Readonly<RequestOptionsParametersInterface<unknown>> = Object.freeze({
+        method: Methods.GET,
+        headers: Object.freeze({ accept: "application/json, text/plain, */*" }),
+        timeout: 60_000,
+        maxContentLength: -1,
+        maxBodyLength: -1,
+        validateStatus: (status: number) => status >= firstSuccessStatus && status < firstRedirectStatus,
+    });
 
     public static isMessageResponse(
         message: unknown,

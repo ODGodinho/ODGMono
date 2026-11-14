@@ -32,9 +32,9 @@
     "license": "MIT",
     "devDependencies": {
         "@odg/tsconfig": "workspace:^",
-        "@types/node": ">=26.6.5",
+        "@types/node": ">=26.6.6",
         "typescript": "^6.0.3",
-        "vitest": "^5.0.5"
+        "vitest": "^5.1.0"
     },
     "dependencies": {
         "@adonisjs/eslint-plugin": "^2.2.2",
@@ -43,8 +43,8 @@
         "@eslint/css": "^2.0.1",
         "@odg/eslint-plugin": "workspace:^",
         "@stylistic/eslint-plugin": "^5.10.0",
-        "@typescript-eslint/eslint-plugin": "^8.72.0",
-        "@typescript-eslint/parser": "^8.72.0",
+        "@typescript-eslint/eslint-plugin": "^8.72.2",
+        "@typescript-eslint/parser": "^8.72.2",
         "any-eslint-parser": "^1.0.1",
         "eslint": "^10.13.0",
         "eslint-import-resolver-typescript": "^4.4.5",
@@ -73,7 +73,7 @@
         "eslint-plugin-yml": "^3.9.0",
         "eslint-plugin-zod": "^5.2.1",
         "espree": "^11.2.0",
-        "globals": "^17.13.0",
+        "globals": "^17.14.0",
         "jsonc-eslint-parser": "^3.3.0",
         "toml-eslint-parser": "^1.0.3",
         "ts-api-utils": "^2.5.0",

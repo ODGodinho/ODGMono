@@ -1,4 +1,5 @@
-import type { HttpHeadersInterface } from "@odg/message";
+import { Exception } from "@odg/exception";
+import { type HttpHeadersInterface, MessageUnknownException } from "@odg/message";
 import type { AxiosResponseHeaders } from "axios";
 
 export class AxiosParser {
@@ -13,6 +14,16 @@ export class AxiosParser {
         return this.isAxiosHeaders(headers) && typeof headers.toJSON === "function"
             ? ((headers.toJSON as (json: boolean) => unknown)(true) as HttpHeadersInterface)
             : (headers as HttpHeadersInterface);
+    }
+
+    /**
+     * Error from the request or response chain as an Exception, also when nothing was thrown
+     *
+     * @param {unknown} error What was thrown
+     * @returns {Exception}
+     */
+    public static parseException(error: unknown): Exception {
+        return Exception.parse(error) ?? new MessageUnknownException("Axios Message empty error", error);
     }
 
     /**

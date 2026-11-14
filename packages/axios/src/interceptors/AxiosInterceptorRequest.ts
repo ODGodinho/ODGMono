@@ -1,50 +1,55 @@
 import type {
     InterceptorManager,
-    MessageInterceptorOptions,
     onFulfilledType,
     onRejectedType,
     RequestInterface,
 } from "@odg/message";
-import type { AxiosInterceptorManager, AxiosRequestConfig } from "axios";
 
-import type { AxiosRequestConfigExtra } from "../Interfaces/index.ts";
-import { AxiosRequestParser } from "../parser/AxiosRequestParser.ts";
+import { AxiosParser } from "../parser/AxiosParser.ts";
 
-import { AxiosInterceptor } from "./AxiosInterceptor.ts";
+export class AxiosInterceptorRequest<RequestData> implements InterceptorManager<RequestInterface<RequestData>> {
 
-export class AxiosInterceptorRequest<
-    RequestData,
-> extends AxiosInterceptor<
-        AxiosRequestConfigExtra<RequestData>
-    > implements InterceptorManager<RequestInterface<RequestData>> {
+    private readonly handlers = new Map<number, [ onFulfilledType<RequestInterface<unknown>>?, onRejectedType? ]>();
 
-    protected readonly parser = AxiosRequestParser;
+    private nextId = 0;
 
     public use<RequestD = RequestData>(
         onFulfilled?: onFulfilledType<RequestInterface<RequestD>>,
         onRejected?: onRejectedType,
-        options?: MessageInterceptorOptions,
     ): number {
-        const requestIntercept = onFulfilled && this.onFulfilledRequest<RequestD>(onFulfilled);
+        this.handlers.set(this.nextId, [ onFulfilled as onFulfilledType<RequestInterface<unknown>>, onRejected ]);
 
-        return this.interceptor.use(
-            requestIntercept,
-            this.onRejected(onRejected),
-            {
-                synchronous: options?.synchronous,
-            },
-        );
+        return this.nextId++;
     }
 
-    private onFulfilledRequest<RequestD = RequestData>(
-        onFulfilled: onFulfilledType<RequestInterface<RequestD>>,
-    ): Parameters<AxiosInterceptorManager<AxiosRequestConfig>["use"]>["0"] {
-        return async (config: AxiosRequestConfigExtra<RequestD>): Promise<AxiosRequestConfigExtra<RequestD>> => ({
-            ...config,
-            ...this.parser.parseMessageToLibrary(
-                await onFulfilled(this.parser.parseLibraryToMessage(config)),
-            ),
-        });
+    public eject(id: number): void {
+        this.handlers.delete(id);
+    }
+
+    public clear(): void {
+        this.handlers.clear();
+    }
+
+    /**
+     * Run the interceptors like axios does: the last one registered runs first.
+     * What onFulfilled returns is merged over the current request.
+     *
+     * @template {any} RequestD Request Data
+     * @param {RequestInterface<RequestD>} request Request parameter
+     * @returns {Promise<RequestInterface<RequestD>>}
+     */
+    public async run<RequestD>(request: RequestInterface<RequestD>): Promise<RequestInterface<RequestD>> {
+        let chain = Promise.resolve(request as RequestInterface<unknown>);
+
+        for (const [ onFulfilled, onRejected ] of this.handlers.values().toArray().toReversed()) {
+            // eslint-disable-next-line promise/prefer-catch -- like axios, onRejected only handles the previous ones
+            chain = chain.then(
+                onFulfilled && (async (config) => ({ ...config, ...await onFulfilled(config) })),
+                onRejected && (async (error: unknown) => onRejected(AxiosParser.parseException(error))),
+            );
+        }
+
+        return chain as Promise<RequestInterface<RequestD>>;
     }
 
 }

@@ -1,15 +1,24 @@
 import { TlsMessage } from "#app";
 
-describe("Tls Message", () => {
-    const tlsUrl = "https://1.1.1.1/";
-    const cloudFlareIp = "https://1.1.1.1";
+import { startTlsServers, type TlsServersInterface } from "../../tls-server.ts";
 
-    test.concurrent("Teste Request Intercept", async () => {
+describe("Tls Message", () => {
+    let servers: TlsServersInterface;
+
+    beforeAll(async () => {
+        servers = await startTlsServers();
+    });
+
+    afterAll(() => {
+        servers.close();
+    });
+
+    test("Teste Request Intercept", async () => {
         const requester = new TlsMessage({
             tls: {
-                url: tlsUrl,
+                url: servers.proxyUrl,
             },
-            baseURL: cloudFlareIp,
+            baseURL: servers.targetUrl,
         });
         const interceptHeader = "intercept-test";
 
@@ -25,7 +34,7 @@ describe("Tls Message", () => {
 
         await Promise.all([
             expect(myRequest).resolves.toHaveProperty("request.headers.teste", interceptHeader),
-            expect(myRequest).resolves.toHaveProperty("request.baseURL", cloudFlareIp),
+            expect(myRequest).resolves.toHaveProperty("request.baseURL", servers.targetUrl),
             expect(myRequest).resolves.not.toHaveProperty("request.url"),
         ]);
     });
