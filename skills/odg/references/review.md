@@ -27,16 +27,16 @@ The card gives the intent; the diff gives the facts. Ask the tracker only for th
 
 ## Existing comments
 
-Only when the request names a card or an MR/PR that already has discussion; run it before step 4. Read the MR threads from `discussions.md` in the output directory: `review-task.sh` writes it per MR (open threads, author replies, resolved state), also for a single repo given as one `<repo-path>:<branch>`. Do not work out how to query GitLab; when the file is missing (no `glab`), read the threads through the tracker the request names. Read every open comment — the diff is the authority on what is still true. Classify each as **valid** (still applies), **resolved** (the diff fixed it) or **stale** (file or line gone). Never repeat one as a finding; where a comment and the diff disagree, the diff wins and the disagreement is a finding.
+Only when the request names a card or an MR/PR that already has discussion; run it before step 4. Read the MR threads from `discussions.md` in the output directory: `review-task.sh` writes it per MR (open threads, author replies, resolved state), also for a single repo given as one `<repo-path>:<branch>`. Do not work out how to query GitLab; when the file is missing (no `glab`), read the threads through the tracker the request names. Read every comment, open and resolved — the code is the authority on what is still true, not the thread's state. Classify each as **valid** (still applies, even if marked resolved), **resolved** (the code fixed it), **stale** (file or line gone) or **contested** (the code or the repo contradicts a premise of the thread or of a reply; state the evidence as `path:line`). Never repeat one as a finding; where a comment and the diff disagree, the diff wins and the disagreement is a finding.
 
-A finding or 💡 **MUST NOT** reverse a decision the lead already took in the MR threads, or an author's contestation backed by proof (code, runtime, spec), unless the diff changed its premise. Cite the thread when a finding touches it.
+A finding or 💡 **MUST NOT** reverse a decision the lead already took in the MR threads, or an author's contestation backed by proof (code, runtime, spec), unless the diff changed its premise. A contestation whose proof the code or the repo contradicts may become a finding that cites the thread and the evidence. A lead decision whose premise is contradicted stays **contested** in the evaluation only: no finding, no 💡 against it. Cite the thread when a finding touches it.
 
 ## Re-review
 
 **WHEN** `$$MODE` is `delta`. Every run of `review.sh` writes `.review/$$GIT_BRANCH/state` with the tree that review saw, so a new chat re-reviews as well as the same one: everything it needs is on disk.
 
 1. Step 1 runs in `delta` mode; for a task with MRs, `review-task.sh --delta` updates each checkout first. The diff is exactly what changed since the previous review, untracked files included. A `delta` with no `state` stops with an error: run a full review instead.
-2. Read the previous `.review/$$GIT_BRANCH/output.md` before writing the new one, and give each of its findings a status: **resolved**, **open**, or **resolved with a new problem**. Read the status from the current code, not from a commit message or a reply.
+2. Read the previous `.review/$$GIT_BRANCH/output.md` before writing the new one, and give each of its findings a status: **resolved**, **open**, **resolved with a new problem**, or **discarded** (its thread was deleted from the MR: a decision already taken, never re-emitted). Read the status from the current code, not from a commit message or a reply.
 3. Review the delta with the full checklist: **Always**, **Declaration**, **Contract** and every section whose trigger the delta shows. **Review-fix code** names where second-round problems come from.
 4. Code the delta does not touch is not reviewed again; the previous review owns it. Exception: when the delta changes behavior that untouched code depends on (a caller, a contract, a shared value), follow it there with the **Cross-file trace pass**.
 5. Output: a `### Previous findings` section before `### GitLab Comments`, one line per previous finding (`` - `path:LINE` — status — why ``), then the new findings in the usual format.
@@ -103,7 +103,7 @@ Only for a multi-repo task. One line per cross-repo item — repeated rule, shar
 
 ### Avaliação dos comentários existentes
 
-Only for the pass above. One line per open comment — `path:LINE` — `valid | resolved | stale` — one sentence on why. No icon, no 💡.
+Only for the pass above. One line per comment read — `path:LINE` — `valid | resolved | stale | contested` — one sentence on why; for `contested`, the evidence as `path:line`. No icon, no 💡.
 
 ### New Rule Suggestions (optional)
 
