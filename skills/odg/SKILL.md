@@ -83,7 +83,7 @@ Read a package's `AGENTS.md` when the work **uses that package's API** — a mer
 Before you report a coding task as done, commit, or push:
 
 1. Read [review/checklist.md](./references/review/checklist.md) and evaluate your diff against it exactly as the reviewer will: **Always**, **Declaration** and **Contract**, and every section whose trigger your diff shows. Fix every item that fires. An item whose fix is a *Strategy change* ([review.md](./references/review.md) → *Strategy change*) is not applied by the writer: ask the lead. The reviewer finds what you did not look for: most second-round findings in this team's history broke a rule that already existed in the checklist.
-2. Run lint and tsc on the files you touched ([rtk.md](./references/rtk.md) when rtk is present) and fix what they report, warnings included. Do not count on CI to run lint: this run is the gate.
+2. Run lint and tsc on the files you touched ([rtk.md](./references/rtk.md) when rtk is present) and fix what they report, warnings included, and errors you did not cause too: code that does not compile, or a hook that fails, blocks every publish, whoever broke it. When the errors come from the environment (dependencies installed behind the lockfile), install first and run again. Do not count on CI to run lint: this run is the gate.
 
 ## Applying review findings
 
