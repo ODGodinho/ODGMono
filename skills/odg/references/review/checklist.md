@@ -25,7 +25,7 @@ The rules of each surface live in its references, and this checklist does not re
   - **One owner per terminal report** [attemptable-flow.md]($$PROJECT_ROOT/node_modules/@odg/chemical-x/docs/attemptable-flow.md) → *Hooks* → *One owner per outcome*.
   - **Derived time budgets** Timeouts that must cover each other derive from each other (lock wait ≥ stale threshold ≥ worst case of the critical section), never independent literals explained in a comment.
 - **Review-fix code** Code written to apply a review finding is judged like any new code, and these are the ways it usually goes wrong: a comment or docblock that explains the fix to the reviewer; a log, catch, guard or fallback added "to be safe"; a helper or wrapper created only to hold the fix; a strategy change taken from a 💡 ([review.md](../review.md) → *Strategy change*); an acceptance criterion an earlier version met, now broken (**Card fulfillment**).
-- **Cross-file trace pass (do last)** Grep each changed shared artifact, config key, and interface field; verify flow and nullability in every consumer. Also: a cast (`as X`) on external data is a consumer, so grep the field name, not only the type.
+- **Cross-file trace pass (do last)** Grep each changed shared artifact, config key, and interface field within the repos under review; verify flow and nullability in every consumer found there. Also: a cast (`as X`) on external data is a consumer, so grep the field name, not only the type.
 
 ## Declaration — new or renamed file, class, function, type, constant, export, or docblock
 

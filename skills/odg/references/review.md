@@ -52,7 +52,7 @@ A card that touches 2+ repos is reviewed as one task, even before its MRs exist:
 Review each repo into its own output, then make **one** pass over all of them. That pass is where rules duplicated between repos and consumers left behind are found; a single-repo review cannot see them:
 
 - **Repeated rule** — a rule that appears in 2+ repos is stated once, in the repo whose `AGENTS.md` owns it, and only cited in the others.
-- **Shared change** — when one repo changes a shared package's export, every repo that pins that package, inside the task or not, is a consumer; report, per consumer, its pinned version and the `path:line` that uses the changed export, and **prove** the pinned version carries the change (`git -C <lib-repo> tag --contains <merge-sha> | sort -V | head -1` against the consumer's lock entry) instead of assuming it. A consumer left on the old behavior is a finding.
+- **Shared change** — when the diff of a shared package changes an export in a way that can break its consumers (removed or renamed member, changed signature, return type or thrown error, changed default), report it once, on that change: name the export and what a consumer must adapt. If a search the review already runs shows that export used in another repo, list those `path:line` in the same finding, without reviewing them. Do not search other repos for this purpose, and do not check pinned versions or lockfiles.
 - **Shared logic** — checklist **Shared-layer first**, applied across the repos of the task.
 
 ## Output
@@ -98,7 +98,7 @@ Footer: `_Emitted N comments._` then `Gatilhos ausentes: <checklist sections who
 
 ### Multi-repo
 
-Only for a multi-repo task. One line per cross-repo item — repeated rule, shared change (consumer + pinned version + `path:line`), shared logic to move. Omit the section for a single repo.
+Only for a multi-repo task. One line per cross-repo item — repeated rule, shared change (export + what a consumer must adapt + any `path:line` a search already showed), shared logic to move. Omit the section for a single repo.
 
 ### Avaliação dos comentários existentes
 
