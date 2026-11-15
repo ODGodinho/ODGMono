@@ -352,6 +352,17 @@
                 "Somente o primeiro bloco traz o codigo, e ele corrige os dois problemas.",
                 "O segundo bloco traz um 💡 que aponta para o `path:LINE` do primeiro."
             ]
+        },
+        {
+            "id": 33,
+            "prompt": "Revisa a MR: o lead deixou 2 comentarios sem resposta do autor, e o codigo das duas linhas continua igual. A 1a thread segue aberta, e o autor subiu commits depois dela para outros pontos; a 2a foi marcada resolvida.",
+            "expected_output": "Existing comments (review.md): a 1a e pending (so na avaliacao, sem achado); a 2a e unanswered (volta como achado citando a thread).",
+            "files": [],
+            "expectations": [
+                "A resposta classifica a 1a como pendente e nao emite achado nem 💡 para ela.",
+                "A resposta lista a 1a na avaliacao dos comentarios existentes.",
+                "A resposta trata a 2a como sem resposta e a levanta de novo como achado citando a thread."
+            ]
         }
     ]
 }

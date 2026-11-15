@@ -32,7 +32,8 @@ Only when the request names a card or an MR/PR that already has discussion; run 
 - **applied** — the code does what it asked;
 - **answered** — not applied, with a reply that justifies it: not raised again;
 - **contested** — a premise of the comment or of its reply is contradicted by the code or the repo (evidence as `path:line`): may become a finding;
-- **unanswered** — neither applied nor answered, even if marked resolved: raised again as a finding;
+- **pending** — still open, not applied, no reply: the thread is visible in the MR and already asks for it, whatever was pushed since. Not a finding;
+- **unanswered** — marked resolved, neither applied nor answered: raised again as a finding;
 - **stale** — the file or line is gone, or another change solved the problem.
 
 When the contradicted premise is the lead's, in the comment or in the reply, it stays **contested** in the evaluation, with no finding and no 💡. Every finding that touches a thread cites it.
@@ -42,7 +43,7 @@ When the contradicted premise is the lead's, in the comment or in the reply, it 
 **WHEN** `$$MODE` is `delta`. Every run of `review.sh` writes `.review/$$GIT_BRANCH/state` with the tree that review saw, so a new chat re-reviews as well as the same one: everything it needs is on disk.
 
 1. Step 1 runs in `delta` mode; for a task with MRs, `review-task.sh --delta` updates each checkout first. The diff is exactly what changed since the previous review, untracked files included. A `delta` with no `state` stops with an error: run a full review instead.
-2. Read the previous `.review/$$GIT_BRANCH/output.md` before writing the new one, and give each of its findings a status from *Existing comments* (**applied**, **answered**, **contested**, **unanswered**, **stale**) or **applied with a new problem**, read from the current code and its thread, if any. An **unanswered** one, or a **contested** one that becomes a finding, is emitted again at its current line; the others live only in this section.
+2. Read the previous `.review/$$GIT_BRANCH/output.md` before writing the new one, and give each of its findings a status from *Existing comments* (**applied**, **answered**, **contested**, **pending**, **unanswered**, **stale**) or **applied with a new problem**, read from the current code and its thread, if any. An **unanswered** one, a **contested** one that becomes a finding, or one that was never posted (no thread) and is still not applied, is emitted again at its current line; the others live only in this section.
 3. Review the delta with the full checklist: **Always**, **Declaration**, **Contract** and every section whose trigger the delta shows. **Review-fix code** names where second-round problems come from.
 4. Code the delta does not touch is not reviewed again; the previous review owns it. Exception: when the delta changes behavior that untouched code depends on (a caller, a contract, a shared value), follow it there with the **Cross-file trace pass**.
 5. Output: a `### Previous findings` section before `### GitLab Comments`, one line per previous finding (`` - `path:LINE` — status — why ``), then the new findings and the re-emitted ones in the usual format.
@@ -109,7 +110,7 @@ Only for a multi-repo task. One line per cross-repo item — repeated rule, shar
 
 ### Avaliação dos comentários existentes
 
-Only when *Existing comments* ran. One line per comment read, except threads listed under *Previous findings*, **applied** ones, and **unanswered** ones (already a finding) — `path:LINE` — its class from *Existing comments* — one sentence on why. No icon, no 💡.
+Only when *Existing comments* ran. One line per comment read, except threads listed under *Previous findings*, **applied** ones, and **unanswered** ones (already a finding) — `path:LINE` — its class from *Existing comments* — one sentence on why; a **pending** thread adds the rule it falls under, when the comment does not name one. No icon, no 💡.
 
 ### New Rule Suggestions (optional)
 
