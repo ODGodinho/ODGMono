@@ -27,19 +27,25 @@ The card gives the intent; the diff gives the facts. Ask the tracker only for th
 
 ## Existing comments
 
-Only when the request names a card or an MR/PR that already has discussion; run it before step 4. Read the MR threads from `discussions.md` in the output directory: `review-task.sh` writes it per MR (open threads, author replies, resolved state), also for a single repo given as one `<repo-path>:<branch>`. Do not work out how to query GitLab; when the file is missing (no `glab`), read the threads through the tracker the request names. Read every comment, open and resolved — the code is the authority on what is still true, not the thread's state. Classify each as **valid** (still applies, even if marked resolved), **resolved** (the code fixed it), **stale** (file or line gone) or **contested** (the code or the repo contradicts a premise of the thread or of a reply; state the evidence as `path:line`). Never repeat one as a finding; where a comment and the diff disagree, the diff wins and the disagreement is a finding.
+Only when the request names a card or an MR/PR that already has discussion; run it before step 4. Read the MR threads from `discussions.md` in the output directory: `review-task.sh` writes it per MR (open threads, author replies, resolved state), also for a single repo given as one `<repo-path>:<branch>`. Do not work out how to query GitLab; when the file is missing (no `glab`), read the threads through the tracker the request names. Every review comment ends **applied** or **answered**. Read every thread, open and resolved, and classify it:
 
-A finding or 💡 **MUST NOT** reverse a decision the lead already took in the MR threads, or an author's contestation backed by proof (code, runtime, spec), unless the diff changed its premise. A contestation whose proof the code or the repo contradicts may become a finding that cites the thread and the evidence. A lead decision whose premise is contradicted stays **contested** in the evaluation only: no finding, no 💡 against it. Cite the thread when a finding touches it.
+- **applied** — the code does what it asked;
+- **answered** — not applied, with a reply that justifies it: not raised again;
+- **contested** — a premise of the comment or of its reply is contradicted by the code or the repo (evidence as `path:line`): may become a finding;
+- **unanswered** — neither applied nor answered, even if marked resolved: raised again as a finding;
+- **stale** — the file or line is gone, or another change solved the problem.
+
+When the contradicted premise is the lead's, in the comment or in the reply, it stays **contested** in the evaluation, with no finding and no 💡. Every finding that touches a thread cites it.
 
 ## Re-review
 
 **WHEN** `$$MODE` is `delta`. Every run of `review.sh` writes `.review/$$GIT_BRANCH/state` with the tree that review saw, so a new chat re-reviews as well as the same one: everything it needs is on disk.
 
 1. Step 1 runs in `delta` mode; for a task with MRs, `review-task.sh --delta` updates each checkout first. The diff is exactly what changed since the previous review, untracked files included. A `delta` with no `state` stops with an error: run a full review instead.
-2. Read the previous `.review/$$GIT_BRANCH/output.md` before writing the new one, and give each of its findings a status: **resolved**, **open**, **resolved with a new problem**, or **discarded** (its thread was deleted from the MR: a decision already taken, never re-emitted). Read the status from the current code, not from a commit message or a reply.
+2. Read the previous `.review/$$GIT_BRANCH/output.md` before writing the new one, and give each of its findings a status from *Existing comments* (**applied**, **answered**, **contested**, **unanswered**, **stale**) or **applied with a new problem**, read from the current code and its thread, if any. An **unanswered** one, or a **contested** one that becomes a finding, is emitted again at its current line; the others live only in this section.
 3. Review the delta with the full checklist: **Always**, **Declaration**, **Contract** and every section whose trigger the delta shows. **Review-fix code** names where second-round problems come from.
 4. Code the delta does not touch is not reviewed again; the previous review owns it. Exception: when the delta changes behavior that untouched code depends on (a caller, a contract, a shared value), follow it there with the **Cross-file trace pass**.
-5. Output: a `### Previous findings` section before `### GitLab Comments`, one line per previous finding (`` - `path:LINE` — status — why ``), then the new findings in the usual format.
+5. Output: a `### Previous findings` section before `### GitLab Comments`, one line per previous finding (`` - `path:LINE` — status — why ``), then the new findings and the re-emitted ones in the usual format.
 
 ## Multi-repo task
 
@@ -49,10 +55,10 @@ A card that touches 2+ repos is reviewed as one task, even before its MRs exist:
 - Before the push: `$$SKILL_DIR/scripts/review-task.sh --local [--delta] <repo-path>...` reviews each repo's working tree in `all` mode, without checking anything out.
 - `--delta` runs step 1 in `delta` mode instead, per repo, after the checkout (*Re-review*); a repo without `state` gets the full mode and a warning.
 
-Review each repo into its own output, then make **one** pass over all of them. That pass is where rules duplicated between repos and consumers left behind are found; a single-repo review cannot see them:
+Review each repo into its own output, then make **one** pass over all of them. That pass is where rules duplicated between repos and shared changes are found; a single-repo review cannot see them:
 
 - **Repeated rule** — a rule that appears in 2+ repos is stated once, in the repo whose `AGENTS.md` owns it, and only cited in the others.
-- **Shared change** — when the diff of a shared package changes an export in a way that can break its consumers (removed or renamed member, changed signature, return type or thrown error, changed default), report it once, on that change: name the export and what a consumer must adapt. If a search the review already runs shows that export used in another repo, list those `path:line` in the same finding, without reviewing them. Do not search other repos for this purpose, and do not check pinned versions or lockfiles.
+- **Shared change** — when the diff of a shared package changes an export in a way that can break its consumers (removed or renamed member, changed signature, return type or thrown error, changed default), report it once, on that change: name the export and what a consumer must adapt. If the checklist **Cross-file trace pass** shows that export used in another repo, list those `path:line` in the same finding. Do not check pinned versions or lockfiles; release order is not a finding.
 - **Shared logic** — checklist **Shared-layer first**, applied across the repos of the task.
 
 ## Output
@@ -80,7 +86,7 @@ No violation → exactly `No issues found. The code adheres to the project stand
 - **💡**: the final code, not a direction; it passes the project's lint and tsc and every skill or `AGENTS.md` rule.
   - When the fix replaces the commented lines, write it as a GitLab suggestion block, indented under the 💡: a fence opened with ```` ```suggestion:-N+M ```` (N and M count the lines replaced above and below `LINE`; `-0+0` for `LINE` alone) holding the exact lines after the fix. The author applies it with one click, and step 5 applies it to a scratch copy and runs eslint and tsc on the result. A fix that also changes other lines or other files is written as one ```` ```diff ```` block in unified format instead: a `--- a/<path>` and `+++ b/<path>` header per file, then its hunks (a new file starts from `--- /dev/null`); step 5 applies it the same way. Any other 💡 names the exact code or library symbol to use.
   - Before writing a 💡, evaluate it as new code against the checklist sections it triggers: a 💡 that adds a log meets **Duplicate logging** and **Log content**, one that adds a catch meets **Error boundary placement**, one that adds a comment meets **Comments and docblocks**, one that adds a function meets **Unjustified abstraction**. A 💡 that would itself be a finding is wrong.
-  - Overlapping findings: when 2+ findings fall on the same lines or the same method, each rule keeps its own block, and only the first carries the code, fixing all of them; the others read `💡 Corrigido pelo 💡 de \`path:LINE\`.` Never fold a second rule into another rule's block.
+  - Overlapping findings: when 2+ findings fall on the same lines or the same method, each rule keeps its own block; the first block that is not a *Strategy change* carries the code fixing the others, whose 💡 reads `Corrigido pelo 💡 de path:LINE`; a *Strategy change* keeps its `Decisão`. Never fold a second rule into another rule's block. One defect that several rules name is reported once, under the most specific rule, Task Scope last.
   - Layer first: when the commented code sits in the wrong layer (a Page validating the next page's transition, a Component that only classifies a response), the finding reports the layer violation; a 💡 that polishes code that must move or be deleted is wrong.
   - Never `confirmar com`, `decidir entre/com`, `avaliar se`, `ver com o time`, `alinhar com`.
 - **Strategy change.** A finding whose fix changes any of the following ends with `Decisão: <A> vs <B>`, each option with what it costs, and carries **no** 💡 code:
@@ -99,11 +105,11 @@ Footer: `_Emitted N comments._` then `Gatilhos ausentes: <checklist sections who
 
 ### Multi-repo
 
-Only for a multi-repo task. One line per cross-repo item — repeated rule, shared change (export + what a consumer must adapt + any `path:line` a search already showed), shared logic to move. Omit the section for a single repo.
+Only for a multi-repo task. One line per cross-repo item — repeated rule, shared change (the `path:LINE` of its finding), shared logic to move. Omit the section for a single repo.
 
 ### Avaliação dos comentários existentes
 
-Only for the pass above. One line per comment read — `path:LINE` — `valid | resolved | stale | contested` — one sentence on why; for `contested`, the evidence as `path:line`. No icon, no 💡.
+Only when *Existing comments* ran. One line per comment read, except threads listed under *Previous findings*, **applied** ones, and **unanswered** ones (already a finding) — `path:LINE` — its class from *Existing comments* — one sentence on why. No icon, no 💡.
 
 ### New Rule Suggestions (optional)
 

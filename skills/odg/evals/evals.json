@@ -304,8 +304,53 @@
             "files": [],
             "expectations": [
                 "A resposta roda o `review.sh` em modo `delta`, ou `review-task.sh --delta` numa tarefa com MRs, em vez de revisar tudo de novo.",
-                "A resposta da a cada achado anterior um status (resolvido, aberto ou resolvido com problema novo), lido do codigo atual, numa secao `### Previous findings`.",
+                "A resposta da a cada achado anterior um status (aplicado, respondido, contestado, sem resposta, obsoleto ou aplicado com problema novo), lido do codigo atual e da thread, numa secao `### Previous findings`.",
+                "A resposta emite de novo, na linha atual, o achado anterior sem resposta.",
                 "A resposta revisa so o delta com o checklist inteiro e nao revisa de novo codigo que o delta nao tocou, salvo o que o delta afeta (Cross-file trace pass)."
+            ]
+        },
+        {
+            "id": 29,
+            "prompt": "Revisa a MR: tem 3 threads. A 1a o dev aplicou; a 2a ele respondeu 'mantido, segue o padrao dos outros predicados' sem mudar o codigo; a 3a esta marcada resolvida, sem resposta, e o codigo continua igual.",
+            "expected_output": "Existing comments (review.md): 1a applied, 2a answered (nao volta), 3a unanswered (volta como achado citando a thread).",
+            "files": [],
+            "expectations": [
+                "A resposta classifica a 1a como aplicada e nao comenta de novo.",
+                "A resposta classifica a 2a como respondida e nao repete o achado, salvo se o codigo desmentir a premissa da resposta.",
+                "A resposta trata a 3a como sem resposta, mesmo marcada resolvida, e a levanta de novo como achado citando a thread."
+            ]
+        },
+        {
+            "id": 30,
+            "prompt": "Revisa a MR: alem do card, o package.json sobe varias dependencias (@odg/*, inversify, dotenv) e o lint-staged reescreveu ternarios e a ordem de imports em linhas que o card nao tocava.",
+            "expected_output": "Task Scope (checklist.md): bump e mudancas do lint/hook sao isentos e presumidos sem mudanca de comportamento; nenhum achado de escopo.",
+            "files": [],
+            "expectations": [
+                "A resposta nao emite Task Scope para o bump nem para as linhas reescritas pelo lint-staged.",
+                "A resposta nao compara lockfiles nem changelogs para provar a isencao.",
+                "A resposta so aponta uma dessas mudancas se o proprio diff mostrar mudanca de comportamento, pela regra desse comportamento."
+            ]
+        },
+        {
+            "id": 31,
+            "prompt": "Revisa a tarefa: o MR da lib compartilhada (aberto, sem merge) renomeia um metodo exportado, e o MR do consumidor, na mesma tarefa, ja usa o nome novo; o lock do consumidor ainda aponta para a versao publicada antiga.",
+            "expected_output": "Shared change (review.md): um achado no rename da lib, citando o path:line do consumidor que a busca mostrou; sem prova de versao, sem achado por lock nem por ordem de publicacao.",
+            "files": [],
+            "expectations": [
+                "A resposta reporta o rename uma vez, no MR da lib, dizendo o que o consumidor precisa adaptar.",
+                "A resposta nao roda `git tag --contains` nem confere versao travada ou lockfile.",
+                "A resposta nao emite achado sobre a versao do lock do consumidor nem sobre a ordem de publicacao."
+            ]
+        },
+        {
+            "id": 32,
+            "prompt": "Revisa: no mesmo metodo ha uma chamada repetida (Performance optimization) e um log duplicado (Duplicate logging).",
+            "expected_output": "Overlapping findings (review.md): dois blocos, um por regra; so o primeiro traz o codigo que corrige os dois; o outro diz que e corrigido pelo 💡 do primeiro.",
+            "files": [],
+            "expectations": [
+                "A resposta emite um bloco para cada regra, sem juntar as duas num bloco so.",
+                "Somente o primeiro bloco traz o codigo, e ele corrige os dois problemas.",
+                "O segundo bloco traz um 💡 que aponta para o `path:LINE` do primeiro."
             ]
         }
     ]

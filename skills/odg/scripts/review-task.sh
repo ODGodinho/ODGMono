@@ -106,7 +106,7 @@ write_discussions() {
                 | map(select((human | length) > 0) | . + { st: state })
                 | (map(select(.st != "resolved")) + map(select(.st == "resolved")))
                 | .[]
-                | "## \(where) — \(.st) — thread `\(.id)`\n\n"
+                | "## \(where) — \(if .st == "resolved" then "marcada resolvida no GitLab" else .st end) — thread `\(.id)`\n\n"
                   + ([human[]
                       | "- **\(.author.username)\(if .author.username == $author then " (autor)" else "" end)** \(.created_at[0:10]): "
                         + (.body | gsub("\n"; "\n    "))]
