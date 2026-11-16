@@ -38,17 +38,17 @@
     },
     "dependencies": {
         "@adonisjs/eslint-plugin": "^2.2.2",
-        "@babel/core": "^8.0.7",
+        "@babel/core": "^8.1.2",
         "@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
         "@eslint/css": "^2.0.1",
         "@odg/eslint-plugin": "workspace:^",
         "@stylistic/eslint-plugin": "^5.10.0",
-        "@typescript-eslint/eslint-plugin": "^8.72.2",
-        "@typescript-eslint/parser": "^8.72.2",
+        "@typescript-eslint/eslint-plugin": "^8.73.0",
+        "@typescript-eslint/parser": "^8.73.0",
         "any-eslint-parser": "^1.0.1",
-        "eslint": "^10.13.0",
+        "eslint": "^10.15.0",
         "eslint-import-resolver-typescript": "^4.4.5",
-        "eslint-plugin-antfu": "^3.2.3",
+        "eslint-plugin-antfu": "^3.3.1",
         "eslint-plugin-array-func": "^5.1.1",
         "eslint-plugin-better-max-params": "^1.0.0",
         "eslint-plugin-check-file": "^3.3.2",
@@ -80,7 +80,7 @@
         "yaml-eslint-parser": "^2.1.0"
     },
     "peerDependencies": {
-        "eslint": ">=10.13.0",
+        "eslint": ">=10.15.0",
         "typescript": ">=7.0.2"
     },
     "peerDependenciesMeta": {

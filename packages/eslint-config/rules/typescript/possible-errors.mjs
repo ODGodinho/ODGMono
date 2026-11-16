@@ -20,6 +20,11 @@ export default {
         "@typescript-eslint/no-non-null-asserted-optional-chain": [ "error" ], // Não misture not null com optional
         "@typescript-eslint/no-unsafe-declaration-merging": [ "error" ], // Evita unir automaticamente tipos
         "@typescript-eslint/no-useless-empty-export": [ "error" ], // Bloqueia export vazio
+        /*
+         * "@typescript-eslint/no-unsafe-class-instance-assignment": [
+         *    "error"
+         * ], // Classe precisa ser instancia nao JSON bug // ! Bug
+         */
         "@typescript-eslint/restrict-template-expressions": [
             "error",
             {
