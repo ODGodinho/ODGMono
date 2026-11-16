@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # review-task.sh [--discard] [--delta] <repo-path>:<branch>...
-# review-task.sh --local [--delta] <repo-path>...
+# review-task.sh --local [--delta] [--install] <repo-path>...
 #
 # Modo MR (padrão): prepara cada repo local na branch pedida e roda review.sh
 # em modo commits. Árvore suja interrompe tudo, a menos que --discard seja
@@ -14,27 +14,39 @@
 # --delta (re-revisão, nos dois modos): depois de preparar cada repo, roda review.sh em modo
 # delta contra o state da revisão anterior. Repo sem state recebe a revisão completa, com aviso.
 #
+# Dependências (só repo com package.json na raiz; outra linguagem segue sem install):
+# o gerenciador vem do campo `packageManager` do package.json; sem ele, do único
+# lockfile da raiz (mais de um lockfile sem `packageManager`: não instala e avisa).
+# Yarn é tratado como 2+. O install nunca reescreve o lock e não roda scripts de
+# pós-instalação. No modo MR instala depois do checkout; no --local só avisa se o
+# node_modules parece atrás do lock, a menos que --install seja passado. Falha de
+# install não para a revisão: vira aviso no stderr e na seção Dependencies do index.md.
+#
 # Ao final imprime, por repo, HEAD, diretório do relatório e se existe AGENTS.md
 # raiz, e a lista de AGENTS.md de pacote sem repetir pacote@versão entre repos.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-USAGE='uso: review-task.sh [--discard] [--delta] <repo-path>:<branch>... | review-task.sh --local [--delta] <repo-path>...'
+USAGE='uso: review-task.sh [--discard] [--delta] <repo-path>:<branch>... | review-task.sh --local [--delta] [--install] <repo-path>...'
 DISCARD=0
 LOCAL=0
 DELTA=0
+INSTALL=0
 TARGETS=()
 for arg in "$@"; do
     case "$arg" in
         --discard) DISCARD=1 ;;
         --local) LOCAL=1 ;;
         --delta) DELTA=1 ;;
+        --install) INSTALL=1 ;;
         -*) printf '%s\n' "$USAGE" >&2; exit 2 ;;
         *) TARGETS+=("$arg") ;;
     esac
 done
 (( ${#TARGETS[@]} )) || { printf '%s\n' "$USAGE" >&2; exit 2; }
 (( LOCAL && DISCARD )) && { printf '%s\n' "$USAGE" >&2; exit 2; }
+(( ! LOCAL && INSTALL )) && { printf '%s\n' "$USAGE" >&2; exit 2; }
+(( LOCAL )) || INSTALL=1
 
 repo_of() {
     if (( LOCAL )); then printf '%s' "$1"; else printf '%s' "${1%%:*}"; fi
@@ -63,6 +75,91 @@ mode_for() {
         printf 'review-task: sem state em %s/%s; revisão completa em %s\n' "$PWD" "$out" "$full" >&2
     fi
     printf '%s' "$full"
+}
+
+# Gerenciador de pacotes do repo atual: `packageManager` do package.json; sem ele, o único lockfile.
+# Imprime yarn|pnpm|npm|bun, ou nada (com o motivo no stderr) quando não dá para decidir.
+package_manager() {
+    local pm locks=()
+    pm="$(sed -nE 's/.*"packageManager"[[:space:]]*:[[:space:]]*"([a-z]+)@.*/\1/p' package.json | head -n 1)"
+    if [[ -z "$pm" ]]; then
+        [[ -f yarn.lock ]] && locks+=(yarn)
+        [[ -f pnpm-lock.yaml ]] && locks+=(pnpm)
+        [[ -f package-lock.json ]] && locks+=(npm)
+        [[ -f bun.lock || -f bun.lockb ]] && locks+=(bun)
+        if (( ${#locks[@]} != 1 )); then
+            printf '%s lockfile(s) na raiz e sem `packageManager` no package.json' "${#locks[@]}" >&2
+            return 0
+        fi
+        pm="${locks[0]}"
+    fi
+    case "$pm" in
+        yarn|pnpm|npm|bun) printf '%s' "$pm" ;;
+        *) printf 'packageManager `%s` não suportado' "$pm" >&2 ;;
+    esac
+}
+
+# Lockfile do gerenciador e o arquivo que o install grava dentro de node_modules.
+lock_of() {
+    case "$1" in
+        yarn) printf 'yarn.lock' ;;
+        pnpm) printf 'pnpm-lock.yaml' ;;
+        npm) printf 'package-lock.json' ;;
+        bun) if [[ -f bun.lock ]]; then printf 'bun.lock'; else printf 'bun.lockb'; fi ;;
+    esac
+}
+marker_of() {
+    case "$1" in
+        yarn) printf 'node_modules/.yarn-state.yml' ;;
+        pnpm) printf 'node_modules/.modules.yaml' ;;
+        npm) printf 'node_modules/.package-lock.json' ;;
+        bun) printf 'node_modules' ;;
+    esac
+}
+
+# Prepara as dependências do repo atual e imprime a nota da seção Dependencies do index.md
+# (vazia para repo sem package.json). Nunca falha: problema vira aviso no stderr e na nota.
+prepare_deps() {
+    local out="$1" pm why cmd lock marker
+    [[ -f package.json ]] || return 0
+    pm="$(package_manager 2> "$out/.pm-why")"
+    why="$(cat "$out/.pm-why")"; rm -f "$out/.pm-why"
+    if [[ -z "$pm" ]]; then
+        printf 'review-task: %s: %s; dependências não instaladas\n' "$PWD" "$why" >&2
+        printf 'Not installed: %s. Lint/tsc of 💡 may run against packages that differ from the lockfile.' "$why"
+        return 0
+    fi
+    lock="$(lock_of "$pm")"
+    marker="$(marker_of "$pm")"
+
+    if (( ! INSTALL )); then
+        if [[ ! -e "$marker" ]]; then
+            printf 'review-task: %s: node_modules ausente (%s)\n' "$PWD" "$pm" >&2
+            printf '`node_modules` missing (%s): lint/tsc of 💡 cannot run. Rerun with `--install`.' "$pm"
+        elif [[ -f "$lock" && "$lock" -nt "$marker" ]]; then
+            printf 'review-task: %s: %s mais novo que o último install (%s)\n' "$PWD" "$lock" "$pm" >&2
+            printf '`%s` is newer than the last %s install: `node_modules` is likely behind the lockfile, so lint/tsc of 💡 and base errors may come from the environment. Rerun with `--install`.' "$lock" "$pm"
+        fi
+        return 0
+    fi
+
+    case "$pm" in
+        yarn) cmd=(yarn install --immutable --mode=skip-build) ;;
+        pnpm) cmd=(pnpm install --frozen-lockfile --ignore-scripts) ;;
+        npm) cmd=(npm ci --ignore-scripts) ;;
+        bun) cmd=(bun install --frozen-lockfile --ignore-scripts) ;;
+    esac
+    if ! command -v "$pm" > /dev/null 2>&1; then
+        printf 'review-task: %s: %s não encontrado; dependências não instaladas\n' "$PWD" "$pm" >&2
+        printf 'Not installed: `%s` not found. Lint/tsc of 💡 may run against packages that differ from the lockfile.' "$pm"
+        return 0
+    fi
+    if "${cmd[@]}" > "$out/install.log" 2>&1; then
+        printf '`%s` ok: `node_modules` matches the lockfile.' "${cmd[*]}"
+    else
+        printf 'review-task: %s: `%s` falhou; log em %s/install.log\n' "$PWD" "${cmd[*]}" "$PWD/$out" >&2
+        printf '`%s` FAILED (log: `install.log`). `node_modules` may not match the lockfile: lint/tsc of 💡 and base errors may come from the environment, not from the diff.' "${cmd[*]}"
+    fi
 }
 
 # Grava <out>/discussions.md da MR aberta de <branch>. Só leitura no GitLab.
@@ -142,14 +239,15 @@ for t in "${TARGETS[@]}"; do
     OUTS+=("$repo/$out")
     (
         cd "$repo"
+        mkdir -p "$out"
         if (( LOCAL )); then
-            "$SCRIPT_DIR/review.sh" "$out" "$(mode_for "$out" all)" >/dev/null
+            REVIEW_DEPS_NOTE="$(prepare_deps "$out")" "$SCRIPT_DIR/review.sh" "$out" "$(mode_for "$out" all)" >/dev/null
         else
             (( DISCARD )) && { git reset -q --hard; git clean -qfd; }
             base="$(git symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null || true)"
             git fetch -q origin "$branch" ${base:+"${base#origin/}"}
             git checkout -q --detach "origin/$branch"
-            "$SCRIPT_DIR/review.sh" "$out" "$(mode_for "$out" commits)" >/dev/null
+            REVIEW_DEPS_NOTE="$(prepare_deps "$out")" "$SCRIPT_DIR/review.sh" "$out" "$(mode_for "$out" commits)" >/dev/null
             write_discussions "$branch" "$out"
         fi
     )

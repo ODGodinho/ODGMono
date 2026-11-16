@@ -55,6 +55,7 @@ A card that touches 2+ repos is reviewed as one task, even before its MRs exist:
 - MRs open: `$$SKILL_DIR/scripts/review-task.sh [--discard] [--delta] <repo-path>:<branch>...` checks out every branch and runs step 1 per repo in `commits` mode, use only if the dev is not on the branch local.
 - Before the push: `$$SKILL_DIR/scripts/review-task.sh --local [--delta] <repo-path>...` reviews each repo's working tree in `all` mode, without checking anything out.
 - `--delta` runs step 1 in `delta` mode instead, per repo, after the checkout (*Re-review*); a repo without `state` gets the full mode and a warning.
+- Dependencies: after the checkout the script installs from the lockfile (`--local` only warns, unless `--install`). Read the `Dependencies` section of `index.md` before trusting lint or tsc; when it says not installed, failed or behind the lockfile, an error there is the environment, not the diff.
 
 Review each repo into its own output, then make **one** pass over all of them. That pass is where rules duplicated between repos and shared changes are found; a single-repo review cannot see them:
 

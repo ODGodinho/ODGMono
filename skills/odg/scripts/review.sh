@@ -13,6 +13,7 @@
 #
 # Knobs: REVIEW_BASE, REVIEW_CONTEXT_LINES (1), REVIEW_MAX_DIFF_LINES_PER_FILE (1200),
 #        REVIEW_MAX_LINES_PER_PART (1500), REVIEW_MAX_FILES (200).
+# REVIEW_DEPS_NOTE (posto pelo review-task.sh): texto da seção Dependencies do index.md.
 set -euo pipefail
 
 OUTDIR="${1:?usage: review.sh <outdir> [all|staged|commits|delta]}"
@@ -489,6 +490,10 @@ skill_version() {
             [[ -z "$f" ]] && continue
             printf -- '- `%s` (%s)\n' "$f" "$(status_of "$f")"
         done <<< "$IGNORED_FILES"
+    fi
+
+    if [[ -n "${REVIEW_DEPS_NOTE:-}" ]]; then
+        printf '\n## Dependencies\n\n%s\n' "$REVIEW_DEPS_NOTE"
     fi
 
     printf '\n## Package References Required\n\n'
