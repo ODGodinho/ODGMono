@@ -89,7 +89,10 @@ const denylistedIds = [
  * @returns {unknown[]} Rule entry for `id-denylist`.
  */
 export function idDenylistRule(allow = []) {
-    return [ "error", ...denylistedIds.filter((id) => !allow.includes(id)) ];
+    return [
+        "error",
+        ...denylistedIds.filter((id) => !allow.includes(id)),
+    ];
 }
 
 export default {
@@ -160,7 +163,10 @@ export default {
         "no-throw-literal": [ "error" ], // Não permite throw "string" ou diferente de classe
         "no-empty-function": [ "error" ], // Não permite funções vazias
         "no-duplicate-imports": [ "error" ], // Bloqueia import duplicado
-        "import/no-duplicates": [ "error", { "prefer-inline": true } ], // Bloqueia import duplicado
+        "import/no-duplicates": [
+            "error",
+            { "prefer-inline": true },
+        ], // Bloqueia import duplicado
         "prefer-const": [ "error" ], // Preferir constantes
         "no-unsafe-optional-chaining": [
             "error",
@@ -221,7 +227,10 @@ export default {
         "promise/no-multiple-resolved": [ "error" ], // Evita chamar resolve ou reject mais de uma vez na promise
         "promise/prefer-catch": [ "error" ], // Força usar catch ao invés de then(null, fn)
         "promise/no-promise-in-callback": [ "error" ], // Evita promise dentro de callback transforme em promise
-        "import/newline-after-import": [ "error", { count: 1 } ], // Linhas em branco apos o import
+        "import/newline-after-import": [
+            "error",
+            { count: 1 },
+        ], // Linhas em branco apos o import
 
         "array-callback-return": [ "error" ], // Força returno em array callback
         "curly": [ "off" ], // Utilize chaves em multi linhas
@@ -231,7 +240,10 @@ export default {
             String.raw`^(err|error|\w+Error|\w+Exception|exception)$`,
         ], // Funções que recebem error deve ser tratado
         "n/prefer-global/timers": [ "error", "always" ], // Prefira usar setTimeout, setInterval ... globais
-        "new-cap": [ "error", { newIsCap: true } ], // New require first Letter uppercase
+        "new-cap": [
+            "error",
+            { newIsCap: true },
+        ], // New require first Letter uppercase
         "no-caller": [ "error" ], // Não permite usar callee
         "no-script-url": [ "error" ], // Não permite usar script URL
         "func-names": [ "error", "as-needed" ], // Nome de funções somente quando necessário
@@ -340,7 +352,13 @@ export default {
         "unicorn/name-replacements": [
             "error",
             {
-                ignore: [ String.raw`\.env$`, ".env.*", "^Arr$", "^Num$", "^Str$" ],
+                ignore: [
+                    String.raw`\.env$`,
+                    ".env.*",
+                    "^Arr$",
+                    "^Num$",
+                    "^Str$",
+                ],
             },
         ], // Prefira ternário em vez de if else
         "unicorn/relative-url-style": [ "error" ], // Não coloque ./ em new URL
@@ -405,7 +423,10 @@ export default {
             },
         ], // Tamanho mínimo das variáveis
         "no-template-curly-in-string": [ "error" ], // Não faça templete string de forma incorreta
-        "max-depth": [ "error", { max: maxHadoukenDepth } ], // Tamanho máximo do Hadouken
+        "max-depth": [
+            "error",
+            { max: maxHadoukenDepth },
+        ], // Tamanho máximo do Hadouken
         "max-nested-callbacks": [ "error", maxHadoukenDepth ], // Tamanho máximo do Hadouken callback
         "better-max-params/better-max-params": [
             "error",
@@ -430,7 +451,10 @@ export default {
         "no-promise-executor-return": [ "error" ], // Não coloque um retorno em new Promise()
         "no-nonoctal-decimal-escape": [ "error" ], // Não coloque scape em numero decimais
         "prefer-destructuring": [ "error" ], // Prefira desestruturar array ao invés
-        "complexity": [ "error", { "max": 15 } ], // Complexidade código
+        "complexity": [
+            "error",
+            { "max": 15 },
+        ], // Complexidade código
         "func-style": [ "error", "declaration" ], // Declare function name() em vez de var = function()
         "no-else-return": [ "error" ], // Não use else se tem retorno
         "unicorn/no-useless-else": [ "error" ], // Não use else desnecessário
@@ -482,9 +506,15 @@ export default {
         "unicorn/default-export-style": [ "error" ], // Export default direto sem usar variável
         "unicorn/no-accidental-bitwise-operator": [ "error" ], // Evite usar operadores bitwise acidentalmente
         "unicorn/no-array-concat-in-loop": [ "error" ], // Evite usar concat em loop use push
-        "use-isnan": [ "error", { enforceForSwitchCase: true, enforceForIndexOf: true } ], // Use a função isNan
+        "use-isnan": [
+            "error",
+            { enforceForSwitchCase: true, enforceForIndexOf: true },
+        ], // Use a função isNan
         "n/no-deprecated-api": [ "error" ], // Não use API depreciada do Node.js
-        "prefer-regex-literals": [ "error", { disallowRedundantWrapping: true } ], // Use a função isNan
+        "prefer-regex-literals": [
+            "error",
+            { disallowRedundantWrapping: true },
+        ], // Use a função isNan
         "import/no-absolute-path": [ "error" ], // Não informa caminho absoluto
         "import/no-webpack-loader-syntax": [ "error" ], // Bloqueia syntax webpack import
         "import/no-named-as-default": [ "error" ],
@@ -499,7 +529,10 @@ export default {
             },
         ], // Máximo de 25 dependências
         "import/no-import-module-exports": [ "error" ], // Import e export CommanJs bloqueado
-        "import/no-useless-path-segments": [ "error", { commonjs: true } ], // Não volte pasta desnecessária import
+        "import/no-useless-path-segments": [
+            "error",
+            { commonjs: true },
+        ], // Não volte pasta desnecessária import
         "import/no-extraneous-dependencies": [
             isIdeWatchLint ? "off" : "error",
             {
@@ -558,7 +591,15 @@ export default {
                     caseInsensitive: true,
                     order: "asc",
                 },
-                "groups": [ "builtin", "external", "internal", "unknown", "parent", "sibling", "index" ],
+                "groups": [
+                    "builtin",
+                    "external",
+                    "internal",
+                    "unknown",
+                    "parent",
+                    "sibling",
+                    "index",
+                ],
                 "newlines-between": "always",
             },
         ], // Força essa ordem no import
@@ -570,7 +611,10 @@ export default {
                 block: { "balanced": true },
             },
         ], // Força espaço apos do // comentário
-        "import/no-anonymous-default-export": [ "error", { allowCallExpression: false } ],
+        "import/no-anonymous-default-export": [
+            "error",
+            { allowCallExpression: false },
+        ],
         "import/exports-last": [ "error" ], // Export por ultimo
         // "import/no-deprecated": [ "error" ], // Não import deprecated // ? slower
         "import/no-empty-named-blocks": [ "error" ], // Não import bloco vazio
@@ -594,7 +638,10 @@ export default {
         "unicorn/prefer-native-coercion-functions": [ "error" ], // Prefira função cast nativa
         "unicorn/prefer-logical-operator-over-ternary": [ "error" ], // Mude "a ? a : b" para "a || b"
         "unicorn/prefer-event-target": [ "error" ], // Use EventTarget no Lugar de EventEmitter
-        "unicorn/prefer-export-from": [ "error", { checkUsedVariables: true } ], // Prefira Export From
+        "unicorn/prefer-export-from": [
+            "error",
+            { checkUsedVariables: true },
+        ], // Prefira Export From
         "unicorn/prefer-string-raw": [ "error" ], // Use String.raw`` ao invés de scape no código
         "unicorn/consistent-tuple-labels": [ "error" ], // Prefira usar nome para tuplas tipagem array
         "unicorn/prefer-abort-signal-timeout": [ "error" ], // Prefira AbortSignal.timeout() ao invés de setTimeout
@@ -635,7 +682,10 @@ export default {
         "unicorn/no-top-level-assignment-in-function": [ "error" ], // Não faça atribuição dentro para fora função
         "unicorn/no-useless-override": [ "error" ], // Não faça override sem necessidade
         "no-with": [ "error" ], // Não use with
-        "unicorn/max-nested-calls": [ "error", { max: 4 } ], // Tamanho máximo chamada em cadeia
+        "unicorn/max-nested-calls": [
+            "error",
+            { max: 4 },
+        ], // Tamanho máximo chamada em cadeia
         "unicorn/no-global-object-property-assignment": [ "error" ], // Não atribua propriedades em objetos globais
         "unicorn/class-reference-in-static-methods": [
             "error",
@@ -679,9 +729,13 @@ export default {
         "zod/array-style": [ "error" ], // Use Zod.array() ao invés de z.string().array();
         "zod/consistent-import": [ "error" ], // Use import * as z from "zod"
         "zod/consistent-import-source": [ "error" ], // Use import from "zod" ou zod/v4
-        "zod/consistent-schema-var-name": [ "error", { "after": "Validator" } ], // Zod nome termina com Validator
+        "zod/consistent-schema-var-name": [
+            "error",
+            { "after": "Validator" },
+        ], // Zod nome termina com Validator
         "zod/no-any-schema": [ "error" ], // Não use z.any() use z.unknown()
         "zod/no-coerce-boolean": [ "error" ], // Não use z.coerce.boolean() use z.boolean()
+        "zod/no-reshape-on-refined-object": [ "error" ], // Não use z.pick,omit com refine
         "zod/no-number-schema-with-int": [ "error" ], // Não use z.number().int() use z.int()
         "zod/no-number-schema-with-safe": [ "error" ], // Não use z.number().safe() use z.int()
         "zod/no-number-schema-with-step": [ "error" ], // Não use z.number().step() use z.multipleOf()
