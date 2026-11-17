@@ -67,7 +67,7 @@ export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerI
         return Promise.all(keys.map(async (key) => this.delete(key)));
     }
 
-    public async *[Symbol.asyncIterator](): AsyncGenerator<[keyof CacheType, CacheType[keyof CacheType]]> {
+    public async *[Symbol.asyncIterator](): AsyncGenerator<[ keyof CacheType, CacheType[keyof CacheType] ]> {
         for await (const [ key, value ] of this.keyv.iterator()) {
             yield [ key as keyof CacheType, value as CacheType[keyof CacheType] ];
         }

@@ -74,7 +74,6 @@ export default {
         // "sonarjs/review-blockchain-mnemonic": [ "error" ], // Não coloca token no código
         "sonarjs/session-regeneration": [ "error" ], // Renovar sessão de login
         "sonarjs/sql-queries": [ "error" ], // Não Concatene SQL
-        "unicorn/no-unsafe-sqlite-interpolation": [ "error" ], // Evite interpolação insegura no SQLite
         "sonarjs/strict-transport-security": [ "error" ], // Segurança em H-STS
         "sonarjs/unverified-certificate": [ "error" ], // Validar certificado SSL
         "sonarjs/unverified-hostname": [ "error" ], // Validar host SSL
@@ -82,7 +81,5 @@ export default {
         "sonarjs/x-powered-by": [ "error" ], // Oculta info do node
         "sonarjs/xml-parser-xxe": [ "error" ], // XML proteção de venerabilidade
         "sonarjs/aws-iam-all-resources-accessible": [ "error" ], // Segurança AWS nao use * resources de acesso
-        "unicorn/no-invalid-integrity": [ "error" ], // Não use integrity inválida HTML
-        "unicorn/prefer-escaped-irregular-whitespace": [ "error" ], // Use scape espaço irregular
     },
 };

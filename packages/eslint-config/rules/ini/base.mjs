@@ -1,6 +1,7 @@
 export default {
     rules: {
         "filenames/match-regex": [ "off" ],
+        "unicorn/prefer-escaped-irregular-whitespace": [ "error" ], // Use scape espaço irregular
         "@stylistic/max-len": [
             "warn",
             {

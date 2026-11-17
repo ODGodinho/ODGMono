@@ -74,6 +74,5 @@ export default {
         "zod/no-schema-with-is-optional": [ "error" ], // Não use z.isOptional()
         "zod/no-unnecessary-readonly": [ "error" ], // Não use z.readonly() desnecessário
         "zod/require-brand-type-parameter": [ "error" ], // Use z.brand() com tipo genérico explicito
-        "zod/prefer-validate": [ "error" ], // Use z.validate() ao invés de z.parse().success
     },
 };

@@ -29,6 +29,8 @@ export default {
         "unicorn/no-incomplete-accessor-override": [ "error" ], // Não getter setter incorreto JS
 
         "unicorn/no-invalid-dom-token": [ "error" ], // Não use DOM métodos inválidos
+        "unicorn/no-invalid-integrity": [ "error" ], // Não use integrity (SRI) inválida em script/link
+        "unicorn/no-ineffective-csp-directives": [ "error" ], // Não use CSP diretivas inválidas
         /*
          * "import/namespace": [ "error" ], // Import namespace errors // ? slower
          */

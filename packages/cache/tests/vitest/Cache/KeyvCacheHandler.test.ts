@@ -291,7 +291,7 @@ describe("KeyvCacheHandler - Batch Operations", () => {
             await handler.set("user:2", exampleUserId2);
             await handler.set(counterKey, 10);
 
-            const entries: Array<[keyof TestCacheSchema, TestCacheSchema[keyof TestCacheSchema]]> = [];
+            const entries: Array<[ keyof TestCacheSchema, TestCacheSchema[keyof TestCacheSchema] ]> = [];
 
             for await (const [ key, value ] of handler) {
                 entries.push([ key, value ]);
@@ -304,7 +304,7 @@ describe("KeyvCacheHandler - Batch Operations", () => {
         });
 
         it("should iterate over empty cache", async () => {
-            const entries: Array<[keyof TestCacheSchema, TestCacheSchema[keyof TestCacheSchema]]> = [];
+            const entries: Array<[ keyof TestCacheSchema, TestCacheSchema[keyof TestCacheSchema] ]> = [];
 
             for await (const [ key, value ] of handler) {
                 entries.push([ key, value ]);

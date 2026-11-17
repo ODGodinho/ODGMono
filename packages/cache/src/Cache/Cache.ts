@@ -106,7 +106,7 @@ export class Cache<CacheType extends object> implements CacheInterface<CacheType
     }
 
     public async increment<K extends keyof CacheType>(
-        key: K extends keyof CacheType ? (CacheType[K] extends number ? K : never) : never,
+        key: K extends keyof CacheType ? CacheType[K] extends number ? K : never : never,
         value = 1,
     ): Promise<number> {
         const current = await this.get(key);
@@ -119,7 +119,7 @@ export class Cache<CacheType extends object> implements CacheInterface<CacheType
     }
 
     public async decrement<K extends keyof CacheType>(
-        key: K extends keyof CacheType ? (CacheType[K] extends number ? K : never) : never,
+        key: K extends keyof CacheType ? CacheType[K] extends number ? K : never : never,
         value = 1,
     ): Promise<number> {
         return this.increment(key, -value);

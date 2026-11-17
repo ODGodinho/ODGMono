@@ -99,5 +99,5 @@ export interface CacheHandlerInterface<CacheType extends object> {
      * @returns {AsyncIterator<[keyof CacheType, CacheType[keyof CacheType]]>} Async iterator yielding
      * `[key, value]` pairs.
      */
-    [Symbol.asyncIterator](): AsyncIterator<[keyof CacheType, CacheType[keyof CacheType]]>;
+    [Symbol.asyncIterator](): AsyncIterator<[ keyof CacheType, CacheType[keyof CacheType] ]>;
 }

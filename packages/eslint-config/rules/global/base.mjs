@@ -98,7 +98,6 @@ export default {
         "regexp/prefer-named-capture-group": [ "error" ], // Prefira group com nomes
         // "regexp/prefer-regexp-exec": [ "error" ], // Prefira exec em regex // Match retorna 1 resultado apenas
         "unicorn/no-conflicting-constraints": [ "error" ], // Não use constraints conflitantes min e max CSS e HTML
-        "unicorn/no-ineffective-csp-directives": [ "error" ], // Não use CSP diretivas inválidas
         "unicorn/no-leading-empty-lines": [ "error" ], // Não use linhas em branco no início do arquivo
         "unicorn/no-empty-file": [ "error" ], // Não crie arquivo vazio
         "unicorn/filename-case": [
@@ -142,12 +141,6 @@ export default {
         "sonarjs/no-fixed-wait-in-tests": [ "error" ], // Nao use pause no código
         "sonarjs/no-default-utility-imports": [ "error" ], // Nao use import default de utilitários
         "sonarjs/no-debug-commands-in-ui-tests": [ "error" ], // Nao use sleep playwright ou cypress
-        "@stylistic/array-bracket-newline": [ "error", { "multiline": true } ],
-        "@stylistic/array-bracket-spacing": [ "error", "always" ],
-        "@stylistic/array-element-newline": [
-            "error",
-            { "consistent": true, "multiline": true },
-        ], // Formatação linhas itens array
         "@stylistic/arrow-parens": [ "error", "always" ], // Arrow Function sempre com parentese
         "@stylistic/arrow-spacing": [ "error", { before: true, after: true } ], // Espaço seta arrow function
         "@stylistic/block-spacing": [ "error" ], // Espaço em { return true } e apos as chaves {
@@ -179,9 +172,7 @@ export default {
         "@stylistic/curly-newline": [ "error", "always" ], // Quebre conteúdo depois das chaves { do if/else/etc
         "@stylistic/dot-location": [ "error", "property" ], // Coloque o . a esquerda da propriedade
         "@stylistic/eol-last": [ "error", "always" ], // Quebre uma linha no final
-        "@stylistic/function-call-argument-newline": [ "error", "consistent" ], // Força formatação parâmetro func
         "@stylistic/function-call-spacing": [ "error", "never" ], // Não use espaço antes dos parens função
-        "@stylistic/function-paren-newline": [ "error", "multiline-arguments" ], // Força formatação itens parens
         "@stylistic/generator-star-spacing": [ "error", { before: true, after: false } ], // Espaço Funções Yield
         "@stylistic/implicit-arrow-linebreak": [ "error", "beside" ], // Não quebre arrow function
         "@stylistic/indent": [
@@ -234,6 +225,20 @@ export default {
             "always",
             { "exceptAfterOverload": true },
         ], // Força linha em branco entre props classe e funções
+        "@stylistic/list-style": [
+            "error",
+            {
+                empty: "ignore",
+                singleLine: { spacing: "never" },
+                multiLine: { minItems: 0 },
+                overrides: {
+                    "[]": { singleLine: { spacing: "always" } },
+                    "{}": { singleLine: { spacing: "always", maxItems: 3 } },
+                    "JSONArrayExpression": "off",
+                    "JSONObjectExpression": "off",
+                },
+            },
+        ], // Quebre todos ou nenhum item de ()[]{}<>; { } com 4+ itens sempre em linhas
         "@stylistic/max-len": [
             "warn",
             {
@@ -295,53 +300,6 @@ export default {
         "@stylistic/no-trailing-spaces": [ "error" ], // Não permite espaço apos ou antes do ponto
         "@stylistic/no-whitespace-before-property": [ "error" ], // Não permite espaço antes de property
         "@stylistic/nonblock-statement-body-position": [ "error", "beside" ], // If sem chaves deve ser inline
-        "@stylistic/object-curly-newline": [
-            "error",
-            {
-                "ExportDeclaration": {
-                    "consistent": true,
-                    "minProperties": 4,
-                    "multiline": true,
-                },
-                "ImportDeclaration": {
-                    "consistent": true,
-                    "minProperties": 4,
-                    "multiline": true,
-                },
-                "ObjectExpression": {
-                    "consistent": true,
-                    "minProperties": 4,
-                    "multiline": true,
-                },
-                "ObjectPattern": {
-                    "consistent": true,
-                    "minProperties": 4,
-                    "multiline": true,
-                },
-                "TSTypeLiteral": {
-                    "consistent": true,
-                    "minProperties": 4,
-                    "multiline": true,
-                },
-                "TSInterfaceBody": {
-                    "consistent": true,
-                    "minProperties": 4,
-                    "multiline": true,
-                },
-                "TSEnumBody": {
-                    "consistent": true,
-                    "minProperties": 4,
-                    "multiline": true,
-                },
-            },
-        ], // De {a:1} para { a: 1 }
-        "@stylistic/object-curly-spacing": [ "error", "always", { arraysInObjects: true } ], // Espaço declarar objeto
-        "@stylistic/object-property-newline": [
-            "error",
-            {
-                allowAllPropertiesOnSameLine: true,
-            },
-        ], // Quebre todos objetos ou nenhum
         "@stylistic/one-var-declaration-per-line": [ "error", "initializations" ], // 1 var por linha
         "@stylistic/operator-linebreak": [
             "error",
@@ -491,7 +449,8 @@ export default {
         "@stylistic/type-named-tuple-spacing": [ "error" ], // Sem espaço tipagem
         "@stylistic/wrap-iife": [ "error", "inside" ], // Coloque parentese em função auto excetuável
         "@stylistic/yield-star-spacing": [ "error", "before" ], // Espaço a esquerda yield
-
+        "@stylistic/jsx-shorthand-fragment": [ "error" ], // Fragmento JSX compacto
+        "@stylistic/jsx-shorthand-boolean": [ "error" ], // JSX parâmetro true compacto
         "@stylistic/jsx-closing-bracket-location": [ "error", "line-aligned" ], // Formata fechamento HTML
         "@stylistic/jsx-closing-tag-location": [ "error", "line-aligned" ], // Formata fechamento HTML
         "@stylistic/jsx-curly-brace-presence": [ "error" ], // Parâmetro JSX

@@ -101,6 +101,7 @@ export default {
         "unicorn/prefer-https": [ "error" ], // Use links HTTPS
         "unicorn/no-unsafe-dom-html": [ "error" ], // Bloqueia innerHTML, outerHTML, prefira setHtml e outros evita XSS
         "unicorn/no-unsafe-string-replacement": [ "error" ], // Replace inseguros com variáveis
+        "unicorn/no-unsafe-sqlite-interpolation": [ "error" ], // Evite interpolação insegura no SQLite
         "unicorn/prefer-number-is-safe-integer": [ "error" ], // Prefira Number.isSafeInteger para verificar se é safe
         "unicorn/prefer-dom-node-html-methods": [ "error" ], // Prefira métodos de HTML seguros
         "unicorn/no-unused-properties": [ "warn" ], // Informe caso um campo não esteja sendo usado.
@@ -635,6 +636,7 @@ export default {
         "unicorn/no-url-in-search-params": [ "error" ], // Não use URLSearchParams use URL.searchParams
         "unicorn/prefer-node-protocol": [ "error" ], // Prefira node: antes do import
         "unicorn/prefer-short-escape-sequences": [ "error" ], // Use escape sequences curtas \n no lugar de \u000A
+        "unicorn/prefer-escaped-irregular-whitespace": [ "error" ], // Use scape espaço irregular
         "unicorn/prefer-code-point": [ "error" ], // Prefira codePointAt no lugar de charCodeAt
         "unicorn/no-thenable": [ "error" ], // Não crie os nome com o nome Then
         "unicorn/no-unreadable-iife": [ "error" ], // Ternários não legíveis com funções
@@ -708,7 +710,6 @@ export default {
         "grouped-accessor-pairs": [ "error", "getBeforeSet" ],
         "no-sequences": [ "error" ], // Não faça a = (2, 4)
         "antfu/consistent-chaining": [ "error" ], // Ou quebra todos os pontos ou nenhum arr.map().filter().flat() etc
-        "antfu/consistent-list-newline": [ "error" ], // Quebre todos ou nenhum item do object
         "antfu/import-dedupe": [ "error" ], // Auto fix import duplicados
         "antfu/indent-unindent": [ "error" ], // Ident template strings
         "antfu/no-import-dist": [ "error" ], // Não importe a pasta dist
@@ -737,6 +738,7 @@ export default {
             { "after": "Validator" },
         ], // Zod nome termina com Validator
         "zod/no-any-schema": [ "error" ], // Não use z.any() use z.unknown()
+        "zod/prefer-validate": [ "error" ], // Use z.validate() ao invés de z.parse().success
         "zod/no-coerce-boolean": [ "error" ], // Não use z.coerce.boolean() use z.boolean()
         "zod/no-reshape-on-refined-object": [ "error" ], // Não use z.pick,omit com refine
         "zod/no-number-schema-with-int": [ "error" ], // Não use z.number().int() use z.int()

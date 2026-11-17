@@ -108,12 +108,12 @@ export interface CacheInterface<CacheType extends object = Record<string, unknow
      * Only numeric keys are allowed by type.
      *
      * @template {keyof CacheType} K
-     * @param {K extends keyof CacheType ? (CacheType[K] extends number ? K : never) : never} key Cache Key
+     * @param {K extends keyof CacheType ? CacheType[K] extends number ? K : never : never} key Cache Key
      * @param {number | undefined} value Increment delta. Defaults to `1` when omitted.
      * @returns {Promise<number>} The updated numeric value.
      */
     increment<K extends keyof CacheType>(
-        key: K extends keyof CacheType ? (CacheType[K] extends number ? K : never) : never,
+        key: K extends keyof CacheType ? CacheType[K] extends number ? K : never : never,
         value?: number
     ): Promise<number>;
 
@@ -123,12 +123,12 @@ export interface CacheInterface<CacheType extends object = Record<string, unknow
      * Only numeric keys are allowed by type.
      *
      * @template {keyof CacheType} K
-     * @param {K extends keyof CacheType ? (CacheType[K] extends number ? K : never) : never} key Cache key.
+     * @param {K extends keyof CacheType ? CacheType[K] extends number ? K : never : never} key Cache key.
      * @param {number | undefined} value Decrement delta. Defaults to `1` when omitted.
      * @returns {Promise<number>} The updated numeric value.
      */
     decrement<K extends keyof CacheType>(
-        key: K extends keyof CacheType ? (CacheType[K] extends number ? K : never) : never,
+        key: K extends keyof CacheType ? CacheType[K] extends number ? K : never : never,
         value?: number
     ): Promise<number>;
 
