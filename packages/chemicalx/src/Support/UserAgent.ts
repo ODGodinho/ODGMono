@@ -396,7 +396,7 @@ export class UserAgent implements CloneableInterface, NativeInterface<string> {
             const [ primary ] = tag.split("-", 1);
             const [ nextPrimary ] = (tags.at(index + 1) ?? "").split("-", 1);
 
-            return primary === nextPrimary || UserAgent.UNEXPANDED_SUBTAGS.has(primary) ? [ tag ] : [ tag, primary ];
+            return primary === nextPrimary || UserAgent.UNEXPANDED_SUBTAGS.has(primary) ? tag : [ tag, primary ];
         });
 
         return [ ...new Set(expanded) ];

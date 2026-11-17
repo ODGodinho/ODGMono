@@ -126,7 +126,7 @@ describe("Example Teste", () => {
 
     test("attempt WithFinish", async () => {
         const basePage2 = new ExamplePageWithFinish().setPage(page);
-        const finishSpy = vi.spyOn(basePage2, "finish").mockImplementation(async () => Promise.resolve());
+        const finishSpy = vi.spyOn(basePage2, "finish").mockResolvedValue();
 
         await expect(basePage2.execute()).resolves.toBeUndefined();
         expect(finishSpy)

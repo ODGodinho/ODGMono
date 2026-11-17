@@ -10,7 +10,7 @@ function describeNonJsonValue(value: unknown): string | undefined {
     if (typeof value === "bigint") return `${value}n`;
     if (typeof value === "symbol") return value.toString();
 
-    return typeof value === "undefined" ? "[undefined]" : undefined;
+    return value === undefined ? "[undefined]" : undefined;
 }
 
 /**

@@ -127,7 +127,6 @@ export default {
             },
         ], // Ao usar Docblock isolate n permite usar variáveis de fora
         "unicorn/no-late-current-target-access": [ "error" ], // Acesse event.currentTarget antes de operação assíncrona
-        "unicorn/no-unused-array-method-return": [ "error" ], // Use retorno de array.map, filter sem salvar em variável
         "unicorn/no-break-in-nested-loop": [ "error" ], // Não use break em loops dentro de outros loops
         "unicorn/no-confusing-array-with": [ "error" ], // Concatenar array com spread ao invés de with
         "unicorn/no-incorrect-template-string-interpolation": [ "error" ], // Valida interpolação de template string
@@ -178,7 +177,6 @@ export default {
         "prefer-arrow-callback": [ "error" ], // Força arrow function
         "arrow-body-style": [ "error", "as-needed" ], // Força arrow function sem body
         "no-empty": [ "error" ], // Não permite blocos vazios (if, while, for, function, etc)
-        "newline-before-return": [ "error" ], // Força retorno de função com \n antes
         "no-unreachable": [ "error" ], // Não permite unreachable code
         "no-multi-str": [ "error" ], // Não quebre linha dentro de uma string
         "consistent-this": [ "error", "that" ], // Não permite this em locais inconsistente.
@@ -196,14 +194,12 @@ export default {
         "no-func-assign": [ "error" ], // Não permite atribuição de função
         "no-inner-declarations": [ "error" ], // Não permite declarações dentro de escopos
         "no-invalid-regexp": [ "error" ], // Não permite expressões regulares inválidas RegExp()
-        "no-negated-in-lhs": [ "error" ], // Não permite negação em IN
         "no-regex-spaces": [ "error" ], // Não permite múltiplos espaços em regex utilize
         "no-sparse-arrays": [ "error" ], // Não permite arrays com itens vagos no meio
         "valid-typeof": [ "error" ], // Não permite typeof inválido
         "eqeqeq": [ "error", "always" ], // Usa igual e do mesmo tipo
         "no-extra-label": [ "error" ], // Não permite usar labels extra desnecessárias
         "no-labels": [ "error" ], // Disable Label/GOTO
-        "no-native-reassign": [ "error" ], // Não permite reatribuição de funções/vars nativas
         "no-new": [ "error" ], // Não permite usar new sem salva-lo
         "no-new-func": [ "error" ], // Não permite usar new Function()
         "no-redeclare": [ "error" ], // Não permite redeclarar variáveis
@@ -211,8 +207,9 @@ export default {
         "no-unmodified-loop-condition": [ "error" ], // Loop sem modificar o valor do contador ou check único
         "yoda": [ "error" ], // Força if Variável === "COMPARATION"
         "no-undef-init": [ "error" ], // Não permite variáveis definidas como undefined ao inicializar
-        "no-new-require": [ "error" ], // Não permite usar new require()
-        "no-new-object": [ "error" ], // Não permite usar new Object
+        "n/no-new-require": [ "error" ], // Não permite usar new require()
+        "no-object-constructor": [ "error" ], // Não permite usar new Object
+        "prefer-object-has-own": [ "error" ], // Use Object.hasOwn() no lugar de hasOwnProperty.call()
         "prefer-template": [ "error" ], // Prefer template literals over string concatenation
         "no-async-promise-executor": [ "error" ], // Não permita use função async para executar promise
         "prefer-promise-reject-errors": [ "error" ], // Passe uma Exception em promise ao invés de string/number
@@ -223,7 +220,6 @@ export default {
         "promise/always-return": [ "error" ], // Se a promise não tiver retorno reportar erro
         "promise/no-nesting": [ "error" ], // Warn se colocar uma then ou catch dentro de outra promise
         "promise/no-return-in-finally": [ "error" ], // No Return in finally
-        "promise/valid-params": [ "error" ], // Valida Parâmetros da promise
         "promise/no-callback-in-promise": [ "warn" ], // Evita callback dentro de promise mandar sucesso e error
         "promise/no-multiple-resolved": [ "error" ], // Evita chamar resolve ou reject mais de uma vez na promise
         "promise/prefer-catch": [ "error" ], // Força usar catch ao invés de then(null, fn)
@@ -235,7 +231,6 @@ export default {
 
         "array-callback-return": [ "error" ], // Força returno em array callback
         "curly": [ "off" ], // Utilize chaves em multi linhas
-        "handle-callback-err": [ "error" ], // Funções que recebem error deve ser tratado
         "n/handle-callback-err": [
             "error",
             String.raw`^(err|error|\w+Error|\w+Exception|exception)$`,
@@ -250,14 +245,6 @@ export default {
         "func-names": [ "error", "as-needed" ], // Nome de funções somente quando necessário
         "no-param-reassign": [ "error" ], // Não permite reatribuição de parâmetros
         "block-scoped-var": [ "error" ], // INFO: Bloqueia Vars for escopo, mas ainda sim prefira Lets
-
-        /*
-         * "filenames/match-exported": [
-         *     "error",
-         *     "^[a-zA-Z0-9_-]+$",
-         *     "\\.[a-z]+$",
-         * ], // Nome do arquivo igual export default
-         */
 
         "unicorn/catch-error-name": [
             "error",
@@ -320,6 +307,8 @@ export default {
         "unicorn/no-useless-fallback-in-spread": [ "error" ], // Desabilita não usado opcional literals ...
         "unicorn/no-useless-length-check": [ "error" ], // Desabilita não usado opcional literals ...
         "unicorn/no-useless-spread": [ "error" ], // Desabilita ... em array desnecessário
+        "unicorn/no-useless-promise-resolve-reject": [ "error" ], // Em async retorne o valor direto
+        "unicorn/no-typeof-undefined": [ "error" ], // Compare com undefined direto, sem typeof
         "unicorn/no-useless-switch-case": [ "error" ], // Desabilita Case não usado
         "unicorn/no-useless-undefined": [
             "error",
@@ -369,6 +358,7 @@ export default {
         "unicorn/prefer-math-min-max": [ "error" ], // Use Math.Min e Max ao invés de ternário
         "unicorn/prefer-import-meta-properties": [ "error" ], // Pega o nome ou dirname do arquivo de forma nativa
         "unicorn/no-unnecessary-array-flat-depth": [ "error" ], // Não passe parâmetro no flat se for o default
+        "unicorn/no-unnecessary-array-flat-map": [ "error" ], // Não envolva o valor em array dentro do flatMap
         "unicorn/prefer-class-fields": [ "error" ], // Prefira inicializar atributo na classe não construtor
         "unicorn/prefer-classlist-toggle": [ "error" ], // Prefira class toggle ao invés de if-else
         "unicorn/no-immediate-mutation": [ "error" ], // Não edite array logo em sequencia
@@ -440,7 +430,6 @@ export default {
         "unicorn/operator-assignment": [ "error", "always" ], // Prefira atribuição curtas += para strings tb
         "prefer-rest-params": [ "error" ], // Prefira ..args em vez de arguments
         "symbol-description": [ "error" ], // Symbol deve ter descrição
-        "no-return-await": [ "error" ], // Não coloque await no return
         "max-classes-per-file": [ "error", 1 ], // Apenas 1 classe por arquivo
         "no-constructor-return": [ "error" ], // Construtor não deve ter um retorno
         "prefer-exponentiation-operator": [ "error" ], // Prefira ** em vez de Math.pow
@@ -663,8 +652,6 @@ export default {
         "array-func/from-map": [ "error" ], // Use .map invés do segundo parâmetro do From
         "array-func/no-unnecessary-this-arg": [ "error" ], // Não passe parâmetro desnecessário
         "array-func/avoid-reverse": [ "error" ], // Não passe parâmetro desnecessário
-        "func-call-spacing": [ "error", "never" ],
-        "jsx-quotes": [ "error", "prefer-double" ], // Aspas duplas em JSX HTML
         "vars-on-top": [ "error" ], // Caso a regra de var seja desativa elas devem ficar no topo
         "strict": [ "error" ], // Strict JavaScript top file
         "no-shadow-restricted-names": [ "error" ], // Sem variável com palavra reservada

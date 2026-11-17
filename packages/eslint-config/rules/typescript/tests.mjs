@@ -12,7 +12,6 @@ export default {
         "@typescript-eslint/no-magic-numbers": [ "off" ], // Desliga magic number em test
         "max-statements": [ "error", MAX_STATEMENTS ],
         "max-nested-callbacks": [ "error", maxHadoukenDepth ], // Tamanho máximo do Hadouken callback
-        "unicorn/consistent-function-scoping": [ "error" ], // Remova sub função quando possível
         /*
          * "sonarjs/no-duplicate-test-title": [ "error" ], // Não permita testes com mesmo nome // ? Break after install
          * "sonarjs/prefer-specific-assertions": [ "error" ], // Assertion valido // ? Break after install

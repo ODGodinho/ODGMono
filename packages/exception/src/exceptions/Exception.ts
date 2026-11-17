@@ -132,7 +132,7 @@ export class Exception extends Error {
         const newException = new ExceptionClass("");
 
         for (const key in exception) {
-            if (Object.prototype.hasOwnProperty.call(exception, key)) {
+            if (Object.hasOwn(exception, key)) {
                 newException[key] = exception[key];
             }
         }

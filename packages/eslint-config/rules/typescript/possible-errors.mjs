@@ -33,6 +33,8 @@ export default {
             },
         ], // Não concatene strings com tipos inválidos
         "@typescript-eslint/return-await": [ "error" ], // Ao retornar um promise em try catch, use await evitando erros
+        "@typescript-eslint/no-deprecated": [ "error" ], // Não use APIs marcadas como @deprecated
+        "@typescript-eslint/use-unknown-in-catch-callback-variable": [ "error" ], // .catch((error: unknown))
         "@typescript-eslint/switch-exhaustiveness-check": [
             "error",
             {
@@ -47,6 +49,6 @@ export default {
         "@odg/no-inconsistent-docblock": [ "error" ], // Valida Docblock @param e @return com tipagem
         "unicorn/no-invalid-argument-count": [ "off" ], // TypeScript not need
         "unicorn/no-useless-coercion": [ "off" ], // TypeScript rule already handle this
-        "@typescript-eslint/no-restricted-imports": getRestrictedImportsRule(),
+        "no-restricted-imports": getRestrictedImportsRule(),
     },
 };

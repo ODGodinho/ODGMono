@@ -12,7 +12,7 @@ describe("Handler Attempt", () => {
     });
 
     test("test execute exception", async () => {
-        handlerAttemptMock.mockImplementation(async () => Promise.resolve(2));
+        handlerAttemptMock.mockImplementation(async () => 2);
 
         await expect(handler.execute()).resolves.toBeUndefined();
     });

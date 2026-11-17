@@ -54,8 +54,9 @@ export class AxiosResponseParser {
             ...Object.fromEntries(Object.entries(response).filter(([ key ]) => key.startsWith("$"))),
         };
 
+        // Axios types `config` as always present, but hand-built responses (mocks, adapters) may omit it
         return new MessageResponse(
-            typeof response.config === "undefined"
+            (response.config as AxiosResponse<ResponseD, RequestD>["config"] | undefined) === undefined
                 ? {}
                 : this.requestParser.parseLibraryToMessage<RequestD>({
                     ...response.config,

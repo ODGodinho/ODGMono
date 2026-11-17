@@ -122,7 +122,11 @@ describe("Axios Default Params test", () => {
 
         await expect(myRequest).rejects.toThrow(MessageException);
 
-        const requestAwait = await myRequest.catch((error: MessageException<unknown>) => error);
+        const requestAwait = await myRequest.catch((error: unknown) => {
+            if (error instanceof MessageException) return error;
+
+            throw error;
+        });
 
         expect(requestAwait.request?.timestamps).toBeGreaterThan(requester.getDefaultOptions().timeout! * 0.95);
         expect(requestAwait.request?.baseURL).toEqual(baseURL);

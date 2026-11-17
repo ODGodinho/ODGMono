@@ -1,6 +1,5 @@
 export default {
     rules: {
-        "filenames/match-regex": [ "off" ],
         "@stylistic/max-len": [
             "warn",
             {

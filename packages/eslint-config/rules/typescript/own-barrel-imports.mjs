@@ -62,7 +62,7 @@ export function getOwnBarrelImportBlocks() {
     return ownBarrelFolders.map(({ folder, alias }) => ({
         files: [ `src/${folder}/**/*.ts` ],
         rules: {
-            "@typescript-eslint/no-restricted-imports": [
+            "no-restricted-imports": [
                 "error",
 
                 {

@@ -8,7 +8,6 @@ export default {
         "no-unused-vars": [ "off" ],
         "no-unused-expressions": [ "off" ],
         "import/unambiguous": [ "off" ],
-        "filenames/match-regex": [ "off" ],
         "jsonc/object-curly-spacing": [ "error", "always" ], // Espaço declarar objeto
         "jsonc/object-curly-newline": [
             "error",

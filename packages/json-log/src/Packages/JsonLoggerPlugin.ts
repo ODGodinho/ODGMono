@@ -238,8 +238,10 @@ export class JSONLoggerPlugin implements LoggerPluginInterface {
     }
 
     protected isRequestMessage(message: unknown): message is RequestInterface<unknown> {
-        return Object.prototype.hasOwnProperty.call(message, "url")
-            && Object.prototype.hasOwnProperty.call(message, "method");
+        return typeof message === "object"
+            && message !== null
+            && Object.hasOwn(message, "url")
+            && Object.hasOwn(message, "method");
     }
 
     private async getMessage(message: unknown): Promise<string> {

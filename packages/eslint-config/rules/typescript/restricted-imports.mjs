@@ -90,11 +90,11 @@ export function buildPatternBans(context) {
 }
 
 /**
- * Build the `@typescript-eslint/no-restricted-imports` rule entry. Every TypeScript file
+ * Build the `no-restricted-imports` rule entry. Every TypeScript file
  * forbids raw inversify decorators, importing HandlerFunction/HandlerSolutionType, and
  * reaching into a dependency's build output (dist/, lib/).
  *
- * @returns {unknown[]} Rule entry for `@typescript-eslint/no-restricted-imports`.
+ * @returns {unknown[]} Rule entry for `no-restricted-imports`.
  */
 export function getRestrictedImportsRule() {
     return [

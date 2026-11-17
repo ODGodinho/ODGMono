@@ -21,7 +21,6 @@ export default {
         "no-use-before-define": [ "off" ], // Não use antes de definir
         "@typescript-eslint/no-use-before-define": [ "error" ], // Não use antes de definir
         "@typescript-eslint/no-base-to-string": [ "error" ], // Não coloque em string algo que n pode ser convertido
-        "@typescript-eslint/no-loss-of-precision": [ "error" ], // Não permite números com perda de precisão
         "@typescript-eslint/no-unsafe-argument": [ "error" ], // Não permite argumentos inseguros função
 
         "sonarjs/different-types-comparison": [ "off" ], // Bloqueia comparação ed tipos diferentes com ===

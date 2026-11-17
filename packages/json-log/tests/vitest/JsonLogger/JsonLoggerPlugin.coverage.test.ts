@@ -36,7 +36,7 @@ describe("JSONLoggerPlugin coverage", () => {
         const parsed = await logger["parseRequest"](response);
 
         expect(parsed).toBeDefined();
-        expect(parsed && Object.prototype.hasOwnProperty.call(parsed, "$hidden")).toBe(false);
+        expect(parsed && Object.hasOwn(parsed, "$hidden")).toBe(false);
     });
 
     test("isRequestOrResponseMessage for plain request", async () => {

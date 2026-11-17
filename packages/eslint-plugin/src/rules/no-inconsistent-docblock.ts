@@ -79,7 +79,7 @@ export function methodRule(
     }
 }
 
-export const rule = createRule({
+export const rule = createRule<[], "invalidParamType" | "invalidReturnType">({
     name: "no-inconsistent-docblock",
     meta: {
         docs: {
@@ -92,7 +92,6 @@ export const rule = createRule({
         type: "suggestion",
         schema: [],
     },
-    defaultOptions: [],
     create(context) {
         const docblockHelper = new DocblockHelper();
 

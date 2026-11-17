@@ -1,5 +1,24 @@
 import { getNamingConventionRules } from "./naming-convention.mjs";
 
+/*
+ * Mesma ordem de grupos da antiga @typescript-eslint/sort-type-constituents (deprecated),
+ * para trocar de regra sem reordenar os tipos já escritos.
+ */
+const typeConstituentGroups = [
+    "named",
+    "keyword",
+    "operator",
+    "literal",
+    "function",
+    "import",
+    "conditional",
+    "object",
+    "tuple",
+    "intersection",
+    "union",
+    "nullish",
+];
+
 const allTypes = [
     "static",
     "decorated",
@@ -132,7 +151,6 @@ export default {
         "unicorn/prefer-module": [ "error" ], // Prefira module js
         "no-constructor-bind/no-constructor-bind": [ "error" ], // Não use bind no construtor para própria classe
         "no-constructor-bind/no-constructor-state": [ "error" ],
-        "func-call-spacing": [ "off" ], // Não use espaço antes dos parens função
         "@typescript-eslint/adjacent-overload-signatures": [ "error" ], // Força overload interface ficarem juntos
         "@typescript-eslint/ban-ts-comment": [
             "error",
@@ -262,6 +280,7 @@ export default {
             },
         ], // Prefira declaração param props
         "@typescript-eslint/prefer-enum-initializers": [ "error" ], // Inicie as enums com valores
+        "@typescript-eslint/prefer-literal-enum-member": [ "error" ], // Valor de enum só literal
         "@typescript-eslint/prefer-function-type": [ "error" ], // Prefira Type function ao invés de object
         "@typescript-eslint/prefer-includes": [ "error" ], // Prefira Includes no TypeScript
         "@typescript-eslint/prefer-namespace-keyword": [ "error" ], // Prefira namespace ao invés de module
@@ -280,7 +299,14 @@ export default {
         "@typescript-eslint/prefer-string-starts-ends-with": [ "error" ], // Prefira startsWith e endsWith
         "@typescript-eslint/promise-function-async": [ "error" ], // Prefira async function quando retorna Promise
         "@typescript-eslint/require-array-sort-compare": [ "error" ], // Passe parâmetro array sort
-        "@typescript-eslint/sort-type-constituents": [ "error" ], // Ordene agrupação de tipos
+        "perfectionist/sort-union-types": [
+            "error",
+            { groups: typeConstituentGroups },
+        ], // Ordene os tipos do union A | B
+        "perfectionist/sort-intersection-types": [
+            "error",
+            { groups: typeConstituentGroups },
+        ], // Ordene os tipos da intersection A & B
         "no-magic-numbers": [ "off" ], // Desliga Magic number JS
         "@typescript-eslint/no-magic-numbers": [
             "warn",

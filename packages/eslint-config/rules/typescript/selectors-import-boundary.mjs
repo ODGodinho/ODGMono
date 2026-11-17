@@ -32,7 +32,7 @@ const noOwnBarrelMessage = "A file inside src/Selectors/ MUST import its own sib
 export default {
     files: [ "src/Selectors/**/*.ts" ],
     rules: {
-        "@typescript-eslint/no-restricted-imports": [
+        "no-restricted-imports": [
             "error",
             {
                 paths: [

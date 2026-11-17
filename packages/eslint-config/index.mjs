@@ -12,7 +12,6 @@ import arrayFunc from "eslint-plugin-array-func";
 import betterMaxParams from "eslint-plugin-better-max-params";
 import checkFile from "eslint-plugin-check-file";
 import fileProgress from "eslint-plugin-file-progress";
-import filenames from "eslint-plugin-filenames";
 import html from "eslint-plugin-html";
 import importPlugin from "eslint-plugin-import-x";
 import jsdoc from "eslint-plugin-jsdoc";
@@ -21,6 +20,7 @@ import jsonc from "eslint-plugin-jsonc";
 import eslintPluginJsxA11y from "eslint-plugin-jsx-a11y";
 import pluginN from "eslint-plugin-n";
 import noConstructorBind from "eslint-plugin-no-constructor-bind";
+import perfectionist from "eslint-plugin-perfectionist";
 import phpMarkup from "eslint-plugin-php-markup";
 import promise from "eslint-plugin-promise";
 import regexp from "eslint-plugin-regexp";
@@ -231,7 +231,6 @@ export default defineConfig([
             jsdoc,
             promise,
             regexp,
-            filenames,
             security,
             unicorn,
             html,
@@ -277,9 +276,9 @@ export default defineConfig([
             "import": importPlugin,
             "sort-class-members": sortClassMembers,
             jsdoc,
+            perfectionist,
             promise,
             regexp,
-            filenames,
         },
         rules: {
             ...typescriptBestPractices.rules,
@@ -312,7 +311,7 @@ export default defineConfig([
     {
         files: [ "**/ContainerInject.ts", "**/preload-inversify.ts" ],
         rules: {
-            "@typescript-eslint/no-restricted-imports": [ "off" ],
+            "no-restricted-imports": [ "off" ],
         },
     },
 
@@ -476,7 +475,6 @@ export default defineConfig([
         ],
         rules: {
             "import/no-anonymous-default-export": [ "off" ],
-            "filenames/match-exported": [ "off" ],
             "import/no-extraneous-dependencies": [ "off" ],
             "n/no-process-env": [ "off" ],
         },

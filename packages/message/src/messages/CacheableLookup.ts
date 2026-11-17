@@ -7,6 +7,7 @@ import {
 import type { LookupFunction } from "node:net";
 
 import type { CacheInterface } from "@odg/cache";
+import { Exception } from "@odg/exception";
 
 import type {
     CacheableLookupConfig,
@@ -57,8 +58,8 @@ export class CacheableLookup {
 
                 return resolved;
             })
-            .catch((error: Error) => {
-                this.callLookupErrorCallback(callback, error);
+            .catch((error: unknown) => {
+                this.callLookupErrorCallback(callback, Exception.parseOrDefault(error, "DNS lookup failed"));
             });
     }
 

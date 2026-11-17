@@ -94,7 +94,7 @@ export async function findProjectLines(parameters: {
         .map(async (file) => ({ file: relative(root, file), text: await readFile(file, "utf8") })));
 
     return contents.flatMap(({ file, text }) => text.split("\n").flatMap((line, index) => parameters.matches(line)
-        ? [ { file, line: index + 1, text: line.trim() } ]
+        ? { file, line: index + 1, text: line.trim() }
         : []));
 }
 

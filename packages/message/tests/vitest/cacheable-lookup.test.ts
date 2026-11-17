@@ -1,11 +1,13 @@
 import type { LookupAddress } from "node:dns";
 
 import type { CacheInterface } from "@odg/cache";
-import { Exception } from "@odg/exception";
+import { Exception, UnknownException } from "@odg/exception";
 
 import type { LookupCacheType, LookupKeyType } from "#app";
 
 import { CacheableLookup } from "../../src/messages/CacheableLookup.ts";
+
+const errorHostname = "error.test";
 
 function createCache(): {
     cache: CacheInterface<LookupCacheType & Record<string, unknown>>;
@@ -138,10 +140,7 @@ describe("CacheableLookup", () => {
 
     test("lookup callback with error", async () => {
         const { cache } = createCache();
-        const lookupError: Error = {
-            message: "dns fail",
-            name: "LookupError",
-        };
+        const lookupError = new Exception("dns fail");
         const lookup = new CacheableLookup(cache, {
             lookup: async (): Promise<LookupAddress> => {
                 throw lookupError;
@@ -150,7 +149,7 @@ describe("CacheableLookup", () => {
 
         const { promise, resolve } = Promise.withResolvers<undefined>();
 
-        lookup.lookup("error.test", { family: 4 }, (error, address, family) => {
+        lookup.lookup(errorHostname, { family: 4 }, (error, address, family) => {
             expect(error).toBe(lookupError);
             expect(address).toBe("");
             expect(family).toBeUndefined();
@@ -158,6 +157,42 @@ describe("CacheableLookup", () => {
         });
 
         await promise;
+    });
+
+    test("lookup callback wraps non-Error rejection in Exception", async () => {
+        const { cache } = createCache();
+        const lookup = new CacheableLookup(cache, {
+            lookup: vi.fn<() => Promise<LookupAddress>>().mockRejectedValue({ message: "dns fail" }),
+        });
+
+        const { promise, resolve } = Promise.withResolvers<Error | null>();
+
+        lookup.lookup(errorHostname, { family: 4 }, (error) => {
+            resolve(error);
+        });
+
+        const lookupError = await promise;
+
+        expect(lookupError).toBeInstanceOf(Exception);
+        expect(lookupError?.message).toBe("dns fail");
+    });
+
+    test("lookup callback wraps empty rejection in UnknownException", async () => {
+        const { cache } = createCache();
+        const lookup = new CacheableLookup(cache, {
+            lookup: vi.fn<() => Promise<LookupAddress>>().mockRejectedValue(undefined),
+        });
+
+        const { promise, resolve } = Promise.withResolvers<Error | null>();
+
+        lookup.lookup(errorHostname, { family: 4 }, (error) => {
+            resolve(error);
+        });
+
+        const lookupError = await promise;
+
+        expect(lookupError).toBeInstanceOf(UnknownException);
+        expect(lookupError?.message).toBe("DNS lookup failed");
     });
 
     test("lookupAsync with cache cache and config without lookup custom", async () => {
@@ -182,7 +217,9 @@ describe("CacheableLookup", () => {
         const { cache } = createCache();
         const cacheError = new Exception("cache get fail");
 
-        cache.get = vi.fn(async () => Promise.reject(cacheError));
+        cache.get = vi.fn(async () => {
+            throw cacheError;
+        });
 
         const resolver = vi.fn(async (): Promise<LookupAddress> => ({
             address: "127.0.0.7",
@@ -202,7 +239,9 @@ describe("CacheableLookup", () => {
         const { cache } = createCache();
         const cacheError = new Exception("cache set fail");
 
-        cache.set = vi.fn(async () => Promise.reject(cacheError));
+        cache.set = vi.fn(async () => {
+            throw cacheError;
+        });
 
         const resolver = vi.fn(async (): Promise<LookupAddress> => ({
             address: "127.0.0.8",

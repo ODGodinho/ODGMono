@@ -139,8 +139,8 @@ export const rule = createRule<Options, "invalidKey" | "invalidValue">({
                 },
             },
         ],
+        defaultOptions: [ {} ],
     },
-    defaultOptions: [ {} ],
     create: (context, [ options ]) => ({
         "TSEnumDeclaration": (node): void => {
             const enumName = node.id.name;

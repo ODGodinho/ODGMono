@@ -23,7 +23,6 @@ export default {
         "@stylistic/spaced-comment": [ "off" ], // Força espaço apos do // comentário
         "yml/spaced-comment": [ "error" ], // Comentários com espaço
         "yml/no-trailing-spaces": [ "error" ], // Sem espaço no final da linha
-        "filenames/match-regex": [ "off" ], // Desliga validação de nomes
         "@stylistic/max-len": [
             "warn",
             {

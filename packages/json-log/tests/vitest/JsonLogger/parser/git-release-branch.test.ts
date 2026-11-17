@@ -61,11 +61,11 @@ vi.mock("node:child_process", async (importOriginal) => {
         configurable: true,
         value: async function promisifiedExec(command: string, options?: object): ExecPromise {
             if (command.includes(gitDescribeTagsSnippet)) {
-                return Promise.resolve({ stdout: mockGitReleaseStdout, stderr: emptyExecStderr });
+                return { stdout: mockGitReleaseStdout, stderr: emptyExecStderr };
             }
 
             if (command.includes(gitRevParseBranchSnippet)) {
-                return Promise.resolve({ stdout: mockGitBranchStdout, stderr: emptyExecStderr });
+                return { stdout: mockGitBranchStdout, stderr: emptyExecStderr };
             }
 
             return origCustom
