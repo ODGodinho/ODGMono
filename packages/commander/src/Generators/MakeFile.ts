@@ -594,7 +594,7 @@ export default class MakeFile {
             register: shouldRegister = false,
             registrationTargets,
             typeImport,
-            typeImports,
+            typeImports = typeImport,
             ...targets
         } = options;
 
@@ -602,7 +602,7 @@ export default class MakeFile {
             enabled: shouldRegister,
             ...registrationTargets,
             ...targets,
-            typeImports: typeImports ?? typeImport ?? registrationTargets?.typeImports,
+            typeImports: typeImports ?? registrationTargets?.typeImports,
         };
     }
 

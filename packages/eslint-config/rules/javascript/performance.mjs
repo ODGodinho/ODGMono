@@ -26,5 +26,6 @@ export default {
         "unicorn/no-unnecessary-string-trim": [ "error" ], // Não use trim() se não for necessário
         "unicorn/prefer-dispose": [ "error" ], // Use objetos descartados para evitar memory leak
         "unicorn/prefer-iterator-helpers": [ "error" ], // Use iterator helpers ao invés de loops
+        "unicorn/no-repeated-call-wrappers": [ "warn" ], // Não use repeated new Set,Map,Number repetido
     },
 };

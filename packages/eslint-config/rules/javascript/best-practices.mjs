@@ -273,7 +273,6 @@ export default {
         "unicorn/no-confusing-array-splice": [ "error" ], // Não use array.splice se tiver forma mais simples
         "unicorn/no-incorrect-query-selector": [ "error" ], // Não use querySelectorAll se pegar posição zero sempre
         "unicorn/no-invalid-file-input-accept": [ "error" ], // Não coloque type incorreto no input
-        "unicorn/no-manually-wrapped-comments": [ "error" ], // Não quebre cometários sem ponto final
         "unicorn/no-this-outside-of-class": [ "error" ], // Não use this fora de classes
         "unicorn/no-unnecessary-nested-ternary": [ "error" ], // Ternários mais inteligentes
         "unicorn/prefer-get-or-insert-computed": [ "error" ], // Use Map insert computed
@@ -631,7 +630,11 @@ export default {
         "unicorn/prefer-number-properties": [ "error" ], // Prefira Number.numberVar() in vez de numberVar()
         "unicorn/numeric-separators-style": [ "error" ], // Separe Numero com Underline
         "unicorn/prefer-default-parameters": [ "error" ], // Prefira parâmetros padrões
+        "unicorn/no-unnecessary-parameters": [ "error" ], // Não passe parâmetros sem uso
+        "unicorn/prefer-promise-static-methods": [ "error" ], // Prefira Promise.resolve() ao invés de new Promise()
+        "unicorn/no-url-in-search-params": [ "error" ], // Não use URLSearchParams use URL.searchParams
         "unicorn/prefer-node-protocol": [ "error" ], // Prefira node: antes do import
+        "unicorn/prefer-short-escape-sequences": [ "error" ], // Use escape sequences curtas \n no lugar de \u000A
         "unicorn/prefer-code-point": [ "error" ], // Prefira codePointAt no lugar de charCodeAt
         "unicorn/no-thenable": [ "error" ], // Não crie os nome com o nome Then
         "unicorn/no-unreadable-iife": [ "error" ], // Ternários não legíveis com funções

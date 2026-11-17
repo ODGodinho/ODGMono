@@ -21,8 +21,6 @@ import { AxiosParser } from "./parser/AxiosParser.ts";
 import { AxiosRequestParser } from "./parser/AxiosRequestParser.ts";
 import { AxiosResponseParser } from "./parser/AxiosResponseParser.ts";
 
-type ResponseHandlerType = NonNullable<AxiosInterceptorManager<AxiosResponse>["handlers"]>[number];
-
 export class AxiosMessage<
     RequestData,
     ResponseData,
@@ -117,6 +115,8 @@ export class AxiosMessage<
     protected async rejectToResponseInterceptors<RequestD, ResponseD>(
         exception: unknown,
     ): Promise<AxiosResponse<ResponseD, RequestD>> {
+        type ResponseHandlerType = NonNullable<AxiosInterceptorManager<AxiosResponse>["handlers"]>[number];
+
         // Axios leaves null where a handler was ejected; its types do not say so
         const handlers = this.client.interceptors.response.handlers as Array<ResponseHandlerType | null>;
         let chain: Promise<AxiosResponse> = Promise.reject(AxiosParser.parseException(exception));

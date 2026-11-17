@@ -32,5 +32,6 @@ export default {
         "unicorn/prefer-media-feature-range-syntax": [ "error" ], // Use range syntax para media features
         "unicorn/no-duplicate-font-family-names": [ "error" ], // Não use font-family duplicado
         "unicorn/no-redundant-nested-style-rules": [ "error" ], // Não use & {} desnecessários
+        "unicorn/prefer-literal-ascii": [ "error" ], // Use literal ASCII
     },
 };

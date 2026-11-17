@@ -3,16 +3,16 @@ import { LogLevel } from "../../src/index.ts";
 describe("LogLevel.test.ts", () => {
     test("Test LogLevel Enum Object", async () => {
         expect(LogLevel).toMatchInlineSnapshot(`
-          {
-            "ALERT": "alert",
-            "CRITICAL": "critical",
-            "DEBUG": "debug",
-            "EMERGENCY": "emergency",
-            "ERROR": "error",
-            "INFO": "info",
-            "NOTICE": "notice",
-            "WARNING": "warning",
-          }
+            {
+              "ALERT": "alert",
+              "CRITICAL": "critical",
+              "DEBUG": "debug",
+              "EMERGENCY": "emergency",
+              "ERROR": "error",
+              "INFO": "info",
+              "NOTICE": "notice",
+              "WARNING": "warning",
+            }
         `);
     });
 });

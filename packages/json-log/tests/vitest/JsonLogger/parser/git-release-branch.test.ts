@@ -6,8 +6,6 @@ import { vi } from "vitest";
 
 import { GitLoggerPlugin, type JSONLogger, JSONLoggerPlugin } from "#app";
 
-type ExecCallback = (error: Error | null, stdout: Buffer | string, stderr: Buffer | string) => void;
-
 const gitDescribeTagsSnippet = "describe --tags";
 const gitRevParseBranchSnippet = "rev-parse --abbrev-ref";
 const mockGitReleaseLabel = "mock-release";
@@ -27,6 +25,8 @@ vi.mock("node:child_process", async (importOriginal) => {
         execContext: unknown,
         ...arguments_: Parameters<typeof origExec>
     ): ReturnType<typeof origExec> {
+        type ExecCallback = (error: Error | null, stdout: Buffer | string, stderr: Buffer | string) => void;
+
         const [ command ] = arguments_;
         const last = arguments_.at(-1);
         const previous = arguments_.at(-2);
@@ -116,7 +116,7 @@ describe("Test Git Release/Branch", () => {
             });
         }
 
-        const result = await parse(gitPlugin, jsonLogger, "test");
+        const result = await parse(gitPlugin, jsonLogger, "test-1");
 
         expect(result.index).toBe("appName");
         expect(result.git).toEqual({ branch: undefined, release: undefined });
@@ -129,7 +129,7 @@ describe("Test Git Release/Branch", () => {
         gitPlugin.setGitRelease("1.0.0");
         gitPlugin.setGitBranch("1.0.1");
 
-        const result = await parse(gitPlugin, jsonLogger, "test");
+        const result = await parse(gitPlugin, jsonLogger, "test-2");
 
         expect(result.index).toBe("appName");
         expect(result.git).toEqual({ branch: "1.0.1", release: "1.0.0" });

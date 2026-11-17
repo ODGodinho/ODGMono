@@ -97,6 +97,9 @@ export default {
         "regexp/sort-flags": [ "error" ], // Flag em ordem alfabética
         "regexp/prefer-named-capture-group": [ "error" ], // Prefira group com nomes
         // "regexp/prefer-regexp-exec": [ "error" ], // Prefira exec em regex // Match retorna 1 resultado apenas
+        "unicorn/no-conflicting-constraints": [ "error" ], // Não use constraints conflitantes min e max CSS e HTML
+        "unicorn/no-ineffective-csp-directives": [ "error" ], // Não use CSP diretivas inválidas
+        "unicorn/no-leading-empty-lines": [ "error" ], // Não use linhas em branco no início do arquivo
         "unicorn/no-empty-file": [ "error" ], // Não crie arquivo vazio
         "unicorn/filename-case": [
             "error",

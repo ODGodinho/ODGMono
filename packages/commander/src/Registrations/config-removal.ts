@@ -30,7 +30,7 @@ async function listFiles(folder: string): Promise<string[]> {
 }
 
 function isBlank(line: string | undefined): boolean {
-    return (line ?? "").trim() === "";
+    return !line?.trim();
 }
 
 function isDeclarationOf(line: string, key: string): boolean {

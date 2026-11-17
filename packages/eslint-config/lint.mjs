@@ -108,6 +108,6 @@ eslintProcess.on("error", (error) => {
     process.exit(1);
 });
 
-eslintProcess.on("close", (code) => {
+eslintProcess.on("close", (code = 0) => {
     process.exit(code ?? 0);
 });

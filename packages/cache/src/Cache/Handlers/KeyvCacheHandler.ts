@@ -4,13 +4,10 @@ import type { CacheHandlerInterface } from "#interfaces/CacheHandlerInterface";
 
 export class KeyvCacheHandler<CacheType extends object> implements CacheHandlerInterface<CacheType> {
 
-    public readonly name: string;
-
     public constructor(
         private readonly keyv: Keyv,
-        name?: string,
+        public name: string = "keyv",
     ) {
-        this.name = name ?? "keyv";
     }
 
     public async get<K extends keyof CacheType>(key: K): Promise<CacheType[K] | undefined> {

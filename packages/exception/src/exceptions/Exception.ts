@@ -137,9 +137,7 @@ export class Exception extends Error {
             }
         }
 
-        newException.message = "message" in exception
-            ? Exception.messageToString(exception.message)
-            : Exception.messageToString(exception);
+        newException.message = Exception.messageToString("message" in exception ? exception.message : exception);
         newException.code = this.getIfHasCode(exception);
         newException.stack = "stack" in exception ? Exception.messageToString(exception.stack) : undefined;
         newException.original = exception;

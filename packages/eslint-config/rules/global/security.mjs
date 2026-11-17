@@ -82,5 +82,7 @@ export default {
         "sonarjs/x-powered-by": [ "error" ], // Oculta info do node
         "sonarjs/xml-parser-xxe": [ "error" ], // XML proteção de venerabilidade
         "sonarjs/aws-iam-all-resources-accessible": [ "error" ], // Segurança AWS nao use * resources de acesso
+        "unicorn/no-invalid-integrity": [ "error" ], // Não use integrity inválida HTML
+        "unicorn/prefer-escaped-irregular-whitespace": [ "error" ], // Use scape espaço irregular
     },
 };

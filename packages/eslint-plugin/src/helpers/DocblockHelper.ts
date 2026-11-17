@@ -8,14 +8,6 @@ interface DocblockOptionsInterface {
     maxLines: number;
 }
 
-type GetJSDocumentationCommentType = (
-    sourceCode: Readonly<SourceCode>,
-    node: TSESTree.BaseNode,
-    options: DocblockOptionsInterface,
-) => TSESTree.Token | null;
-
-type ParseCommentType = (token: TSESTree.Token) => Block;
-
 export interface DocblockReturnType {
     token: TSESTree.Token;
     parse: Block;
@@ -24,6 +16,14 @@ export interface DocblockReturnType {
 export default class DocblockHelper {
 
     public getDocblockNode(sourceCode: Readonly<SourceCode>, node: TSESTree.BaseNode): DocblockReturnType | null {
+        type ParseCommentType = (token: TSESTree.Token) => Block;
+
+        type GetJSDocumentationCommentType = (
+            sourceCode: Readonly<SourceCode>,
+            node: TSESTree.BaseNode,
+            options: DocblockOptionsInterface,
+        ) => TSESTree.Token | null;
+
         const docblockBlock = (getJSDocComment as unknown as GetJSDocumentationCommentType)(
             sourceCode,
             node,
