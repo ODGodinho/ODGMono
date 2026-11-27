@@ -554,6 +554,32 @@ export default defineConfig([
             ...typescriptTests.rules,
         },
     },
+    {
+        files: [
+            "**/*.test.mjs",
+            "**/*.spec.mjs",
+            "**/*.test.mts",
+            "**/*.spec.mts",
+            "**/*.test.cts",
+            "**/*.spec.cts",
+            "**/*.test.js",
+            "**/*.spec.js",
+            "**/*.test.jsx",
+            "**/*.spec.jsx",
+            "**/*.test.ts",
+            "**/*.spec.ts",
+            "**/*.test.tsx",
+            "**/*.spec.tsx",
+        ],
+        languageOptions: {
+            globals: {
+                ...globals.vitest,
+            },
+        },
+        rules: {
+            "sonarjs/no-empty-test-file": [ "error" ], // Teste não pode ser vazio
+        },
+    },
 
     {
         files: [ "tests/Helpers/*.ts" ],

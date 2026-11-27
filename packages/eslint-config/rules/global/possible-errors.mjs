@@ -19,7 +19,6 @@ export default {
         "for-direction": [ "error" ], // Não faça for contador infinito.
         "sonarjs/no-internal-api-use": [ "error" ], // Não import node_modules
         "sonarjs/misplaced-loop-counter": [ "error" ], // Não faca loop e some no contador errado
-        "sonarjs/no-empty-test-file": [ "error" ], // Teste não pode ser vazio
         "sonarjs/no-all-duplicated-branches": [ "error" ], // Não faça condições duplicadas
         "sonarjs/no-element-overwrite": [ "error" ], // Não sobrescreva variável de forma desnecessária
         "sonarjs/no-empty-collection": [ "error" ], // Não interaja com array vazios
