@@ -34,7 +34,7 @@
         "@odg/tsconfig": "workspace:^",
         "@types/node": ">=26.6.6",
         "typescript": "^6.0.3",
-        "vitest": "^5.1.0"
+        "vitest": "^5.1.2"
     },
     "dependencies": {
         "@adonisjs/eslint-plugin": "^2.2.2",
@@ -44,7 +44,7 @@
         "@odg/eslint-plugin": "workspace:^",
         "@stylistic/eslint-plugin": "^6.0.1",
         "@typescript-eslint/eslint-plugin": "^8.74.0",
-        "@typescript-eslint/parser": "^8.73.0",
+        "@typescript-eslint/parser": "^8.74.0",
         "any-eslint-parser": "^1.0.1",
         "eslint": "^10.15.0",
         "eslint-import-resolver-typescript": "^4.4.5",
